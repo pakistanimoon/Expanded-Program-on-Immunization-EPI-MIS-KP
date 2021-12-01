@@ -25,13 +25,7 @@
 							<div class="col-md-3">
 								<?php
 									$distcode = $this-> session-> District; 
-									$tcode = $this-> session->Tehsil;
-									if($this-> session->Tehsil){
-										$tcode = "and tcode='$tcode'";
-									}else{
-										$tcode='';
-									}
-									$query="SELECT distinct tcode, tehsilname(tcode) as tehsil from tehsil where distcode='{$distcode}' $tcode order by tehsil ASC";
+									$query="SELECT distinct tcode, tehsilname(tcode) as tehsil from tehsil where distcode='{$distcode}' order by tehsil ASC";
 									$result = $this->db->query($query)->result_array();
 								?>
 								<select class="form-control filter-status" name="tcode" id="ticode">
@@ -47,13 +41,7 @@
 							<div class="col-md-3">
 								<?php
 									$distcode = $this-> session-> District; 
-									$tcode = $this-> session->Tehsil;
-									if($this-> session->Tehsil){
-										$tcode = "and tcode='$tcode'";
-									}else{
-										$tcode='';
-									}
-									$query="SELECT distinct uncode ,un_name,unname(uncode) as unioncouncil from unioncouncil where distcode='{$distcode}' $tcode order by un_name ASC";
+									$query="SELECT distinct uncode ,un_name,unname(uncode) as unioncouncil from unioncouncil where distcode='{$distcode}' order by un_name ASC";
 									$result = $this->db->query($query)->result_array();
 								?>
 								<select class="form-control filter-status" name="uncode" id="uncode">
@@ -71,12 +59,7 @@
 							</div>
 							<div class="col-md-3">
 								<?php
-									$distcode = $this-> session-> District;
-									if($this-> session->Tehsil){
-										$tcode = "and tcode='$tcode'";
-									}else{
-										$tcode='';
-									}									
+									$distcode = $this-> session-> District; 
 									$query="SELECT distinct facode, facilityname(facode) as facility from facilities where distcode='{$distcode}' order by facility ASC";
 									$result = $this->db->query($query)->result_array();
 								?>
@@ -123,13 +106,9 @@
 								<th>Technician</th>					
 								<th>Year</th>								
 								<th class="text-center Heading">
-									<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-										<a href="<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_main" data-toggle="tooltip" title="Add New ">
-										<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
+									<a href="<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_main" data-toggle="tooltip" title="Add New ">
+									<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
 									</a>
-									<?php } else{?>
-										Action
-									<?php }?>
 								</th>
 							</tr>
 						</thead>
@@ -155,10 +134,8 @@
 							      
 							      <td class="text-center">
 								      <a href="<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_analysis_view/<?php echo $row['techniciancode']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-									  <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-										<a href="<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_analysis_edit/<?php echo $row['techniciancode']; ?>/<?php echo $row['year']; ?> " data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-									  <?php } ?>
-								  </td>
+								      <a href="<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_analysis_edit/<?php echo $row['techniciancode']; ?>/<?php echo $row['year']; ?> " data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+							      </td>
 						 		</tr>
 							<?php } ?>
 						</tbody>

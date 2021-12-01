@@ -1,5 +1,4 @@
 <?php
-//kp
 class Indicator_reports_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
@@ -156,7 +155,7 @@ class Indicator_reports_model extends CI_Model {
 						$fromclause = "epi_consumption_master master";
 						$this->db->join("epi_consumption_detail detail","master.pk_id = detail.main_id");
 						$this->db->where($wc);
-						$this->db->where("epi_consumption_master.is_compiled",1);
+						$this->db->where("master.is_compiled",1);
 						$grouporderstr = "distcode,item_id";
 					}
 					$selectstr = "distcode as code,districtname(distcode) as name,$selectclause";
@@ -198,7 +197,7 @@ class Indicator_reports_model extends CI_Model {
 						$fromclause = "epi_consumption_master master";
 						$this->db->join("epi_consumption_detail detail","master.pk_id = detail.main_id");
 						$this->db->where($wc);
-						$this->db->where("epi_consumption_master.is_compiled",1);
+						$this->db->where("master.is_compiled",1);
 						$grouporderstr = "facode,item_id";
 					}
 					$selectstr = "facode as code,facilityname(facode) as name,item_id,$selectclause";
@@ -223,13 +222,86 @@ class Indicator_reports_model extends CI_Model {
 		$resultData = array_merge($resultData,$resultTotalData);
 		return $resultData;//$dataReturned;
 	}
+	
+	//--------------------------------------------------------------------------------//
+	//======= Function to Create EPI Vaccination Indicator Reports Starts Here ===========//
+	function getbatchwisehfclosing($data){
+		$distcode 	= (isset($data['distcode']))?$data['distcode']:NULL;
+		$tcode 	= (isset($data['tcode']))?$data['tcode']:NULL;
+		$uncode 	= (isset($data['uncode']))?$data['uncode']:NULL;
+		$facode 	= (isset($data['facode']))?$data['facode']:NULL;
+		$fmonth 	= (isset($data['fmonth']))?$data['fmonth']:NULL;
+		$resultData = $resultTotalData = array();
+		//$vacc_ind = (isset($data['vaccines'])) ? $data['vaccines'] : FALSE;
+		if($fmonth)
+		{
+			$wc = array("fmonth"=>$fmonth);
+			if($distcode){
+				$wc["distcode"] = $distcode;
+			}
+			if($tcode){
+				$wc["tcode"] = $tcode;
+			}
+			if($uncode){
+				$wc["uncode"] = $uncode;
+			}
+			if($facode){
+				$wc["facode"] = $facode;
+			}
+			$selectstr = "";
+			$report_type = (isset($data['report_type']))?$data['report_type']:NULL;
+			//$reportindicator = (isset($data['report_indicator']))?$data['report_indicator']:NULL;
+			$parts = explode("-",$fmonth);
+			//print_r($parts);exit;
+			if(isset($parts[0]) && isset($parts[1]) && $parts[1]<13 && $parts[1]>0){
+				$curryear = $parts[0];
+				if($parts[1]<10){
+					$repmonth = substr($parts[1], -1);
+				}else{
+					$repmonth = $parts[1];
+				}
+			}else{
+				$curryear = date("Y");
+				$curmnth = date("m");
+				if($curmnth<10){
+					$repmonth = substr($curmnth, -1);
+				}else{
+					$repmonth = $curmnth;
+				}
+			}
+			switch($report_type){
+				case "1":					
+					$selectclause = "(select item_name from epi_item_pack_sizes where pk_id = detail.item_id) as item,'Routine' as \"Purpose\",batch_number as \"Batch Number\",stackholdername((select stakeholder_id from epi_stock_batch where number = detail.batch_number order by pk_id desc limit 1)) as \"Manufacturer\",(select expiry_date from epi_stock_batch where number = detail.batch_number order by pk_id desc limit 1) as \"Batch Expiry\",sum(closing_vials) as \"Vials\",sum(closing_doses) as \"Doses\"";
+					$fromclause = "epi_consumption_master master";
+					$this->db->join("epi_consumption_detail detail","master.pk_id = detail.main_id");
+					$this->db->where($wc);
+					$this->db->where("master.is_compiled",1);
+					$grouporderstr = "item_id,batch_number";					
+					//$selectstr = "distcode as code,districtname(distcode) as name,$selectclause";
+					$selectstr = "$selectclause";
+					break;
+				case "2":
+				default:
+					break;
+			}
+			$resultData=$this->db->select(
+				$selectstr,FALSE
+			)->from(
+				$fromclause
+			)->group_by(
+				$grouporderstr
+			)->order_by(
+				$grouporderstr
+			)->get()->result_array();
+		}
+		$resultData = array_merge($resultData,$resultTotalData);
+		return $resultData;
+	}
+	
 	//--------------------------------------------------------------------------------//
 	//======= Function to Create EPI Vaccination Indicator Reports Starts Here ===========//
 	function consumptionIndicator($data){
 		$distcode = (isset($data['distcode']))?$data['distcode']:(($this -> session -> District)?$this -> session -> District:NULL);
-		$tcode = (isset($data['tcode']))?$data['tcode']:NULL;
-		$uncode = (isset($data['uncode']))?$data['uncode']:NULL;
-		$facode = (isset($data['facode']))?$data['facode']:NULL;
 		$vacc_ind = (isset($data['vacc_ind'])) ? $data['vacc_ind'] : FALSE;
 		$resultData = array();
 		if(isset($data['indicator']) && $vacc_ind)
@@ -265,20 +337,29 @@ class Indicator_reports_model extends CI_Model {
 				$group = "facode";
 				$moonwc["distcode"] = $distcode;
 			}
-            if($tcode){
-				$moonwc["tcode"] = $tcode;
-			}
-			if($uncode){
-				$moonwc["uncode"] = $uncode;
-			}
-			if($facode){
-				$moonwc["facode"] = $facode;
-			}
 			/////////Code by usama for Review dashbord map
+			if(isset($data['code'])){
+				$usercolumns = "distcode as code,districtname(distcode) as name";
+				$group = "distcode";
+				$moonwc["distcode"] = $data['code'];
+			}
 			if(isset($data['map']) && $data['map']=='map'){
 			$vaccind=$vacc_ind[0];
-			//echo'test';
-			 $query="select distcode,a.* from districts left join (
+			if(isset($data['code']) && $data['code'] > 1){
+				$usercolumns = "uncode as uccode,unname(uncode) as ucname";
+				$group = "uncode";
+				$query="select uncode as code,unname(uncode) as name,highchart_coordinates as path, (case when (a.\"$result_text\" > 0) then a.\"$result_text\" else 0 end) as \"$result_text\" from unioncouncil left join (
+					SELECT $usercolumns,item_id,$allcolumns,
+					       round(($numenator::numeric/NULLIF($denominator::numeric,0))*$mt,1) as \"$result_text\"
+						FROM epi_consumption_detail JOIN epi_consumption_master 
+							ON epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+						WHERE item_id IN('$vaccind') AND 
+							fmonth BETWEEN '$data[monthfrom]' AND '$data[monthto]' AND distcode='$data[code]' and epi_consumption_master.is_compiled='1'
+						GROUP BY $group, item_id ORDER BY $group, item_id) as a 
+							on unioncouncil.uncode=a.uccode where distcode='$data[code]' order by distcode";
+			
+				}else{
+				$query="select distcode,distcode as code,districtname(distcode) as name,(case when (a.\"$result_text\" > 0) then a.\"$result_text\" else 0 end) as \"$result_text\" from districts left join (
 					SELECT $usercolumns,item_id,$allcolumns,
 					       round(($numenator::numeric/NULLIF($denominator::numeric,0))*$mt,1) as \"$result_text\"
 						FROM epi_consumption_detail JOIN epi_consumption_master 
@@ -287,34 +368,33 @@ class Indicator_reports_model extends CI_Model {
 							fmonth BETWEEN '$data[monthfrom]' AND '$data[monthto]' and epi_consumption_master.is_compiled='1'
 						GROUP BY $group, item_id ORDER BY $group, item_id) as a 
 							on districts.distcode=a.code order by distcode";
+			}
 			$result=$this->db->query($query);
 			$resultData=$result->result_array();
 			//echo $this->db->last_query();exit;
 			return $resultData;exit;
 			}else{
-					////////END/////
-					$this -> db -> select($usercolumns.',item_id,'.$allcolumns.',round(('.$numenator.'::numeric/NULLIF('.$denominator.'::numeric,0))*'.$mt.',1) as "'.$result_text.'"');
-					$this -> db -> from("epi_consumption_master");
-					$this -> db -> join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
-					$this -> db -> where($moonwc);
-					$this->db->where("epi_consumption_master.is_compiled",1);
-					$this -> db -> where_in("item_id",$vacc_ind);
-					where_between('fmonth', "'".$data["monthfrom"]."'", "'".$data["monthto"]."'");  
-					$this -> db -> group_by($group.",item_id");
-					$this -> db -> order_by($group.",item_id");
-					$resultData = $this -> db -> get () -> result_array();
-					//print_r($this -> db ->last_query());exit;
-					
-					/* Total Query */
-					$this -> db -> select('procode as code,provincename(procode) as name,item_id,'.$allcolumns.',round(('.$numenator.'::numeric/NULLIF('.$denominator.'::numeric,0))*'.$mt.',1) as "'.$result_text.'"');
-					$this -> db -> from("epi_consumption_master");
-					$this -> db -> join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
-					//$this -> db -> where($moonwc);
-					$this -> db -> where_in("item_id",$vacc_ind);
-					$this->db->where("epi_consumption_master.is_compiled",1);
-					where_between('fmonth', "'".$data["monthfrom"]."'", "'".$data["monthto"]."'");  
-					$this -> db -> group_by("procode,item_id");
-					$this -> db -> order_by("procode,item_id");
+			////////END/////
+				$this -> db -> select($usercolumns.',item_id,'.$allcolumns.',round(('.$numenator.'::numeric/NULLIF('.$denominator.'::numeric,0))*'.$mt.',1) as "'.$result_text.'"');
+				$this -> db -> from("epi_consumption_master");
+				$this -> db -> join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
+				$this -> db -> where($moonwc);
+				$this->db->where("epi_consumption_master.is_compiled",1);
+				$this -> db -> where_in("item_id",$vacc_ind);
+				where_between('fmonth', "'".$data["monthfrom"]."'", "'".$data["monthto"]."'");  
+				$this -> db -> group_by($group.",item_id");
+				$this -> db -> order_by($group.",item_id");
+				$resultData = $this -> db -> get () -> result_array();
+				/* Total Query */
+				$this -> db -> select('procode as code,provincename(procode) as name,item_id,'.$allcolumns.',round(('.$numenator.'::numeric/NULLIF('.$denominator.'::numeric,0))*'.$mt.',1) as "'.$result_text.'"');
+				$this -> db -> from("epi_consumption_master");
+				$this -> db -> join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
+				//$this -> db -> where($moonwc);
+				$this -> db -> where_in("item_id",$vacc_ind);
+				$this->db->where("epi_consumption_master.is_compiled",1);
+				where_between('fmonth', "'".$data["monthfrom"]."'", "'".$data["monthto"]."'");  
+				$this -> db -> group_by("procode,item_id");
+				$this -> db -> order_by("procode,item_id");
 				$resultTotalData = $this -> db -> get () -> result_array();
 			}
 		}
@@ -419,10 +499,13 @@ class Indicator_reports_model extends CI_Model {
 			$data['waste_rate'] = $bothquery[2];
 			$result=$this->db->query($query);
 			$data['allDataTotal']=$result->result_array();
+			//echo "<pre>";print_r($data['allDataTotal']);exit;
+
 			$dataReturned['htmlData'] = getListingReportTable($data['allData'],'',$data['allDataTotal'],'','YES');
 			$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
 		}
 		$dataReturned['report_source_table'] = $report_table;
+
 		$dataReturned['exportIcons'] = exportIcons($_REQUEST);
 		$dataReturned['year']	= (isset($data['year']))?$data['year']:date('Y');
 		$dataReturned['month']	= (isset($data['month']))?$data['month']:"";
@@ -453,7 +536,8 @@ class Indicator_reports_model extends CI_Model {
 		unset($data['_gid']);
 		unset($data['ci_session']);
 		unset($data['export_excel']);
-		//print_r($_POST);exit();
+		//print_r($_POST);exit();	 	 
+		
 		//$query = 'SELECT * from indcat';
 		//echo $data['indicator'];exit();
 		if($data['indicator'])
@@ -464,6 +548,8 @@ class Indicator_reports_model extends CI_Model {
 		}
 		$ind_name = $arrayData[0]["ind_name"];
 		$yearMonth = (isset($data['year']))?(isset($data['month'])?$data['year']."-".$data['month']:$data['year']):"";
+		// $level = (isset($data['distcode']))?"facility":"district";
+		// $level = (isset($data['facode']))?"facility":$level;
 		$level = (isset($data['distcode']))?"unioncouncil":"district";
 		$level = (isset($data['unioncouncil']))?"unioncouncil":$level;
 		$distcode = (isset($data['distcode']))?$data['distcode']:(($this -> session -> District)?$this -> session -> District:NULL);
@@ -492,6 +578,8 @@ class Indicator_reports_model extends CI_Model {
 				$arrayData[0]["denominator"] = "Total # of HF in the union council";
 			}
 		}
+		//$report_table = "aefi_rep";
+		
 		$bothquery = explode('-::-',extract_indicator_query($arrayData,"$yearMonth", $level, $distcode, $report_table,$data));
 		if($data['indicator'] >= 31 || $data['indicator'] <= 40){
 			$bothquery = str_replace('fmonth = ','datefrom::text LIKE ',$bothquery);
@@ -534,8 +622,10 @@ class Indicator_reports_model extends CI_Model {
 			header("Expires: 0");
 			//Excel Ending here
 		}
-
-		$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
+		$data['suveillance_indicator'] = $data['indicator'];
+		$topinfoData = $data;
+		unset($topinfoData['indicator']);
+		$dataReturned['TopInfo'] = reportsTopInfo($title, $topinfoData);
 		$dataReturned['exportIcons'] = exportIcons($_REQUEST);
 		$dataReturned['year']	= (isset($data['year']))?$data['year']:date('Y');
 		$dataReturned['month']	= (isset($data['month']))?$data['month']:"";
@@ -697,7 +787,7 @@ class Indicator_reports_model extends CI_Model {
 			unset($wc['to_week']);
 			if(isset($data['from_week']) && isset($data['to_week'])){
 				$wc['datefrom'] = $fromdate = date("Y-m-d",strtotime($data['datefrom']));
-				$wc['dateto'] = $dateto = date("Y-m-d",strtotime($data['dateto']));
+				$wc['dateto'] = $dateto = date("Y-m-d",strtotime($data['toweek']));
 				
 				$year = $data['year'];
 				$from = $year."-".sprintf("%02d",$data['from_week']);
@@ -752,9 +842,6 @@ class Indicator_reports_model extends CI_Model {
 	/////////////////////////////
 	public function highest_morbidity($data){
 		$wc =$data;
-		/* $wc['datefrom'] = $fromdate = date("Y-m-d",strtotime($data['datefrom']));
-		$wc['dateto'] = $dateto = date("Y-m-d",strtotime($data['dateto'])); */
-		//print_r($dateto);exit;
 		$newc='';
 		unset($_REQUEST['__atuvc']);
 		unset($wc['__atuvc']);
@@ -854,7 +941,6 @@ class Indicator_reports_model extends CI_Model {
 					$this -> db -> where ($newc);
 				}
 				$newres[]= $this-> db -> get("zero_report")->row_array();
-				
 			}
 			if(isset($newres))
 			{
@@ -881,14 +967,9 @@ class Indicator_reports_model extends CI_Model {
 			unset($wc['from_week']);
 			unset($wc['to_week']);
 			if(isset($data['from_week']) && isset($data['to_week'])){
-				$wc['datefrom'] = $fromdate = date("Y-m-d",strtotime($data['datefrom']));
-				$wc['dateto'] = $dateto = date("Y-m-d",strtotime($data['dateto']));
-				
-				
 				$year = $data['year'];
 				$from = $year."-".sprintf("%02d",$data['from_week']);
 				$to = $year."-".sprintf("%02d",$data['to_week']);
-				$wc = "fweek >= '$from' and fweek <= '$to' ";
 				$newc = "fweek >= '$from' and fweek <= '$to' ";
 			} 
 			$query = 'SELECT * from idsrs_cases_types ';
@@ -899,15 +980,13 @@ class Indicator_reports_model extends CI_Model {
 				$cases = $row['cases'];$deaths = $row['deaths'];$disease = $row['type_case_name'] ;$id = $row['id'];
 				$query = "'".$id."' as id,'".$disease."' as \"Disease\", sum($cases) as \"Cases\", sum($deaths) as \"Deaths\" ";
 				$this -> db -> select ($query);
-				$this -> db -> where  ($wc);
+				$this -> db -> where ($wc);
 				if($newc!=''){
-				
-				$this -> db -> where  ($newc);
+					$this -> db -> where ($newc);
 				}
 				$newresult[]= $this-> db -> get("zero_report")->row_array();
-				//echo $this->db->last_query();exit;
+				
 			}
-			//echo $this->db->last_query();exit;
 			if(isset($newresult))
 			{
 			usort($newresult,function ($a,$b) {
@@ -935,9 +1014,7 @@ class Indicator_reports_model extends CI_Model {
 			$data['TopInfo'] = reportsTopInfo($subTitle, $data);
 			$data['exportIcons']=exportIcons($_REQUEST);
 			//print_r($data['getListingTable']);exit;
-			
 			//echo $query; exit;
-			//echo "<pre>"; print_r($data);exit;
 			return $data;
 		}
 		

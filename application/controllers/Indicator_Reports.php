@@ -1,12 +1,10 @@
 <?php
-//KP
 class Indicator_Reports extends CI_Controller {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
 		parent::__construct();
 		$this -> load -> model('Indicator_reports_model');
 		$this -> load -> helper('epi_functions_helper');
-		$this -> load -> helper('cross_notify_functions_helper');
 		authentication();
 	}
 	//====================== Constructor Function Ends Here ==========================//
@@ -46,11 +44,7 @@ class Indicator_Reports extends CI_Controller {
 		$reportTitle = $this->reportTitle($functionName);
 		$indicators = $functionName;
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-		if($this->session->UserLevel==4){
-			$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportPeriod,false,$indicators);
-		}else{
-			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,$indicators);
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,$indicators);
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;
@@ -94,7 +88,7 @@ class Indicator_Reports extends CI_Controller {
 	function Disease($distcode=NULL, $year=NULL, $month=NULL, $indicator=NULL){
 		//print_r($_POST);exit();
 		if($distcode AND $year AND $month AND $indicator)
-		{ 
+		{
 			$data = array('distcode' => $distcode, 'year' => $year, 'month' => $month, 'indicator' => $indicator);
 			if($month == 13)
 			{
@@ -110,7 +104,7 @@ class Indicator_Reports extends CI_Controller {
 		}
 		$dataHFMVRF['data'] = $this -> Indicator_reports_model -> Disease($data,$wc);
 		$dataHFMVRF['fileToLoad'] = 'indicator_reports/disease_indicator_report_view';
-		$dataHFMVRF['pageTitle']='EPI-MIS | Disease Surveillance Indicator report';
+		$dataHFMVRF['pageTitle']='EPI-MIS | Disease Surveillance Indicator Report';
 		$this->load->view('template/reports_template',$dataHFMVRF);
 	}
 	function Disease_Drilldown(){
@@ -155,7 +149,7 @@ class Indicator_Reports extends CI_Controller {
 		$reportPath = base_url()."Indicator-Report/".$functionName;
 		$reportTitle = $this->reportTitle($functionName);
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-		$customDropDown = array(
+$customDropDown = array(
 				array(
 					'0' => 'Indicator Type', // Custom Drop Down Name Should be in this format
 					'Morbidity' => 'Morbidity',
@@ -163,11 +157,7 @@ class Indicator_Reports extends CI_Controller {
 				)
 			);
 		//$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,true,$reportPeriod,false,'');
-		if($this->session->UserLevel==4){
-			$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,true,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-		}else{
-			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,true,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,true,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
 		//$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,true,$reportPeriod,false,NULL,NULL,'No','No',NULL);
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
@@ -182,7 +172,6 @@ class Indicator_Reports extends CI_Controller {
 	}
 	//========Function to create Priority Diseases Under Surveillance Reports==========//
 	function priority_diseases($disease=NULL, $distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL, $indicator=NULL ){
-		
 		if($disease && $distcode && $year && $from_week && $to_week && $indicator ) {			
    
 			$data = array("distcode"=>$distcode, "id" => $disease , "year"=>$year, "from_week"=>$from_week, "to_week"=>$to_week,"indicator_type"=>$indicator );
@@ -199,13 +188,16 @@ class Indicator_Reports extends CI_Controller {
 		else{			
    
 			$data = $this -> getPostedData();
-			//print_r($data);exit;
 		}
+		//print_r($data);exit;
 		$data['procode'] = $_SESSION["Province"];
 		if(isset($data['indicator_type']) && $data['indicator_type'] == "Mortality")
-		{
+											
+		{ 
+			//echo "if";exit;
 			//print_r($data);exit;
 			$data['data'] = $this -> Indicator_reports_model -> highest_morbidity($data);
+			//echo '<pre>'; print_r($data['data']); exit;
 			$data['edit'] = "Yes";
 			if($data != 0){
 				$data['fileToLoad'] = 'indicator_reports/idsrs/priority_diseases_view';

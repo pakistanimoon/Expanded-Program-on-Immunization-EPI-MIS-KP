@@ -2,13 +2,6 @@
 <?php echo $listing_filters; ?>
 <script type="text/javascript">
 	$(document).ready(function(){
-		
-		<?php if($this -> session -> UserLevel==4){ ?>
-	    var tcode= <?php echo $this->session->Tehsil; ?>;
-		$('#tcode').val(tcode);
-		$('#tcode').trigger("change");
-		<?php } ?>
-		
 		<?php if(($this -> session -> District)) { ?>
 			$("#reporttype option[value='dwise']").remove();	
 		<?php } else { ?>
@@ -183,6 +176,8 @@
 				$('#to_week').html(response.trim());
 				$('#datefrom').val('');
 				$('#dateto').val('');
+				// $('#from_week').html(response);
+				// $('#to_week').val('');
 			}
 		});
 	});

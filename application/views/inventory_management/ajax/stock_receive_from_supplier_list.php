@@ -54,7 +54,7 @@ if($batchexist){
 		<div class="row">      
 			<div style="text-align: right;margin-top:10px" class="col-md-6 col-md-offset-6 col-sm-6 col-sm-offset-6 col-xs-6 col-xs-offset-6">
 				<button style="background:#008d4c;" type="button" id="stock_recieveFrom_supplier_list" class="btn btn-primary btn-md" role="button"><i class="fa fa-print "></i> Print</button>
-				<button style="background:#008d4c;" type="button" id="savebtn"  class="btn btn-primary btn-md" role="button" onclick="return confirm(\'Are you sure you want to save the list?\');"><i class="fa fa-floppy-o"></i> Save</button>
+				<button style="background:#008d4c;" type="button" id="savebtn"  class="btn btn-primary btn-md" role="button" ></i> Save</button>
 				
 			</div>
 		</div>

@@ -34,6 +34,7 @@
 		$CI -> db -> join('epi_consumption_detail detail','master.pk_id = detail.main_id','left');
 		$CI -> db -> where("fmonth",$fmonth);
 		$CI -> db -> where("distcode",$districtCode);
+		$CI -> db -> where("item_id is NOT NULL");
 		$CI -> db -> group_by("item_id");
 		$yearData = $CI -> db -> get() -> result_array();
 		$import_array=array();

@@ -67,9 +67,9 @@
 													}?>
 											</select>
 									</div>
-									<div class="col-md-2">
-										<!--<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make and Modal" data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>-->
-										</div>
+									<!--<div class="col-md-2">
+										<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make and Modal" data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>
+										</div>-->
 								</div>
 						</div>
 					</div>
@@ -156,7 +156,16 @@
 					<!-- row end-->
 				</div> <!-- modal view end-->	
 				<div class="row">
-						
+						<div class="col-md-4">
+										<div class="row">
+											<div class="col-md-4">
+												<label for="Year">Year of Supply </label>
+											</div>
+											<div class="col-md-8">
+												<input type="text" id="working_since" name="working_since" class="dpcct form-control" readonly="true"/>
+											</div>
+										</div>
+						</div>
 						<div class="col-md-4">
 										<div class="row">
 											<div class="col-md-4">
@@ -506,7 +515,7 @@ $('#cancel1').on('click', function(e) {
 function isNumberKey(evt){
     var charCode = (evt.which) ? evt.which : evt.keyCode
     return !(charCode > 31 && (charCode < 48 || charCode > 57));
-} 
+}
 /* $(document).on('click','#makemodel',function(){
 	var url="<?php echo base_url() ?>Coldchain-MakeModel";
 	window.open(url,'name');

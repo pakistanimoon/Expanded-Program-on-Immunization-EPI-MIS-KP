@@ -80,6 +80,9 @@ class Other_reports_model extends CI_Model {
 	
 	function EPID($data){
 		//print_r($data);exit();
+		// if($this -> session -> federaluser == true){
+		// 	$fedDrilldown = $this -> session -> federaluser;
+		// }
 		$reportType = $data['report_type'];
 		$year = $data['year'];
 		$distcode = isset($data['distcode'])?$data['distcode']:'';
@@ -92,7 +95,7 @@ class Other_reports_model extends CI_Model {
 			$to = $year."-".sprintf("%02d",$data['to_week']);
 			$fweekCondition = "fweek >= '$from' and fweek <= '$to' "; 
 		} 
-		else if (isset($data['from_week'])){ 
+		else if(isset($data['from_week'])){ 
 			//echo "b";exit();
 			$year = $data['year'];
 			$cryear = date('Y');
@@ -107,7 +110,7 @@ class Other_reports_model extends CI_Model {
 			$to = $year."-".sprintf("%02d",$max_week_num);			
 			$fweekCondition = "fweek >= '$from' and fweek <= '$to' and year = '$year' "; 
 		}
-		else if (isset($data['to_week'])){ 
+		else if(isset($data['to_week'])){ 
 			//echo "c";exit();
 			$data['from_week'] = '01';
 			$year = $data['year'];
@@ -136,11 +139,11 @@ class Other_reports_model extends CI_Model {
 		}
 		$currentweek = currentWeek($year);
 		//$currentweek = lastWeek($year);		 
-		if ($currentweek == '00')
+		if($currentweek == '00')
 		{
 			$wc_c = "";
 		}
-		else {
+		else{
 			$wc_c = "and epi_week_numb <= '$currentweek'" ;
 		}
 
@@ -151,7 +154,7 @@ class Other_reports_model extends CI_Model {
 			$dataReturned['secondHeaderArray'] = array('M','F');
 		}else if($reportType == 'age_wise'){
 			$dataReturned['secondHeaderCount'] = 7;
-			//$dataReturned['secondHeaderArray'] = array('<9M','9-23M','24-59M','60-119M','>=120M');
+			$dataReturned['secondHeaderArray'] = array('<9M','9-23M','24-59M','60-119M','>=120M');
 			$dataReturned['secondHeaderArray'] = array('<9M','9-23M','24-59M','60-119M','120-180M','>180M','Unknown');
 		}else{}
 		$query = "SELECT distcode,districtname(distcode),";
@@ -160,47 +163,38 @@ class Other_reports_model extends CI_Model {
 			case 'measles' || 'Msl':
 				$table = "case_investigation_db";
 				$case_type = "Msl";
-				//$data['disease'] = "Measles";
 				break;
 			case 'nnt' || 'Nnt':
 				$table = "nnt_investigation_form";
 				$case_type = "0";
-				//$data['disease'] = "NNT";
 				break;
 			case 'afp' || 'Afp':
 				$table = "afp_case_investigation";
 				$case_type = "0";
-				//$data['disease'] = "AFP";
 				break;
 			case 'diphtheria' || 'Diph':
 				$table = "case_investigation_db";
 				$case_type = "Diph";
-				//$data['disease'] = "Diphtheria";
 				break;
 			case 'childhood tb' || 'ChTB':
 				$table = "case_investigation_db";
 				$case_type = "ChTB";
-				//$data['disease'] = "Childhood TB";
 				break;
 			case 'pertussis' || 'Pert':
 				$table = "case_investigation_db";
 				$case_type = "Pert";
-				//$data['disease'] = "Pertussis";
 				break;
 			case 'pneumonia' || 'Pneu':
 				$table = "case_investigation_db";
 				$case_type = "Pneu";
-				//$data['disease'] = "Pneumonia";
 				break;
 			case 'meningitis' || 'Men':
 				$table = "case_investigation_db";
 				$case_type = "Men";
-				//$data['disease'] = "Meningitis";
 				break;
 			case 'hepatitis' || 'HepB<5':
 				$table = "case_investigation_db";
 				$case_type = "AVHep";
-				//$data['disease'] = "Hepatitis";
 				break;
 			case 'all':
 				$table = "";
@@ -237,16 +231,14 @@ class Other_reports_model extends CI_Model {
 							(SELECT COUNT(*) FROM {$table} WHERE age_months >= 120 AND age_months <=180 AND fweek = '{$fweek}' {$case_type} {$wc_pro} AND distcode=districts.distcode) as \">120-180M{$key}\",
 							(SELECT COUNT(*) FROM {$table} WHERE age_months > 180 AND fweek = '{$fweek}' {$case_type} {$wc_pro} AND distcode=districts.distcode) as \">180M{$key}\",
 							(SELECT COUNT(*) FROM {$table} WHERE coalesce(age_months,'-1') = -1 AND fweek = '{$fweek}' {$case_type} {$wc_pro} AND distcode=districts.distcode) as \">Unknown{$key}\",";
-					}
-					else{
+					}else{
 						$query .= " ((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 0 AND age_months < 9 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 0 AND age_months < 9 AND fweek = '{$fweek}' AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 0 AND age_months < 9 AND case_type = 'Msl' AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"0-11M{$key}\",
 									((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 9 AND age_months <= 23 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 9 AND age_months <= 23 AND fweek = '{$fweek}' AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 9 AND age_months <= 23 AND case_type = 'Msl' AND fweek = '{$fweek}' AND distcode=districts.distcode)) as \"12-23M{$key}\",
 									((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 24 AND age_months <= 59 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 24 AND age_months <= 59 AND fweek = '{$fweek}' AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 24 AND age_months <= 59 AND case_type = 'Msl' AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"24-59M{$key}\",
 									((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 60 AND age_months <= 119 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek = '{$fweek}' AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 60 AND age_months <= 119 AND fweek = '{$fweek}' AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 60 AND age_months <= 119 AND case_type = 'Msl' AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"60-120M{$key}\",
 									((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 120 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek = '{$fweek}' AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 120 AND fweek = '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 120 AND case_type = 'Msl' AND fweek = '{$fweek}' AND distcode=districts.distcode)) as \">120M{$key}\",";
 					}
-				}
-				else{
+				}else{
 					if($disease != 'all'){
 						$query .= " (SELECT COUNT(*) FROM {$table} WHERE patient_gender = '1' AND fweek = '{$fweek}' {$case_type} {$wc_pro} AND distcode=districts.distcode) as \"Male{$key}\",
 									(SELECT COUNT(*) FROM {$table} WHERE patient_gender = '0' AND fweek = '{$fweek}' {$case_type} {$wc_pro} AND distcode=districts.distcode) as \"Female{$key}\",";
@@ -265,21 +257,18 @@ class Other_reports_model extends CI_Model {
 							(SELECT COUNT(*) FROM {$table} WHERE age_months >= 120 AND age_months <= 180 {$case_type} AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode) as \"Grand Total >120-180M{$key}\" ,
 							(SELECT COUNT(*) FROM {$table} WHERE age_months > 180 {$case_type} AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode) as \"Grand Total >180M{$key}\" ,
 							(SELECT COUNT(*) FROM {$table} WHERE coalesce(age_months,'-1') = -1 AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode) as \"Grand Total >Unknown{$key}\" ,";
-				}
-				else{
+				}else{
 					$query .= " ((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 0 AND age_months < 9 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 0 AND age_months < 9 AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 0 AND age_months < 9 AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total 0-11{$key}\" ,
 						((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 9 AND age_months <= 23 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 9 AND age_months <= 23 AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 9 AND age_months <= 23 AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total 12-23{$key}\" ,
 						((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 24 AND age_months <= 59 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 24 AND age_months <= 59 AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 24 AND age_months <= 59 AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total 24-59{$key}\" ,
 						((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 60 AND age_months <= 119 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 60 AND age_months <= 119 AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 60 AND age_months <= 119 AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total 60-120{$key}\" ,
 						((SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 120 AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE age_months >= 120 AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE age_months >= 120 AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total >120{$key}\" ,";
 				}
-			}
-			else{
+			}else{
 				if($disease != 'all'){
 					$query .= " (SELECT COUNT(*) FROM {$table} WHERE patient_gender = '1' {$case_type} AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode) as \"Grand Total Male{$key}\" ,
 					(SELECT COUNT(*) FROM {$table} WHERE patient_gender = '0' {$case_type} AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode) as \"Grand Total Female{$key}\" ,";
-				}
-				else{
+				}else{
 					$query .= " ((SELECT COUNT(*) FROM case_investigation_db WHERE patient_gender = '1' AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE patient_gender = '1' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE patient_gender = '1' AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total Male{$key}\" ,
 					((SELECT COUNT(*) FROM case_investigation_db WHERE patient_gender = '0' AND (case_type = 'Diph' OR case_type = 'Pert' OR case_type = 'Pneu' OR case_type = 'ChTB' OR case_type = 'Men' OR case_type = 'AVHep') AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM afp_case_investigation WHERE patient_gender = '0' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)+(SELECT COUNT(*) FROM case_investigation_db WHERE patient_gender = '0' AND case_type = 'Msl' AND fweek >= '".$weeks[0]['year'].'-'.sprintf('%02d',$weeks[0]['numb'])."' AND fweek <= '{$fweek}' {$wc_pro} AND distcode=districts.distcode)) as \"Grand Total Female{$key}\" ,";
 				}
@@ -289,6 +278,12 @@ class Other_reports_model extends CI_Model {
 		
 		$query = rtrim($query,",");
 		$query .= "FROM districts ORDER BY district";
+		// if(isset($fedDrilldown)){
+		// 	$query .= " FROM districts ORDER BY dist_order";
+		// }
+		// else{
+		// 	$query .= " FROM districts ORDER BY district";
+		// }
 		unset($data['case_type']);
 		$dataReturned['totalResult'] = $this -> db -> query($query) -> result_array();
 		if($this->input->post('export_excel'))
@@ -300,7 +295,6 @@ class Other_reports_model extends CI_Model {
 			header("Expires: 0");
 			//Excel Ending here
 		}
-		//print_r($data);exit();
 		$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
 		$dataReturned['exportIcons'] = exportIcons($_REQUEST);
 		$dataReturned['reportType'] = $data['report_type'];
@@ -309,6 +303,9 @@ class Other_reports_model extends CI_Model {
 	
 	function VPD($data){
 		//print_r($data);exit();
+		// if($this -> session -> federaluser == true){
+		// 	$fedDrilldown = $this -> session -> federaluser;
+		// }
 		$measlesonsetCondition = $afponsetCondition = $nntonsetCondition = $coronavirusonsetCondition = $vpdonsetCondition = "";
 		$reportType = $data['report_type'];
 		$year = $data['year'];
@@ -444,7 +441,13 @@ class Other_reports_model extends CI_Model {
 			$query .= " FROM epi_weeks where {$fweekCondition} {$wc_c} ORDER BY epi_week_numb ASC";
 		}
 		else if($reportType == 'dwise'){
+			//$query .= " FROM districts ORDER BY district";
+			// if(isset($fedDrilldown)){
+			// 	$query .= " FROM districts ORDER BY dist_order";
+			// }
+			// else{
 			$query .= " FROM districts ORDER BY district";
+			//}
 		}
 		else{
 			$query .= " FROM facilities WHERE hf_type='e' AND distcode='{$distcode}' ORDER BY fac_name";
@@ -467,10 +470,9 @@ class Other_reports_model extends CI_Model {
 		$dataReturned['data'] = $data;
 		return $dataReturned;
 	}
-
+	
 	public function disease_outbreak($data)
-	{
-		//kp
+	{	
 		//print_r($data); 
 		$disease = $data['disease'];
 		//echo ($data['from_week']); exit;
@@ -507,7 +509,7 @@ class Other_reports_model extends CI_Model {
 			$wc_c = "";
 		}
 		else {
-			$wc_c = "and epi_week_numb <= '$currentweek'" ;
+			$wc_c = " and epi_week_numb <= '$currentweek'" ;
 		}
 		//echo $wc_c; exit;
 		//echo $from, $to ;
@@ -647,6 +649,7 @@ class Other_reports_model extends CI_Model {
 		if($rec_exist)
 		{
 			$result = $this->db->query($w_portion)->result_array();
+			//echo $this->db->last_query(); exit();
 			$result_total = $this->db->query($t_portion)->result_array();
 		}
 		//echo $this->db->last_query(); exit();
@@ -660,17 +663,17 @@ class Other_reports_model extends CI_Model {
 			//Excel Ending here
 		}
 		$title = "Disease Outbreak Report";
-		$dataReturned['htmlData'] = getListingReportTable($result,$result_total,'','','','YES');
+		// $dataReturned['htmlData'] = getListingReportTable($result,$result_total,'','','','YES');
+		$dataReturned['htmlData'] = getListingReportTable($result,$result_total,'','','','YES',TRUE);
 		$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
 		$dataReturned['exportIcons'] = exportIcons($_REQUEST);
 		$dataReturned['data'] = $data;
 		//print_r($dataReturned['data']); exit;
 		return $dataReturned;
 	}
-
 	function OutbreakResponse($data,$title)
 	{
-		//print_r($data); exit();
+		// print_r($data);
 		$monthfrom = $data['monthfrom']; 		   
 		$monthto = $data['monthto']; 		   
 		/*echo isset($data['distcode']);exit;   */
@@ -689,7 +692,7 @@ class Other_reports_model extends CI_Model {
 		}
 		//print_r($wc);
 		
-		$query = "SELECT distcode, district , COALESCE(sum(reported_case_base_surveillance),0) as \"Reported through case based surveillance\",  COALESCE(sum(active_search_case),0) as \"Active search Cases\", COALESCE(sum(epi_linked_case),0) as \"Epi linked Cases\", sum(\"BCG\") as bcg, sum(\"OPV 0\") as opv0, sum(\"PCV 10\") as pcv10, sum(\"Penta 1\") as penta1, sum(\"Penta 2\") as penta2, sum(\"Penta 3\") as penta3, sum(\"IPV\") as ipv, sum(\"Measles I\") as measles1, sum(\"Measles II\") as measles2,sum(\"TCV\") as tcv, sum(\"Measles Booster Dose\") as \"Measles Booster Dose\",sum(\"Penta Booster Dose\") as \"Penta Booster Dose\",sum(\"TD/DtaP/Dt\") as \"TD/DtaP/Dt\", sum(\"Age Group Form (Months)\") as \"Age Group Form (Months)\", sum(\"Age Group To (Months)\") as \"Age Group To (Months)\", sum(\"No. of blood samples collected\") as \"No. of blood samples collected\", sum(\"No. of Throat/ Oral Swabs Collected\") as \"No. of Throat/ Oral Swabs Collected\" from (select distcode, districtname(distcode) as district, date_of_activity as \"Date of Actvity\", unname(uncode) as \"Union Council\", villagename(vcode) as \"Village\", reported_case_base_surveillance ,  active_search_case , epi_linked_case ,
+		$query = "SELECT distcode, district , COALESCE(sum(reported_case_base_surveillance),0) as \"Reported through case based surveillance\",  COALESCE(sum(active_search_case),0) as \"Active search Cases\", COALESCE(sum(epi_linked_case),0) as \"Epi linked Cases\", sum(\"BCG\") as bcg, sum(\"OPV 0\") as opv0, sum(\"PCV 10\") as pcv10, sum(\"Penta 1\") as penta1, sum(\"Penta 2\") as penta2, sum(\"Penta 3\") as penta3, sum(\"IPV\") as ipv, sum(\"Measles I\") as measles1, sum(\"Measles II\") as measles2, sum(\"TCV\") as tcv,sum(\"Measles Booster Dose\") as \"Measles Booster Dose\",sum(\"Penta Booster Dose\") as \"Penta Booster Dose\",sum(\"TD/DtaP/Dt\") as \"TD/DtaP/Dt\", sum(\"Age Group Form (Months)\") as \"Age Group Form (Months)\", sum(\"Age Group To (Months)\") as \"Age Group To (Months)\", sum(\"No. of blood samples collected\") as \"No. of blood samples collected\", sum(\"No. of Throat/ Oral Swabs Collected\") as \"No. of Throat/ Oral Swabs Collected\" from (select distcode, districtname(distcode) as district, date_of_activity as \"Date of Actvity\", unname(uncode) as \"Union Council\", villagename(vcode) as \"Village\", reported_case_base_surveillance ,  active_search_case , epi_linked_case ,
 			sum(case when vaccines='BCG' then total_m_f else 0 end) as \"BCG\", 
 			sum(case when vaccines='OPV 0' then total_m_f else 0 end) as \"OPV 0\", 
 			sum(case when vaccines='PCV 10' then total_m_f else 0 end) as \"PCV 10\", 
@@ -697,7 +700,7 @@ class Other_reports_model extends CI_Model {
 			sum(case when vaccines='Penta 2' then total_m_f else 0 end) as \"Penta 2\", 
 			sum(case when vaccines='Penta 3' then total_m_f else 0 end) as \"Penta 3\", 
 			sum(case when vaccines='IPV' then total_m_f else 0 end) as \"IPV\", 
-			sum(case when vaccines='TCV' then total_m_f else 0 end) as \"TCV\", 
+			sum(case when vaccines='TCV' then total_m_f else 0 end) as \"TCV\",
 			sum(case when vaccines='Measles I' then total_m_f else 0 end) as \"Measles I\", 
 			sum(case when vaccines='Measles II' then total_m_f else 0 end) as \"Measles II\", 
 			sum(case when vaccines='Msl Booster Dose' then total_m_f else 0 end) as \"Measles Booster Dose\",
@@ -706,8 +709,8 @@ class Other_reports_model extends CI_Model {
 				age_group_from as \"Age Group Form (Months)\", age_group_to as \"Age Group To (Months)\", blood_speciment_collected as \"No. of blood samples collected\", oral_swabs_collected as \"No. of Throat/ Oral Swabs Collected\", follow_up_visit as \"Folow up Visit\" from case_response_tbl where $wc group by distcode, date_of_activity, uncode, vcode, reported_case_base_surveillance, active_search_case, epi_linked_case, age_group_from, age_group_to, blood_speciment_collected, oral_swabs_collected, follow_up_visit order by distcode, date_of_activity) as a group by district, distcode" ;
 		$result = $this -> db -> query($query);
 		$dataReturned['allData'] = $result -> result_array();
-		//print_r($dataReturned['allData']); exit(); 
-		echo $this-> db-> last_query(); exit();
+		//print_r($dataReturned['allData']); exit();
+		//echo $this-> db-> last_query(); exit();
 		if($this->input->post('export_excel'))
 		{
 			//if request is from excel
@@ -782,10 +785,9 @@ class Other_reports_model extends CI_Model {
 				sum(case when vaccines='IPV' then total_m_f else 0 end) as \"IPV\", 
 				sum(case when vaccines='Measles I' then total_m_f else 0 end) as \"Measles I\", 
 				sum(case when vaccines='Measles II' then total_m_f else 0 end) as \"Measles II\", 
-				sum(case when vaccines='TCV' then total_m_f else 0 end) as \"TCV\", 
+				sum(case when vaccines='TCV' then total_m_f else 0 end) as \"TCV\", 							
 				sum(case when vaccines='Msl Booster Dose' then total_m_f else 0 end) as \"Measles Booster Dose\",
 				sum(case when vaccines='Penta Booster Dose' then total_m_f else 0 end) as \"Penta Booster Dose\", COALESCE(age_group_from,0) as \"Age Group Form (Months)\", COALESCE(age_group_to,0) as \"Age Group To (Months)\", blood_speciment_collected as \"No. of blood samples collected\", oral_swabs_collected as \"No. of Throat/ Oral Swabs Collected\", follow_up_visit as \"Folow up Visit\" from case_response_tbl where $wc group by distcode, date_of_activity, uncode, vcode, reported_case_base_surveillance, active_search_case, epi_linked_case, age_group_from, age_group_to, blood_speciment_collected, oral_swabs_collected, follow_up_visit order by distcode, date_of_activity" ;
-				//print_r($query); exit();
 		$result = $this -> db -> query($query);
 		$dataReturned['allData'] = $result -> result_array();
 		if($this->input->post('export_excel'))

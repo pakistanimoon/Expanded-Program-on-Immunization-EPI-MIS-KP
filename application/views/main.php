@@ -61,7 +61,6 @@
 				<?php } ?>
 			</div>
 			<!--end of small slider-->
-			
 			<div class="container">
 				<h3 class="blinking" style="color:red;"><strong>Alerts</strong></h3>
 				<div class="col-sm-6" style="margin-top: -10px;">

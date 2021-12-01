@@ -197,7 +197,7 @@ $UserLevel=$_SESSION['UserLevel'];
                 <th class="text-center Heading">Health Facility Code</th>                
                 <?php if ($_SESSION['UserLevel']=='3' && $utype=='DEO' ){?>
                   <th class="text-center Heading">
-                     <a href="<?php echo base_url(); ?>CCM/Add" data-toggle="tooltip" title="">
+                     <a href="<?php echo base_url(); ?>CCM/Add" data-toggle="tooltip" title="Add New Cold Chain Mechanic">
                       <button class="submit btn-success btn-sm">
                       <i class="fa fa-plus"></i> Add New</button>
                     </a>

@@ -1,4 +1,5 @@
 <?php 
+//Live
 	class Villages extends CI_Controller{
 		//================ Constructor function starts==================//
 		public function __construct(){
@@ -158,7 +159,7 @@
 			$data['pageTitle'] = 'EPI-MIS | Village Merge ';
 			$this-> load-> view('template/epi_template',$data);
 		}
-		/* public function hf_quarterplan_save(){
+		public function hf_quarterplan_save(){
 			$edit = $this-> input-> post('edit');
 			if ($edit != ''){
 				//print_r($_POST); exit();
@@ -351,7 +352,7 @@
 		   $data['fileToLoad'] = 'red_microplanning/hf_quarterplan_view';
 			$data['pageTitle'] = 'RED/REC Micro Plannning | EPI-MIS';
 			$this-> load-> view('template/epi_template',$data);
-		} */
+		}
 		public function ajax_village_save()
 		{   
 			$tcode = $this-> input-> post('tcode');				   
@@ -389,106 +390,107 @@
 			  print_r($data);
 			  
 		}
-	public function village_table(){
-		$wc = getWC();
-		$draw = intval($this->input->get("draw"));
-		$start = intval($this->input->get("start"));
-		$length = intval($this->input->get("length"));
-		$order = $this->input->get("order");
-		$search = $this->input->get("search");
-		$columns = $this->input->get("columns");
-		$multiple_search = "";
-	if(isset($columns) AND is_array($columns))
+		public function village_table()
 		{
-			foreach ($columns as $key => $value) 
+			$wc = getWC();
+			$draw = intval($this->input->get("draw"));
+			$start = intval($this->input->get("start"));
+			$length = intval($this->input->get("length"));
+			$order = $this->input->get("order");
+			$search = $this->input->get("search");
+			$columns = $this->input->get("columns");
+			$multiple_search = "";
+		if(isset($columns) AND is_array($columns))
 			{
-				$search_value = $value['search']['value'];
-				$search_value = str_replace('_', ' ', $search_value);
-				$column = $value['data'];
-				 if($_SESSION['UserLevel']=='2')
+				foreach ($columns as $key => $value) 
+				{
+					$search_value = $value['search']['value'];
+					$search_value = str_replace('_', ' ', $search_value);
+					$column = $value['data'];
+					 if($_SESSION['UserLevel']=='2')
+						{
+							$column = str_replace('districtname', 'distcode', $column);
+						}
+					elseif ($_SESSION['UserLevel']=='3') 
 					{
-						$column = str_replace('districtname', 'distcode', $column);
+						$column = str_replace('unname', 'uncode', $column);
+						$column = str_replace('tehsilname', 'tcode', $column);
 					}
-				elseif ($_SESSION['UserLevel']=='3') 
-				{
-					$column = str_replace('unname', 'uncode', $column);
-					$column = str_replace('tehsilname', 'tcode', $column);
+					if( ! empty($search_value))
+					{
+						$multiple_search .= " AND ";
+						$multiple_search .= "$column='$search_value'";
+					}
 				}
-				if( ! empty($search_value))
-				{
-					$multiple_search .= " AND ";
-					$multiple_search .= "$column='$search_value'";
-				}
-			}
-		}      	
-		if(isset($search))
-		{
-			$keyword = $search['value'];
-			$keyword = str_replace('_', ' ', $keyword);
-			$keyword = strtolower($keyword);
-			$search = " AND (lower(unname(villages.uncode)) LIKE '$keyword%' OR
-						 lower(tehsilname(villages.tcode)) LIKE '$keyword%')" ;     		
-		}else {
-			$search = "";
-		}
-		$col = 0;
-		$dir = "";
-		if(!empty($order))
-		{
-			foreach($order as $o) 
+			}      	
+			if(isset($search))
 			{
-				$col = $o['column'];
-				$dir= $o['dir'];
+				$keyword = $search['value'];
+				$keyword = str_replace('_', ' ', $keyword);
+				$keyword = strtolower($keyword);
+				$search = " AND (lower(unname(villages.uncode)) LIKE '$keyword%' OR
+							 lower(tehsilname(villages.tcode)) LIKE '$keyword%')" ;     		
+			}else {
+				$search = "";
 			}
-		}
-		if($dir != "asc" && $dir != "desc") {
-			$dir = "asc";
-		}
-			$columns_valid = array(
-				"serial",
-				"tehsilname",
-				"unname",
-				"villages_counts",
-				"uncode",
-			);
-		if(!isset($columns_valid[$col])) {
-			$order = '';
-		} elseif($draw == 0) {
-			$order = " order by added_date ";
-		}
-		else{
-			$order = "order by ".$columns_valid[$col].' '.$dir;
-		}
-		$query = "select  count(villages.uncode) as villages_counts,unname(villages.uncode) as unname,tehsilname (villages.tcode)as tehsilname,uncode from villages where $wc $search $multiple_search group by villages.uncode,villages.tcode $order LIMIT {$length} OFFSET {$start}  ";
-		$villages = $this->db->query($query);
-		$data = array();
-		$i=$start+1;
-		foreach($villages->result() as $r) 
-		{	
-				//$checkresult= 
-				$data[] = array(
-					"serial" => $i,
-					"tehsilname" => $r->tehsilname,
-					"unname" => $r->unname,
-					"villages_counts" => $r->villages_counts,                
-					"uncode" => $r->uncode,	                
-					//"checkresult" => $this -> Villages_model ->  VillageExistinMicroplan($r->vcode), 
+			$col = 0;
+			$dir = "";
+			if(!empty($order))
+			{
+				foreach($order as $o) 
+				{
+					$col = $o['column'];
+					$dir= $o['dir'];
+				}
+			}
+			if($dir != "asc" && $dir != "desc") {
+				$dir = "asc";
+			}
+				$columns_valid = array(
+					"serial",
+					"tehsilname",
+					"unname",
+					"villages_counts",
+					"uncode",
+				);
+			if(!isset($columns_valid[$col])) {
+				$order = '';
+			} elseif($draw == 0) {
+				$order = " order by added_date ";
+			}
+			else{
+				$order = "order by ".$columns_valid[$col].' '.$dir;
+			}
+			$query = "select  count(villages.uncode) as villages_counts,unname(villages.uncode) as unname,tehsilname (villages.tcode)as tehsilname,uncode from villages where $wc $search $multiple_search group by villages.uncode,villages.tcode $order LIMIT {$length} OFFSET {$start}  ";
+			$villages = $this->db->query($query);
+			$data = array();
+			$i=$start+1;
+			foreach($villages->result() as $r) 
+			{	
+					//$checkresult= 
+					$data[] = array(
+						"serial" => $i,
+						"tehsilname" => $r->tehsilname,
+						"unname" => $r->unname,
+						"villages_counts" => $r->villages_counts,                
+						"uncode" => $r->uncode,	                
+						//"checkresult" => $this -> Villages_model ->  VillageExistinMicroplan($r->vcode), 
+						
+					); 
 					
-				); 
+				$i++;
 				
-			$i++;
-			
+			}
+			$query = "SELECT  count(*)  AS num FROM villages WHERE $wc $search $multiple_search";
+			$total_village = $this->db->query($query)->row();
+			$output = array(
+				"draw" => $draw,
+				"recordsTotal" => $total_village->num,
+				"recordsFiltered" => $total_village->num,
+				"data" => $data
+			);
+			echo json_encode($output);
+			exit();
 		}
-		$query = "SELECT  count(*)  AS num FROM villages WHERE $wc $search $multiple_search";
-		$total_village = $this->db->query($query)->row();
-		$output = array(
-			"draw" => $draw,
-			"recordsTotal" => $total_village->num,
-			"recordsFiltered" => $total_village->num,
-			"data" => $data
-		);
-		echo json_encode($output);
-		exit();
 	}
-}
 ?>

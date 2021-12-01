@@ -1,6 +1,7 @@
 <!--start of page content or body-->
 
 <?php 
+//live
 //print_r($motherdData);exit;
 if($this -> session -> flashdata('message')){  ?>
 			  <div class="row mb3">
@@ -285,7 +286,7 @@ if($this -> session -> flashdata('message')){  ?>
                 <div class="col-xs-3">
 					<input type="text"  name="tt1" id="tt1" required placeholder="yyyy-mm-dd" value="" data-date-format="yyyy-mm-dd" class="month_year form-control calender">
 										
-				</div>
+				</div> 
 			</div>
 			<div class="row">
 				<label class="col-xs-2 col-xs-offset-1 control-label"  for = "cnic" >TT2 </label>
@@ -574,7 +575,6 @@ $(document).ready(function(){
 			
 	  var d = new Date();
 	  var year = d.getFullYear();
-	  
 		
 		
         var cardno = $("#cardno").val();
@@ -594,19 +594,18 @@ $(document).ready(function(){
     });
 	
 	$('#tt1').on('blur', function () {
-		//alert('yo');
+		//alert('youyou');
         var newfacode = $("#newfacode").val();
 		
 		
        // var dateofbirth = $("#dateofbirth").val();
 		//var year = dateofbirth.split("-", 1);
-		 
-		var d = new Date();
+		
+		//var d = new Date();
 	    //var year = d.getFullYear();
 		var tt1 = $('#tt1').val();
-		//alert(tt1);
-		var year = tt1.split('-',1);
-		//alert(year);
+		var year = tt1.split("-", 1);
+		
         var cardno = $("#cardno").val();
         var reg_no = newfacode + '-' + year + '-' + cardno;
         var newtechniciancode = "";
@@ -619,7 +618,7 @@ $(document).ready(function(){
                 if (data != 0) {
                     var data = JSON.parse(data);
                     console.log(data);
-                    if (data.mother_registration_no != '') {
+                    if (data.mother_registration_no != '') { 
                         $("#cardno").html(data.mother_registration_no);
                         $('#site_response_cardno').css('display', 'block');
                         $('#site_response_cardno').css('color', 'red');
@@ -674,17 +673,21 @@ $(document).ready(function(){
 		var minDate = new Date(e.date.valueOf());
 		document.getElementById('tt2').disabled = false;
 		addDays('tt1', 'tt2', 30); 
-		dp.date = e.date;
-		dp.setValue();
-	}).on('clearDate', function(){
 		$('#tt2').val('');
 		$('#tt3').val('');
 		$('#tt4').val('');
-		$('#tt5').val('');
+		$('#tt5').val(''); 
+		dp.date = e.date;
+		dp.setValue();
+	}).on('clearDate', function(){
 		document.getElementById('tt2').disabled = true;
 		document.getElementById('tt3').disabled = true;
 		document.getElementById('tt4').disabled = true;
 		document.getElementById('tt5').disabled = true;
+		$('#tt2').val('');
+		$('#tt3').val('');
+		$('#tt4').val('');
+		$('#tt5').val('');
 	});
 	
 	$('#tt2').datepicker({	

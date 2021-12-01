@@ -63,7 +63,6 @@
 									</thead>
 									<tbody>
 										<?php
-										//print_r($attendence);exit;
 										foreach($attendence as $key => $val){
 										?>
 										<tr>

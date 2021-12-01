@@ -8,8 +8,8 @@
     <script src="<?php echo base_url();?>includes/js/jquery.flypanels.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.3/fastclick.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/map.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="//code.highcharts.com/maps/modules/map.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="<?php echo base_url(); ?>includes/js/jquery.simplePopup.js"></script>
 	
 <!--     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -31,6 +31,10 @@
 		});
 		FastClick.attach(document.body);
 	});
+    
+
+
+  
     $(function () {
         /* START OF DEMO JS - NOT NEEDED */
         if (window.location == window.parent.location) {

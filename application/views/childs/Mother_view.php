@@ -1,7 +1,7 @@
 <!--start of page content or body-->
 
 <?php 
-print_r($data);exit;
+//print_r($motherdData);exit;
 if($this -> session -> flashdata('message')){  ?>
 			  <div class="row mb3">
 				<div class="col-sm-12 filters-selection" style="Background-color:#00F418;">

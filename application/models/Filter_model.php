@@ -157,34 +157,14 @@ class Filter_model extends CI_Model {
 													</div>
 												</div>';
 							}
-							if(array_key_exists("supervisortype", $dataArray)){
-                               if($this -> session -> UserLevel==4){
+							if(array_key_exists("supervisortype", $dataArray)){	
 								$finalString .= '
 								<div class="row">
 									<div class="form-group">
 										<label class="col-xs-3 col-xs-offset-1 control-label" for = "supervisor_type" >Supervisor Type:</label>
 										<div class="col-xs-7">
 											<select class="form-control" name="supervisor_type" id="supervisor_type">
-												<option value="0">--Select--</option>
-												<option value="EPI Coordinator">EPI Coordinator</option>
-												<option value="Assistant Superintendent Vaccinator">Assistant Superintendent Vaccinator</option>
-												<option value="Tehsil Superintendent Vaccinator">Tehsil Superintendent Vaccinator</option>
-												<option value="Field Superintendent Vaccinator">Field Superintendent Vaccinator</option>
-												<option value="Monitoring and Evaluation Supervisor">Monitoring and Evaluation Supervisor</option>
-												<option value="Assistant Director M&E">Assistant Director M&E</option>
-												<option value="Assistant Director Surveillance">Assistant Director Surveillance</option>
-												<option value="Assistant Director Training">Assistant Director Training</option>
-											</select>
-										</div>
-									</div>
-								</div>';}else{
-									$finalString .= '
-								<div class="row">
-									<div class="form-group">
-										<label class="col-xs-3 col-xs-offset-1 control-label" for = "supervisor_type" >Supervisor Type:</label>
-										<div class="col-xs-7">
-											<select class="form-control" name="supervisor_type" id="supervisor_type">
-												<option value="0">--Select--</option>
+												<option value="0"></option>
 												<option value="EPI Coordinator">EPI Coordinator</option>
 												<option value="District Superintendent Vaccinator">District Superintendent Vaccinator</option>
 												<option value="District Health coordinator">District Health coordinator</option>
@@ -200,7 +180,6 @@ class Filter_model extends CI_Model {
 										</div>
 									</div>
 								</div>';
-								}
 								$finalString .= 
 								'<div class="row hide" id="hiddenTehsilRow">
 									<div class="form-group">
@@ -239,26 +218,8 @@ class Filter_model extends CI_Model {
 									</div>
 								</div>';
 							}
-					if(array_key_exists("tehsil", $dataArray) && !array_key_exists("supervisortype", $dataArray)){
-								if($this -> session -> UserLevel==4){
-									  $finalString .= 
-								'<div class="row">
-									<div class="form-group">
-									<label class="col-xs-3 col-xs-offset-1 control-label" for = "tcode" >Tehsil:</label>
-									<div class="col-xs-7">
-										<select id="tcode" name="tcode" class="filter-status form-control" >';
-											foreach($dataArray['tehsil'] as $row){
-											
-												$finalString .= '<option '.($this->input->post('tcode') && $this->input->post('tcode') ==  $row['tcode'] ? 'selected = "selected"' : '').' value="'.$row['tcode'].'" >'.$row['tehsil'].'</option>';
-											}
-											$finalString .= '
-										</select>
-									</div>
-									</div>
-								</div>';
-								}else{
-								      $finalString .= 
-
+							if(array_key_exists("tehsil", $dataArray) && !array_key_exists("supervisortype", $dataArray)){
+								$finalString .= 
 								'<div class="row">
 									<div class="form-group">
 									<label class="col-xs-3 col-xs-offset-1 control-label" for = "tcode" >Tehsil:</label>
@@ -273,9 +234,7 @@ class Filter_model extends CI_Model {
 										</select>
 									</div>
 									</div>
-								</div>';	
-								}
-
+								</div>';
 							}
 							if(array_key_exists("unioncouncil", $dataArray)){
 								$finalString .= 
@@ -462,9 +421,10 @@ class Filter_model extends CI_Model {
 							}
 							if(array_key_exists("years", $dataArray)){
 								$finalString .= 
-								'<div class="row">									
+								'<div class="row">
+									
 									<div id="year_div" class="form-group" >
-									<label id="year_label" class="col-xs-3 col-xs-offset-1 control-label" for = "tcode">Year:</label>
+									<label id="year_label" class="col-xs-3 col-xs-offset-1 control-label" for = "tcode"  >Year:</label>
 									<div class="col-xs-7">
 										<select id="year" name="year" class="filter-status  form-control">';
 											$finalString .= getAllYearsOptionsIncludingCurrent(true);
@@ -733,7 +693,7 @@ class Filter_model extends CI_Model {
 								$finalString .= '
 								<div class="row">
 									<div class="form-group">
-										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >EPI Week:</label>
+										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >Epid Week:</label>
 										<div class="col-xs-7">
 											<select name="week" id="week" class="filter-status  form-control">
 											<option value="">Select Week</option>';
@@ -751,7 +711,7 @@ class Filter_model extends CI_Model {
 								$finalString .= '
 								<div class="row">
 									<div class="form-group">
-										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >EPI Week:</label>
+										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >Epid Week:</label>
 										<div class="col-xs-7">
 											<select name="week" id="week" class="filter-status  form-control">';
 											
@@ -768,7 +728,7 @@ class Filter_model extends CI_Model {
 								$finalString .= '
 								<div class="row">
 									<div class="form-group">
-										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >EPI Week From:</label>
+										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >Epid Week From:</label>
 										<div class="col-xs-4">
 											<select name="from_week" id="week_from" class="filter-status  form-control">';
 												$finalString .= '<option> --Select--</option>';
@@ -785,7 +745,7 @@ class Filter_model extends CI_Model {
 								</div>
 								<div class="row">
 									<div class="form-group">
-										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >EPI Week To:</label>
+										<label class="col-xs-3 col-xs-offset-1 control-label" for = "epiweekno" >Epid Week To:</label>
 										<div class="col-xs-4">
 											<select name="to_week" id="week_to" class="filter-status  form-control">';
 												$finalString .= '<option> --Select--</option>';
@@ -803,7 +763,7 @@ class Filter_model extends CI_Model {
 							}
 							if(array_key_exists("month-from-to", $dataArray)){	
 								$finalString .= '
-								<div class="row"> 
+								<div class="row">
 									<div class="form-group">
 										<label for="monthfrom" class="col-xs-3 col-xs-offset-1 control-label" id="monthfrom-label">Period From</label>
 										<div class="col-xs-7">
@@ -953,7 +913,7 @@ class Filter_model extends CI_Model {
 												<option value="0">--Select--</option>
 												<option value="Positive">Positive</option>
 												<option value="Negative">Negative</option>
-												<option value="Pending">Pending/Awaited</option>
+												<option value="Pending">Pending</option>
 											</select>
 										</div>
 									</div>
@@ -1094,7 +1054,7 @@ class Filter_model extends CI_Model {
 												<div class="col-xs-7">
 													<select  name="typeWise" class="filter-status form-control" >
 														<option value="facility" selected="selected" >Facility Wise</option>
-														<option value="uc" >Union Council</option>
+														<option value="uc" >Union Council Wise</option>
 														<option value="tehsil" >Tehsil Wise</option>
 													</select>
 												</div>

@@ -1,5 +1,5 @@
 <?php
-if( ! function_exists('getStockoutVaccines')){ 
+if( ! function_exists('getStockoutVaccines')){
 	function getStockoutVaccines($vacc_ind=NULL,$createoptions=true,$fetchonlyselected=false){
 		$CI = & get_instance();
 		$CI -> db -> select('epi_items.pk_id as id,epi_items.description as name');
@@ -24,11 +24,8 @@ if( ! function_exists('getStockoutVaccines')){
 	}
 }
 if(!function_exists('sessionPlannedHeld')){
-	function sessionPlannedHeld($rangeCondition,$uncode=NULL,$facode=NULL,$distcode=NULL,$procode=NULL){
+	function sessionPlannedHeld($rangeCondition,$uncode=NULL,$facode=NULL,$distcode=NULL){
 		$CI = & get_instance();		
-		if($procode){
-			$rangeCondition .= " AND procode = '{$procode}'";
-		}
 		if($distcode)
 		{			
 			$rangeCondition .= " AND distcode = '{$distcode}'";		
@@ -57,7 +54,7 @@ if(!function_exists('sessionPlannedHeld')){
 	}
 }
 if(!function_exists('vaccinationInNumbers')){
-	function vaccinationInNumbers($rangeCondition,$uncode=NULL,$facode=NULL,$vaccineId=NULL,$vaccineBy=NULL,$distcode=NULL,$tcode=NULL,$arrayOrObjectResult = 'obj',$procode=NULL){
+	function vaccinationInNumbers($rangeCondition,$uncode=NULL,$facode=NULL,$vaccineId=NULL,$vaccineBy=NULL,$distcode=NULL,$tcode=NULL,$arrayOrObjectResult = 'obj'){
 		$CI = & get_instance();
 		$row = 1;
 		$productsArray = array('bcg','hepb','opv0','opv1','opv2','opv3','penta1','penta2','penta3','pcv1','pcv2','pcv3','ipv1','rota1','rota2','measles1','fullyimmunized','measles2','dtp','tcv','ipv2');
@@ -92,9 +89,6 @@ if(!function_exists('vaccinationInNumbers')){
 		}
 		$query = rtrim($query,', ');
 		$query .= " FROM fac_mvrf_db WHERE {$rangeCondition}";
-		if($procode){
-			$query .= " AND procode = '{$procode}'";
-		}
 		if($distcode){
 			$query .= " AND distcode = '{$distcode}'";
 		}
@@ -115,7 +109,7 @@ if(!function_exists('vaccinationInNumbers')){
 	}
 }
 if(!function_exists('ttVaccinationInNumbers')){
-	function ttVaccinationInNumbers($rangeCondition,$uncode=NULL,$facode=NULL,$vaccineId=NULL,$vaccineBy=NULL,$distcode=NULL,$tcode=NULL,$arrayOrObjectResult = 'obj',$procode = NULL){
+	function ttVaccinationInNumbers($rangeCondition,$uncode=NULL,$facode=NULL,$vaccineId=NULL,$vaccineBy=NULL,$distcode=NULL,$tcode=NULL,$arrayOrObjectResult = 'obj'){
 		$CI = & get_instance();
 		$row = 1;
 		$productsArray = array('tt1','tt2','tt3','tt4','tt5');
@@ -147,9 +141,6 @@ if(!function_exists('ttVaccinationInNumbers')){
 		}
 		$query = rtrim($query,', ');
 		$query .= " FROM fac_mvrf_db WHERE {$rangeCondition}";
-		if($procode){
-			$query .= " AND procode = '{$procode}'";
-		}
 		if($distcode){
 			$query .= " AND distcode = '{$distcode}'";
 		}
@@ -170,7 +161,7 @@ if(!function_exists('ttVaccinationInNumbers')){
 	}
 }
 if(!function_exists('totalVaccinationInNumbers')){
-	function totalVaccinationInNumbers($rangeCondition,$gender='both',$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL,$vaccineId=NULL,$vaccineBy=NULL,$procode=NULL){
+	function totalVaccinationInNumbers($rangeCondition,$gender='both',$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL,$vaccineId=NULL,$vaccineBy=NULL){
 		$CI = & get_instance();
 		$vaccinationByArray = array('f'=>'fixed','o'=>'outreach','m'=>'mobile','h'=>'healthhouse','t'=>'total');
 		$productsArray = array(1=>'bcg',2=>'hepb',3=>'opv0',4=>'opv1',5=>'opv2',6=>'opv3',7=>'penta1',8=>'penta2',9=>'penta3',10=>'pcv1',11=>'pcv2',12=>'pcv3',13=>'ipv1',14=>'rota1',15=>'rota2',16=>'measles1',17=>'fullyimmunized',18=>'measles2',19=>'dtp',20=>'tcv',21=>'ipv2');
@@ -225,9 +216,6 @@ if(!function_exists('totalVaccinationInNumbers')){
 		}
 		$q = rtrim($q,', ');
 		$q .= " FROM fac_mvrf_db WHERE {$rangeCondition}";
-		if($procode){
-			$q .= " AND procode = '{$procode}'";
-		}
 		if($distcode){
 			$q .= " AND distcode = '{$distcode}'";
 		}
@@ -246,15 +234,11 @@ if(!function_exists('totalVaccinationInNumbers')){
 	}
 }
 if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
-	function monthlyVaccinationAndCoverageTrendfor_a_Vaccine($year,$vaccineId=NULL,$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL,$procode=NULL){
+	function monthlyVaccinationAndCoverageTrendfor_a_Vaccine($year,$vaccineId=NULL,$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL){
 		$CI = & get_instance();
 		$query = "SELECT fmonth,";
 		$code = 3;
-		$type = "Province";
-		if($procode){
-			$code = $procode;
-			$type = 'province';
-		}
+		$type = "Province"; 
 		if($distcode){
 			$code = $distcode;
 			$type = 'district';
@@ -272,14 +256,13 @@ if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
 			$type = 'facility';
 		}
 		if($vaccineId == NULL){
-			for($u=1;$u<=21;$u++){
+			for($u=1;$u<=18;$u++){
 				//---------- for All vaccine
 				//if($u==14 || $u==15 || $u==17){ continue;}
 				//if($u==17){ $u=18;}
 				if(in_array($u,array(1,2,3))){
 					$query .= "getmonthlynewborn_targetpopulationpop('{$code}','{$year}')::double precision";
-				}
-				else if(in_array($u,array(4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))){
+				}else if(in_array($u,array(4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21))){
 					//$query .= "getmonthly_survivinginfantspop('{$code}','{$type}','{$year}')::double precision";
 					$query .= "getmonthly_survivinginfantspop('{$code}','{$type}','{$year}')::double precision";
 				}
@@ -293,8 +276,7 @@ if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
 			$query = rtrim($query,',');
 			$query .= " 
 					FROM fac_mvrf_db WHERE fmonth LIKE '{$year}-%' ";
-		}
-		else{
+		}else{
 			if($vaccineId=="TT1-TT2"){ 
 				////------- for fullyimmunized vaccine
 				for($u=1;$u<=5;$u++){
@@ -333,9 +315,7 @@ if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
 			$query .= "SUM(cri_r{$i}_f{$vaccineId})+";
 		} */
 		
-		if($procode){
-			$query .= " AND procode = '{$procode}'";
-		}
+		
 		if($distcode){
 			$query .= " AND distcode = '{$distcode}'";
 		}
@@ -376,13 +356,13 @@ if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
 		}else if(in_array($id,array(16,17,18))){
 			return '9-10';
 		}else if($id == 20){
-			return '92-1';
+			return '105-1';
 		}else{
 			return '0-0';
 		}
 	}
 }
-/*  if(!function_exists('getConsumptionVaccineId_bySendingEPI_VaccinationID'))
+/*if(!function_exists('getConsumptionVaccineId_bySendingEPI_VaccinationID'))
 {
 	function getConsumptionVaccineId_bySendingEPI_VaccinationID($id)
 	{
@@ -409,15 +389,11 @@ if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
 } */
 /* if(!function_exists('monthlyOpenVial_wastageRateTrend'))
 {
-	function monthlyOpenVial_wastageRateTrend($vaccineId,$doses,$distcode=null,$uncode=null,$year,$procode=NULL)
+	function monthlyOpenVial_wastageRateTrend($vaccineId,$doses,$distcode=null,$uncode=null,$year)
 	{
 		$CI = & get_instance();		
 		$code = "procode";		
 		$wc = "";		
-		if($procode){			
-			$code = "procode";			
-			$wc = " and procode='{$procode}'";		
-		}
 		if($distcode){			
 			$code = "distcode";			
 			$wc = " and distcode='{$distcode}'";		
@@ -430,7 +406,7 @@ if(!function_exists('monthlyVaccinationAndCoverageTrendfor_a_Vaccine')){
 				SELECT fmonth,
 						ROUND(openvial_wastagerate(cr.fmonth,cr.$code,{$vaccineId},{$doses})::numeric) as wastage
 					FROM 
-						form_b_cr cr 
+						fac_mvrf_db cr 
 					WHERE fmonth BETWEEN '{$year}-01' and '{$year}-12' $wc and  character_length(cr.fmonth) = 7 
 					GROUP BY fmonth,$code 
 					ORDER BY fmonth";
@@ -472,15 +448,11 @@ if(!function_exists('monthlyOpenVial_wastageRateTrend'))
 }
 /* if(!function_exists('monthlyClosedVial_wastageRateTrend'))
 {
-	function monthlyClosedVial_wastageRateTrend($vaccineId,$doses,$distcode=NULL,$uncode=NULL,$year,$procode=NULL)
+	function monthlyClosedVial_wastageRateTrend($vaccineId,$doses,$distcode=NULL,$uncode=NULL,$year)
 	{
 		$CI = & get_instance();
 		$code = "procode";
 		$wc = "";
-		if($procode){
-			$code = "procode";
-			$wc = " and procode='{$procode}'";
-		}
 		if($distcode){
 			$code = "distcode";
 			$wc = " and distcode='{$distcode}'";
@@ -493,7 +465,7 @@ if(!function_exists('monthlyOpenVial_wastageRateTrend'))
 				SELECT fmonth,
 						ROUND(closedvials_wastagerate(cr.fmonth,cr.$code,{$vaccineId},{$doses})::numeric) as wastage
 					FROM 
-						form_b_cr cr 
+						form_b_cr cr
 					WHERE fmonth BETWEEN '{$year}-01' and '{$year}-12' $wc AND character_length(cr.fmonth) = 7 
 					GROUP BY fmonth,$code 
 					ORDER BY fmonth";
@@ -504,7 +476,7 @@ if(!function_exists('monthlyOpenVial_wastageRateTrend'))
 //for consumption master new consumption format :change here 
 if(!function_exists('monthlyClosedVial_wastageRateTrend'))
 {
-	function monthlyClosedVial_wastageRateTrend($consumptionId,$dosespervial,$distcode=NULL,$uncode=NULL,$year,$procode=NULL)
+	function monthlyClosedVial_wastageRateTrend($consumptionId,$vaccineId,$distcode=NULL,$uncode=NULL,$year,$procode=NULL)
 	{
 		$CI = & get_instance();
 		$code = "procode";
@@ -522,7 +494,7 @@ if(!function_exists('monthlyClosedVial_wastageRateTrend'))
 			$wc = " and uncode='{$uncode}'";
 		}
 		$query = "SELECT fmonth,
-						ROUND(closedvials_wastagerate(master.fmonth,master.$code,{$consumptionId},{$dosespervial})::numeric) as wastage
+						ROUND(closedvials_wastagerate(master.fmonth,master.$code,{$consumptionId},{$vaccineId})::numeric) as wastage
 					    FROM 
 						epi_consumption_master  master left join epi_consumption_detail detail on master.pk_id=detail.main_id 
 					WHERE item_id=$consumptionId  and fmonth BETWEEN '{$year}-01' and '{$year}-12' $wc and  character_length(master.fmonth) = 7 
@@ -629,7 +601,7 @@ if(!function_exists('monthlyVaccineWastageRateTrend'))
 //test query as well.
 if(!function_exists('monthlyVaccineUsageRateTrend'))
 {
-	function monthlyVaccineUsageRateTrend($consumptionId,$dosespervial,$distcode=NULL,$uncode=NULL,$year,$procode=NULL)
+	function monthlyVaccineUsageRateTrend($consumptionId,$vaccineId,$distcode=NULL,$uncode=NULL,$year,$procode=NULL)
 	{
 		$CI = & get_instance();
 		$code = "procode";
@@ -648,7 +620,7 @@ if(!function_exists('monthlyVaccineUsageRateTrend'))
 		}
 		$query = "
 				SELECT fmonth,
-						ROUND(vaccine_usagerate(master.fmonth,master.$code,{$consumptionId},{$dosespervial})::numeric) as usage
+						ROUND(vaccine_usagerate(master.fmonth,master.$code,{$consumptionId},{$vaccineId})::numeric) as usage
 					FROM 
 						epi_consumption_master  master left join epi_consumption_detail detail on master.pk_id=detail.main_id 
 					WHERE  item_id =$consumptionId and fmonth BETWEEN '{$year}-01' and '{$year}-12' $wc AND character_length(master.fmonth) = 7 
@@ -656,7 +628,7 @@ if(!function_exists('monthlyVaccineUsageRateTrend'))
 					ORDER BY fmonth";
 		$result = $CI -> db -> query($query) -> result_array();
 		return $result;
-	}
+	}	
 }
 if(!function_exists('getMonthlyVaccineTarget'))
 {
@@ -769,37 +741,27 @@ if(!function_exists('sessionDropoutRateTrend'))
 	}	
 } */
 if(!function_exists('weeklyTrendforZeroReports')){
-	function weeklyTrendforZeroReports($year,$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL,$procode=NULL){
+	function weeklyTrendforZeroReports($year,$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL){
 		$CI = & get_instance();
-		$wc = ""; 
-		if($distcode){
-			$query = "
-					SELECT fweek,zero_report_submitted_rate(fweek,distcode) as completed_prct,zero_report_timely_submitted_rate(fweek,distcode) as timely_prct
+		$wc = "";
+		$query = "
+					select fweek,zero_report_submitted_rate(fweek,distcode) as completed_prct,zero_report_timely_submitted_rate(fweek,distcode) as timely_prct
 					from
 						zero_report where ";
+		if($distcode){			
 			$query .= " distcode='$distcode' and ";
-			$query .= 
+		}
+		$query .= 
 				" fweek like '$year-%' 
 					group by fweek,distcode order by fweek";
-		}
 		if($uncode){			
 			$query = "
-					SELECT fweek,zero_report_submitted_rate(fweek,unioncouncil.uncode) as completed_prct,zero_report_timely_submitted_rate(fweek,unioncouncil.uncode) as timely_prct
+					select fweek,zero_report_submitted_rate(fweek,unioncouncil.uncode) as completed_prct,zero_report_timely_submitted_rate(fweek,unioncouncil.uncode) as timely_prct
 						from 
 							zero_report 
 					join unioncouncil on zero_report.distcode=unioncouncil.distcode 
 					where unioncouncil.uncode='$uncode' and fweek like '$year-%' 
 					group by fweek,unioncouncil.uncode order by fweek";
-		}
-		if($procode){
-			$query = "
-					SELECT fweek,zero_report_submitted_rate(fweek,procode) as completed_prct,zero_report_timely_submitted_rate(fweek,procode) as timely_prct
-					from
-						zero_report where ";
-			$query .= " procode='$procode' and ";
-			$query .= 
-				" fweek like '$year-%' 
-					group by fweek,procode order by fweek";
 		}
 		//echo $query;exit;
 		$result = $CI -> db -> query($query) -> result_array();
@@ -852,7 +814,7 @@ if(!function_exists('vaccineName')){
 				$var = "'seriesname':'Rota-1','color':'#008000'";
 				break;
 			case "15":
-				$var = "'seriesname':'Rota-2','color':'#FF0000'"; 
+				$var = "'seriesname':'Rota-2','color':'#FF0000'";
 				break;
 			case "16":
 				$var = "'seriesname':'MR-I','color':'#FFFF0'";
@@ -886,19 +848,17 @@ if(!function_exists('vaccineName')){
 				break;
 			case "21":
 				$var = "'seriesname':'IPV-2','color':'#19191a'";
-				break;
+				break;	
 		}
 	return $var;
 	}
 }
-
 if(!function_exists('RankingWiseColour')){
 	function RankingWiseColour($vaccId=NULL){  // colors scheme green 0B7546 yellow EBB035 red DD1E2F
 		//for KP/CRES new item id convert to old item id to get rankwise color.
 			$vacc_id=getVaccines_id($vaccId);
 			$vacc_id="cr_r".$vacc_id."_f6";
 		switch($vacc_id){
-			
 			case "cr_r1_f6": case "cr_r2_f6":
 					$dataClasses['dataClasses'][0]["from"] = '0';
 					$dataClasses['dataClasses'][0]["to"] = '30'; 
@@ -1019,13 +979,7 @@ if(!function_exists('getmonthlyTotalTarget')){
 		$codee = "";
 		$namee = "";
 		$ss="s";
-		if(strlen($code)=="1")
-		{
-			$wc .= "where procode = '{$code}'";
-			$codee="procode";
-			$namee = "province";
-		}
-		else if(strlen($code)=="3")
+		if(strlen($code)=="3")
 		{
 			$wc .= "where distcode = '{$code}'";
 			$codee="distcode";
@@ -1074,7 +1028,7 @@ if(!function_exists('getmonthlyTotalTarget')){
 		{
 			$return['totalTarget'] = ($result['Targeted_Women']!="")?$result['Targeted_Women']:"0";
 			$return['totalMaleTarget'] = "0";
-			$return['totalFemaleTarget'] = "0";print_r('Sorry Under Implementation');exit();
+			$return['totalFemaleTarget'] = "0";print_r('Sorry Under Implementation');exit;
 		}
 		return $return;
 	}
@@ -1158,13 +1112,10 @@ if(!function_exists('getmonthlyTotalTargetFromTo')){
 	}
 }
 if(!function_exists('getmonthlyTotalTarget1')){
-	function getmonthlyTotalTarget1($distcode,$year,$month,$procode=NULL){
+	function getmonthlyTotalTarget1($distcode,$year,$month){
 		$CI = & get_instance();
 		//$distcode = ($distcode!="")?$distcode:$this->session->District;
 		$wc = "";
-		if($procode){			
-			$wc .= "where procode = '{$procode}'";		
-		}
 		if($distcode){			
 			$wc .= "where distcode = '{$distcode}'";		
 		}		
@@ -1247,30 +1198,7 @@ if( ! function_exists('getAllDiseasesOptions')){
 		}
 		return $option;
 	}
-} 
-/* if( ! function_exists('getAllSpecimenResults')){
-	function getAllSpecimenResults($diseaseId=NULL,$investigationResult=NULL){
-		$option = "<option value='0'>--Select--</option>";
-		if($diseaseId == 'Msl'){
-			$option .= "
-				<option value=\"Positive Measles\" ".(($investigationResult=='Positive Measles')?'selected="selected"':'').">Positive Measles</option>
-				<option value=\"Negative Measles\" ".(($investigationResult=='Negative Measles')?'selected="selected"':'').">Negative Measles</option>
-				<option value=\"Positive Rubella\" ".(($investigationResult=='Positive Rubella')?'selected="selected"':'').">Positive Rubella</option>
-				<option value=\"Awaiting Result\" ".(($investigationResult=='Awaiting Result')?'selected="selected"':'').">Awaiting Result</option>
-				<option value=\"Other\" ".(($investigationResult=='Other')?'selected="selected"':'').">Other</option>					
-			";
-			//<option value=\"Negative Rubella\">Negative Rubella</option>
-		}else{
-			$option .= "
-				<option value=\"Positive\" ".(($investigationResult=='Positive')?'selected="selected"':'').">Positive</option>
-				<option value=\"Negative\" ".(($investigationResult=='Negative')?'selected="selected"':'').">Negative</option>
-				<option value=\"Other\" ".(($investigationResult=='Other')?'selected="selected"':'').">Other</option>					
-			";
-		}
-		return <option value=\"Awaiting Result\" ".(($investigationResult=='Awaiting Result')?'selected="selected"':'').">Awaiting Result</option>
-				$option;
-	}
-} */
+}
 if( ! function_exists('getAllSpecimenResults')){
 	function getAllSpecimenResults($diseaseId=NULL,$investigationResult=NULL){
 		$option = "<option value='0'>--Select--</option>";
@@ -1279,7 +1207,6 @@ if( ! function_exists('getAllSpecimenResults')){
 				<option value=\"Positive Measles\" ".(($investigationResult=='Positive Measles')?'selected="selected"':'').">Positive Measles</option>
 				<option value=\"Negative Measles\" ".(($investigationResult=='Negative Measles')?'selected="selected"':'').">Negative Measles</option>
 				<option value=\"Positive Rubella\" ".(($investigationResult=='Positive Rubella')?'selected="selected"':'').">Positive Rubella</option>
-				<option value=\"Awaiting Result\" ".(($investigationResult=='Awaiting Result')?'selected="selected"':'').">Awaiting Result</option>
 				<option value=\"Other\" ".(($investigationResult=='Other')?'selected="selected"':'').">Other</option>					
 			";
 			//<option value=\"Negative Rubella\">Negative Rubella</option>

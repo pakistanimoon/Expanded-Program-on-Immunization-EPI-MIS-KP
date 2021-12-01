@@ -20,7 +20,7 @@ $this->load->view("consumption/reports/indicator/tabledata",["tabledata"=>$resul
 	$('.DrillDownRow').css('cursor','pointer');//do it later and ll change as clickedReport
 	$(document).ready(function(){
 		$('.listing-report-table').find('tbody').find('tr:last').css('background-color','#000');
-	$('.listing-report-table').find('tbody').find('tr:last').css('color','#fff');
+		$('.listing-report-table').find('tbody').find('tr:last').css('color','#fff');
 	});
 	$(document).on('click',".DrillDownRow", function(){
 

@@ -93,14 +93,14 @@
                      //echo $ppcode;exit();
                   ?>
                   <input type="hidden" name="procode" value="<?php echo $ppcode; ?>">
-                  <!--parameter for sync by usama sher-->
+				  <!--parameter for sync by usama sher-->
 						<input type="hidden" name="distcode" value="<?php if(isset($a)){ echo $a -> distcode;} ?>">
 						<input type="hidden" name="year" value="<?php if(isset($a)){ echo $a -> year;} ?>">
 						<input type="hidden" name="week" value="<?php if(isset($a)){ echo $a -> week;} ?>">
 						<input type="hidden" name="gender" value="<?php if(isset($a)){ echo $a -> gender;} ?>">
 						<input type="hidden" name="doses_received" value="<?php if(isset($a)){ echo $a -> doses_received;} ?>">
-						<!--end-->
-				  <select name="tcode" id="tcode" required="required" class="form-control">
+					<!--end-->
+                  <select name="tcode" id="tcode" required="required" class="form-control">
                      <?php echo getTehsils_options(false,$a-> nnt_tcode,$a-> nnt_distcode); ?>
                   </select>
                </td>
@@ -124,7 +124,7 @@
           <?php } ?>
 			       <td><p>Year</p></td>
               <td><?php if(isset($a)){ echo $a -> year;} ?></td>
-              <td><p>EPI Week No</p></td>
+              <td><p>Epid Week No</p></td>
               <td><?php if(isset($a)){ echo $a -> week;} ?></td>
 			</tr>
 			<tr>
@@ -203,7 +203,7 @@
                
               <td><p>Ethnic group</p></td>
               <td><?php if(isset($a)){ echo $a -> ethnic_group;} ?></td>
-              <td><p>Contact Number</p></td>
+			  <td><p>Contact Number</p></td>
                <td><?php if(isset($a)){ echo $a -> contact_numb;} ?></td>
               <td></td>
               <td></td>

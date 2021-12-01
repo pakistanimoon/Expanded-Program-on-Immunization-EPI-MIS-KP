@@ -124,9 +124,7 @@ class CompliancesTest extends CI_Controller {
 		if($this-> uri-> segment(5) != ''){
 			$data['monthfrom'] = $monthfrom = $this-> uri-> segment(4);
 			$data['monthto'] = $monthto = $this-> uri-> segment(5);
-			if(strlen($data['distcode'])=='1'){
-				unset($data['distcode']);
-			}
+			//unset($data['distcode']);
 		}	
 		$dataHFMVRF['pageTitle']='Health Facility Monthly Report Compliance';
 		$dataHFMVRF['data'] = $this -> Compliances_model_test -> HFMVRFTest($data,$dataHFMVRF['pageTitle']);
@@ -134,7 +132,6 @@ class CompliancesTest extends CI_Controller {
 		$this -> load -> view('template/reports_template',$dataHFMVRF);
 	}
 	function HF_Consumption_Requisition_Test($distcode=NULL, $monthfrom=NULL, $monthto=NULL){
-		//print_r($_POST); exit();
 		if($distcode && $monthfrom && $monthto){
 			$data = array("distcode"=>$distcode, "monthfrom"=>$monthfrom, "monthto"=>$monthto);
 		}

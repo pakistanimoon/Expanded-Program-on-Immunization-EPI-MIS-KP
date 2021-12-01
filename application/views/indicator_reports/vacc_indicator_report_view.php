@@ -8,6 +8,14 @@ if($TopInfo!=''){
 <?php if(!$this->input->post('export_excel'))
         { ?>
 	
+	
+   <!-- <input type="button" id="btnExport" value="Export" onclick="Export()" />-->
+	
+    <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>-->
+    <!--<script src="/includes/js/table2excel.js" type="text/javascript"></script>-->
+	
+
+	
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>/includes/js/table2excel.js"></script>
 <script type="text/javascript">

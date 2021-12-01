@@ -68,6 +68,7 @@ class FullyImmunizedCoverage extends CI_Controller {
 	
 	public function getRankingSeriesData($data){
 		$coverageData = $this -> getCoverageQuerySelectPortion($data);
+		// echo $this -> db -> last_query();
 		$name = 'UC';
 		$serieses = array();
 		$result = array();
@@ -97,7 +98,7 @@ class FullyImmunizedCoverage extends CI_Controller {
 		$curQuarter = ceil($curMonth/3);
 		return $curQuarter;
 	}
-	 
+	
 	public function getCoverageQuerySelectPortion($data){
 		$distcode = $this->session->District;
 		$vaccineId = $data['vaccineId'];

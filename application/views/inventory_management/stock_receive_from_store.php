@@ -3,13 +3,12 @@ $nonccloctypeshtml = isset($nonccloctypes)?get_options_html($nonccloctypes,true)
 $ccloctypeshtml = isset($ccloctypes)?get_options_html($ccloctypes,true):false;
 $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true):false;
 $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("nature"=>"nature"),(validation_errors()?set_value('reason'):NULL)):false;
-//print_r($draftdata["master"]);
 ?>
 <section class="content">
 	<div class="container bodycontainer">
 		<div class="row">
 			<div class="panel panel-primary">
-				<div class="panel-heading"> Stock Receive <?php if(isset($draftdata["master"])){ echo  get_store_name(FALSE,$draftdata["master"]->from_warehouse_type_id,$draftdata["master"]->from_warehouse_code);}?> </div>
+				<div class="panel-heading"> Stock Receive (Store)</div>
 				<div class="panel-body">
 					<?php echo form_open(base_url().'StockReceivefromStore',array("class"=>"form-horizontal")); ?>
 						<table class="table table-condensed tbl-im" style="width: 40%;">
@@ -163,6 +162,9 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 			todayHighlight : true,
 			todayBtn : true
 		});
+		/* $(".allchkbox").click(function(){
+			$('.rowchkbox').not(this).prop('checked', this.checked);
+		}); */
 		$(".allchkbox").click(function(){
 			if(this.checked) 
 			{

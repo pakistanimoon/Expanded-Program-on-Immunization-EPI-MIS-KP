@@ -1,4 +1,4 @@
-local<!--start of page content or body-->
+<!--start of page content or body-->
  <div class="container-fluid">
   
 <div class="row">
@@ -40,7 +40,11 @@ local<!--start of page content or body-->
 		<?php $i++;  } ?>
       </table>
          
-		<table class="table tblreport table-bordered table-condensed table-striped table-hover mytable">
+
+
+
+
+      <table class="table tblreport table-bordered table-condensed table-striped table-hover mytable">
         <thead>
           <tr>
             <th rowspan="2">S #</th>
@@ -91,7 +95,7 @@ local<!--start of page content or body-->
         </thead>
         <tbody>
         	<?php 
-			print_r($surveillance); exit;
+			//print_r($surveillance); exit();
 			$previousWeekNumber = 0;
 			foreach($surveillance as $key => $row){ 
               if($row['gender']=='1')
@@ -222,8 +226,7 @@ local<!--start of page content or body-->
 </div><!--end of row-->
   
 
-</div><!--End of page content or body-->
-<?php  if(!$this->input->post('export_excel')){ ?>
+</div><!--End of page content or body--><?php  if(!$this->input->post('export_excel')){ ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript">
   $('.DrilledDown').css('cursor','pointer');

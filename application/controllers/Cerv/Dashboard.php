@@ -1,5 +1,4 @@
 <?php
-//local 
 class Dashboard extends CI_Controller 
 {
 	
@@ -15,17 +14,17 @@ class Dashboard extends CI_Controller
 		foreach($data['todaylatlong'] as $key => $latlong){
 			$data['latlongvaccination'][$latlong['latitude']] = $this -> cerv -> latlong_vaccination($latlong['latitude'],$latlong['longitude'],$dateParam);
 		}
-		
 		$data['data'] = $data;
 		$data['fileToLoad'] = 'cerv/vaccination';
 		$data['pageTitle']='CERV Vaccination | EPI-MIS';
 		$this->load->view('template/epi_template',$data);
 	}
-	 
+	
 	public function coverage(){
 		$fmonth = ($this -> input -> get('fmonth'))?$this -> input -> get('fmonth'):date('Y-m',strtotime('first day of previous month'));
 		$yearmonth = explode('-',$fmonth);
 		$data['ucmonthlycoverage'] = $this -> cerv -> uc_coverage($yearmonth[0],$yearmonth[1]);
+		echo $this -> db -> last_query();
 		$data['data'] = $data;
 		$data['fileToLoad'] = 'cerv/uccoverage';
 		$data['pageTitle']='CERV Coverage | EPI-MIS';

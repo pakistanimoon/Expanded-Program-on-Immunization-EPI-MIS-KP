@@ -1,4 +1,4 @@
-	<!--sider bar-->
+	<!--sider bar--> 
 	<div class="offcanvas flypanels-left">
 		<div class="panelcontent" data-panel="treemenu">
 			<nav class="flypanels-treemenu" role="navigation"> 
@@ -11,7 +11,6 @@
 					</li>
 					<li class="">
 						<div class="link"><a href="<?php echo base_url(); ?>Cerv/thematic_maps/OpenVialWastageRate" class="link">Open Vial Wastage Rate</a> </div>
-					</li>
 					<!--<li class="">
 						<div class="link"><a href="<?php echo base_url(); ?>cerv/thematic_maps/UtilizationOfServices" class="link">Utilization Of Services</a> </div>
 					</li>

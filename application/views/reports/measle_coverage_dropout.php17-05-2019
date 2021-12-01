@@ -1,0 +1,168 @@
+
+	<?php
+	//print_r($result);exit;
+	echo $TopInfo;
+	$result_length = ((count($result[0]) - 2) / 2) - 1;
+	$period_wise = $data['period_wise'];
+	$year = $data['year'];
+	$header_array = array(
+		'monthly' => array(),
+		'quarterly' => array()
+		);
+	$quarter_arr = array(1 => "1st", 2 => "2nd", 3 => "3rd", 4 => "4th");
+	if($period_wise == 'monthly')
+	{
+		if($year == date('Y',strtotime('first day of previous month')))
+		{
+			$month = 1;
+			//$month = date('m');
+			//$year--;
+		}
+		else
+		{
+			//$month = date('m');
+			//$year--;
+			$month = 1;
+		}
+		for($i=1; $i<=12; $i++)
+		{
+			if($month == 13)
+			{
+				$year++;
+				$month = 1;
+			}
+			$month = $month % 13;
+			$month = sprintf("%02d", $month);
+			$fmonth = $year.'-'.$month;
+			$header_array['monthly'][] = date('M Y', strtotime($fmonth.'now'));
+			$month++;
+		}
+	}
+	elseif($period_wise == 'quarterly')
+	{
+		$month = date('m');
+		if($year == date('Y',strtotime('first day of previous month')))
+		{
+			//$year--;
+			if($month >=1 AND $month <= 3)
+			{
+				$m1 = -2;
+				$quarter = 1;
+			}
+			elseif($month >=4 AND $month <= 6)
+			{
+				$m1 = 1;
+				$quarter = 2;
+			}
+			elseif ($month >=7 AND $month <= 9) 
+			{
+				$m1 = 4;
+				$quarter = 3;
+			}
+			elseif ($month >=10 AND $month <= 12) 
+			{
+				$m1 = 7;
+				$quarter = 4;
+			}
+		}
+		else
+		{
+			$m1 = -2;
+			$quarter = 1;
+		}	
+		
+		for ($i=1; $i <= 4; $i++) 
+		{
+			if($quarter == 5)
+			{
+				$quarter = 1;
+				$year++;
+			}
+			$header_array['quarterly'][] = "{$quarter_arr[$quarter]} Quarter, $year";
+			$quarter++;
+		}
+	}
+	
+	 ?>
+		<table id="measle_coverge_dropout" class="table table-condensed table-bordered table-hover table-striped footable table-vcenter listing-report-table tbl-listing">
+			<thead>
+				<tr>
+					<?php if(isset($data['type_wise']) AND $data['type_wise'] == 'uc') {?>
+					<th class="text-center" rowspan="2">UC code</th>
+					<th class="text-center" rowspan="2">UnionCouncil</th>
+					<?php } elseif(isset($data['type_wise']) AND $data['type_wise'] == 'facility') { ?>
+					<th class="text-center" rowspan="2">Facility Code</th>
+					<th class="text-center" rowspan="2">Facility Name</th>
+					<?php } else { ?>
+					<th class="text-center" rowspan="2">District Code</th>
+					<th class="text-center" rowspan="2">District Name</th>
+					<?php } ?>
+					 
+					<?php for($i=1; $i<=$result_length; $i++){?>
+					<th class="text-center" colspan="2"><?php echo $header_array[$period_wise][$i-1]; ?></th>
+					<?php } ?>
+					<th class="text-center" colspan="2">Total</th>
+				</tr>
+				<tr>
+					<?php for($i=1; $i<=$result_length; $i++){?>
+						<th class="text-center">Coverage</th>
+						<th class="text-center">Cases</th>
+					<?php } ?>
+						<th class="text-center">Coverage</th>
+						<th class="text-center">Cases</th>
+				</tr>
+
+			<tbody>
+				<?php
+					$str = "";
+					if(isset($result))
+					{
+						foreach ($result as $key => $value) 
+						{
+						 	$str .= "<tr class='DrillDownRow' style='cursor: pointer;'><td class='text-center'>";
+						 	$str .= implode("</td><td class='text-center'>", $value);
+						 	$str .= "</td></tr>";
+						} 
+					}
+					if(isset($result_total))
+					{
+						foreach ($result_total as $key => $value) 
+						{
+						 	$str .= "<tr><td style='font-weight:bold; background-color: #111;color: #FFF;' class='text-center' colspan='2'>Total:</td><td class='text-center' style='font-weight:bold; background-color: #111;color: #FFF;'>";
+						 	$str .= implode("</td><td style='font-weight:bold; background-color: #111;color: #FFF;' class='text-center'>", $value);
+						 	$str .= "</td></tr>";
+						}
+					}
+					echo $str;
+				?>
+			</tbody>
+		</table>
+</div><!--End of page content or body-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>includes/js/tableHeadFixer.js"></script>
+<script src="<?php echo base_url(); ?>includes/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	$('.DrillDownRow').on('click', function(){
+		var code = $(this).find("td:nth-child(1)").text();
+		var year = "<?php echo $data['year']?>";
+		var period_wise = "<?php echo $data['period_wise']?>";
+	    var type_wise = 'facility';
+	    var url = '';
+
+	    if(code.toString().length == 3){
+	    	url = "<?php echo base_url();?>Reports/measle_coverage_dropout/"+code+"/"+year+"/"+period_wise+"/"+type_wise;
+	    }
+	    if(url)
+	    {
+			var win = window.open(url,'_self');
+		    if(win){
+		        win.focus();
+		    }else{
+		        //Broswer has blocked it
+		        alert('Please allow popups for this site');
+		    }
+		}
+	});
+</script>

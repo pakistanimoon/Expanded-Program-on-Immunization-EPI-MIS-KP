@@ -154,9 +154,9 @@ $style = "";
 							</div>
 						</div>
 						
-						<div class="col-md-2">
-							<!--<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" style="margin-top: 23px;margin-left:10px;position:relative"> <i class="fa fa-plus"></i></button>-->
-						</div>
+						<!--<div class="col-md-2">
+							<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" style="margin-top: 23px;margin-left:10px;position:relative"> <i class="fa fa-plus"></i></button>
+						</div>-->
 							
 						</div>
 					</div>
@@ -343,7 +343,7 @@ $style = "";
 								</div>
 								<div class="col-md-12 margin-bottom">
 									<div class="col-md-3">
-										<label class="control-label" for="dimensions">Dimensions Feet<span class="hide1" style="color:red; visibility:hidden;">*</span></label>
+										<label class="control-label" for="dimensions">Dimensions Inches<span class="hide1" style="color:red; visibility:hidden;">*</span></label>
 										<div class="form-group">
 											<input name="asset_dimension_length" id="asset_dimension_length_popup" value="" class="form-control numberclass dimension" placeholder="Length" readonly="" type="text">                                    
 											<input name="asset_dimension_width" id="asset_dimension_width_popup" value="" class="form-control numberclass dimension" placeholder="Width" readonly="" type="text">                                    
@@ -963,6 +963,6 @@ $(function () {
 	});
 });
 $(".readonly").keydown(function(e){
-   e.preventDefault();
+	e.preventDefault();
 });
 </script>

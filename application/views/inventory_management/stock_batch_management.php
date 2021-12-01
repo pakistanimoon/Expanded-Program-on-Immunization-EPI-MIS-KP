@@ -61,20 +61,22 @@
 										<label class="labelinline">Expired stock (VVM)</label>
 									</td>
 								</tr>
-								<tr>
-									<!--<td style="padding-left:10px;">
+								 <tr>
+								<!--<td style="padding-left:10px;">
 										<label>Vaccine:</label><br>
-										<button id="btn_vaccine_summary" type="button" class="btn btn-success btn-md" role="button"> Product wise summary </button>	<button id="btn_batchwise_summary" type="button" class="btn btn-success btn-md" role="button"> batch wise summary </button>
+										<button id="btn_vaccine_summary" type="button" class="btn btn-success btn-md" role="button"> Product wise summary </button>										
+										<button id="btn_batchwise_summary" type="button" class="btn btn-success btn-md" role="button"> batch wise summary </button>
 										<button  id="btn_vaccine_priority" type="button" class="btn btn-success btn-md" role="button"> Priority Distribution</button>
 									</td>
 									<td style="padding-left:10px;">
 										<label>Non Vaccine:</label><br>
-										<button id="btn_nonVaccine_summary"  type="button" class="btn btn-success btn-md" role="button"> Summary</button>
+										<button id="btn_nonVaccine_summary"  type="button" class="btn btn-success btn-md" role="button"> Product wise summary</button>
+										<button id="btn_batchwisenon_summary" type="button" class="btn btn-success btn-md" role="button"> batch wise summary </button>
 										<button id="btn_nonvaccine_priority" type="button" class="btn btn-success btn-md" role="button"> Priority Distribution</button>
 									</td>-->
 									<td style="padding-left:10px;">
 									
-										<!--<button   id="btn_stock_manufacturer" type="button" class="btn btn-success btn-md" role="button"> Manufacturers</button>-->
+										<!--<button   id="btn_stock_manufacturer" type="button" class="btn btn-success btn-md" role="button"> Manufacturers</button> -->
 										<button type="submit" class="btn btn-success btn-md pull-right" role="button"><i class="fa fa-search "></i> Search</button>
 									</td>
 								</tr>
@@ -213,7 +215,18 @@ $(document).ready(function()
 			
 			var url="<?php echo base_url();?>batchVaccineSummary";
 			window.open(url,"_blank");
-	});			$(document).on('click','#btn_batchwise_summary',function(){					var url="<?php echo base_url();?>batchwisesummary";						window.open(url,"_blank");    });				$(document).on('click','#btn_nonVaccine_summary',function(){						var url="<?php echo base_url();?>batchNonVaccineSummary";			window.open(url,"_blank");	});	
+	});			
+		$(document).on('click','#btn_batchwise_summary',function(){	
+				var url="<?php echo base_url();?>batchwisesummary";			
+				window.open(url,"_blank");   
+	});	
+
+		$(document).on('click','#btn_batchwisenon_summary',function(){	
+				var url="<?php echo base_url();?>batch_nonwisesummary";			
+				window.open(url,"_blank");    
+	});	
+
+				
 	$(document).on('click','#btn_nonVaccine_summary',function(){
 			
 			var url="<?php echo base_url();?>batchNonVaccineSummary";

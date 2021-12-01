@@ -138,7 +138,6 @@ background: #367fa9;
          $.get(myurl, function (show) {
             $("#row_"+obj).fadeOut();
          });
-		 window.location.reload();
 		}
 	}
 
@@ -151,9 +150,9 @@ background: #367fa9;
 			//{ data: "rol_id" },
 			{ data: "menu_item" },
 			{ data: "menu_url" },
-         { data: "parent" },
-         { data: "userlevel_description" },
-         { data: "usertype" },
+            { data: "parent" },
+            { data: "userlevel_description" },
+            { data: "usertype" },
 			{ data: "id" ,
 				orderable: false,
 				render : function(data, type, row) 
@@ -179,10 +178,10 @@ background: #367fa9;
 		 
 		});
 		$('#level').on('change', function () {
-			table.columns(4).search( this.value ).draw();
+         table.columns(4).search( this.value ).draw();
 		});
 		$('#utype').on('change', function () {
-			table.columns(5).search( this.value ).draw();
+         table.columns(5).search( this.value ).draw();
 		});
 		$('#search_table').on('keyup change', function () {
          table.search( this.value ).draw();
@@ -209,7 +208,7 @@ background: #367fa9;
       }); 
    });     
 	
-/*    $('.filter-status').on('change', function (){
+   /* $('.filter-status').on('change', function (){
       $('#tbody').html('');
       $('#tbody').html('<h1><td colspan="10" class="text-center" ><img src="<?php echo base_url(); ?>includes/images/ajax-loader_blue.gif"> loading...</td></h1>');
       $.ajax({

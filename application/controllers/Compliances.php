@@ -42,14 +42,14 @@ class Compliances extends CI_Controller {
 		}else{
 			$reportPeriod = array('cryearly');
 		}
-		// $reportPeriod = array('cryearly');
+		//$reportPeriod = array('cryearly');
 		else if($functionName == "Issue-Receipt" || $functionName == "Demand-Consumption-Receipt")
-			$reportPeriod = array('dates');
+			$reportPeriod = array('dates');		
 		else if($functionName == 'Measles-Compliance' || $functionName == 'Coronavirus-Compliance' || $functionName == 'NNT-Compliance' || $functionName == 'AFP-Compliance' || $functionName == 'Other-Compliance' || $functionName == 'Zero-Compliance')
 			$reportPeriod = array('cryearly','from_week','to_week');
 		else if ($functionName == 'HFMVRF' || $functionName == 'HF-Consumption-Requisition')
-			//$reportPeriod = array('cryearly');
 			$reportPeriod = array('month-from-to-previous');
+			//$reportPeriod = array('cryearly');
 		else
 			$reportPeriod = NULL;
 		$functionName = str_replace("-", "_", $functionName);
@@ -134,7 +134,6 @@ class Compliances extends CI_Controller {
 		$this -> load -> view('template/reports_template',$dataHFMVRF);
 	}
 	function HF_Consumption_Requisition($distcode=NULL, $monthfrom=NULL, $monthto=NULL){
-		//print_r($_POST); exit();
 		if($distcode && $monthfrom && $monthto){
 			$data = array("distcode"=>$distcode, "monthfrom"=>$monthfrom, "monthto"=>$monthto);
 		}
@@ -147,8 +146,6 @@ class Compliances extends CI_Controller {
 			if(strlen($data['distcode'])=='1'){
 				unset($data['distcode']);
 			}
-			// $data['year'] = $year = $this-> uri-> segment(4);
-			// unset($data['distcode']);
 		}	
 		$dataHFCRC['pageTitle']='HF Consumption & Requisition Compliance';
 		$dataHFCRC['data'] = $this -> Compliances_model -> HF_Consumption_Requisition($data,$dataHFCRC['pageTitle']);
@@ -169,6 +166,7 @@ class Compliances extends CI_Controller {
 		$dataUCDCR['fileToLoad'] = 'compliances/demand_consumption_receipt';
 		$this -> load -> view('template/reports_template',$dataUCDCR);
 	}
+	
 	function Coronavirus_Compliance($distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL){
 		if($distcode && $year && $from_week && $to_week){
 			$data = array("distcode"=>$distcode, "year"=>$year, "from_week"=>$from_week, "to_week"=>$to_week);
@@ -220,7 +218,7 @@ class Compliances extends CI_Controller {
 	function Other_Compliance($distcode=NULL, $year=NULL, $case_type=NULL, $from_week=NULL, $to_week=NULL){
 		//print_r($_POST); exit();
 		if($distcode && $year){
-			$data = array("distcode"=>$distcode, "year"=>$year, "case_type"=>$case_type, "from_week"=>$from_week, "to_week"=>$to_week);
+			$data = array("distcode"=>$distcode, "year"=>$year, "case_type"=>$case_type, "from_week"=>$from_week, "to_week"=>$to_week );
 		}else{
 			$data = $this -> getPostedData();
 		}			
@@ -230,7 +228,7 @@ class Compliances extends CI_Controller {
 		$dataODWC['fileToLoad'] = 'compliances/other_investigation_compliance';
 		$this -> load -> view('template/reports_template',$dataODWC);
 	}
-	
+
 	function AEFI_Compliance($distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL){
 		if($distcode && $year && $from_week && $to_week){
 			$data = array("distcode"=>$distcode, "year"=>$year, "from_week"=>$from_week, "to_week"=>$to_week);

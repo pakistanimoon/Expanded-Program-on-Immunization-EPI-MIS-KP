@@ -78,17 +78,19 @@ class Facility_status extends CI_Controller{
 			$data['status'] = $status_vacc;
 			$data['reason_vacc'] = $reason_vacc;
 			$save_to_db = $this->model->fac_status_save($data, 'monthly');
-			//test to check at level 3  of sync when ever user login from any district.
 			if($save_to_db)
-			syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
-			syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
+			{
+				syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
+				syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
+			}
 		}
 		if($data['w_y_from'] != '')
 		{
 			$data['status'] = $status_ds;
 			$data['reason_ds'] = $reason_ds;
 			$save_to_db = $this->model->fac_status_save($data, 'weekly');
-			syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
+			if($save_to_db)
+				syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
 		}
 		if($save_to_db)
 		{
@@ -116,9 +118,11 @@ class Facility_status extends CI_Controller{
 		{
 			if($module=="vacc")
 			{
-				//test to check at level 3  of sync when ever user login from any district.
 				syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
 				syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
+			}else
+			{
+				syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
 			}
 			echo "<script> alert('Record Successfully deleted!');</script>";
 			redirect(base_url()."Status/View/$facode");

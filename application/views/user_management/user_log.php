@@ -20,5 +20,6 @@ if(!$this->input->post('export_excel')){?>
           alert('Please allow popups for this site');
         }
       });
+	  $(".handland").attr("onclick","window.history.go(-1); return false;");
   </script>
 <?php }?>

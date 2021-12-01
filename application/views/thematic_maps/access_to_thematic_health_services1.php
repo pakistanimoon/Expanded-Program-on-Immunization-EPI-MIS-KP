@@ -306,7 +306,6 @@
 		return text+': <b>' + e.point.name + ' (' + e.point.id + ')' + '</b><br> <?php echo $hovermap1; ?> <b>' + '<?php echo $hovermap; ?>' + '</b><br> ' + '<?php echo $vaccinesArray[$vaccineId-1]; ?> Vaccination: <b>' + e.point.value + '</b>';
 	}
 	function eventHandler(e, run, fmonth){
-		var mobiletype = '<?php echo $this->agent->is_mobile(); ?> ';
 		var dataId = ""+e.point.id;
 		var reportType = '<?php echo $reportType; ?>';
 		var biyear = '0';
@@ -357,7 +356,7 @@
 		}else{
 			var vaccineBy = $('#vaccineBy').val();
 			var data = {uncode:dataId,vaccineId:vaccineId,reportType:reportType,month:month,year:year,gender_wise:gender,fmonth:fmonth,quarter:quarter,vaccineBy:vaccineBy,biyear:biyear};
-			if(dataId > 0 && mobiletype !=true){
+			if(dataId > 0){
 				$.ajax({
 					type: "POST",
 					data: data,

@@ -1,5 +1,4 @@
 <?php
-
 class Setup_listing extends CI_Controller {
 
 	//================ Constructor function starts==================//
@@ -60,7 +59,7 @@ class Setup_listing extends CI_Controller {
 	//================ Tehsil function starts==================//
 	public function tehsil_listing() {
 		$year = $this->input->get_post('year');
-		//echo "danish";exit; 
+		//echo "danish";exit;
 		$data = $this->Setup_listing_model->tehsil_listing($year);
 		$data['data']=$data;
 		$data['year'] = $year;
@@ -93,6 +92,7 @@ class Setup_listing extends CI_Controller {
 	}
 	//================ Health Facility function Ends==================//
 	//================************************==================//
+	//================************************==================//
 	//================ VPD Centers starts==================//
 	public function VPD_Centers_listing() {
 		
@@ -109,22 +109,8 @@ class Setup_listing extends CI_Controller {
 			$this->load->view("message",$data);
 		}
 	}
-	//================ Village_mohalla_Listing starts==================//
-	public function Village_mohalla_Listing() {
-		$year = $this->input->get_post('year');
-		$data = $this->Setup_listing_model->village_mohalla_listing($year);
-		$data['data']=$data;
-        $data['year'] = $year;		
-		if($data != 0){
-            $data['fileToLoad'] = 'setup_listing/village_mohalla_listing';
-			$data['pageTitle']='EPI-MIS | Health Facility Listing';
-			$this->load->view('template/reports_template',$data);
-		}else{
-			$data['message']="You must have rights to access this page.";
-			$this->load->view("message",$data);
-		}
-	}
-     //================ Village_mohalla_Listing function Ends==================//
+     //================ VPD Centers function Ends==================//
+    //================************************==================//
 	//================ Union function starts==================//
 
 	public function union_council_listing() {
@@ -227,7 +213,6 @@ class Setup_listing extends CI_Controller {
     public function	computer_operator_listing(){
 		$data = $this->Setup_listing_model->computer_operator_listing();
 		$data['data']=$data;
-		//print_r($data);exit;
 		if($data != 0){
 			$data['fileToLoad'] = 'setup_listing/computer_operator_listing';
 			$data['pageTitle']='EPI-MIS | Computer Operator Listing';
@@ -236,24 +221,7 @@ class Setup_listing extends CI_Controller {
 			$data['message']="You must have rights to access this page.";
 			$this->load->view("message",$data);
 		} 	
-    }
-	//================ Computer Operator function starts==================//
-	//================************************==================//
-	//================ Measles Focal Person function starts==================//
-    public function	measles_focal_person_listing(){
-		
-		$data = $this->Setup_listing_model->measles_focal_person_listing();
-		$data['data']=$data;
-		//print_r($data);exit;
-		if($data != 0){
-			$data['fileToLoad'] = 'setup_listing/measles_focal_person_listing';
-			$data['pageTitle']='EPI-MIS | Measles Focal Person';
-			$this->load->view('template/reports_template',$data);
-        }else{
-			$data['message']="You must have rights to access this page.";
-			$this->load->view("message",$data);
-		} 	
-    }//================ Measles Focal Person function starts==================//
+    }//================ Computer Operator function starts==================//
 	//================************************==================//
 	//================ Generator Operator function starts==================//
     public function	generator_operator_listing(){
@@ -366,7 +334,7 @@ class Setup_listing extends CI_Controller {
     }
 	//================ Cold Chain Driver function Ends==================//
 	//================************************==================//
-		//================ HRfunction starts==================//
+	//================ HRfunction starts==================//
     public function	hr_listing(){
 		$data = $this->Setup_listing_model->hr_listing();
 		$data['data']=$data;

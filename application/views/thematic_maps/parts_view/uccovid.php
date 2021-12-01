@@ -39,7 +39,7 @@
 								<div id="idabc"></div>
 							</div>
 						</div>
-					</div>
+					</div> 
 					<div data-aos="fade-left" class="col-lg-6 col-md-6 col-sm-12 col-12 pie-innersize-div p-0">
 						<div class="row">
 							<div data-aos="fade-right" class="col-lg-12 col-md-12 col-sm-12 col-12 pie-innersize-div">

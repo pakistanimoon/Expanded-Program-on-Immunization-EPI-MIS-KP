@@ -41,12 +41,13 @@
 					    echo $val->techniciancode;
 						echo "</td><td class='text-center'>";
 						echo $val->technicianname;
-						
-						
 						for ($qurt = 1; $qurt <= $quarter; $qurt++){
-							echo "</td><td class='text-center'>";
+							echo "</td><td id='".$qurt."' class='text-center'>";
 							if($val->{'q'.$qurt} > 0){
-								echo'<p class="text-center" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							//	echo'<p class="text-center mrClicked" id="'.$qurt.'"  data-code="'.$val->techniciancode .'" data-quarter="'.$qurt.'" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							echo '<span class="badge mrClicked" data-code="'.$val->techniciancode .'" data-quarter="'.$qurt.'" style="background: green; width: 100px;">Totel site '.$val->{'totalsite'.$qurt}.'</span><br>';
+							echo '<span class="badge mrClicked" data-code="'.$val->techniciancode .'" data-quarter="'.$qurt.'" style="background: blue; width: 100px;">Scheduled '.$val->{'schedule'.$qurt}.'</span><br>';
+							echo '<span class="badge mrClicked" data-code="'.$val->techniciancode .'" data-quarter="'.$qurt.'" style="background: orange; width: 100px;">Held &nbsp;  '.$val->{'held'.$qurt}.'</span>';
 							}else{
 								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
 							}
@@ -71,17 +72,19 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('.DrillDownRow').css('cursor','pointer');
+		$('.mrClicked').css('cursor','pointer');
 	});
-  	$('.DrillDownRow').on('click', function(){
-		var code = $(this).find("td:nth-child(1)").text();
-		if(code.toString().length == 3){
-			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_quarter_tech_compliance?distcode="+code;
+		$(document).on('click','.mrClicked', function(){
+			var quarter = $(this).data('quarter');
+			var code = $(this).data('code');
+			if(code.toString().length == 9){
+			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_tech_compilation_compliance?techniciancode="+code+"&quarter="+quarter;
 			var win = window.open(url,'_self');
 			if(win){
 				win.focus();
 			}else{
 				alert('Please allow popups for this site');
 			}
-		}		
-	});
+		} 
+		});
 </script>

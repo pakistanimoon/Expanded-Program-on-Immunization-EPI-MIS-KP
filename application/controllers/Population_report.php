@@ -16,16 +16,11 @@
 	public function population_Filters(){
 		$this -> load -> library('reportfilters');
 		$functionName = $this -> uri -> segment (2);
-		//print_r($functionName);exit;
-		$functionName = str_replace("-", "_", $functionName);
-		$reportPath = base_url()."Population_report/".$functionName;
+		$functionName = str_replace("_Filters", "_Report", $functionName);
+		$reportPath = base_url()."Population_report/vf_population_report/".$functionName;
 		$reportTitle = $this->reportTitle($functionName);
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-		if($this -> session -> UserLevel == '4'){
-			$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,$reportsperiod=array("yearly"),false,NULL,NULL,'No','No',NULL);
-		}else{
-			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportsperiod=array("yearly"),false,NULL,NULL,'No','No',NULL);
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportsperiod=array("cryearly"),false,NULL,NULL,'No','No',NULL);
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;
@@ -50,51 +45,11 @@
 		$data['pageTitle']='Village and HF Based population';
 		$this -> load -> view('template/reports_template',$data);
 	}
-	
-	function village_population_not_set(){
-		//print_r('asd');exit;
-		$year = $this->input->get_post('year');
-		$data = $this -> getPostedData();
-		if(isset($data['distcode']))
-			$dist = $data['distcode'];
-		//print_r($dist);exit;
-		else 
-		$dist = '';
-		$year = $data['year'];
-		//print_r($year);exit;
-		$data['data'] = $this ->Population_reportmodel->village_population_not_set($data);
-		$data['distcode'] = $dist;
-		$data['year'] = $year;
-		$data['data']['TopInfo'] = reportsTopInfo("UC`s with no Village/Mohalla/Population", $data);
-		$data['data']['exportIcons']=exportIcons($_REQUEST);
-		$data['fileToLoad'] = 'villages/reports/Village_Population_Not_Set_View';
-		$data['pageTitle']='UC`s with no Village/Mohalla/Population';
-		$this -> load -> view('template/reports_template',$data);
-	}
-	function village_population_not_set_uc(){
-		$year = $this->input->get_post('year');
-		$tcode = $this->input->get_post('tcode');
-		$distcode=$this -> session -> District;
-		//print_r($distcode);exit;
-		/*print_r($year);exit; */
-		$data['data'] = $this ->Population_reportmodel->village_population_not_set_uc($tcode,$year);
-		$data['tcode'] = $tcode;
-		$data['distcode'] = $distcode;
-		$data['year'] = $year;
-		$data['data']['TopInfo'] = reportsTopInfo("UC`s with no Village/Mohalla/Population", $data);
-		$data['data']['exportIcons']=exportIcons($_REQUEST);
-		$data['fileToLoad'] = 'villages/reports/Village_Population_Not_Set_Uc_View';
-		$data['pageTitle']='Village/Mohalla Population Not Set ';
-		$this -> load -> view('template/reports_template',$data);
-	}
 	function reportTitle($functionName){
 		$title = "";
 		switch($functionName){
-			case "vf_population_report":
+			case "Population_Report":
 			$title = "Village and HF Based population";
-			break;
-			case "village_population_not_set":
-			$title = " UC`s with no Village/Mohalla/Population ";
 			break;
 		}
 		return $title;

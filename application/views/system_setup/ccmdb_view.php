@@ -225,7 +225,7 @@
                       </div>
                     </div>
                   </div>
-			<input type="hidden" name="ccmcode" value="<?php echo  $ccmdata['ccmcode']?>" />
+<input type="hidden" name="ccmcode" value="<?php echo  $ccmdata['ccmcode']?>" />
                     <hr>
                         <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>                     
                       <div class="row">

@@ -23,25 +23,7 @@ class Advance_Reports extends CI_Controller {
 		$options = array(0=>'TypeWise','uc'=>'Uc Wise','fac'=>'Facility Wise');
 		$customDropdown = array($options);
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-        /* if($functionName=="HR-Advance-Report"){
-			if($this -> session -> UserLevel == '4'){	
-			$options = array(0=>'HR Type','sl'=>'Supervisors','co'=>'Computer Operator ','hf'=>'HF Incharges','sk'=>'Store Keeper ','epit'=>'EPI Technician ','cct'=>'Cold Chain Technician ','cco'=>'Cold Chain Operator ','go'=>'Generator Operator ','ccm'=>'Cold Chain Mechanic','dd'=>'Drivers');
-			}else{
-			$options = array(0=>'HR Type','sl'=>'Supervisors','dso'=>'District Surveillance Officer ','co'=>'Computer Operator ','hf'=>'HF Incharges','sk'=>'Store Keeper ','epit'=>'EPI Technician ','cct'=>'Cold Chain Technician ','cco'=>'Cold Chain Operator ','go'=>'Generator Operator ','ccm'=>'Cold Chain Mechanic','dd'=>'Drivers');	
-			}
-			$customDropdown = array($options);
-			if($this -> session -> UserLevel == '4'){
-				$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,false,false,NULL,NULL,$moduleID,'NO',NULL,$customDropdown);
-
-			}else{
-				$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,false,false,NULL,NULL,$moduleID,'NO',NULL,$customDropdown);
-			}
-	    } */
 		if($functionName=="HR-Advance-Report"){
-		//$options = array(0=>'HR Type','sl'=>'Supervisors','dso'=>'District Surveillance Officer ','co'=>'Computer Operator ','hf'=>'HF Incharges','sk'=>'Store Keeper ','epit'=>'EPI Technician ','cct'=>'Cold Chain Technician ','cco'=>'Cold Chain Operator ','go'=>'Generator Operator ','ccm'=>'Cold Chain Mechanic','dd'=>'Drivers');
-		//$customDropdown = array($options);
-		
-			//$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,false,false,NULL,NULL,$moduleID,'NO',NULL,$customDropdown);
 			$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,false,false,NULL,NULL,$moduleID,'NO',NULL,NULL,"No",NULL,$hrtype=array("allhrtype"));
 		}
 		else if($functionName=="Disease-Surveillance-Advance-Report"){
@@ -59,7 +41,6 @@ class Advance_Reports extends CI_Controller {
 		//print_r($moduleID);
 		//print_r($dataHtml);exit;
 		$data['listing_filters'] = $dataHtml;
-		//$data['consumption_advance_filters'] = $indicators;
 		//HFMAdvancereport
 		if($reportTitle == "Health Facility Monthly Advance Report"){
 		$this -> db -> select('*');
@@ -158,22 +139,23 @@ class Advance_Reports extends CI_Controller {
 		}
 		return $title;
 	}
-	function HFMVRF_Advance_Report(){	
+	function HFMVRF_Advance_Report(){
 		//echo "danish";exit;
 		$dataHFMVRF['pageTitle']='Advance Report';
 		$data = $this -> getPostedData();
 		$dataHFMVRF['data'] = $this -> Advance_reports_model -> HFMVRF_Advance_Report($data,$dataHFMVRF['pageTitle']);
-		// print_r($dataHFMVRF['data']);exit;
+		//print_r($dataHFMVRF['data']);exit;
 		$dataHFMVRF['fileToLoad'] = 'advance_reports/advance_report_view';
 		$dataHFMVRF['pageTitle']='EPI-MIS | Advance report';
 		$this->load->view('template/reports_template',$dataHFMVRF);
 	}
-	function HFCR_Advance_Report(){    
-        //print_r($_POST);exit;      
-	    //dataEntryValidator(0);	
+	function HFCR_Advance_Report(){        
+	    //dataEntryValidator(0);		
 		$dataHFCR['pageTitle']='Advance Report';
 		$data = $this -> getPostedData();
+		//print_r($data);exit;
 		$dataHFCR['data'] = $this -> Advance_reports_model -> HFCR_Advance_Report($data,$dataHFCR['pageTitle']);
+		
 		$dataHFCR['fileToLoad'] = 'advance_reports/advance_report_view';
 		$dataHFCR['pageTitle']='EPI-MIS | Advance report';
 		$this->load->view('template/reports_template',$dataHFCR);
@@ -185,6 +167,7 @@ class Advance_Reports extends CI_Controller {
 		$data = $this -> getPostedData();
 		//print_r($data);exit;
 		$dataHR['data'] = $this -> Advance_reports_model -> HR_Advance_Report($data,$dataHR['pageTitle']);
+		
 		$dataHR['fileToLoad'] = 'advance_reports/advance_report_view';
 		$dataHR['pageTitle']='EPI-MIS | Advance report';
 		$this->load->view('template/reports_template',$dataHR);
@@ -192,7 +175,7 @@ class Advance_Reports extends CI_Controller {
 	//end HRAdvancereport
 	//DSAdvancereport
 	function Disease_Surveillance_Advance_Report(){        
-	    //dataEntryValidator(0);	
+	    //dataEntryValidator(0);		
 		$dataDS['pageTitle']='Advance Report';
 		$data = $this -> getPostedData();
 		//print_r($data);exit;
@@ -239,14 +222,13 @@ class Advance_Reports extends CI_Controller {
 	function getPostedData(){
 		$data=array();$dataPosted=array();
 		$dataPosted = $_POST;
-		//print_r($dataPosted); exit;
 		$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y","d-M-y","mm-yyyy","yyyy-mm");
 		foreach($dataPosted as $key => $value)
 		{
 			$data[$key] = (($value=='')?NULL:$value);
 			foreach ($formats as $format)
 			{
-				$date = DateTime::createFromFormat($format,$data[$key]);
+				$date = DateTime::createFromFormat($format, $data[$key]);
 				if ($date == false || !(date_format($date,$format) == $data[$key]) ) 
 				{}
 				else

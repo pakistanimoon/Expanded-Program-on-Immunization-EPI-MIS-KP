@@ -30,10 +30,10 @@
               <tr>
                 <td class='text-center Heading'><?php echo $index; ?></td>
                 <td class='text-left'><?php echo $value->district; ?></td>
-                <td class='text-center' ><?php echo $value->distcode; ?></td>
+                <td class='text-left' ><?php echo $value->distcode; ?></td>
                 <td class='text-center'><?php if(isset($value->previous) && !empty($value->previous)){echo $value->previous;}else{ echo 0; } ?></td>
-                <td class='text-center'><?php if(isset($value->current) && !empty($value->current)){echo $value->current ;} ?></td>
-                <td class='text-center'><?php if(isset($value->next) && !empty($value->next)){echo $value->next;} ?></td> 
+                <td class='text-left'><?php if(isset($value->current) && !empty($value->current)){echo $value->current ;} ?></td>
+                <td class='text-left'><?php if(isset($value->next) && !empty($value->next)){echo $value->next;} ?></td> 
             </tr>
             <input type='hidden' name='addeddate[]' value='<?php echo $value->addeddate; ?>'>
             <?php $index++;

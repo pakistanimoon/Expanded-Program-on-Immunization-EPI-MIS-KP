@@ -1,5 +1,7 @@
 <br>
-
+<script type="text/javascript" src="<?php echo base_url(); ?>/includes/js/bootstrap-datepicker.min.js"></script>
+<script src="<?php echo base_url(); ?>includes/js/bootstrap-multiselect.js" type="text/javascript"></script>
+<link   href="<?php echo base_url(); ?>includes/css/bootstrap-multiselect.css" type="text/css" rel="stylesheet"/>
 <?php echo $listing_filters; ?>
     <div class="modal fade bs-example-modal-lg" tabindex="-1" id="myLargeModalLabel" role="dialog" aria-labelledby="myLargeModalLabel">
         <div class="modal-dialog modal-lg">
@@ -185,9 +187,11 @@ table thead th{
 		  <div class="modal-dialog modal-sm" role="document">
 			<div class="modal-content">
 				<div class="panel panel-primary mypanelnew">
-                    <div class="panel-heading text-center">Advance Report</div>
+				
+                    <div class="panel-heading text-center">Advance Report
+					<span class="close-times" style="position: relative;top: -10px;right: -60px;" data-dismiss="modal" id="clo"><i class="fa fa-times text-danger"></i> </span>
+					</div>
                     <div class="panel-body">
-                        <span class="close-times" style="position: relative;top: -8px;left: 0px;" data-dismiss="modal" id="clo"><i class="fa fa-times text-danger"></i> </span>
     	      	    <form name="dataform" id="dataform" action="lhsdb_save.php" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="">
                         <table id="tblreport" class="table table-bordered table-hover" style="">
                             <thead style="background: #08b063;color: #fff;">
@@ -218,7 +222,7 @@ table thead th{
 					</form>
                       <div class="row">
                        <div class="col-md-12" style="text-align: right;">
-                         <button class="text-right btn btn-danger" data-dismiss="modal" id="close" style="font-weight: 600;"><i class="fa fa-times"></i> Cancel</button>
+                         <button class="text-right btn btn-danger" data-dismiss="modal" id="close" style="font-weight: 600;"><i class="fa fa-times"></i>Cancel</button>
 					   </div>
                       </div>
 					</div>
@@ -228,35 +232,8 @@ table thead th{
 		</div>
 <!------HRAdvanceDeletepopup-------->	
 	
-	  <div class="modal fade" id="myModal3" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">×</button>
-          <h4 class="modal-title">Static Backdrop</h4>
-        </div>
-        <div class="modal-body">
-          <p>You cannot click outside of this modal to close it.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-   <script type="text/javascript">
+    <script type="text/javascript">
 	$(document).ready(function(){
-		
-		<?php if($this -> session -> UserLevel==4){ ?>
-	    var tcode= <?php echo $this->session->Tehsil; ?>;
-		$('#tcode').val(tcode);
-		$('#tcode').trigger("change");
-		<?php } ?>
-		
-		
 		if((isExists('monthto') && isExists('monthfrom'))){
 			$('#pre-btn').prop('disabled', true);
 			$(document).on('change','.dp-my',function(){
@@ -272,11 +249,9 @@ table thead th{
 	//	var $report_id
 		 var report_id = $( "#report_id" ).val();
 		if(report_id==0){
-			//alert('0');
 			$('#pre-btn').prop('disabled', true);
 		}	
 		else{
-			
 			$('#pre-btn').prop('disabled', false);
 		}
 		
@@ -488,7 +463,7 @@ table thead th{
 			    }); 
 			}
 			});
-		$(document).on('change','#sections', function(e){
+			$(document).on('change','#sections', function(e){
 			var url = location.href; 
 			var lastsgment = url.substring(url.lastIndexOf('/') + 1);
 			$('.section_fields').html('');
@@ -994,22 +969,6 @@ table thead th{
 		});
 		
 		//function to add fields for criteria of advance report
-		/* $(document).on('click','#CriteriaAddBtn', function(e){
-			var secId = $(this).data("sec");
-			var secLabel = $("#sections option:selected").text();
-			var rows='<div class="row"><div class="col-md-12 col-sm-12 bgrow2"><label>'+secLabel+'</label></div></div>';
-			    $("input[name=sec_fields]:checked").each(function (){
-				    var uniqueId = secId+"-"+$(this).val();
-					if (document.getElementById(uniqueId)) {
-						alert("Already Selected");
-					}else{
-					rows += '<div class="row" id="'+uniqueId+'"><div class="col-md-8 col-md-offset-1 col-sm-8">'+$(this).parent().parent().find('.sec_field_label').text()+'</div><div class="col-md-2 col-md-offset-1 col-sm-2 col-sm-offset-1"> <a style="color: black;" href="#" class="del_selected_field" data-id="'+uniqueId+'"><i class="fa fa-trash-o"> Delete</i></a></div></div>';
-					}
-				});
-				$('.datarry').append(rows);
-				$('input[name=sec_fields]').prop( "checked", false );
-		}); */
-		//function to add fields for criteria of advance report
 	$(document).on('click','#CriteriaAddBtn', function(e){
 			var secId = $(this).data("sec");
 			var totalnum = $(".datarry").find('[id^='+secId+'-]').length;
@@ -1217,26 +1176,10 @@ table thead th{
 			success: function(response){
 				var obj = JSON.parse(response);
 				//$('#week_from').val(obj.startDate);
-				$('#dateto').val(obj.EndDate);
+				$('#toweek').val(obj.EndDate);
 			}
 		});
 	}); 
-	$(document).on('change','#year',function(){
-		var year = $(this).val();
-		$.ajax({
-			type: 'POST', 
-			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
-			data:'year='+year,
-			success: function(response){
-				$('#from_week').html(response.trim());
-				$('#to_week').html(response.trim());
-				$('#datefrom').val('');
-				$('#dateto').val('');
-				
-			}
-		});
-	});
-	
 	///New HFCRAdvance Report
 			$(document).on('change','#sections', function(e){
 			var url = location.href; 
@@ -1254,7 +1197,20 @@ table thead th{
 				    }
 			    });
 			}
+		});	
+		$(document).on('change','#year',function(){
+		var year = $(this).val();
+		$.ajax({
+			type: 'POST', 
+			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
+			data:'year='+year,
+			success: function(response){
+				$('#from_week').html(response.trim());
+				$('#to_week').html(response.trim());
+				$('#datefrom').val('');
+				$('#toweek').val('');
+				
+			}
 		});
-			
-		
+	});
 </script>

@@ -34,7 +34,7 @@
 								<div class="col-xs-3">
 									<label class="control-label"  for = "guardian_name" ><?php echo $edit['guardian_name']; ?></label>
 								</div>
-								<label class="col-xs-2  control-label"  for = "gender" > Gender <span style="color:red;">*</span></label>
+							<label class="col-xs-2  control-label"  for = "gender" > Gender <span style="color:red;">*</span></label>
 									<div class="col-xs-3">
 										<?php 
 										$gender="";
@@ -52,7 +52,7 @@
 											echo $gender;
 										 }	
 										?>
-									</div>
+									</div>	
 						</div>
 					</div>
 					<div class="row bgrow" style="text-align: center;color: white;font-size: 15px; font-family: Arial;padding-top: 5px; "> Basic Information</div>

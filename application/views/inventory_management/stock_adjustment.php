@@ -21,7 +21,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 									</td>
 									<td>
 										<label>Adjustment Type <span style="color:red">*</span></label>
-										<select id="type" name="type" required="required" class="form-control">
+										<select name="type" id="type" required="required" class="form-control">
 											<option value=""> Select </option>
 											<?php echo $adjsttypeshtml; ?>
 										</select>
@@ -229,14 +229,13 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 			unittitle = $("#product").find("option:selected").data("unittitle");
 			itemunitid = $("#product").find("option:selected").data("unitid");
 			activity = $("#activity_purpose").find("option:selected").val();
-			transdate = $("input[name=adjust_date]").val(); 
+			transdate = $("input[name=adjust_date]").val();
 			var adjustment_type=$("#type").find("option:selected").val();
 			if(adjustment_type==''){
 				var nature=0;
 			}else{
 				var nature=$("#type option:selected").attr('data-nature');
 			}
-			$("select[name=batch]").html('');
 			$("select[name=batch]").html('');			
 			$.ajax({
 				type: "POST",
@@ -316,16 +315,14 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 		});
 		$("#product").trigger("change");
 		$(document).on('click','#adjustbtn',function(){
-			var manufacturer=$("#batch").val();
-			var quantity=$("#quantity").val();
-			//$(this).attr("disabled","disabled");
+			$(this).attr("disabled","disabled");
 			var res=confirm("Are You Sure To Add Adjustment ?");
 			if(res)
 				{
 					masterid = $("#batch").find("option:selected").data("masterid");
 					$("#masterid").val(masterid);
 					$("#quantity").trigger("change");
-					if($('#type').val()=="" || manufacturer==NULL || quantity=="")
+					if($('#type').val()=="")
 					{
 						alert("Please select Adjustment Type.");
 						$(this).removeAttr("disabled");
@@ -335,7 +332,6 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 					{
 						$(this).prop('disabled', true);
 						$(this.form).submit();
-						
 					}
 				}
 				else
@@ -347,7 +343,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 		var options = {
 			format : "yyyy-mm-dd",
 			color: "green",
-			autoclose: true
+			autoclose:true
 		};
 		$('.dpinvn').datepicker(options);
 		
@@ -459,6 +455,23 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 				}
 			});
 		});
+$(document).on('change','#quantity',function(){
+	var avial_qty=parseInt($('#available_quantity').val());
+	var qty=parseInt($(this).val());
+	var nature=parseInt($('#transactionnature').val());
+	if(nature==0)
+{
+		if(qty > avial_qty)
+		{
+			alert("Quantity to adjust must be less than Avialable Qty.");
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+});
 		
 	});
 </script>

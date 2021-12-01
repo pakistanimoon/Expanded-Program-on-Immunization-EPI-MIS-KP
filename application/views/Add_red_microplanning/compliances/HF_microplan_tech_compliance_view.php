@@ -31,7 +31,7 @@
 							if($val->submit > 0){
 								echo'<p class="text-center mrClicked" data-submitted="submitted"  data-code="'. $val->techniciancode .'" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
 							}else{
-								echo'<p class="text-center mrClicked" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
+								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
 							}
 						echo "</td></tr>";
 						$count++;
@@ -57,12 +57,12 @@ height: 400px;
 #fixTable {
 width: 1800px !important;
 }
-</style>
-<script type="text/javascript">		
-	$(document).ready(function(){
-		$('.DrillDownRow').css('cursor','pointer');
-		$('.mrClicked').css('cursor','pointer');
-	});			
+</style>	
+<script>
+$(document).ready(function(){
+		$("#fixTable").tableHeadFixer();
+		$('.DrillDownRow').css('cursor','pointer');		
+	}); 				
 	$('.DrillDownRow').on('click', function(){
 		var year = $('#year').val();
 		var filter_view=01;

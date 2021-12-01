@@ -1,5 +1,6 @@
 
 <?php
+		   
 class System_setup extends CI_Controller {
 
 	//================ Constructor function Starts Here ==================//
@@ -11,202 +12,332 @@ class System_setup extends CI_Controller {
 		$this -> load -> model('Common_model');
 	}
 	//================ Constructor Function Ends Here ====================//
-	public function AddHR_list() {
-		//Code for Pagination
-		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
-		if ($page <= 0){
-			$page = 1;
-		}
-		$per_page = 15;
-		// Set how many records do you want to display per page.
-		$startpoint = ($page * $per_page) - $per_page;
-		$statement = "hrdb";
-		$data = $this -> System_setup_model -> addhr_list($per_page,$startpoint);
-		//echo '<pre>';print_r($data);exit;
-		$data['pagination'] = $this -> Common_model -> pagination($statement, $per_page, $page, $url = '?');
-		$data['UserLevel'] = $this -> session -> UserLevel;
-		$data['startpoint'] = ($page * $per_page) - $per_page;
-		$data['edit']="Yes";
-		if ($data != 0) {
-			$data['data'] = $data;
-			$data['fileToLoad'] = 'system_setup/AddHR_list';
-			$data['pageTitle'] = 'EPI-MIS | List of HR';
-			$this -> load -> view('template/epi_template', $data);
-		} else {
-			$data['message'] = "You must have rights to access this page.";
-			$this -> load -> view("message", $data);
-		}
-	}
-	//================ Add HR Listing Function Ends Here =============================//
-	//-------------------------------------------------------- ---------------------------//
-	//================ Function to Show Page for Adding New AddHR Starts Here =======//	
-	public function AddHR_add() {
-		dataEntryValidator(1);
-		//dataEntryValidator();
-		$data = $this -> System_setup_model -> AddHR_add();
-		$data['edit']="Yes";
-		if ($data != 0) {
-			$data['data'] = $data;
-			$data['fileToLoad'] = 'system_setup/AddHR_add';
-			$data['pageTitle'] = 'EPI-MIS | Add New HR Form';
-			$this -> load -> view('template/epi_template', $data);
-		} else {
-			$data['message'] = "You must have rights to access this page.";
-			$this -> load -> view("message", $data);
-		}
-	}
+							   
+					   
+																					  
+				  
+			 
+   
+				 
+														  
+												
+					  
+																		   
+									 
+																									  
+													 
+														
+					  
+				   
+						 
+												   
+											   
+														 
+		  
+																  
+										   
+   
+  
+																					 
+																						 
+																					 
+							  
+						
+						 
+													 
+					  
+				   
+						 
+												  
+													
+														 
+		  
+																  
+										   
+   
+  
+ 
+																									
+																										 
+																									
+								
+   
+						
+											  
+					  
+										  
+																								   
+																						 
+																					 
+																								  
+																														 
+																							
+																							   
+																											 
+																						  
+																								   
+											  
+  
+										  
+								
 	
-	//================ Function to Show Page for Adding New AddHR Ends Here =========================//
-	//----------------------------------------------------------------------------------------------------//
-	//================ Function for Saving New or Existing AddHR Record Starts Here =================//
-		public function AddHR_save() {
+															   
+					 
+						   
+													 
+														
+					   
+														   
 			
-		dataEntryValidator(1);
-		$hrCode = $this -> input -> post ('hrcode');
-		//echo $hrCode;exit;
-		$this->load->library('form_validation');
-		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
-		$this->form_validation->set_rules('basicpay','Basic Pay','numeric|trim|max_length[6]');
-		$this->form_validation->set_rules('hrname','HR Name','trim|required|alpha_spaces');
-		$this->form_validation->set_rules('phone','Phone','numeric|trim|max_length[14]|min_length[11]');
-		$this->form_validation->set_rules('bankaccountno','Bank Account Number','numeric_spaces|required|trim|max_length[16]');
-		$this->form_validation->set_rules('nic','CNIC','alpha_dash|trim|required|max_length[15]');
-		$this->form_validation->set_rules('passingyear','Passing year','numeric|trim|max_length[4]');
-		$this->form_validation->set_rules('branchcode','Branch Code','required|numeric_spaces|trim|max_length[8]');
-		$this->form_validation->set_rules('branchname','Branch Name','required|max_length[50]');
-        $this->form_validation->set_rules('bankid','Bank Information','required|max_length[50]');		
-	if ($this->form_validation->run() === FALSE) 
-	{
-		$edit =  $this -> input -> post('edit');
-			if($hrCode!='' && $edit!=''){
-				
-				$data = $this -> System_setup_model -> AddHR_edit($hrCode);
-				if ($data != 0) {
-					$data['data'] = $data;
-					$data['fileToLoad'] = 'system_setup/AddHR_edit';
-					$data['pageTitle'] = 'EPI-MIS | Update AddHR Form';
-					$data['edit']='1';
-					$this -> load -> view('template/epi_template', $data);
-				} else {
-					$data['message'] = "You must have rights to access this page.";
-					$this -> load -> view("message", $data);
-				}
-			}else{
-				$data = $this -> System_setup_model -> AddHR_add();
-				if ($data != 0) {
-					$data['data'] = $data;
-					$data['fileToLoad'] = 'system_setup/AddHR_add';
-					$data['pageTitle'] = 'EPI-MIS | Add New AddHR Form';
-					$data['edit']='1';
-					$this -> load -> view('template/epi_template', $data);
-				} else {
-					$data['message'] = "You must have rights to access this page.";
-					$this -> load -> view("message", $data);
-				}
-			}
-	}
-		else{
-			if($this -> input -> post ('hrcode')){
-				//print_r($this -> input -> post ('designation_type')); exit;
-				$hrData = array(
-					'procode' => $this -> session -> Province,
-					'hrcode' => ($this -> input -> post ('hrcode'))? $this -> input -> post ('hrcode') : Null,
-					'designation_type' => ($this -> input -> post ('designation_type'))? $this -> input -> post ('designation_type') : Null,
-					'hrname' => ($this -> input -> post ('hrname'))? $this -> input -> post ('hrname') : Null,
-					//'fathername' => ($this -> input -> post ('fathername'))? $this -> input -> post ('fathername') : Null,
-					'nic' => ($this -> input -> post ('nic'))? $this -> input -> post ('nic') : Null,
-					'date_of_birth' => ($this -> input -> post ('date_of_birth')) ? date('Y-m-d', strtotime($this -> input -> post ('date_of_birth'))) : Null,
-					//'distcode' => ($this -> input -> post ('distcode'))? $this -> input -> post ('distcode') : $this -> session -> District,
-					//'facode' => ($this -> input -> post ('facode'))? $this -> input -> post ('facode') : Null,
-					//'tcode' => ($this -> input -> post ('tcode'))? $this -> input -> post ('tcode') : Null,
-					'permanent_address' => ($this -> input -> post ('permanent_address'))? $this -> input -> post ('permanent_address') : Null,
-					'present_address' => ($this -> input -> post ('present_address'))? $this -> input -> post ('present_address') : Null,
-					'lastqualification' => ($this -> input -> post ('lastqualification'))? $this -> input -> post ('lastqualification') : Null,
-					'passingyear' => ($this -> input -> post ('passingyear'))? $this -> input -> post ('passingyear') : Null ,
-					'institutename' => ($this -> input -> post ('institutename'))? $this -> input -> post ('institutename') : Null,
-					'date_joining' => ($this -> input -> post ('date_joining'))? date('Y-m-d', strtotime($this ->input -> post ('date_joining'))) : Null,
-					'place_of_joining' => ($this -> input -> post ('place_of_joining'))? $this -> input -> post ('place_of_joining') : Null,
-					'date_termination' => ($this -> input -> post ('date_termination'))? date('Y-m-d', strtotime($this ->input -> post ('date_termination'))) : Null,
-					'date_transfer' => ($this -> input -> post ('date_transfer'))? date('Y-m-d', strtotime($this ->input -> post ('date_transfer'))) : Null,
-					'date_died' => ($this -> input -> post ('date_died'))? date('Y-m-d', strtotime($this ->input -> post ('date_died'))) : Null,
-					'date_retired' => ($this -> input -> post ('date_retired'))? date('Y-m-d', strtotime($this ->input -> post ('date_retired'))) : Null,
-					'date_resigned' => ($this -> input -> post ('date_resigned'))? date('Y-m-d', strtotime($this ->input -> post ('date_resigned'))) : Null,
-					'status' => ($this -> input -> post ('status'))? $this -> input -> post ('status') : Null,
-					'marital_status' => ($this -> input -> post ('marital_status'))? $this -> input -> post ('marital_status') : Null,
-					'phone' => ($this -> input -> post ('phone'))? $this -> input -> post ('phone') : Null,
-					'telephone' => ($this -> input -> post ('telephone'))? $this -> input -> post ('telephone') : Null,
-					'bankaccountno' => ($this -> input -> post ('bankaccountno'))? $this -> input -> post ('bankaccountno') : Null,
-					'bid' => ($this -> input -> post ('bankid'))? $this -> input -> post ('bankid') : Null,
-					'payscale' => ($this -> input -> post ('payscale'))? $this -> input -> post ('payscale') : Null,
-					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
-					'branchcode' => ($this -> input -> post ('branchcode'))? $this -> input -> post ('branchcode') : Null,
-					'employee_type' => ($this -> input -> post ('employee_type'))? $this -> input -> post ('employee_type') : Null,
-					'type' => ($this -> input -> post ('type'))? $this -> input -> post ('type') : Null,
-					//'supervisor_type' => ($this -> input -> post ('supervisor_type'))? $this -> input -> post ('supervisor_type') : Null,
-					'branchname' => ($this -> input -> post ('branchname'))? $this -> input -> post ('branchname') : Null,
-					'basic_training_start_date' => ($this -> input -> post ('basic_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('basic_training_start_date'))) : Null,
-					'basic_training_end_date' => ($this -> input -> post ('basic_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('basic_training_end_date'))) : Null,
-					'routine_epi_start_date' => ($this -> input -> post ('routine_epi_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('routine_epi_start_date'))) : Null,
-					'routine_epi_end_date' => ($this -> input -> post ('routine_epi_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('routine_epi_end_date'))) : Null,
-					'survilance_training_start_date' => ($this -> input -> post ('survilance_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('survilance_training_start_date'))) : Null,
-					'survilance_training_end_date' => ($this -> input -> post ('survilance_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('survilance_training_end_date'))) : Null,
-					'cold_chain_training_start_date' => ($this -> input -> post ('cold_chain_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('cold_chain_training_start_date'))) : Null,
-					'cold_chain_training_end_date' => ($this -> input -> post ('cold_chain_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('cold_chain_training_end_date'))) : Null,
-					'is_temp_saved' => $this -> input -> post ('is_temp_saved'),
-					'vlmis_training_start_date' => ($this -> input -> post ('vlmis_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('vlmis_training_start_date'))) : Null,
-					'vlmis_training_end_date' => ($this -> input -> post ('vlmis_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('vlmis_training_end_date'))) : Null,
-					//'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
-					//'previous_code'=>$this->input->post('previous_code')?
-					//$this->input->post('previous_code'):Null,
-					//'newtcode' => ($this -> input -> post ('newtcode'))? $this -> input -> post ('newtcode') : Null,
-					//'newfacode' => ($this -> input -> post ('newfacode'))? $this -> input -> post ('newfacode') : Null,
-					//'newuncode' => ($this -> input -> post ('newuncode'))? $this -> input -> post ('newuncode') : Null
-			    );
+																	
+											 
+	 
+		 
+													   
+					 
+						   
+													
+														 
+					   
+														   
+																											 
+																						  
+																								   
+											  
+  
+										  
+								
+	
+															   
+					 
+						   
+													 
+														
+					   
+														   
+			
+																	
+											 
+	 
+		 
+													   
+					 
+						   
+													
+														 
+					   
+														   
+			
+																	
+											 
+	 
+	
+  
+	   
+										 
+																 
 					
+											   
+																							   
+																															 
+																							   
+																											 
+																					  
+																																			   
+																															   
+																								 
+																							  
+																																
+																														  
+																																
+																											   
+																													
+																																		  
+																															 
+																																					  
+																																			 
+																																 
+																																		  
+																																			 
+																							   
+																													   
+																							
+																										
+																													
+																							
+																									 
+																									 
+																										   
+																													
+																						 
+																															
+																										   
+																																												 
+																																										   
+																																										
+																																								  
+																																																
+																																														  
+																																																
+																																														  
+																 
+																																												 
+																																										   
+																							
+															
+												
+																									   
+																										  
+																										 
+		 
+	 
 			
-			$data = $this -> System_setup_model -> AddHR_save($hrData,$hrCode);
-		}else{
-			//echo $_POST; exit();
-			$location = base_url(). "System_setup/AddHR_add/";
-				echo '<script language="javascript" type="text/javascript"> alert("No AddHR Code Provided....");	window.location="'.$location.'"</script>';
-		}
-		}
-	}
-		//================ Function to Show Page for Editing Existing AddHR Record Starts Here ===============//
-	public function AddHR_edit() {
-		dataEntryValidator(1);
-		$hrcode = $this -> uri -> segment(3);
-		//print_r($hrcode); exit;
-		$data = $this -> System_setup_model -> AddHR_edit($hrcode);
-		//$data = $this -> System_setup_model -> dsodb_edit($dsocode);
-		if ($data != 0) {
-			$data['data'] = $data;
-			$data['fileToLoad'] = 'system_setup/AddHR_edit';
-			$data['pageTitle'] = 'EPI-MIS | Update AddHR Form';
-			$data['edit']='1';
-			$this -> load -> view('template/epi_template', $data);
-		} else {
-			$data['message'] = "You must have rights to access this page.";
-			$this -> load -> view("message", $data);
-		}
-	}
-	//================ Function to Show Page for Editing Existing AddHR Record Ends Here ================//
-	//--------------------------------------------------------------------------------------------------------//
-	//================ Function to Show Page for Viewing Existing AddHR Record Starts Here ==============//
-	public function AddHR_view() {
-		$hrcode = $this -> uri -> segment(3);
-		$data = $this -> System_setup_model -> AddHR_view($hrcode);
-		if ($data != 0) {
-			$data['data'] = $data;
-			$data['fileToLoad'] = 'system_setup/AddHR_view';
-			$data['pageTitle'] = 'EPI-MIS | AddHR Detailed View';
-			$this -> load -> view('template/epi_template', $data);
-		} else {
-			$data['message'] = "You must have rights to access this page.";
-			$this -> load -> view("message", $data);
-		}
-	}
+																	
+											 
+	 
+													 
+																																			   
+   
+   
+  
+																										  
+							   
+						
+									   
+						   
+															 
+																
+				   
+						 
+												   
+													  
+					 
+														 
+		  
+																  
+										   
+   
+  
+																										
+																											 
+																										
+							   
+									   
+															 
+				   
+						 
+												   
+														
+														 
+		  
+																  
+										   
+   
+  
 	
+  
+	   
+										 
+																 
+					
+											   
+																							   
+																															 
+																							   
+																											 
+																					  
+																																			   
+																															   
+																								 
+																							  
+																																
+																														  
+																																
+																											   
+																													
+																																		  
+																															 
+																																					  
+																																			 
+																																 
+																																		  
+																																			 
+																							   
+																													   
+																							
+																										
+																													
+																							
+																									 
+																									 
+																										   
+																													
+																						 
+																															
+																										   
+																																												 
+																																										   
+																																										
+																																								  
+																																																
+																																														  
+																																																
+																																														  
+																 
+																																												 
+																																										   
+																							
+															
+												
+																									   
+																										  
+																										 
+		 
+	 
+   
+																	  
+		
+						 
+													 
+																																			   
+   
+   
+  
+																										  
+							   
+						
+									   
+						   
+															 
+																
+				   
+						 
+												   
+													  
+					 
+														 
+		  
+																  
+										   
+   
+  
+																										
+																											 
+																										
+							   
+									   
+															 
+				   
+						 
+												   
+														
+														 
+		  
+																  
+										   
+   
+  
+ 
 	//--------------------------------------------------------------------//
 	//================ Supervisor Listing Function Starts ================//
 	public function supervisor_list() {
@@ -256,20 +387,18 @@ class System_setup extends CI_Controller {
 	//================ Function to Show Page for Adding New Supervisor Ends Here =========================//
 	//----------------------------------------------------------------------------------------------------//
 	//================ Function for Saving New or Existing Supervisor Record Starts Here =================//
-	public function supervisor_save() {
-		
+	public function supervisor_save() {		
 		dataEntryValidator(0);
 		$supervisorCode = $this -> input -> post ('supervisorcode');
 		//echo $supervisorCode;exit;
-	    $this->load->library('form_validation');
+		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
 		$this->form_validation->set_rules('supervisorname','Supervisor Name','trim|required|alpha_spaces');
 		$this->form_validation->set_rules('basicpay','Basic Pay','numeric|trim|max_length[6]');
 		$this->form_validation->set_rules('fathername','Father Name','trim|required|alpha_spaces');
 		$this->form_validation->set_rules('phone','Phone','numeric|trim|max_length[14]|min_length[11]');
 		$this->form_validation->set_rules('bankaccountno','Bank Account Number','numeric_spaces|required|trim|max_length[16]');
-		
-		$this->form_validation->set_rules('nic','CNIC','trim|required|max_length[15]');$this->form_validation->set_rules('passingyear','Passing year','numeric|trim|max_length[4]');
+		$this->form_validation->set_rules('nic','CNIC','trim|required|max_length[15]');$this->form_validation->set_rules('passingyear','Passing year','numeric|trim|max_length[4]');																							   
 		$this->form_validation->set_rules('supervisor_type','Supervisor Type','trim|required|max_length[100]');
 		$this->form_validation->set_rules('branchcode','Branch Code','numeric_spaces|required|trim|max_length[8]');
 		$this->form_validation->set_rules('branchname','Branch Name','alpha_spaces|required|max_length[50]'); 
@@ -330,6 +459,7 @@ class System_setup extends CI_Controller {
 					'date_died' => ($this -> input -> post ('date_died'))? date('Y-m-d', strtotime($this ->input -> post ('date_died'))) : Null,
 					'date_retired' => ($this -> input -> post ('date_retired'))? date('Y-m-d', strtotime($this ->input -> post ('date_retired'))) : Null,
 					'date_resigned' => ($this -> input -> post ('date_resigned'))? date('Y-m-d', strtotime($this ->input -> post ('date_resigned'))) : Null,
+					'date_transfered_to_hdpt' => ($this -> input -> post ('date_transfered_to_hdpt'))? date('Y-m-d', strtotime($this ->input -> post ('date_transfered_to_hdpt'))) : Null,
 					'date_from' => ($this -> input -> post ('date_from'))? date('Y-m-d', strtotime($this ->input -> post ('date_from'))) : Null,
 					'date_to' => ($this -> input -> post ('date_to'))? date('Y-m-d', strtotime($this ->input -> post ('date_to'))) : Null,
 					'reason' => ($this -> input -> post ('reason'))? $this -> input -> post ('reason') : Null,
@@ -360,10 +490,9 @@ class System_setup extends CI_Controller {
 					$this->input->post('previous_code'):Null,
 					'newtcode' => ($this -> input -> post ('newtcode'))? $this -> input -> post ('newtcode') : Null,
 					'newfacode' => ($this -> input -> post ('newfacode'))? $this -> input -> post ('newfacode') : Null,
-					'newuncode' => ($this -> input -> post ('newuncode'))? $this -> input -> post ('newuncode') : Null
-			    );
-				$supervisorDataNewData = array(
-					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
+					'newuncode' => ($this -> input -> post ('newuncode'))? $this -> input -> post ('newuncode') : Null);
+					$supervisorDataNewData = array('new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
+					//'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
 					//'new_facode'=> ($this -> input -> post ('new_facode'))? $this -> input -> post ('new_facode') : Null,
 					//'new_tcode'=> ($this -> input -> post ('new_tcode'))? $this -> input -> post ('new_tcode') : Null,
 					//'new_uncode'=> ($this -> input -> post ('new_uncode'))? $this -> input -> post ('new_uncode') : Null,		
@@ -375,13 +504,13 @@ class System_setup extends CI_Controller {
 					
 				);
 				$data = $this -> System_setup_model -> supervisor_save($supervisorData,$supervisorCode,$supervisorDataNewData);
-			}else{
+		}else{
 				echo $_POST; exit();
 				$location = base_url(). "System_setup/supervisor_add/";
 				echo '<script language="javascript" type="text/javascript"> alert("No Supervisor Code Provided....");	window.location="'.$location.'"</script>';
 			}
 		}
-	}
+	} 
 	//================ Function for Saving New or Existing Supervisor Record Ends Here ========================//
 	//---------------------------------------------------------------------------------------------------------//
 	//================ Function to Show Page for Editing Existing Supervisor Record Starts Here ===============//
@@ -620,12 +749,9 @@ class System_setup extends CI_Controller {
 					'new_lhwcodel'=> ($this -> input -> post ('new_lhwcodel'))? $this -> input -> post ('new_lhwcodel') : Null,
 					'new_lhwcode'=> ($this -> input -> post ('new_lhwcode'))? $this -> input -> post ('new_lhwcode') : Null,
 					'previouse_code'=>($this -> input -> post ('previouse_code'))? $this -> input -> post ('previouse_code') : Null,
-
                     'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
-					
 				);
 				
-				//print_r($skData);
 				//print_r($skcodeNewData);exit();
 				$data = $this -> System_setup_model ->skdb_save($skData,$skcode,$skcodeNewData);
 			}else{
@@ -903,7 +1029,7 @@ class System_setup extends CI_Controller {
 	public function technician_save() {
 		dataEntryValidator(0);
 		$dsoCode = $this -> input -> post ('dsocode');
-	//echo '<pre>';print_r($this->input->post());echo '</pre>';exit();
+		//echo '<pre>';print_r($this->input->post());echo '</pre>';exit();
 		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
 		$this->form_validation->set_rules('techniciancode','Technician Code','trim|required|numeric');
 		$this->form_validation->set_rules('technicianname','Technician Name','trim|required|alpha_spaces');
@@ -1071,7 +1197,7 @@ class System_setup extends CI_Controller {
 			}
 		
 		}
-	}
+	}		
 	//================ Function for Saving New or Existing Technician Record Starts Here ================//
 	//---------------------------------------------------------------------------------------------------//
 	//================ Function for Viewing Existing Technician Record Starts Here ======================//
@@ -1127,6 +1253,7 @@ class System_setup extends CI_Controller {
 		$data['UserLevel']=$this -> session -> UserLevel;
 		$data['startpoint'] = ($page * $per_page) - $per_page;
 		//print_r($data);exit;
+		//echo $this->db->last_query();exit;
 		if ($data != 0) {
 			$data['data'] = $data;
 			$data['fileToLoad'] = 'system_setup/flcf_list';
@@ -1144,12 +1271,18 @@ class System_setup extends CI_Controller {
 		dataEntryValidator(0);
 		$data = $this -> System_setup_model -> mark_flcf();
 		if ($data != 0) {
-			syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
-			syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
-			syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
+				   
+																
+																
 			redirect(base_url().'EPICenters/Mark');
 			exit();
 		} else {
+			syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
+			syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
+			syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
+		  
+		  
+																  
 			$data['message'] = "You must have rights to access this page.";
 			$this -> load -> view("message", $data);
 		}
@@ -1176,25 +1309,19 @@ class System_setup extends CI_Controller {
 	public function flcf_add() {
 		dataEntryValidator(0);
 		$district	= $this -> session -> District;
-		if($this->session->UserLevel==4){
-			$tehsil	= $this -> session -> Tehsil;
-			$wc="and tcode='$tehsil'";
-		}else{
-			$wc='';
-		}
 		$query="select distcode, district FROM districts WHERE distcode='$district' order by distcode";
 		$result=$this->db->query($query);
 		$data['district']=$result->result_array();
-		$query="Select facode, fac_name from facilities where distcode='$district' and hf_type='e' $wc order by facode";
+		$query="Select facode, fac_name from facilities where distcode='$district' and hf_type='e' order by facode";
 		$resultFac=$this->db->query($query);
 		$data['resultFac']=$resultFac->result_array();
 		$query = "SELECT distinct fatype,display_order from facilities_types order by display_order asc";
 		$Fac_result = $this -> db -> query($query);
 		$data['resultFac_type'] = $Fac_result -> result_array();
-		$query="Select tcode, tehsil from tehsil where distcode='$district' $wc order by tcode";
+		$query="Select tcode, tehsil from tehsil where distcode='$district' order by tcode";
 		$resultTeh=$this->db->query($query);
 		$data['resultTeh']=$resultTeh->result_array();
-		$query="Select uncode, un_name from unioncouncil where distcode='$district' $wc order by uncode";
+		$query="Select uncode, un_name from unioncouncil where distcode='$district' order by uncode";
 		$resultun=$this->db->query($query);
 		$data['resultun']=$resultun->result_array();
 		$data['data'] = $data;			
@@ -1278,15 +1405,17 @@ class System_setup extends CI_Controller {
 		header("Content-type: application/octet-stream");
 		header("Content-Disposition: attachment; filename=EPI_Center_Details.xls");
 		header("Pragma: no-cache");
-		header("Expires: 0");  
+		header("Expires: 0");   
 		$years = $this->uri->segment(4);
 		$facode  = $this->uri->segment(3);
 		//print_r($facode); exit;
 		$data = $this -> System_setup_model -> getMainIndicatorsData($facode,$years);
 		//print_r($data); exit;
         $data1 = $this -> System_setup_model -> flcf_view($facode);
+		$data2 = $this -> System_setup_model -> flcf_view_ajax($facode);
 		//print_r($data1); exit;
 		$data['data']=$data1;
+		$data['data2']=$data2;
 		//print_r($data); exit;
 			if($data != 0){
 				
@@ -1300,11 +1429,11 @@ class System_setup extends CI_Controller {
             }
 		}
 	public function flcf_view(){
-		//$years = $this->input->get_post('year');
+		$years = $this->input->get_post('year');
 		$ajax  = ($this -> input -> post('ajax'))?$this -> input -> post('ajax'):FALSe;
-	    $years  = ($this -> input -> post('year'))?$this -> input -> post('year'):date('Y');
+	    //$year  = ($this -> input -> post('year'))?$this -> input -> post('year'):date('Y');
 		$facode  = ($this -> input -> get_post('facode'));
-		//	print_r($years); exit;
+		//print_r($facode); exit;
 		//print_r($data); exit;
 		$data = $this -> System_setup_model -> getMainIndicatorsData($facode,$years);
 		//print_r($data); exit;
@@ -1333,6 +1462,19 @@ class System_setup extends CI_Controller {
                 $this->load->view("message",$data);
             }
 	}
+	
+	function flcf_view_ajax(){
+		$facode  = ($this -> input -> get_post('facode'));
+		$data['flcf_consumption'] = $this -> System_setup_model -> flcf_view_ajax($facode);
+		if(empty($data['flcf_consumption'])){
+			$flcf_consumption_ajax = "";
+		}else{
+		$flcf_consumption_ajax = $this->load->view('system_setup/ajax/flcf_view_consumption.php',$data,true);
+		//print_r($data);
+		}
+		echo $flcf_consumption_ajax;
+	}
+	
 	//================ Function for Adding New Facility or Editing Existing Health Facility Ends Here =======//
 	//----------------------------------------------------------------------------------------------------//
 	//================ Driver Listing Function Starts ================//
@@ -1381,12 +1523,9 @@ class System_setup extends CI_Controller {
 	//---------------------------------------------------------------------------------------------------//
 	//================ Function for Saving New or Existing Technician Record Starts Here ================//
 	public function driverdb_save() {
-		
 		//start new code
 		dataEntryValidator(0);
 		$drivercode = $this -> input -> post ('drivercode');
-	
-		
 		//echo '<pre>';print_r($this->input->post());echo '</pre>';exit();
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
@@ -1461,7 +1600,6 @@ class System_setup extends CI_Controller {
 			//$drivercode = $this -> input -> post ('drivercode');
 			//print_r($drivercode);exit;
 			
-   
 			$driverData = array(
 				'procode' => $this -> session -> Province,
 				'drivercode' => ($this ->input -> post ('drivercode')) ? $this ->input -> post ('drivercode') : Null ,
@@ -1476,7 +1614,6 @@ class System_setup extends CI_Controller {
 				'supervisorcode' => ($this ->input -> post ('supervisorcode')) ? $this ->input -> post ('supervisorcode') : Null ,
 				//'tcode' => ($this ->input -> post ('tcode')) ? $this ->input -> post ('tcode') : Null ,
 				//'uncode' => ($this ->input -> post ('uncode')) ? $this ->input -> post ('uncode') : Null ,
-	
 				//'officer_type' => ($this ->input -> post ('officer_type')) ? $this ->input -> post ('officer_type') : Null ,
 				'permanent_address' => ($this ->input -> post ('permanent_address')) ? $this ->input -> post ('permanent_address') : Null ,
 				'present_address' => ($this ->input -> post ('present_address')) ? $this ->input -> post ('present_address') : Null ,
@@ -1499,16 +1636,6 @@ class System_setup extends CI_Controller {
 				//'branchname' => ($this -> input -> post ('branchname'))? $this -> input -> post ('branchname') : Null,
 				'payscale' => ($this -> input -> post ('payscale'))? $this -> input -> post ('payscale') : Null,
 				'bankaccount' => ($this -> input -> post ('bankaccount'))? $this -> input -> post ('bankaccount') : Null,
-																																			
-																																																  
-																																																						 
-																																																						 
-	
-	
-	
-	
-																																							
-																																														  
 				'bid' => ($this -> input -> post ('bankid'))? $this -> input -> post ('bankid') : Null,
 				'branchcode' => ($this -> input -> post ('branchcode'))? $this -> input -> post ('branchcode') : Null,
 				//'employee_type' => ($this -> input -> post ('employee_type'))? $this -> input -> post ('employee_type') : Null,
@@ -1527,20 +1654,16 @@ class System_setup extends CI_Controller {
 					'new_lhwcode'=> ($this -> input -> post ('new_lhwcode'))? $this -> input -> post ('new_lhwcode') : Null,
 					'previouse_code'=>($this -> input -> post ('previouse_code'))? $this -> input -> post ('previouse_code') : Null,
 					'previous_code'=>($this -> input -> post ('previous_code'))? $this -> input -> post ('previous_code') : Null,
-
 					'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
-	 
 				);    
-	 
-																	 
 			$data = $this -> System_setup_model -> driverdb_save($driverData,$drivercode,$drivercodeNewData);
 			
 		}else{
 			$location = base_url(). "System_setup/driverdb_add/";
 				echo '<script language="javascript" type="text/javascript"> alert("No Driver Code Provided....");window.location="'.$location.'"</script>';
 			}
+		}
 	}
-}
 	//================ Function for Saving New or Existing Driver Record Starts Here ================//
 	//-------------------------------------------------------------------------------------------------------//
 	//================ Function to Show Page for Editing Existing Driver Record Starts Here =============//
@@ -1677,18 +1800,14 @@ public function codb_list() {
 		else{
 				
 			if($cocode!=''){
-				/* $this->db->select('uncode');
-				$this->db->where('facode',$this ->input -> post ('facode'));
-				$uncodeResult = $this->db->get('facilities')->row();
-				$uncode = $uncodeResult->uncode; */
-				
-				$coData = array(
+			$coData = array(
 					'procode' => $this -> session -> Province,
 					'cocode' => ($this -> input -> post ('cocode'))? $this -> input -> post ('cocode') : Null,
 					'coname' => ($this -> input -> post ('coname'))? $this -> input -> post ('coname') : Null,
 					'husbandname' => ($this -> input -> post ('husbandname'))? $this -> input -> post ('husbandname') : Null,
 					'fathername' => ($this -> input -> post ('fathername'))? $this -> input -> post ('fathername') : Null,
 					'nic' => ($this -> input -> post ('nic'))? $this -> input -> post ('nic') : Null,
+					
 					'date_of_birth' => ($this -> input -> post ('date_of_birth')) ? date('Y-m-d', strtotime($this -> input -> post ('date_of_birth'))) : Null,
 					'distcode' => ($this -> input -> post ('distcode'))? $this -> input -> post ('distcode') : Null,
 					'facode' => ($this -> input -> post ('facode'))? $this -> input -> post ('facode') : Null,
@@ -1738,8 +1857,7 @@ public function codb_list() {
 					'previous_code'=>$this->input->post('previous_code')? $this->input->post('previous_code'):Null
 					
 				); 
-				
-				$coDataNewData = array(
+			$coDataNewData = array(
 					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
 					//'new_facode'=> ($this -> input -> post ('new_facode'))? $this -> input -> post ('new_facode') : Null,
 					//'new_tcode'=> ($this -> input -> post ('new_tcode'))? $this -> input -> post ('new_tcode') : Null,
@@ -1748,9 +1866,7 @@ public function codb_list() {
 					'new_lhwcode'=> ($this -> input -> post ('new_lhwcode'))? $this -> input -> post ('new_lhwcode') : Null,
 					'previouse_code'=>($this -> input -> post ('previouse_code'))? $this -> input -> post ('previouse_code') : Null,
 					'previous_code'=>($this -> input -> post ('previous_code'))? $this -> input -> post ('previous_code') : Null,
-
                     'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
-					
 				);
 				//echo '<pre>';print_r($coDataNewData);echo '</pre>';exit();
 				$data = $this -> System_setup_model -> codb_save($coData,$cocode,$coDataNewData);
@@ -1796,9 +1912,9 @@ public function codb_list() {
 		}
 	}
 	//================ Function to Show Page for Viewing Existing Computer Operator Record Ends Here ================//
-		//-------------------------------------------------------- ---------------------------//
+	//-------------------------------------------------------- ---------------------------//
 	//================ Function to Show Page for Adding New Measles Focal Person Starts Here =======//	
-public function mfpdb_add() {
+	public function mfpdb_add() {
 		dataEntryValidator(0);
 		$data = $this -> System_setup_model -> mfpdb_add();
 		$data['edit']="Yes";
@@ -1835,7 +1951,7 @@ public function mfpdb_add() {
 		$this->form_validation->set_message('numeric_spaces', 'The field may only number');
 		
 	$mfpcode =  $this -> input -> post('mfpcode');	
-		if ($this->form_validation->run() === FALSE) 
+		if ($this->form_validation->run() === FALSE)  
 		{
 			$edit =  $this -> input -> post('edit');
 				if($mfpcode!='' && $edit!=''){
@@ -1930,8 +2046,8 @@ public function mfpdb_add() {
 					'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
 					'previous_code'=>$this->input->post('previous_code')? $this->input->post('previous_code'):Null
 					
-					
 				);
+				
 				
 				$mfpDataNewData = array(
 					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
@@ -2019,6 +2135,9 @@ public function mfpdb_list() {
 		}
 	}
 	//================ Supervisor Listing Function Ends Here =============================//
+	//-------------------------------------------------------- ---------------------------//
+
+	
 	//--------------------------------------------------------------------------------------------------------//
 	//================ District Surveillance Officer Listing Function Starts ================//
 	public function dsodb_list() {
@@ -2137,7 +2256,7 @@ public function mfpdb_list() {
 				'date_to' => ($this -> input -> post ('date_to'))? date('Y-m-d', strtotime($this ->input -> post ('date_to'))) : Null,
 				'status' => ($this -> input -> post ('status'))? $this -> input -> post ('status') : Null,
 				'marital_status' => ($this -> input -> post ('marital_status'))? $this -> input -> post ('marital_status') : Null,
-				'phone' => ($this -> input -> post ('phone'))? $this -> input -> post ('phone') : Null,
+				'cellphone' => ($this -> input -> post ('cellphone'))? $this -> input -> post ('cellphone') : Null,
 				'telephone' => ($this -> input -> post ('telephone'))? $this -> input -> post ('telephone') : Null,
 				'bankaccountno' => ($this -> input -> post ('bankaccountno'))? $this -> input -> post ('bankaccountno') : Null,
 				'bid' => ($this -> input -> post ('bankid'))? $this -> input -> post ('bankid') : Null,
@@ -2173,12 +2292,13 @@ public function mfpdb_list() {
                     'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
 					
 				);
+																		
 			//echo '<pre>';print_r($dsoData);echo '</pre>';exit();
 			$data = $this -> System_setup_model -> dsodb_save($dsoData,$dsocode,$dsocodeNewData);
 		}else{
 			$location = base_url(). "System_setup/dsodb_list/";
 				echo '<script language="javascript" type="text/javascript">;	window.location="'.$location.'"</script>';
-		}
+			}
 		}
 	}
 	//================ Function for Saving New or Existing District Surveillance Officer Record Ends Here ========================//
@@ -2283,8 +2403,6 @@ public function mfpdb_list() {
 		$this->form_validation->set_rules('branchname','Branch Name','alpha_spaces|trim|required|max_length[50]');
 		$this->form_validation->set_message('alpha_spaces', 'The Name field may only contain alpha and spaces.');
 		$this->form_validation->set_message('numeric_spaces', 'The field may only number');
-		
-		
 		
 	$cctcode =  $this -> input -> post('cctcode');
 	if ($this->form_validation->run() === FALSE) 
@@ -2482,7 +2600,6 @@ public function mfpdb_list() {
 		$this->form_validation->set_message('alpha_spaces', 'The Name field may only contain alpha and spaces.');
 		$this->form_validation->set_message('numeric_spaces', 'The field may only number');
 		
-		
 	$ccmcode =  $this -> input -> post('ccmcode');
 	if ($this->form_validation->run() === FALSE) 
 	{
@@ -2544,7 +2661,7 @@ public function mfpdb_list() {
 				'date_died' => ($this -> input -> post ('date_died'))? date('Y-m-d', strtotime($this ->input -> post ('date_died'))) : Null,
 				'date_retired' => ($this -> input -> post ('date_retired'))? date('Y-m-d', strtotime($this ->input -> post ('date_retired'))) : Null,
 				'date_from' => ($this -> input -> post ('date_from'))? date('Y-m-d', strtotime($this ->input -> post ('date_from'))) : Null,
-					'date_to' => ($this -> input -> post ('date_to'))? date('Y-m-d', strtotime($this ->input -> post ('date_to'))) : Null,
+				'date_to' => ($this -> input -> post ('date_to'))? date('Y-m-d', strtotime($this ->input -> post ('date_to'))) : Null,
 				'status' => ($this -> input -> post ('status'))? $this -> input -> post ('status') : Null,
 				'marital_status' => ($this -> input -> post ('marital_status'))? $this -> input -> post ('marital_status') : Null,
 				'phone' => ($this -> input -> post ('phone'))? $this -> input -> post ('phone') : Null,
@@ -2872,8 +2989,7 @@ public function mfpdb_list() {
 		$this->form_validation->set_rules('branchname','Branch Name','alpha_spaces|trim|required|max_length[50]');
 		$this->form_validation->set_message('alpha_spaces', 'The Name field may only contain alpha and spaces.');
 		$this->form_validation->set_message('numeric_spaces', 'The field may only number');
-
-    	$ccdcode =  $this -> input -> post('ccdcode');
+		$ccdcode =  $this -> input -> post('ccdcode');
 	        if ($this->form_validation->run() === FALSE) 
     {
 		$edit =  $this -> input -> post('edit');
@@ -3223,7 +3339,7 @@ public function mfpdb_list() {
 	}
 	//================ Medical Technician Listing Function Ends Here ======================================//
 	//================ Function to Show Page for Adding New Medical Technician Record Starts Here =========//
-	public function med_technician_add() { 
+	public function med_technician_add() {
 		dataEntryValidator(0);
 		$data = $this -> System_setup_model -> med_technician_add();
 		$data['edit']="Yes";
@@ -3355,10 +3471,8 @@ public function mfpdb_list() {
 					'employee_type' => ($this -> input -> post ('employee_type'))? $this -> input -> post ('employee_type') : Null,
 					'phone' => ($this -> input -> post ('phone'))? $this -> input -> post ('phone') : Null,
 					'payscale' => ($this -> input -> post ('payscale'))? $this -> input -> post ('payscale') : Null,
-					
 					'branchcode' => ($this -> input -> post ('branchcode'))? $this -> input -> post ('branchcode') : Null,
 					'branchname' => ($this -> input -> post ('branchname'))? $this -> input -> post ('branchname') : Null,
-					
 					'reason' => ($this -> input -> post ('reason'))? $this -> input -> post ('reason') : Null,
 					'is_temp_saved' => $this -> input -> post ('is_temp_saved'),
 					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
@@ -3366,12 +3480,10 @@ public function mfpdb_list() {
 					'basic_training_end_date' => ($this -> input -> post ('basic_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('basic_training_end_date'))) : Null,
 					'routine_epi_start_date' => ($this -> input -> post ('routine_epi_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('routine_epi_start_date'))) : Null,
 					'routine_epi_end_date' => ($this -> input -> post ('routine_epi_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('routine_epi_end_date'))) : Null,
-				
 					'survilance_training_start_date' => ($this -> input -> post ('survilance_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('survilance_training_start_date'))) : Null,
 					'survilance_training_end_date' => ($this -> input -> post ('survilance_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('survilance_training_end_date'))) : Null,
 					'cold_chain_training_start_date' => ($this -> input -> post ('cold_chain_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('cold_chain_training_start_date'))) : Null,
 					'cold_chain_training_end_date' => ($this -> input -> post ('cold_chain_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('cold_chain_training_end_date'))) : Null,
-				
 					'vlmis_training_start_date' => ($this -> input -> post ('vlmis_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('vlmis_training_start_date'))) : Null,
 					'vlmis_training_end_date' => ($this -> input -> post ('vlmis_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('vlmis_training_end_date'))) : Null,
 					'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
@@ -3391,6 +3503,7 @@ public function mfpdb_list() {
                     'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
 					 
 				);
+	
 				
 				//echo '<pre>';print_r($technicianData);echo '</pre>';exit();
 				$data = $this -> System_setup_model -> med_technician_save($technicianData,$technicianCode,$technicianCodeNewData);
@@ -3530,10 +3643,8 @@ public function mfpdb_list() {
 					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
 					'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
 					'previous_code'=>$this->input->post('previous_code')? $this->input->post('previous_code'):Null
-					
-					
 				);
-					$cc_mechanicNewData = array(
+		$cc_mechanicNewData = array(
 					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
 					'new_facode'=> ($this -> input -> post ('new_facode'))? $this -> input -> post ('new_facode') : Null,
 					'new_tcode'=> ($this -> input -> post ('new_tcode'))? $this -> input -> post ('new_tcode') : Null,
@@ -3625,7 +3736,7 @@ public function mfpdb_list() {
 	}
 	public function go_save() {
 		dataEntryValidator(0);
-		$go_code = $this -> input -> post ('go_code');
+		$go_code = $this -> input -> post ('go_code');										   
 		//echo '<pre>';print_r($this->input->post());echo '</pre>';exit();
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
@@ -3722,10 +3833,8 @@ public function mfpdb_list() {
 					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
 					'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
 					'previous_code'=>$this->input->post('previous_code')? $this->input->post('previous_code'):Null
-					
 				);
-					
-					$go_NewData = array(
+			$go_NewData = array(
 					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
 					'new_facode'=> ($this -> input -> post ('new_facode'))? $this -> input -> post ('new_facode') : Null,
 					'new_tcode'=> ($this -> input -> post ('new_tcode'))? $this -> input -> post ('new_tcode') : Null,
@@ -3734,11 +3843,9 @@ public function mfpdb_list() {
 					'new_lhwcode'=> ($this -> input -> post ('new_lhwcode'))? $this -> input -> post ('new_lhwcode') : Null,
 					'previouse_code'=>($this -> input -> post ('previouse_code'))? $this -> input -> post ('previouse_code') : Null,
 					'previous_code'=>($this -> input -> post ('previous_code'))? $this -> input -> post ('previous_code') : Null,
- 
                     'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
-					
 				);
-					//print_r($ccmData);exit;
+				//print_r($ccmData);exit;
 				//echo '<pre>';print_r($coData);echo '</pre>';exit();
 				$data = $this -> System_setup_model ->go_save($goData,$go_code,$go_NewData);
 			}else{
@@ -3915,9 +4022,8 @@ public function mfpdb_list() {
 					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
 					'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
 					'previous_code'=>$this->input->post('previous_code')? $this->input->post('previous_code'):Null
-					
 				);
-				$ccoNewData = array(
+			$ccoNewData = array(
 					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
 					'new_facode'=> ($this -> input -> post ('new_facode'))? $this -> input -> post ('new_facode') : Null,
 					'new_tcode'=> ($this -> input -> post ('new_tcode'))? $this -> input -> post ('new_tcode') : Null,
@@ -4013,8 +4119,6 @@ public function mfpdb_list() {
 	//print_r($_POST);exit;	
 		dataEntryValidator(0);
 		$cc_techniciancode = $this -> input -> post ('cc_techniciancode');
-	
-		
 		//echo '<pre>';print_r($this->input->post());echo '</pre>';exit();
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
@@ -4032,7 +4136,7 @@ public function mfpdb_list() {
 		$this->form_validation->set_message('numeric_spaces', 'The field may only number');
 		$cc_techniciancode =  $this -> input -> post('cc_techniciancode');	
 		//print($cc_techniciancode);exit;
-		if ($this->form_validation->run() === FALSE) 
+		if ($this->form_validation->run() === FALSE)
 		{
 			$edit =  $this -> input -> post('edit');
 				
@@ -4118,9 +4222,8 @@ public function mfpdb_list() {
 					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
 					'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
 					'previous_code'=>$this->input->post('previous_code')? $this->input->post('previous_code'):Null
-					
 				);
-				$cc_techniciancodeNewData = array(
+			$cc_techniciancodeNewData = array(
 					'new_distcode' => ($this -> input -> post ('new_distcode'))? $this -> input -> post ('new_distcode') : $this->session->District,
 					'new_facode'=> ($this -> input -> post ('new_facode'))? $this -> input -> post ('new_facode') : Null,
 					'new_tcode'=> ($this -> input -> post ('new_tcode'))? $this -> input -> post ('new_tcode') : Null,
@@ -4130,7 +4233,6 @@ public function mfpdb_list() {
 					'previouse_code'=>($this -> input -> post ('previouse_code'))? $this -> input -> post ('previouse_code') : Null,
 					'previous_code'=>($this -> input -> post ('previous_code'))? $this -> input -> post ('previous_code') : Null,
                     'post_type'=>($this -> input -> post ('post_type'))? $this -> input -> post ('post_type') : Null
-					
 				);
 				//print($cc_technicianData);exit;
 					//print_r($ccmData);exit;
@@ -4201,6 +4303,207 @@ public function mfpdb_list() {
 			$this -> load -> view("message", $data);
 		}
 	}
+	//--------------------------------------------------------------------//
+	//===============AddHR Listing Function Starts ==================//
+	public function AddHR_list() {
+		//Code for Pagination
+		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
+		if ($page <= 0){
+			$page = 1;
+		}
+		$per_page = 15;
+		// Set how many records do you want to display per page.
+		$startpoint = ($page * $per_page) - $per_page;
+		$statement = "hrdb";
+		$data = $this -> System_setup_model -> addhr_list($per_page,$startpoint);
+		//echo '<pre>';print_r($data);exit;
+		$data['pagination'] = $this -> Common_model -> pagination($statement, $per_page, $page, $url = '?');
+		$data['UserLevel'] = $this -> session -> UserLevel;
+		$data['startpoint'] = ($page * $per_page) - $per_page;
+		$data['edit']="Yes";
+		if ($data != 0) {
+			$data['data'] = $data;
+			$data['fileToLoad'] = 'system_setup/AddHR_list';
+			$data['pageTitle'] = 'EPI-MIS | List of HR';
+			$this -> load -> view('template/epi_template', $data);
+		} else {
+			$data['message'] = "You must have rights to access this page.";
+			$this -> load -> view("message", $data);
+		}
+	}
+	//================ Add HR Listing Function Ends Here =============================//
+	//-------------------------------------------------------- ---------------------------//
+	//================ Function to Show Page for Adding New AddHR Starts Here =======//	
+	public function AddHR_add() {
+		dataEntryValidator(1);
+		//dataEntryValidator();
+		$data = $this -> System_setup_model -> AddHR_add();
+		$data['edit']="Yes";
+		if ($data != 0) {
+			$data['data'] = $data;
+			$data['fileToLoad'] = 'system_setup/AddHR_add';
+			$data['pageTitle'] = 'EPI-MIS | Add New HR Form';
+			$this -> load -> view('template/epi_template', $data);
+		} else {
+			$data['message'] = "You must have rights to access this page.";
+			$this -> load -> view("message", $data);
+		}
+	}
+	
+	//================ Function to Show Page for Adding New AddHR Ends Here =========================//
+	//----------------------------------------------------------------------------------------------------//
+	//================ Function for Saving New or Existing AddHR Record Starts Here =================//
+		public function AddHR_save() {
+			
+		dataEntryValidator(1);
+		$hrCode = $this -> input -> post ('hrcode');
+		//echo $hrCode;exit;
+		$this->load->library('form_validation');
+		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
+		$this->form_validation->set_rules('basicpay','Basic Pay','numeric|trim|max_length[6]');
+		$this->form_validation->set_rules('hrname','HR Name','trim|required|alpha_spaces');
+		$this->form_validation->set_rules('phone','Phone','numeric|trim|max_length[14]|min_length[11]');
+		$this->form_validation->set_rules('bankaccountno','Bank Account Number','numeric_spaces|required|trim|max_length[16]');
+		$this->form_validation->set_rules('nic','CNIC','alpha_dash|trim|required|max_length[15]');
+		$this->form_validation->set_rules('passingyear','Passing year','numeric|trim|max_length[4]');
+		$this->form_validation->set_rules('branchcode','Branch Code','required|numeric_spaces|trim|max_length[8]');
+		$this->form_validation->set_rules('branchname','Branch Name','required|max_length[50]');
+        $this->form_validation->set_rules('bankid','Bank Information','required|max_length[50]');		
+	if ($this->form_validation->run() === FALSE) 
+	{
+		$edit =  $this -> input -> post('edit');
+			if($hrCode!='' && $edit!=''){
+				
+				$data = $this -> System_setup_model -> AddHR_edit($hrCode);
+				if ($data != 0) {
+					$data['data'] = $data;
+					$data['fileToLoad'] = 'system_setup/AddHR_edit';
+					$data['pageTitle'] = 'EPI-MIS | Update AddHR Form';
+					$data['edit']='1';
+					$this -> load -> view('template/epi_template', $data);
+				} else {
+					$data['message'] = "You must have rights to access this page.";
+					$this -> load -> view("message", $data);
+				}
+			}else{
+				$data = $this -> System_setup_model -> AddHR_add();
+				if ($data != 0) {
+					$data['data'] = $data;
+					$data['fileToLoad'] = 'system_setup/AddHR_add';
+					$data['pageTitle'] = 'EPI-MIS | Add New AddHR Form';
+					$data['edit']='1';
+					$this -> load -> view('template/epi_template', $data);
+				} else {
+					$data['message'] = "You must have rights to access this page.";
+					$this -> load -> view("message", $data);
+				}
+			}
+	}
+		else{
+			if($this -> input -> post ('hrcode')){
+				//print_r($this -> input -> post ('designation_type')); exit;
+				$hrData = array(
+					'procode' => $this -> session -> Province,
+					'hrcode' => ($this -> input -> post ('hrcode'))? $this -> input -> post ('hrcode') : Null,
+					'designation_type' => ($this -> input -> post ('designation_type'))? $this -> input -> post ('designation_type') : Null,
+					'hrname' => ($this -> input -> post ('hrname'))? $this -> input -> post ('hrname') : Null,
+					//'fathername' => ($this -> input -> post ('fathername'))? $this -> input -> post ('fathername') : Null,
+					'nic' => ($this -> input -> post ('nic'))? $this -> input -> post ('nic') : Null,
+					'date_of_birth' => ($this -> input -> post ('date_of_birth')) ? date('Y-m-d', strtotime($this -> input -> post ('date_of_birth'))) : Null,
+					//'distcode' => ($this -> input -> post ('distcode'))? $this -> input -> post ('distcode') : $this -> session -> District,
+					//'facode' => ($this -> input -> post ('facode'))? $this -> input -> post ('facode') : Null,
+					//'tcode' => ($this -> input -> post ('tcode'))? $this -> input -> post ('tcode') : Null,
+					'permanent_address' => ($this -> input -> post ('permanent_address'))? $this -> input -> post ('permanent_address') : Null,
+					'present_address' => ($this -> input -> post ('present_address'))? $this -> input -> post ('present_address') : Null,
+					'lastqualification' => ($this -> input -> post ('lastqualification'))? $this -> input -> post ('lastqualification') : Null,
+					'passingyear' => ($this -> input -> post ('passingyear'))? $this -> input -> post ('passingyear') : Null ,
+					'institutename' => ($this -> input -> post ('institutename'))? $this -> input -> post ('institutename') : Null,
+					'date_joining' => ($this -> input -> post ('date_joining'))? date('Y-m-d', strtotime($this ->input -> post ('date_joining'))) : Null,
+					'place_of_joining' => ($this -> input -> post ('place_of_joining'))? $this -> input -> post ('place_of_joining') : Null,
+					'date_termination' => ($this -> input -> post ('date_termination'))? date('Y-m-d', strtotime($this ->input -> post ('date_termination'))) : Null,
+					'date_transfer' => ($this -> input -> post ('date_transfer'))? date('Y-m-d', strtotime($this ->input -> post ('date_transfer'))) : Null,
+					'date_died' => ($this -> input -> post ('date_died'))? date('Y-m-d', strtotime($this ->input -> post ('date_died'))) : Null,
+					'date_retired' => ($this -> input -> post ('date_retired'))? date('Y-m-d', strtotime($this ->input -> post ('date_retired'))) : Null,
+					'date_resigned' => ($this -> input -> post ('date_resigned'))? date('Y-m-d', strtotime($this ->input -> post ('date_resigned'))) : Null,
+					'status' => ($this -> input -> post ('status'))? $this -> input -> post ('status') : Null,
+					'marital_status' => ($this -> input -> post ('marital_status'))? $this -> input -> post ('marital_status') : Null,
+					'phone' => ($this -> input -> post ('phone'))? $this -> input -> post ('phone') : Null,
+					'telephone' => ($this -> input -> post ('telephone'))? $this -> input -> post ('telephone') : Null,
+					'bankaccountno' => ($this -> input -> post ('bankaccountno'))? $this -> input -> post ('bankaccountno') : Null,
+					'bid' => ($this -> input -> post ('bankid'))? $this -> input -> post ('bankid') : Null,
+					'payscale' => ($this -> input -> post ('payscale'))? $this -> input -> post ('payscale') : Null,
+					'basicpay' => ($this -> input -> post ('basicpay'))? $this -> input -> post ('basicpay') : Null,
+					'branchcode' => ($this -> input -> post ('branchcode'))? $this -> input -> post ('branchcode') : Null,
+					'employee_type' => ($this -> input -> post ('employee_type'))? $this -> input -> post ('employee_type') : Null,
+					'type' => ($this -> input -> post ('type'))? $this -> input -> post ('type') : Null,
+					//'supervisor_type' => ($this -> input -> post ('supervisor_type'))? $this -> input -> post ('supervisor_type') : Null,
+					'branchname' => ($this -> input -> post ('branchname'))? $this -> input -> post ('branchname') : Null,
+					'basic_training_start_date' => ($this -> input -> post ('basic_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('basic_training_start_date'))) : Null,
+					'basic_training_end_date' => ($this -> input -> post ('basic_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('basic_training_end_date'))) : Null,
+					'routine_epi_start_date' => ($this -> input -> post ('routine_epi_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('routine_epi_start_date'))) : Null,
+					'routine_epi_end_date' => ($this -> input -> post ('routine_epi_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('routine_epi_end_date'))) : Null,
+					'survilance_training_start_date' => ($this -> input -> post ('survilance_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('survilance_training_start_date'))) : Null,
+					'survilance_training_end_date' => ($this -> input -> post ('survilance_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('survilance_training_end_date'))) : Null,
+					'cold_chain_training_start_date' => ($this -> input -> post ('cold_chain_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('cold_chain_training_start_date'))) : Null,
+					'cold_chain_training_end_date' => ($this -> input -> post ('cold_chain_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('cold_chain_training_end_date'))) : Null,
+					'is_temp_saved' => $this -> input -> post ('is_temp_saved'),
+					'vlmis_training_start_date' => ($this -> input -> post ('vlmis_training_start_date'))? date('Y-m-d', strtotime($this ->input -> post ('vlmis_training_start_date'))) : Null,
+					'vlmis_training_end_date' => ($this -> input -> post ('vlmis_training_end_date'))? date('Y-m-d', strtotime($this ->input -> post ('vlmis_training_end_date'))) : Null,
+					//'post_type'=>($this->input->post('post_type'))? $this->input->post('post_type'):Null,
+					//'previous_code'=>$this->input->post('previous_code')?
+					//$this->input->post('previous_code'):Null,
+					//'newtcode' => ($this -> input -> post ('newtcode'))? $this -> input -> post ('newtcode') : Null,
+					//'newfacode' => ($this -> input -> post ('newfacode'))? $this -> input -> post ('newfacode') : Null,
+					//'newuncode' => ($this -> input -> post ('newuncode'))? $this -> input -> post ('newuncode') : Null
+			    );
+					
+			
+			$data = $this -> System_setup_model -> AddHR_save($hrData,$hrCode);
+		}else{
+			//echo $_POST; exit();
+			$location = base_url(). "System_setup/AddHR_add/";
+				echo '<script language="javascript" type="text/javascript"> alert("No AddHR Code Provided....");	window.location="'.$location.'"</script>';
+		}
+		}
+	}
+		//================ Function to Show Page for Editing Existing AddHR Record Starts Here ===============//
+	public function AddHR_edit() {
+		dataEntryValidator(1);
+		$hrcode = $this -> uri -> segment(3);
+		//print_r($hrcode); exit;
+		$data = $this -> System_setup_model -> AddHR_edit($hrcode);
+		//$data = $this -> System_setup_model -> dsodb_edit($dsocode);
+		if ($data != 0) {
+			$data['data'] = $data;
+			$data['fileToLoad'] = 'system_setup/AddHR_edit';
+			$data['pageTitle'] = 'EPI-MIS | Update AddHR Form';
+			$data['edit']='1';
+			$this -> load -> view('template/epi_template', $data);
+		} else {
+			$data['message'] = "You must have rights to access this page.";
+			$this -> load -> view("message", $data);
+		}
+	}
+	//================ Function to Show Page for Editing Existing AddHR Record Ends Here ================//
+	//--------------------------------------------------------------------------------------------------------//
+	//================ Function to Show Page for Viewing Existing AddHR Record Starts Here ==============//
+	public function AddHR_view() {
+		$hrcode = $this -> uri -> segment(3);
+		$data = $this -> System_setup_model -> AddHR_view($hrcode);
+		if ($data != 0) {
+			$data['data'] = $data;
+			$data['fileToLoad'] = 'system_setup/AddHR_view';
+			$data['pageTitle'] = 'EPI-MIS | AddHR Detailed View';
+			$this -> load -> view('template/epi_template', $data);
+		} else {
+			$data['message'] = "You must have rights to access this page.";
+			$this -> load -> view("message", $data);
+		}
+	}
+	
+	
+	
+	
 	
 	//================ Function for Viewing Existing Technician Record Starts Here ==========================//
 	//-------------------------------------------------------------------------------------------------------//

@@ -46,13 +46,12 @@ class Linelists extends CI_Controller {
 		}
 	}
 	//================ Function to Create Filters for Sepecific Reports Ends Here ===================//
-	public function Surveillance($code=NULL,$year=NULL,$week=NULL,$case_type=NULL,$drilldown=NULL,$cross_notified=NULL,$forOutbreak=NULL,$specimen_result=NULL){	
-		//echo 'asd';exit;	
+	public function Surveillance($code=NULL,$year=NULL,$week=NULL,$case_type=NULL,$drilldown=NULL,$cross_notified=NULL,$forOutbreak=NULL,$specimen_result=NULL){		
+	//kp
 		$data=array();$dataPosted=array();
 		//print($this->uri->segment(3));exit;
 		if($this->uri->segment(3))
 		{
-			//echo "as";exit();
 			$dataPosted  = array("uncode" => $this->uri->segment(3), "year" => $this->uri->segment(5),  "case_type" =>'Msl', "cross_notified" => 0);
 		}
 		else{
@@ -113,20 +112,15 @@ class Linelists extends CI_Controller {
 		if(isset($data['case_type'])){
 			//print_r($data);exit();
 			if(isset($data['datefrom'])){
-				//echo 'c';exit;	
 				$data['datefromReport'] = $data['datefrom'];
 			}
 			else{
-				//echo 'cv';
 				$data['datefromReport'] = '';
-				//print_r($data);exit();
 			}
 			if(isset($data['dateto'])){
-				//echo 'cz';exit;	
 				$data['datetoReport'] = $data['dateto'];
 			}
 			else{
-				//echo 'cv2';
 				$data['datetoReport'] = '';
 			}
 			if ($data['case_type']=='AFP' || $data['case_type']=='Measles_cross_notified' || $data['case_type']=='Measles_other' || $data['case_type']=='NT' || $data['case_type']=='AEFI') {
@@ -142,9 +136,7 @@ class Linelists extends CI_Controller {
 					$this -> AEFI($data);exit();
 				}
 			}
-			
 			else if($data['case_type'] != 'AFP' || $data['case_type'] != 'NT' ) {
-				//echo 'cv3';exit;
 				$this -> Cases($data);exit();
 			}
 		}

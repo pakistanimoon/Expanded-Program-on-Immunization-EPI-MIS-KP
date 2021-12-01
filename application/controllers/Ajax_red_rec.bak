@@ -239,8 +239,8 @@ class Ajax_red_rec extends CI_Controller {
 			$url = "";
 		}
 		if($procode == '3'){
-			//$url = "http://epimis.cres.pk/";
-			$url = "http://epimis1.pacetec.net/";
+			$url = "http://epimis.cres.pk/";
+			
 		}
 		if($procode == '4'){
 			$url = "http://balochistan.epimis.pk/";
@@ -352,6 +352,7 @@ class Ajax_red_rec extends CI_Controller {
 		//print($year);exit;
 		$data['data'] = $this-> Situation_analysis_model->  situation_analysis_view($techniciancode,$year);
 		//print_r($data);exit;
+		$data['filter_view'] = $this-> uri -> segment(5);
 		$this-> load-> view('Add_red_microplanning/situation_analysis_view',$data);
         	
 	}
@@ -424,8 +425,8 @@ class Ajax_red_rec extends CI_Controller {
 	}
 	public function superviosry_plan_filter(){
 		$supervisor_type = $this-> input-> get('supervisor_type');
-		$fmonth = $this-> input-> get('fmonth'); 
-		$data = $this-> Ajax_red_rec_model-> superviosry_plan_filter($supervisor_type, $fmonth);
+		$quarter = $this-> input-> get('quarter'); 
+		$data = $this-> Ajax_red_rec_model-> superviosry_plan_filter($supervisor_type, $quarter);
 		echo $data;
 	}
 	public function red_map_add(){		
@@ -457,20 +458,39 @@ class Ajax_red_rec extends CI_Controller {
 	}
 	public function getTechredrec() {
 		$facode = $this-> input-> post('facode');	
-		$data = $this-> Ajax_red_rec_model-> getTechredrec($facode);
+		$year = $this-> input-> post('year');	
+		$data = $this-> Ajax_red_rec_model-> getTechredrec($facode,$year);
 		echo $data;
 	}
 	public function checkTechnician_avalible() {
 		$techniciancode = $this-> input-> post('techniciancode');	
-		$data = $this-> Ajax_red_rec_model-> checkTechnician_avalible($techniciancode);
+		$selectedyear = $this-> input-> post('selectedyear');	
+		$data = $this-> Ajax_red_rec_model-> checkTechnician_avalible($techniciancode,$selectedyear);
+		echo $data;
+	}
+	public function checkTechnician_avalible_list() {
+		$techniciancode = $this-> input-> post('techniciancode');	
+		$year = $this-> input-> post('year');	
+		$facode = $this-> input-> post('facode');	
+		$quarter = $this-> input-> post('quarter');
+		$data = $this-> Ajax_red_rec_model-> checkTechnician_avalible_list($techniciancode,$quarter,$facode,$year);
+		echo $data;
+	}
+	public function checkQuarter_avalible_list() {
+		$techniciancode = $this-> input-> post('techniciancode');	
+		$year = $this-> input-> post('year');	
+		$facode = $this-> input-> post('facode');	
+		$quarter = $this-> input-> post('quarter');
+		$data = $this-> Ajax_red_rec_model-> checkQuarter_avalible_list($techniciancode,$quarter,$facode,$year);
 		echo $data;
 	}
 	public function getAreaAndSession() {
 		$techniciancode = $this-> input-> post('techniciancode');
+		$year = $this-> input-> post('year');
 		//$year = $this-> input-> post('year');
-		//$quarter = $this-> input-> post('quarter');
+		$quarter = $this-> input-> post('quarter');
 		
-		$data['var'] = $this-> Ajax_red_rec_model-> getAreaAndSession($techniciancode);
+		$data['var'] = $this-> Ajax_red_rec_model-> getAreaAndSession($techniciancode,$year,$quarter);
 		
 		//$data = $this-> Ajax_red_rec_model-> getAreaAndSession();
 		  
@@ -493,6 +513,57 @@ class Ajax_red_rec extends CI_Controller {
 		}
 	}
 	
-	
+	public function excel_situation_analysis_view(){	
+		//if request is from excel
+		header("Content-type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=Situation_analysis.xls");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		$techniciancode = $this-> uri -> segment(3);
+		$year = $this-> uri -> segment(4);	
+		$data['data'] = $this-> Situation_analysis_model->  situation_analysis_view($techniciancode,$year);
+		$this-> load-> view('Add_red_microplanning/excel/excel_situation_analysis_view',$data);
+        	
+	} 
+	public function excel_special_activities_view(){
+		header("Content-type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=Special_Activities.xls");
+		header("Pragma: no-cache");
+		header("Expires: 0"); 
+		$techniciancode = $this-> uri -> segment(3);
+		$year = $this-> uri -> segment(4);	
+		$data['data'] = $this-> Special_activities_model-> special_activities_view($techniciancode,$year);
+		$this-> load-> view('Add_red_microplanning/excel/excel_special_activities_view',$data);
+	}
+	public function excel_session_plan_view(){	
+		header("Content-type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=Session_Plan.xls");
+		header("Pragma: no-cache");
+		header("Expires: 0"); 	
+        $techniciancode = $this-> uri -> segment(3);
+		$year = $this-> uri -> segment(4);	
+		$data['data'] = $this-> Session_plan_model-> session_plan_view($techniciancode,$year);	
+		$this-> load-> view('Add_red_microplanning/excel/excel_session_plan_view',$data);	
+	}
+	public function excel_red_strategy_view(){	
+		header("Content-type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=Red_Strategy.xls");
+		header("Pragma: no-cache");
+		header("Expires: 0");	
+        $techniciancode = $this-> uri -> segment(3);
+		$year = $this-> uri -> segment(4);		
+		$data['data'] = $this-> Red_strategy_model-> red_strategy_view($techniciancode,$year);
+		$this-> load-> view('Add_red_microplanning/excel/excel_red_strategy_view',$data);	
+	}
+	public function aefi_filter(){
+		$tcode = $this->input->get('tcode');
+		$uncode = $this->input->get('uncode');
+		$facode = $this->input->get('facode');
+		$year = $this->input->get('year');
+		$week = $this->input->get('week');
+		$complaints = $this->input->get('complaints');
+		$data=$this -> Ajax_red_rec_model -> aefi_filter($tcode,$uncode,$facode,$year,$week,$complaints);
+		echo $data;
+	}
 }
 ?>

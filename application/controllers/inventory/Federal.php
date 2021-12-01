@@ -6,9 +6,14 @@ class Federal extends CI_Controller {
 		$this -> load -> helper('epi_functions_helper');
 		authentication();
 		$this -> load -> model ('Common_model','common');
+		$this -> load -> helper('my_functions_helper');
 		$this -> load -> model ('Inventory_reports_model',"invnrep");
 	}
 	public function fetch_fed_issuance(){
+		 
+		$subTitle ="(Vaccine Management) Fetch Vocher from Federal, Fetch New Vouchers";
+		$data['subtitle']=$subTitle;
+		
 		$moondatatosave = array();
 		for($i=0;$i<2;$i++){
 			if($i===0){
@@ -52,12 +57,15 @@ class Federal extends CI_Controller {
 			echo 'No New Voucher To Fetch.';
 		}else{
 			$newfetchedvouchers = array();
+			$fetchedvoucherqueries = array();
 			foreach($moondatatosave as $onearr){
 				$transactionNumber = $onearr["transactionNumber"].'-fed';
 				$newid = false;
-				$toskiparr = array("25","26","31","35","38","42","51");
-				$toreparr = array("28"=>"23","40"=>"4","43"=>"2","49"=>"3","50"=>"1","54"=>"48","55"=>"50","27"=>"88","70"=>"91","75"=>"92");
-				if(in_array($onearr["itemID"],$toskiparr)){continue;}
+				//items must be taken from name and activity mapping are "39","3"
+				//mapping of IDs
+				$toskiparr = array("7","9","25","26","31","35","38","42","51","87");
+				$toreparr = array("28"=>"23","40"=>"4","43"=>"2","49"=>"3","50"=>"1","54"=>"48","55"=>"50","27"=>"88","70"=>"91","75"=>"92","57"=>"90","88"=>"93","46"=>"12","12"=>"11","20"=>"6","6"=>"5","21"=>"10");
+				if(in_array($onearr["itemID"],$toskiparr)){$newid = $onearr["itemID"];}
 				if(in_array($onearr["itemID"],array_keys($toreparr))){$newid = $toreparr[$onearr["itemID"]];}
 				//check if transaction number exist or not.
 				$username = 'imran';
@@ -91,7 +99,7 @@ class Federal extends CI_Controller {
 						"to_warehouse_type_id" => 2, //Provincial
 						"to_warehouse_code" => $_SESSION["Province"], //For Province KP
 						"stakeholder_activity_id" => $purposeid,
-						"created_by" => 'imran',
+						"created_by" => $username,
 						"created_date" => date("Y-m-d H:i:s")
 					);
 					$recid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');
@@ -107,7 +115,7 @@ class Federal extends CI_Controller {
 					"batch_master_id" => $recid,
 					"expiry_date" => $onearr["expiryDate"],
 					"quantity" => $onearr["issuedQty"],
-					"unit_price" => $onearr["unitPrice"],
+					"unit_price" => sprintf("%.2f",$onearr["unitPrice"]),
 					"production_date" => $onearr["productionDate"],
 					"last_update" => date("Y-m-d H:i:s"),
 					"stakeholder_id" => $manufacturer,
@@ -116,7 +124,7 @@ class Federal extends CI_Controller {
 					"vvm_type_id" => $vvm_type_id,
 					"warehouse_type_id" => 2, //Provincial
 					"code" => $_SESSION["Province"], //For Province KP
-					"created_by" => 'imran',
+					"created_by" => $username,
 					"created_date" => date("Y-m-d H:i:s")
 				);
 				$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch);
@@ -131,6 +139,7 @@ class Federal extends CI_Controller {
 					"created_date" => date("Y-m-d H:i:s")
 				);
 				$detailid = $this->common->insert_record("epi_stock_detail",$datatosavedetail);
+				
 				$masterpk = $recid;
 				$arr_ids=array('master_id'=>$masterpk,'batch_id'=>$batchid,'detail_id'=>$detailid);
 				$this->save_all_history($arr_ids,$countdrafts);
@@ -138,7 +147,8 @@ class Federal extends CI_Controller {
 			}
 			echo 'New Vouchers fetched Successfully ('.(implode(",",$newfetchedvouchers)).')';
 		}
-	}	
+		createTransactionLog("Fetch New Vouchers", $subTitle."  - New Voucher Added");
+	}
 	public function get_fed_purpose_id($purposename){ 
 		$purposeid = $this->common->get_info("epi_stakeholder_activities",NULL,NULL,"pk_id as id",array("activity"=>$purposename));
 		return (isset($purposeid->id))?$purposeid->id:NULL; 
@@ -164,7 +174,7 @@ class Federal extends CI_Controller {
 		return (isset($itemdata->id))?$itemdata->id:0;
 	}
 	/* public function get_number_of_doses($stckholder_item_id){
-		$dosesdata = $this->common->get_info("epi_item_pack_sizes",NULL,NULL,"number_of_doses as id",array("pk_id"=>$stckholder_item_id));
+		$dosesdata = $this->common->get_info("epi_item_pack_sizes",NULL,NULL,"number_of_doses as id",array("pk_id"=>$stckholder_item_id)); 
 		return (isset($dosesdata->id))?$dosesdata->id:NULL;
 	} */
 	/*
@@ -214,11 +224,12 @@ class Federal extends CI_Controller {
 	*/
 	public function fetch_fed_voucher_history(){
 		$data["data"]["fetchedrec"] = $this->common->fetchall("epi_stock_master",NULL,NULL,"transaction_number like 'I%-fed'",NULL,array("by"=>"transaction_number","type"=>"DESC"),NULL,NULL,100);
-		//$data["data"]["fetchedrec"] = $this->common->fetchall("epi_stock_master",NULL,NULL,"transaction_number like 'I%-fed' or transaction_number like 'R%' and from_warehouse_type_id='1' and to_warehouse_type_id='2' and to_warehouse_code='3'",NULL,array("by"=>"transaction_number","type"=>"DESC"),NULL,NULL,100);
-		//print_r($rowdata);exit;
-		// echo $this->db->last_query(); exit;
+		$subTitle ="(Vaccine Management) Fetch Vocher from Federal";
 		$wh_whrarr = array("epi_stock_batch.status !="=>'Finished',"epi_stock_batch.warehouse_type_id"=>$this->session->curr_wh_type,"epi_stock_batch.code"=>$this->session->curr_wh_code,"epi_stock_master.draft"=>0,"epi_stock_master.transaction_type_id"=>2);
 		$data['data']['vouchers'] = $this->common->fetchall("epi_stock_master",array("table"=>"epi_stock_batch","tablecol"=>"batch_master_id","id"=>"pk_id"),"DISTINCT ON (epi_stock_master.transaction_number) epi_stock_master.transaction_number",$wh_whrarr,NULL,array("by"=>"epi_stock_master.transaction_number","type"=>"ASC"));
+		$data['subtitle']=$subTitle;
+		createTransactionLog("Fetch voucher", $subTitle."  - Table View");
+		//print_r($rowdata);exit;
 		$data['fileToLoad'] = 'inventory_management/stock_received_from_fed';
 		$data['pageTitle'] = 'EPI-MIS | Stock Fetched (Federal)';
 		$this->load->view('template/epi_template',$data);

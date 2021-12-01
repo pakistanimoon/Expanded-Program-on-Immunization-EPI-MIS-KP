@@ -1,0 +1,155 @@
+<?php
+	/* $currwhtype = $this->session->curr_wh_type;
+	$currwhcode = $this->session->curr_wh_code;
+	$batchexist = (isset($draftdata) and count($draftdata["batch"]))?true:false;
+	if($batchexist && $draftdata["master"]->to_warehouse_code!=0){
+		$selectedwhcode = substr($draftdata["master"]->to_warehouse_code,0,1);
+		$selectedwhtype = $draftdata["master"]->to_warehouse_type_id;
+	}else if($currwhtype=="2"){
+		$selectedwhcode = substr($currwhcode,0,1);
+		$selectedwhtype = "4";
+	}else if($currwhtype=="4"){
+		$selectedwhcode = substr($currwhcode,0,1);
+		$selectedwhtype = "6";
+	}else {
+		$selectedwhcode = substr($currwhcode,0,1);
+		$selectedwhtype = NULL;
+	}
+	//echo $selectedwhcode.'moon'.$selectedwhtype;exit;
+	$provincesoptions = get_options_html($provinces,true,FALSE,$selectedwhcode); */
+?>
+<section class="content">
+    <div class="container bodycontainer">
+		<div class="row">
+			<div class="panel panel-primary bt bb bl br ml10 mr10">
+				<div class="panel-heading">
+					Recent Issued Vouchers List (Max. 200)
+				</div>
+				<div class="panel-body">
+						<!--<div class="row">
+							<div class="col-md-3 storetd <?php //echo ($batchexist)?'hide':''; ?>">
+								<label>Store<span style="color:red">*</span></label>
+								<select id="to_warehouse_type_id" name="to_warehouse_type_id" required="required" class="form-control">
+									<?php //get_warehouse_type_option(FALSE,NULL,$selectedwhtype,false,TRUE); ?>
+								</select>
+							</div>
+							<div class="col-md-3 protd hide">
+								<label>Province<span style="color:red">*</span></label>
+								<select id="warehouse_province" required="required" class="form-control">
+									<?php //echo $provincesoptions; ?>
+								</select>
+							</div>
+							<div class="col-md-3 storeloctd storeuctd <?php //echo ($batchexist && $draftdata["master"]->to_warehouse_type_id==6)?'':'hide'; ?>">
+								<label>Store UC<span style="color:red">*</span></label>
+								<select id="uccode" name="uccode" class="form-control" <?php //echo ($batchexist)?'disabled="disabled"':''; ?>>
+								</select>
+							</div>
+							<div class="col-md-3 storeloctd <?php //echo ($batchexist)?'':'hide'; ?>">
+								<label>Store Location<span style="color:red">*</span></label>
+								<select id="code"  name="code" required="required" class="form-control" <?php //echo ($batchexist)?'disabled="disabled"':''; ?>>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<label>Purpose / Activity<span style="color:red">*</span></label>
+								<select id="activity" name="activity" required="required" class="form-control" <?php //echo ($batchexist)?'disabled="disabled"':''; ?>>
+									<?php //get_purposes(FALSE,(($batchexist)?$draftdata["master"]->stakeholder_activity_id:NULL)); ?>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label>Issuance Date<span style="color:red">*</span></label>
+								<input class="form-control dpwt" name="trans_date_time"  id="trans_date_time" type="text" <?php //echo ($batchexist)?'disabled="disabled" value="'.$draftdata["master"]->transaction_date.'"':' value="'.date("Y-m-d H:i:s").'"'; ?> readonly="readonly">
+							</div>
+							<div class="col-md-3">
+								<label>Reference / Issued By</label>
+								<input class="form-control" name="trans_ref" id="trans_ref" type="text">
+							</div>
+							<div class="col-md-3" style="text-align: right;">
+								<label>&nbsp;<span style="color:red">&nbsp;</span></label>
+								<button style="background:#008d4c;" type="button" id="additemsbtn" class="btn btn-primary btn-md form-control" role="button"><i class="fa fa-arrow-down "></i> Add Voucher Items </button>
+							</div>
+						</div>-->
+						<div class="row">
+							<div style="text-align: right;" class="col-md-12">
+								<?php 
+								if($this -> session -> flashdata('message')){ ?>
+									<label class="text-center pull-left" style="padding-top: 9px;"><strong><?php echo $this -> session -> flashdata('message'); ?></strong></label> <?php 
+								} ?>
+								<a href="<?php echo base_url("invnissue"); ?>" style="background:#008d4c;" class="btn btn-primary btn-md pull-right"><i class="fa fa-arrow-right"></i> Add New Voucher </a>
+							</div>
+						</div>
+						<div class="voucherslist">
+							<div class="row mt10">
+								<div class="col-md-12">
+									<table class="table table-bordered table-hover table-striped table-vcenter tbl-listing">
+										<thead>
+											<tr>
+												<th style="width:15%;"><label>Transaction Date</label></th>
+												<th style="width:10%;"><label>Voucher Number</label></th>
+												<th><label>Issued to</label></th>
+												<th style="width:10%;"><label>Activity</label></th>
+												<th style="width:6%;"><label>Batches in Voucher</label></th>
+												<th style="width:7%;"><label>created By</label></th>
+												<th style="width:12%;"><label>created On</label></th>
+												<th style="width:10%"><label>Voucher Status</label></th>
+												<th style="width:3%"><label>Action</label></th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php foreach($issuedvouchers as $key=>$singlerec){
+												$recid = $singlerec["pk_id"];
+												$vouchernum = $singlerec["transaction_number"]; ?>
+												<tr>
+													<td>
+														<span><?php echo $singlerec["transaction_date"]; ?></span>
+													</td>
+													<td>
+														<span><?php echo $vouchernum; ?></span>
+													</td>
+													<td>
+														<span class="pull-left"><?php echo $singlerec["store"]; ?></span>
+													</td>
+													<td>
+														<span><?php echo $singlerec["activity"]; ?></span>
+													</td>
+													<td>
+														<span><?php echo $singlerec["transaction_counter"]; ?></span>
+													</td>
+													<td>
+														<span><?php echo $singlerec["created_by"]; ?></span>
+													</td>
+													<td>
+														<span><?php echo $singlerec["created_date"]; ?></span>
+													</td>
+													<td>
+														<span><?php echo $stat = $singlerec["voucherstat"]; ?></span>
+													</td>
+													<td>
+														<a href="<?php echo base_url("voucher/".$vouchernum); ?>" target="_blank"><span class="fa fa-print cursor-hand pull-left" style="cursor:pointer"></span></a>
+														<?php if($stat != 'Received' && $stat != 'In Process'){ ?>
+															<span data-id="<?php echo $singlerec["pk_id"]; ?>" class="fa fa-pencil cursor-hand actionedit pull-right" style="cursor:pointer"></span>
+														<?php } ?>														
+													</td>
+												</tr><?php 
+											}?>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+				</div> <!--end of panel body-->
+			</div> <!--end of panel panel-primary-->
+		</div><!--end of row-->
+	</div><!--end of body container-->
+</section><!-- /.content -->
+<script>
+$(document).ready(function(){
+	$(document).on('click','.actionedit',function(){
+		if(confirm("Do You realy want to edit this?")){
+			var masterId = $(this).data("id");
+			window.location.href = '<?php echo base_url("editinvnIssue"); ?>'+'/'+masterId;
+		}
+	});
+});
+</script>

@@ -92,7 +92,7 @@ class Item_management extends CI_Controller {
 					'item_unit_id' => (isset($item_unit_id[$key]) AND $item_unit_id[$key] !="")?$item_unit_id[$key]:NULL,  
 					'activity_type_id' => (isset($activity_type_id[$key]) AND $activity_type_id[$key] !="")?$activity_type_id[$key]:NULL,  
 					'vvm_stage_type' => (isset($vvm_stage_type[$key]) AND $vvm_stage_type[$key] !="")?$vvm_stage_type[$key]:NULL, 
-					'cr_table_row_numb' => (isset($cr_table_row_numb[$key]) AND $cr_table_row_numb[$key] !="")?$cr_table_row_numb[$key]:NULL, 
+					'cr_table_row_numb' => (isset($cr_table_row_numb[$key]) AND $cr_table_row_numb[$key] !="")?$cr_table_row_numb[$key]:NULL,
 					'item_id' => $item_id,  
 				);
 				$this -> Common_model -> insert_record('epi_item_pack_sizes',$add_array);	         
@@ -122,7 +122,7 @@ class Item_management extends CI_Controller {
 		$id = $this -> input -> post('id');
 		$data['data'] =$this->item_model ->add_edit($id);
 		echo json_encode($data['data']);
-	} */
+	} */				  
 	//================ Function to Update Product Starts Here =======//	
 	public function item_update(){
 		//print_r($_POST); exit;
@@ -156,7 +156,7 @@ class Item_management extends CI_Controller {
 					'item_unit_id' => (isset($item_unit_id[$key]) AND $item_unit_id[$key] !="")?$item_unit_id[$key]:NULL, 
 					'activity_type_id' => (isset($activity_type_id[$key]) AND $activity_type_id[$key] !="")?$activity_type_id[$key]:NULL, 
 					'vvm_stage_type' => (isset($vvm_stage_type[$key]) AND $vvm_stage_type[$key] !="")?$vvm_stage_type[$key]:NULL, 
-					'cr_table_row_numb' => (isset($cr_table_row_numb[$key]) AND $cr_table_row_numb[$key] !="")?$cr_table_row_numb[$key]:NULL, 
+					'cr_table_row_numb' => (isset($cr_table_row_numb[$key]) AND $cr_table_row_numb[$key] !="")?$cr_table_row_numb[$key]:NULL,
 					'item_id' => $item_pk_id,  
 				);
 				if(empty($pk_id)){

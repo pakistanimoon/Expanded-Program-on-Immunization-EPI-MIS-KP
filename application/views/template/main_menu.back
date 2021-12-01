@@ -1,0 +1,667 @@
+<?php 
+//Code by Moon to handle all conditions here and shorten the logical test part in all conditional statements
+$usersabstract = array(
+	"isprodeo" => array("type"=>'DEO',"level"=>2),
+	"ispromng" => array("type"=>'Manager',"level"=>2),
+	"isprostr" => array("type"=>'Store',"level"=>2),
+	"isdistdeo" => array("type"=>'DEO',"level"=>3),
+	"isdistmng" => array("type"=>'Manager',"level"=>3),
+	"isdiststr" => array("type"=>'Store',"level"=>3),
+	"istehdeo" => array("type"=>'DEO',"level"=>4),
+	"istehmng" => array("type"=>'Manager',"level"=>4),
+	"istehstr" => array("type"=>'Store',"level"=>4),
+	"ishfdeo" => array("type"=>'DEO',"level"=>6),
+	"ishfmng" => array("type"=>'Manager',"level"=>6),
+	"ishfstr" => array("type"=>'Store',"level"=>6),
+	"isadmin" => array("type"=>'Admin',"level"=>99)
+);
+extract(array_fill_keys(array_keys($usersabstract), FALSE));
+$utype	= $this -> session -> utype;
+$ulevel = $this -> session -> UserLevel;
+foreach($usersabstract as $key=>$singleabstract){
+	if(  $singleabstract["type"] == $utype &&  $singleabstract["level"] == $ulevel ){
+		${$key.''} = TRUE;
+		break;
+	}
+}
+ ?>
+<!-- Left side column. contains the logo and sidebar -->
+<div class="loading hide">Loading&#8230;</div>
+<aside class="main-sidebar">
+<!-- sidebar: style can be found in sidebar.less -->
+	<section class="sidebar">
+	<!-- /.search form -->
+	<!-- sidebar menu: : style can be found in sidebar.less -->
+		<ul class="sidebar-menu">
+			<?php if($this -> session -> username != 'kp_kphis'){ ?>
+			<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>"><i class="fa fa-home"></i><span>Home</span></a></li><?php 
+			if($isadmin){?>
+				<li class="parent-uk treeview">
+					<a href="#">
+						<i class="fa fa-users"></i>
+						<span>User Management</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu ">					
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>User_management/user_list">Users</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>User_management/user_log">Users Log</a></li>
+					</ul>
+				</li>
+				<li class="parent-uk treeview">
+					<a href="#">
+						<i class="fa fa-users"></i>
+						<span>HR Management</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu ">					
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Hr_management/level_list">HR Levels</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Hr_management/type_list">HR Types</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Hr_management/subtype_list">HR Sub Types</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Hr_management/training_list">HR Training Types</a></li>
+					</ul>
+				</li>
+				<li class="parent-uk treeview">
+					<a href="#">
+						<i class="fa fa-eye"></i>
+						<span>Disease Surveillance</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu ">					
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Disease_Surveillance/Diseases_List">Disease Types</a></li>
+						<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>Hr_management/type_list">HR Types</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>Hr_management/subtype_list">HR Sub Types</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>Hr_management/training_list">HR Training Types</a></li> -->
+					</ul>
+				</li>
+				<li class="parent-uk treeview">
+					<a href="#">
+						<i class="fa fa-cog"></i>
+						<span>Lookups Management</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu ">					
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Lookups_management/lookups_list">General Lookups</a></li>
+					</ul>
+				</li>
+			<?php } ?>
+			<?php if($this -> session -> UserLevel != '99'){?>
+				<li class="parent-uk treeview">
+					<a href="#">
+						<i class="fa fa-th"></i>
+						<span>System Setup</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu ">
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i> Human Resource <i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<?php if(($_SESSION['UserLevel']=='2') && ($_SESSION['utype']=='DEO') && ($_SESSION['username']!='guestuser')){ ?>
+								 <li class="parent-uk">
+								  <a class="anchor-uk" href="<?php echo base_url();?>HRList"><i class="fa fa-circle-o"></i>Add HR</a>
+								 </li>
+								<?php } ?>
+								<?php if($utype != 'idsrs_manager' && $utype != 'Manager' && $utype != 'Store'){ ?>
+								<li class="parent-uk">
+									<a href="#"><i class="fa fa-play"></i> Manage HR <i class="fa fa-angle-left pull-right"></i></a>
+									<ul class="treeview-menu">
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Hr_management/hr_list">HR Management</a></li>
+										<?php if($utype != 'idsrs_manager' && $utype != 'Manager'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Sanctioned_posts/sanctionedPosts">Sanctioned Posts</a></li>
+										<?php } ?>
+									</ul>
+								</li> 
+								<?php } ?>
+								<li class="parent-uk">
+									<a href="#"><i class="fa fa-play"></i>HR Reports<i class="fa fa-angle-left pull-right"></i></a>
+									<ul class="treeview-menu">
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Setup/Listing/hr">HR Listing</a></li>
+										<?php if($this -> session -> UserLevel != '4'){ ?>
+											<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Sanctionedposts_report/sanctionedpostsreport" target="_blank">Sanctioned Posts Report</a></li>
+										<?php } ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>HRReports/Filter/HR-Summary-Report">HR Summary Report</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>HR_Reports/retiredHRreport">Retired HR Report</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>HR_Reports/Trainings_HR_Report">HR Training Report</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Advance-Report/Filters/HR-Advance-Report">HR Custom Report</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i>  Health Infrastructure<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<?php if($utype != 'idsrs_manager' && $utype != 'Manager' && $utype != 'Store'){ ?>
+								<li class="parent-uk">
+									<a href="#"><i class="fa fa-play"></i>Administrative Setup<i class="fa fa-angle-left pull-right"></i></a>
+									<ul class="treeview-menu">
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>EPICentersList">Manage EPI Center</a></li>
+										<?php if($this -> session -> UserLevel == '3' && $utype != 'idsrs_manager' && $utype != 'Manager' && $utype != 'Guest'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Village-List">Manage Villages</a></li>
+										<?php } ?>
+									</ul>
+								</li>
+								<?php } ?>
+								<li class="parent-uk">
+									<a href="#"><i class="fa fa-play"></i>Administrative Reports<i class="fa fa-angle-left pull-right"></i></a>
+									<ul class="treeview-menu">
+										<?php if($this -> session -> UserLevel == '2'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>setup_listing/listing/district">District Listing</a></li>
+										<?php } ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>setup_listing/listing/tehsil">Tehsil Listing</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>setup_listing/listing/union_Council">Union Council Listing</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>setup_listing/listing/EPI_Centers">EPI Center Listing</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>setup_listing/listing/VPD_Centers">VPD Center Listing</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Population_report/Population_Filters">Village & HF Based Population</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<?php if($this -> session -> UserLevel == '3'){ ?>
+						<li class="parent-uk treeview">
+							<a href="#">
+								<i class="fa fa-circle-o"></i> <span>Population Management</span>
+								<i class="fa fa-angle-left pull-right"></i>
+							</a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Population/Villages">Village Population</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Population/Facilities">EPI Center Population</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Population/UC">Union Council Population</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Population/Tehsil">Tehsil Population</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Population/Districts">District Population</a></li>
+							</ul>
+						</li>
+						<?php } ?>
+					</ul>
+				</li>
+		<?php
+				/* only for provence and peshawar */
+				if($this -> session -> UserLevel == '2' || $this -> session -> District == '365'){ 
+			?>
+				<li class="parent-uk treeview">
+					<a href="#"><i class="fas fa-clipboard"></i>  <span>Child Registration</span><i class="fa fa-angle-left pull-right"></i></a>           
+					<ul class="treeview-menu">
+<!--					<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/vaccination"><i class="fa fa-circle-o"></i>CERV Coverage Map</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/uc_wise_defaulters_map"><i class="fa fa-circle-o"></i>CERV Defaulters Map</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/attendence"><i class="fa fa-circle-o"></i>CERV Technician Attendence</a></li>
+						<li class="parent-uk"><a class="anchor-uk" target="_blank" href="<?php echo base_url();?>Cerv/thematic_maps/CervCoverage"><i class="fa fa-circle-o"></i>Thematic Dashboard</a></li>
+-->						<li class="parent-uk">					
+							<a href="#"><i class="fa fa-circle-o"></i> Data Entry <i class="fa fa-angle-left pull-right"></i></a><ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/ChildRegistrationList">Add Vaccinated Child</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/motherRegistrationList">Add Vaccinated Woman</a></li>
+							</ul>
+						</li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/vaccination"><i class="fa fa-circle-o"></i>Thematic Coverage Analysis</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/uc_wise_defaulters_map"><i class="fa fa-circle-o"></i>Thematic Defaulters Analysis</a></li>
+						<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/attendence"><i class="fa fa-circle-o"></i>Technician Attendence</a></li>
+						<!---<li class="parent-uk"><a class="anchor-uk" target="_blank" href="<php echo base_url();?>Cerv/thematic_maps/AccessToHealthServices"><i class="fa fa-circle-o"></i>Open Vial Wastage</a></li>-->
+						<li class="parent-uk"><a class="anchor-uk" target="_blank" href="<?php echo base_url();?>Cerv/thematic_maps/CervCoverage"><i class="fa fa-circle-o"></i>Thematic Dashboard</a></li>						
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i> Reports <i class="fa fa-angle-left pull-right"></i></a><ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Reports/cervMonthlyReport">CERV Monthly Report</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/DataEntry">Daily Data Entries</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>CervReports/zero_dose">Zero Doze Children</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>CervReports/dropouts">Dropouts</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/coverage">Coverage Report</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Cerv/Dashboard/defaulters">Defaulters Report</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>childs/DaywiseRegisterChildReport/DayWiseChildRegistrationList">Daily Vaccination Report</a></li>
+								<!--<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/ChildRegistrationList">List of Vaccinated Children</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/womenRegistrationList">List of vaccinated Women</a></li>-->
+							</ul>
+						</li>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i> Registries <i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/DailyChildRegistrationFilter">Daily Register</a></li>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Reports/ChildRegistrationFilter">Permanent Register Children</a></li>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Women_Reports/WomenRegistrationFilter">Permanent Register Women</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<?php 
+				/* only for provence and peshawar */
+				}
+				?>
+				<li class="parent-uk treeview">
+					<a href="#">
+						<i class="fa fa-child"></i> <span>EPI Vaccination</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu">
+						<?php if($this -> session -> UserLevel == '3' && $utype != 'idsrs_manager' && $utype != 'Manager' && $utype != 'Guest' && $utype != 'Store'){ ?>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i>  Data Entry <i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>FLCF-MVRF/List">HF Monthly Reporting Form</a></li>
+							</ul>
+						</li>
+						<?php } ?> 
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i> Reports <i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<!--<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Facility-Wise-Vaccination">Monthly Facility wise Vaccination</a></li> -->
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Facility-Wise-Vaccination-Coverage_MaleFemale">Vaccination Coverage</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Dropout">Dropouts</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Accessutilization">Access and Utilization</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Session-planned-conducted">Sessions Planned/Conducted</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Indicator_Reports_New/reportFilters/HFMVRF">Indicator Report</a></li>
+								<?php if($utype != 'idsrs_manager'){ ?><!-- && $utype != 'Manager'-->
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Advance-Report/Filters/HFMVRF-Advance-Report">Custom Report</a></li>							
+								<!--<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Accessutilization">Access and Utilization</a></li>--->
+								<?php } ?>
+							</ul>
+						</li>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i>  Compliance <i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HFMVRF">HF Monthly Compliance</a></li>
+								<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>Compliance-Filter/HFMVRFTest">HF Monthly Compliance Test</a></li> -->
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li class="parent-uk treeview">
+					<a href="#"><i class="fa fa-tasks"></i> <span>Vaccine Management</span><i class="fa fa-angle-left pull-right"></i></a>
+					<ul class="treeview-menu">
+						<?php if($ispromng) {/* ?>
+							<li class="parent-uk treeview">
+								<a href="#"><i class="fa fa-th"></i>Admin Configuration<i class="fa fa-angle-left pull-right"></i></a>
+								<ul class="treeview-menu">
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Adjustment-Vaccines"><i class="fa fa-plus" aria-hidden="true"></i>Add Vaccine Adjustment</a>
+									</li> 
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Purpose-Type"><i class="fa fa-plus" aria-hidden="true"></i>Add Vaccine Purpose</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Vaccines-Manufacturers"><i class="fa fa-plus" aria-hidden="true"></i>Add Vaccine Manufacturer</a></li>
+									<!--<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Stake-Holder"><i class="fa fa-plus" aria-hidden="true"></i>Add Stake Holder</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Warehouse-Information"><i class="fa fa-plus" aria-hidden="true"></i>Add Warehouse Information</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Manage-Warehouse"><i class="fa fa-plus" aria-hidden="true"></i>Manage Warehouse Type</a></li>-->
+								</ul>
+							</li>
+						<?php */ } ?>
+						<?php if( $utype != 'idsrs_manager'  ){ ?>
+							<li class="parent-uk treeview">
+								<a href="#"><i class="fa fa-cubes"></i><span>Inventory Management</span><i class="fa fa-angle-left pull-right"></i></a>           
+								<ul class="treeview-menu">
+									<?php if($isprostr){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>federalvoucherfetch"><i class="fa fa-circle-o"></i>Fetch Voucher from Federal</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>StockReceivefromSupplierList"><i class="fa fa-circle-o"></i>Stock Receive from Supplier</a></li>
+									<?php } ?>
+									<?php if($utype == 'DEO' || $utype == 'Store'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>StockReceivefromStore"><i class="fa fa-circle-o"></i>Stock Receive from Store</a></li>
+									<?php } ?>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>stockReceiveSearch"><i class="fa fa-circle-o"></i>Stock Receive - Search</a></li>
+									<?php if($utype == 'DEO' || $utype == 'Store'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>batchManagement"><i class="fa fa-circle-o"></i>Batch Management</a></li>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>StockIssue"><i class="fa fa-circle-o"></i>Stock Issue/Dispatch</a></li>
+									<?php } ?>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>stockIssueSearch"><i class="fa fa-circle-o"></i>Stock Issue - Search</a></li>
+									<?php if($utype == 'DEO' || $utype == 'Store'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>stockAdjustment"><i class="fa fa-circle-o"></i>Add Adjustment</a></li>
+									<?php } ?>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>adjustmentSearch"><i class="fa fa-circle-o"></i>Adjustment - Search</a></li>
+									<?php if($utype == 'DEO' || $utype == 'Store'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>stockTransfer"><i class="fa fa-circle-o"></i>Purpose Transfer</a></li>
+									<?php } ?>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>stockTransferSearch"><i class="fa fa-circle-o"></i>Purpose Transfer Search</a></li>
+									<?php if($utype == 'DEO' || $utype == 'Store'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>vvmManagement"><i class="fa fa-circle-o"></i>VVM Management</a></li>
+									<?php } ?>
+								</ul>
+							</li>
+							<li class="parent-uk treeview">
+								<a href="#"><i class="fa fa-cubes"></i><span>Stock Placement</span><i class="fa fa-angle-left pull-right"></i></a>           
+								<ul class="treeview-menu">
+									<?php if($utype == 'DEO' || $utype == 'Store'){ ?>
+										<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>NonCCMLocations/manage_location"><i class="fa fa-circle-o"></i>Manage Location</a></li>
+									<?php } ?>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>ccmLocStatus"><i class="fa fa-circle-o"></i>Location Status</a></li>
+								</ul>
+							</li>
+							<?php if($isdistdeo){?>
+								<li class="parent-uk">
+									<a href="#"><i class="fa fa-circle-o"></i> Data Entry <i class="fa fa-angle-left pull-right"></i></a>
+									<ul class="treeview-menu">
+										<?php if($isdistdeo){ ?>
+											<!--New Menu for updated Consumption form added by imran (2019-01-24)-->
+											<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>consumption">HF Consumption</a></li>
+										<?php } ?>								
+										<!--<li class="parent-uk"> 
+											<a href="#"><i class="fa fa-play"></i> EPI Vaccine<i class="fa fa-angle-left pull-right"></i></a>
+											<ul class="treeview-menu">
+											<?php //if($this -> session -> UserLevel == '3' && $utype=='DEO'){ ?>
+												<!--New Menu for updated Consumption form added by imran (2019-01-24)--
+												<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>consumption">HF Consumption</a></li>
+												<?php //below line commented by moon on 2019-02-07 because now old data converted into new tables and now previous month's reports should also be inserted into new tables. ?>
+												<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>HF-Consumption-Requisition/List">HF Consumption & Requisition (Old)</a></li>--
+												
+												
+												<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Province-Issue-Receipt/List">Province Issue & Receipt </a></li>--
+
+											<?php //} ?>								
+											<?php /* if($this -> session -> UserLevel == '2' && ($utype=='Manager' || $utype=='Store' || $utype == 'Guest') ){ ?>
+												<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Federal-Issue-Receipt/List">Federal Issue & Receipt</a></li>
+												<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Province-Issue-Receipt/List">Province Issue & Receipt </a></li>
+											<?php } */ ?>
+											</ul>
+										</li>-->
+										<?php /* if($this -> session -> UserLevel == '3' && $utype=='DEO'){ ?>
+										<li class="parent-uk">
+											<a href="#"><i class="fa fa-play"></i>SIA<i class="fa fa-angle-left pull-right"></i></a>
+											<ul class="treeview-menu">
+												<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>District-Issue-Receipt/List">District Issue & Receipt</a></li>
+												<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>UC-Demand-Consumption/List">UC Demand, Consumption & Receipt</a></li>
+											</ul>
+										</li>
+										<?php } */ ?>
+									</ul>
+								</li>
+							<?php } ?>
+							<li class="parent-uk">
+								<a href="#"><i class="fa fa-circle-o"></i>Inventory Reports<i class="fa fa-angle-left pull-right"></i></a>
+								<ul class="treeview-menu">
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Yearly-Status">Yearly Stock Status Report</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Inventory-Status">Inventory Status Report</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Vaccine-Distribution">Vaccine Distribution Report</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Expiry-Rate-Report">Expiry Rate Report</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Stock-Movement-Report">Stock Movement Report</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Stock-Ledger">Stock Ledger</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Current-Stock">Current Stock</a></li>
+								</ul>
+							</li>
+						<?php } ?>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i> Consumption Reports<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/HF-Consumption-Requisition-Report">Cumulative  Consumption</a></li>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Vaccine-Demand">Vaccine Consumption</a></li>
+							<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>Indicator-Report/Filters/Vaccine">Indicator Report</a></li>-->
+							<?php //New route added for this menu and new controller working for it, by moon 2019-02-11 ?>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>consumption/reports/indicator">Indicator Report</a></li>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>consumption/reports/stockout">Stockout Facilities Report</a></li>
+							<?php if($utype != 'idsrs_manager'){ ?>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Advance-Report/Filters/HFCR-Advance-Report">Custom Report</a></li>
+							<?php } ?>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();  ?>Reports/Adjustment-report">Adjustment Report </a></li>
+							</ul>
+						</li>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i>Compliance<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Consumption-Requisition">HF Consumption & Requisition <br>Compliance</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<?php if($isdistdeo || $istehdeo || $ishfdeo){ ?>
+				<li class="parent-uk treeview">
+							<a href="#">
+								<i class="fa fa-child"></i> <span>Vaccination & Consumption</span>
+								<i class="fa fa-angle-left pull-right"></i>
+							</a>
+							<ul class="treeview-menu">
+								<?php if($isdistdeo || $istehdeo || $ishfdeo){ ?>
+									<li class="parent-uk">
+										<a href="#"><i class="fa fa-circle-o"></i>  Data Entry <i class="fa fa-angle-left pull-right"></i></a>
+										<ul class="treeview-menu">
+											<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>vaccination">HF Monthly Reporting Form</a></li>
+										</ul>
+									</li>
+								<?php } ?>
+							</ul>
+				</li>
+				<?php } ?>
+				<li class="parent-uk treeview">
+					<a href="#"><i class="fa fa-eye"></i> <span>Disease Surveillance</span><i class="fa fa-angle-left pull-right"></i></a>
+					<ul class="treeview-menu">
+						<?php if($utype =='idsrs_manager' || $utype=='DEO' || $this -> session -> UserLevel == '99'){?>
+							<li class="parent-uk">
+								<a class="anchor-uk" href="<?php echo base_url();?>Zero-Reporting"><i class="fa fa-circle-o"></i>Zero Reporting Form</a>
+							</li>
+							<li class="parent-uk">
+								<a href="#"><i class="fa fa-circle-o"></i>Case Investigation Form<i class="fa fa-angle-left pull-right"></i></a>
+								<ul class="treeview-menu">
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Case_investigation/case_investigation_list">Main Case Investigation</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Coronavirus_investigation/coronavirus_investigation_list">Coronavirus Case Investigation</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Measles_investigation/measles_investigation_list">Measles Case Investigation</a></li>
+									<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Measles-CIF/List">Measles</a></li> -->
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>NNT-CIF/List">NNT Case Investigation</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>AFP-CIF/List">AFP Case Investigation</a></li>
+									<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Disease-Surveillance/List">Other Diseases</a></li> -->
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>AEFI-CIF/List">AEFI Case Investigation</a></li>								
+								</ul>
+							</li>
+						<?php } ?>
+						<?php if($utype != 'Store'){?>
+						<?php if($this -> session -> UserLevel == '3'){ ?>
+							<li class="parent-uk">
+								<a class="anchor-uk" href="<?php echo base_url();?>Case-List"><i class="fa fa-circle-o"></i>Outbreak Response Form</a>
+							</li>
+						<?php }  } ?>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i> Reports<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Linelists/Linelists_Filters/Surveillance/cases">Surveillance Line Lists</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>CoronaLinelist/CoronaLinelist_Filters/Surveillance/corona">Coronavirus Line List</a></li>
+								<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Linelists/Linelists_Filters/Surveillance/measles">Measles Line List</a></li> -->
+								<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Linelists/Linelists_Filters/Surveillance/afp">AFP Line List</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Linelists/Linelists_Filters/Surveillance/nnt">NNT Line List</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php // echo base_url();?>Linelists/AEFI_Filters">AEFI Line List</a></li> -->
+								<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Linelists/Linelists_Filters/Surveillance">Other Diseases Line List</a></li> -->								
+								<?php if( ! ($this -> session -> District)){ ?>
+								<li class="parent-uk">
+									<a class="anchor-uk" href="<?php echo base_url();?>CrossNotifiedCases/Filters/PendingCases">Pending Cross Notified Cases</a>
+								</li>
+
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Surveillance/Filters/EPID">Age/Gender Wise VPDs</a></li>
+								<?php } ?>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Surveillance/Filters/VPD">Weekly VPDs</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Surveillance/Filters/OUTBREAK">Outbreak Report</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Reports/Filters/Measle-Coverage-Dropout">Measles Coverage Vs. Cases</a></li>
+								<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>Outbreak-Response-Report">Outbreak Response List Report</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php // echo base_url(); ?>Indicator-Report/IdsrsFilters/priority-diseases">Diseases with High Rate of Morbidity</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php // echo base_url(); ?>Indicator-Report/IdsrsFilters/morbidity">Diseases with High Rate of Mortality</a></li> -->
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Indicator-Report/IdsrsFilters/priority-diseases">Disease with Morbidity/Mortality</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Other_Reports/reportFilters/Outbreak_Response">Outbreaks Response</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Indicator-Report/Filters/Disease">Surveillance Indicator Report</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Advance-Report/Filters/Disease-Surveillance-Advance-Report">Custom Report</a></li>
+							</ul>
+						</li>
+						<li class="parent-uk">
+							<a href="#"><i class="fa fa-circle-o"></i>Compliance<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/Zero-Compliance">Zero Reporting <br>Timeliness/Completeness</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/Measles-Compliance">Measles Weekly Compliance</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/Coronavirus-Compliance">Coronavirus Weekly Compliance</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/NNT-Compliance">NNT Weekly Compliance</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/AFP-Compliance">AFP Weekly Compliance</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/Other-Compliance">Other Diseases Weekly Compliance</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/AEFI-Compliance">AEFI Weekly Compliance</a></li>
+								<!-- <li class="parent-uk"><a class="anchor-uk" href="<?php // echo base_url(); ?>Compliance-Filter/Response-Compliance">Outbreak Response Compliance</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php // echo base_url(); ?>Compliance-Filter/MSLResponse-Compliance">Measles Response Compliance</a></li>-->
+								
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<?php if($utype != 'idsrs_manager' ){ ?>
+					<li class="parent-uk treeview">
+						<a href="#"><i class="fa fa-cubes"></i><span>Cold Chain Management</span><i class="fa fa-angle-left pull-right"></i></a>           
+						<ul class="treeview-menu">
+							<?php 	if(($this -> session -> UserLevel == '3' && $utype=='DEO') || ($this -> session -> UserLevel == '2' && ($utype=='Manager' || $utype=='Store'))){?>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Coldchain/Search-assets"><i class="fa fa-circle-o"></i>Cold Chain Search Assets</a></li>
+								<?php 		if($utype == 'DEO' || $utype == 'Store' ){ ?>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url();?>Coldchain/Add-assets/1"><i class="fa fa-circle-o"></i>Cold Chain Add Assets</a></li>
+									<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Coldchain-MakeModel"><i class="fa fa-circle-o"></i>Cold Chain Make Model</a></li>-->
+									<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Update-status<?php //echo '/';echo ( ! $this -> session -> District)?2:''; ?>"><i class="fa fa-circle-o"></i>Update Status</a></li>-->
+								<?php 		} ?>
+								<!--<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url();?>Coldchain_database/filters"><i class="fa fa-circle-o"></i>Cold Chain Database</a></li>-->
+							<?php } ?>
+							<li class="parent-uk">	
+								  <a href="#"><i class="fa fa-circle-o"></i> Reports <i class="fa fa-angle-left pull-right"></i></a>
+								 <ul class="treeview-menu">
+								  <!--<li class="parent-uk">
+								   <a class="anchor-uk" href="<?php //echo base_url();?>Reports/ColdchainReportsFilter">Assets Availability Report</a>
+								  </li>-->
+								  <li class="parent-uk">
+							       <a class="anchor-uk" href="<?php echo base_url();?>Reports/ColdchainReportsAssetFilter">Assets Availability Report</a>
+							      </li>
+								 </ul>
+							</li>
+						</ul>
+					</li>
+				<?php } 
+			}?>
+			<?php if($isdistdeo){ ?>
+				<li class="parent-uk treeview">
+					<a href="#"><i class="fa fa-calendar "></i> <span>RED/REC Micro Planning</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu">					
+						<li class="parent-uk">
+							<a class="anchor-uk" href="<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/Situation_analysis_list"><i class="fa fa-circle-o"></i>Micro Plan</a>					
+						</li>
+						<!--<li class="parent-uk">
+							<a class="anchor-uk" href="<?php //echo base_url(); ?>red_microplan/Special_activities/special_activities_list"><i class="fa fa-circle-o"></i> Planning Special Activities Form</a>					
+						</li>
+						<li class="parent-uk">
+							<a class="anchor-uk" href="<?php //echo base_url(); ?>red_microplan/Session_plan/session_plan_list"><i class="fa fa-circle-o"></i> Session Plan Template Form</a>					
+						</li>
+						<li class="parent-uk">
+							<a class="anchor-uk" href="<?php //echo base_url(); ?>red_microplan/Red_strategy/red_strategy_list"><i class="fa fa-circle-o"></i> Using The RED Strategy Form</a>					
+						</li>-->
+						<li class="parent-uk">
+							<a class="anchor-uk" href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_list"><i class="fa fa-circle-o"></i>Quarterly HF Workplan</a>					
+						</li>
+						<li class="parent-uk">
+							<a class="anchor-uk" href="<?php echo base_url(); ?>Supervisor-Micro-plan"><i class="fa fa-circle-o"></i> Supervission Plan</a>					
+						</li>
+						<!-- report -->
+						<li class="parent-uk">
+								<a class="anchor-uk" href=#><i class="fa fa-circle-o"></i>Report<i class="fa fa-angle-left pull-right"></i></a>
+								<ul class="treeview-menu">
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>red_rec_microplan/RedRec_report/redrec_Filters">RED/REC Plans</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Supervisoryvisit">Supervisory Visits Planned/Conducted</a></li>
+								</ul>
+						</li>
+								<!-- Compliance  -->
+						<li class="parent-uk">
+								<a class="anchor-uk" href="#"><i class="fa fa-circle-o"></i>Compliance<i class="fa fa-angle-left pull-right"></i></a>
+								<ul class="treeview-menu">
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Microplan">Technician Microplans</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Quarterplan">HF Quarterly Microplans</a></li>
+									<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Supervisoryplan">Supervisory Visits Plans</a></li>
+								</ul>
+						</li>
+							<!-- Compliance  -->
+					</ul>
+				</li>
+			<?php }  ?>
+			<?php if($ispromng){ ?>
+				<li class="parent-uk treeview">
+					<a href="#"><i class="fa fa-calendar "></i> <span>RED/REC Micro Planning</span>
+						<i class="fa fa-angle-left pull-right"></i>
+					</a>
+					<ul class="treeview-menu">					
+						<li class="parent-uk">
+							<a class="anchor-uk" href=#><i class="fa fa-circle-o"></i>Report<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>red_rec_microplan/RedRec_report/redrec_Filters">RED/REC Plans</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Supervisoryvisit">Supervisory Visits Planned/Conducted</a></li>
+							</ul>
+						</li>
+							<!-- Compliance  -->
+						<li class="parent-uk">
+							<a class="anchor-uk" href="#"><i class="fa fa-circle-o"></i>Compliance<i class="fa fa-angle-left pull-right"></i></a>
+							<ul class="treeview-menu">
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Microplan">Technician Microplans</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Quarterplan">HF Quarterly Microplans</a></li>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php echo base_url(); ?>Compliance-Filter/HF-Supervisoryplan">Supervisory Visits Plans</a></li>
+							</ul>
+						</li>
+						<!-- Compliance  -->
+					</ul>
+				</li>
+			<?php } } ?>
+			<!--<?php //if($this -> session -> UserLevel == '2' && $utype=='Manager'){ ?>
+			<li class="parent-uk treeview">
+				<a href="#"><i class="fa fa-calendar "></i> <span>RED/REC Micro Planning</span>
+					<i class="fa fa-angle-left pull-right"></i>
+				</a>
+				<ul class="treeview-menu">					
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php //echo base_url(); ?>red_rec_microplan/Reports/redrec_Filters"><i class="fa fa-circle-o"></i>Report</a>					
+					</li>
+					
+				</ul>
+			</li>
+			
+			<?php //} ?>-->
+		<?php if($this -> session -> UserLevel != '99'){ ?>
+			<li class="parent-uk treeview">
+				<a href="#"><i class="fa fa-pie-chart"></i> <span>Dashboard</span><i class="fa fa-angle-left pull-right"></i></a>
+				<ul class="treeview-menu">
+				<?php if($this -> session -> UserLevel != '4'){ ?>
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php echo base_url(); ?>dashboard/Main_page"><i class="fa fa-circle-o"></i>Main Summary</a>
+					</li> 
+				<?php } ?>	
+					<li class="parent-uk">
+						<a class="anchor-uk" target="_blank" href="<?php echo base_url();?>thematic_maps/ThematicCompliance"><i class="fa fa-circle-o"></i>Thematic Analysis</a>
+					</li>
+					<li class="parent-uk">
+						<a class="anchor-uk" target="_self" href="<?php echo base_url();?>custom-dashboard"><i class="fa fa-circle-o"></i>Custom Dashboard</a>
+					</li>
+					<li class="parent-uk">
+						<a class="anchor-uk" target="_blank" href="<?php echo base_url();?>dashboard/ReviewComparison"><i class="fa fa-circle-o"></i>Review Dashboard</a>
+					</li>
+					<!--<li class="parent-uk">
+						<a class="anchor-uk" target="_blank" href="<?php //echo base_url();?>custom-dashboard"><i class="fa fa-circle-o"></i>Custom Dashboard</a>
+					</li>
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/AccessToHealthServices"><i class="fa fa-circle-o"></i>Access to Health Services</a>
+					</li>
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/UtilizationOfServices"><i class="fa fa-circle-o"></i>Utilization of Services</a>
+					</li>
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/FullyImmunizedCoverage"><i class="fa fa-circle-o"></i>Fully Immunized Coverage</a>
+					</li>
+					<?php if( ! ($this -> session -> District)){ ?>
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/SessionInformation/sessionInfo"><i class="fa fa-circle-o"></i>Session Planned/Conducted</a>
+					</li>
+					<?php } ?>
+					<li class="parent-uk">
+						<a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/OutreachServices"><i class="fa fa-circle-o"></i>Outreach Services</a>
+					</li>
+					<li class="treeview">
+						<a href="#"><i class="fa fa-circle-o"></i> Reports Compliance<i class="fa fa-angle-left pull-right"></i></a>
+						<ul class="treeview-menu">
+							<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/Main_page/FmvrfCompliace">Facility Monthly Reporting Form</a></li>
+							<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/ConsumptionAndRequistion">HF Consumption and Requisition</a></li>
+							<?php if(!$this -> session -> District){ ?>
+								<li class="parent-uk"><a class="anchor-uk" href="<?php //echo base_url(); ?>dashboard/ZeroReportingCompliance">Zero Report Compliance</a></li> 
+							<?php } ?>
+						</ul>
+					</li> 
+					<li class="parent-uk">
+						<a class="anchor-uk" target="_blank" href="<?php //echo base_url();?>dashboard/ColdchainEquipments/ccm_Main"><i class="fa fa-circle-o"></i>Cold Chain</a>
+					</li>-->
+					<li class="parent-uk">
+						<a class="anchor-uk" target="_blank" href="<?php echo base_url();?>cold-chain-capacity"><i class="fa fa-circle-o"></i>Cold Chain Capacity</a>
+					</li>
+					<!--<li class="parent-uk">
+						<a class="anchor-uk" target="_blank" href="<?php //echo base_url();?>dashboard-provincial"><i class="fa fa-circle-o"></i>Provincial Level</a>
+					</li>-->
+				</ul>
+			</li>
+			<li class="parent-uk">
+				<a href="<?php echo base_url();?>Bulletinreport/bulleitinfillter"><i class="fa fa-bar-chart"></i> <span>Weekly Bulletin</span></a>
+			</li>
+		<?php } ?>
+			
+		</ul>
+	</section>
+	<!-- /.sidebar -->        
+</aside>
+<?php if($this -> session -> flashdata('accessError')){  ?>
+	<div class="alert alert-success text-center" role="alert"><strong><?php echo $this -> session -> flashdata('accessError'); ?></strong></div> <?php 
+} ?>

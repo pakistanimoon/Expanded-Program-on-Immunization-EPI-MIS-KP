@@ -134,14 +134,12 @@
 				<th class="text-center Heading">Form Status</th>
                 <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
                   <th class="text-center Heading">
-                    <a href="<?php echo base_url(); ?>NNT-CIF/Add" data-toggle="tooltip" title="Add New">
+                    <a href="<?php echo base_url(); ?>NNT-CIF/Add" data-toggle="tooltip" title="Add New NNT Investigation Form">
                       <button class="submit btn-success btn-sm">
                       <i class="fa fa-plus"></i> Add New</button>
                     </a>
                   </th>
-			         <?php } else{?>
-						 <th class="text-center Heading">Action </th>
-					  <?php } ?>
+			          <?php } ?>
               </tr>
             </thead>          
 
@@ -200,11 +198,9 @@ if($row['cross_notified_from_distcode'] == $this  -> session -> District && $row
             <?php } ?> -->
             <td class="text-center">
               <a href="<?php echo base_url(); ?>NNT-CIF/View/<?php echo $row['id']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-              <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-			  <?php if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1){ ?>
+              <?php if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1){ ?>
               <a href="<?php echo base_url(); ?>NNT-CIF/Edit/<?php echo $row['id']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
               <?php } ?>
-			  <?php } ?>
             </td>
 			  </tr>
 

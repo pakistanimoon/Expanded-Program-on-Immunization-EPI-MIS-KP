@@ -7,13 +7,9 @@
 		<table id="fixTable"  class="table table-bordered table-hover table-striped">
 			<thead>
 				<tr>
-				    <?php if($this->session->Tehsil){ ?>
-						<th rowspan="2">Tcode</th>
-						<th rowspan="2">Tehsil</th>
-					<?php } else{?>
-						<th rowspan="2">Distcode</th>
-						<th rowspan="2">Distname</th>
-					<?php } ?>
+				    
+					<th rowspan="2">Distcode</th>
+					<th rowspan="2">Distname</th>
 					<th rowspan="2">NO of <br> Supervisor </th>
 					<?php
 							$currentmonth = date('m');
@@ -55,15 +51,9 @@
 				 	foreach($data as $val)
 					{
 						echo "<tr class='DrillDownRow'><td class='text-center'>";
-					   if($this->session->Tehsil){
-							echo $val->tcode;
-							echo "</td><td class='text-center'>";
-							echo $val->tehsil;
-						}else{
-							echo $val->distcode;
-							echo "</td><td class='text-center'>";
-							echo $val->district;
-						}
+					    echo $val->distcode;
+						echo "</td><td class='text-center'>";
+						echo $val->district;
 						echo "</td><td class='text-center'>";
 						echo $val->totalsupervisor;
 						for ($month = 1; $month <= $currentmonth; $month++) {
@@ -173,15 +163,6 @@
 		var code = $(this).find("td:nth-child(1)").text();
 		if(code.toString().length == 3){
 			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_supervisoryvisit_tech_compliance?distcode="+code+"&year="+year;
-			var win = window.open(url,'_self');
-			if(win){
-				win.focus();
-			}else{
-				//Broswer has blocked it
-				alert('Please allow popups for this site');
-			}
-		}else if(code.toString().length == 6){
-			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_supervisoryvisit_tech_compliance?tcode="+code+"&year="+year;
 			var win = window.open(url,'_self');
 			if(win){
 				win.focus();

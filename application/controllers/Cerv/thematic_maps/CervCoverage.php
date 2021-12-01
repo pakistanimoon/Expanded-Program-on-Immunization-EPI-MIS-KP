@@ -1,5 +1,4 @@
 <?php
-//local
 class CervCoverage extends CI_Controller {
 
 	//================ Constructor function starts==================//
@@ -13,43 +12,6 @@ class CervCoverage extends CI_Controller {
 	
 	public function index(){ 
 		$data = $this -> getPostedData();
-		
-		/* $fmonthfrom = $data['yearmonth_from'];
-		$monthfromarr = explode('-',$fmonthfrom);
-		$monthfrom = $monthfromarr[1];
-		$yearfrom = $monthfromarr[0];
-		
-		$fmonthto = $data['yearmonth_to'];
-		$monthtoarr = explode('-',$fmonthto);
-		$monthto = $monthtoarr[1];
-		$yearto = $monthtoarr[0];
-		
-		
-		$data = $yearfrom.'-'.$monthfrom;
-		$data = $yearto.'-'.$monthto; */
-		
-		//print_r($data);exit;
-		
-		//$monthnamefrom = monthname($monthfrom); 	
-		//$monthnameto = monthname($monthto);
-		
-		//print_r($monthfrom);exit;
-		
-		/* if ($yearfrom == $yearto && $monthnamefrom != $monthnameto){
-			$yearMonth = " {$yearfrom} {$monthnamefrom} to {$monthnameto}" ;
-			$data['hovermap'] = " Year: <b>{$yearfrom}, From {$monthnamefrom} to {$monthnameto}</b>";
-		}
-		else if ($yearfrom == $yearto && $monthnamefrom == $monthnameto)
-		{
-			$yearMonth = "{$monthnamefrom} {$yearfrom}" ;
-			$data['hovermap'] = " Fmonth: <b>{$fmonthfrom}</b>";
-		} 
-		else {
-			$yearMonth = "From {$monthnamefrom} {$yearfrom}, To {$monthnameto} {$yearto} " ;
-			$data['hovermap'] = "Start Fmonth: <b>{$fmonthfrom}</b><br>End Fmonth: <b>{$fmonthto}</b>";
-		} */
-		//print_r($monthfromarr);exit;
-		
 		$vaccinesArray = array('BCG','Hep B-Birth','OPV-0','OPV-1','OPV-2','OPV-3','PENTA-1','PENTA-2','PENTA-3','PCV10-1','PCV10-2','PCV10-3','IPV','Rota-1','Rota-2','Measles-1','Measles-2');
 		$monthQauarterYear = " From {$data['yearmonth_from']} to {$data['yearmonth_to']}";
 		$data['id']  = $distcode = $this->session->District;

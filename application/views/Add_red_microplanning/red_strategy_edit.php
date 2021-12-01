@@ -302,6 +302,7 @@ alert("test2");
 				}
 			});
 			var options = {
+				clearBtn:true,
 				format : "yyyy-mm-dd",
 				todayHighlight: true,
 				autoclose: true,

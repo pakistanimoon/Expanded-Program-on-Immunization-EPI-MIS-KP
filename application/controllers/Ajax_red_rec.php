@@ -1,5 +1,4 @@
 <?php
-//local
 class Ajax_red_rec extends CI_Controller {
 	//================ Constructor function starts==================//
 	public function __construct() {
@@ -240,8 +239,8 @@ class Ajax_red_rec extends CI_Controller {
 			$url = "";
 		}
 		if($procode == '3'){
-			//$url = "http://epimis.cres.pk/";
-			$url = "http://epimis1.pacetec.net/";
+			$url = "http://epimis.cres.pk/";
+			
 		}
 		if($procode == '4'){
 			$url = "http://balochistan.epimis.pk/";
@@ -306,7 +305,8 @@ class Ajax_red_rec extends CI_Controller {
 		$week = $this->input->get('week');
 		$data=$this -> Ajax_red_rec_model -> cross_notified_case_investigation_filter($distcode,$facode,$year,$week);
 		echo $data;
-	}	
+	}
+	
 	public function measles_investigation_filter(){
 		$distcode = $this->input->get('distcode');
 		$facode = $this->input->get('facode');
@@ -353,6 +353,7 @@ class Ajax_red_rec extends CI_Controller {
 	{	
 		$techniciancode = $this-> uri -> segment(3);
 		$year = $this-> uri -> segment(4);	
+		
 		$data['data'] = $this-> Situation_analysis_model->  situation_analysis_edit($techniciancode,$year);
 		$this-> load-> view('Add_red_microplanning/situation_analysis_edit',$data);
         	
@@ -361,11 +362,15 @@ class Ajax_red_rec extends CI_Controller {
 	{	
 		$techniciancode = $this-> uri -> segment(3);
 		$year = $this-> uri -> segment(4);
+		//print($techniciancode);
+		//print($year);exit;
 		$data['data'] = $this-> Situation_analysis_model->  situation_analysis_view($techniciancode,$year);
+		//print_r($data);exit;
 		$data['filter_view'] = $this-> uri -> segment(5);
 		$this-> load-> view('Add_red_microplanning/situation_analysis_view',$data);
         	
 	}
+	
 	public function special_activities_add(){ 
 		$techniciancode = $this-> uri -> segment(3);
 		$year = $this-> uri -> segment(4);	
@@ -376,13 +381,16 @@ class Ajax_red_rec extends CI_Controller {
 	{	
 		$techniciancode = $this-> uri -> segment(3);
 		$year = $this-> uri -> segment(4);	
+		
 		$data['data'] = $this-> Special_activities_model->  special_activities_edit($techniciancode,$year);
 		$this-> load-> view('Add_red_microplanning/special_activities_edit',$data);
-    }
+        	
+	}
 	public function special_activities_view(){ 
 		$techniciancode = $this-> uri -> segment(3);
 		$year = $this-> uri -> segment(4);	
 		$data['data'] = $this-> Special_activities_model-> special_activities_view($techniciancode,$year);
+		//print_r($data);exit;
 		$this-> load-> view('Add_red_microplanning/special_activities_view',$data);
 	}
 	public function session_plan_add(){		
@@ -432,9 +440,7 @@ class Ajax_red_rec extends CI_Controller {
 	public function superviosry_plan_filter(){
 		$supervisor_type = $this-> input-> get('supervisor_type');
 		$quarter = $this-> input-> get('quarter'); 
-		//$fmonth = $this-> input-> get('fmonth'); 
-		//print_r($month);exit;
-		$data = $this-> Ajax_red_rec_model-> superviosry_plan_filter($supervisor_type);
+		$data = $this-> Ajax_red_rec_model-> superviosry_plan_filter($supervisor_type, $quarter);
 		echo $data;
 	}
 	public function red_map_add(){		
@@ -471,10 +477,10 @@ class Ajax_red_rec extends CI_Controller {
 		echo $data;
 	}
 	public function checkTechnician_avalible() {
+		$faicode = $this-> input-> post('faicode');	
 		$techniciancode = $this-> input-> post('techniciancode');	
 		$selectedyear = $this-> input-> post('selectedyear');	
-		$faicode = $this-> input-> post('faicode');	
-		$data = $this-> Ajax_red_rec_model-> checkTechnician_avalible($techniciancode,$selectedyear,$faicode);
+		$data = $this-> Ajax_red_rec_model-> checkTechnician_avalible($faicode,$techniciancode,$selectedyear);
 		echo $data;
 	}
 	public function checkTechnician_avalible_list() {
@@ -498,8 +504,11 @@ class Ajax_red_rec extends CI_Controller {
 		$year = $this-> input-> post('year');
 		//$year = $this-> input-> post('year');
 		$quarter = $this-> input-> post('quarter');
+		
 		$data['var'] = $this-> Ajax_red_rec_model-> getAreaAndSession($techniciancode,$year,$quarter);
+		
 		//$data = $this-> Ajax_red_rec_model-> getAreaAndSession();
+		  
 		///$data =$techniciancode;
 		print_r ($data);
 	}
@@ -576,17 +585,7 @@ class Ajax_red_rec extends CI_Controller {
 		$data=$this -> Ajax_red_rec_model -> checkPatientCNICNumber($cnic);
 		echo $data;
 	}
-	public function getUcVillages(){
-		$uncode = $this -> input -> post('uncode');
-		$year = $this -> input -> post('year');
-		//check if merger exist for this uc villages
-		$result['year'] = $year;
-		$result['uncode'] = $uncode;
-		$result['villagesMerged'] = $this -> Ajax_red_rec_model -> getUcMergedVillagesList($uncode,$year);
-		$result['villagesToMerge'] = $this -> Ajax_red_rec_model -> getUcVillages($uncode,$year);
-		echo $this -> load -> view('redrec_view/dataentry/merged_villages_view',$result,TRUE);exit();
-	}
-	
+
 	public function getVaccine_batchNumber(){
 		$vacc_id = $this->input->post('vacc_id');
 		$data = $this -> Ajax_red_rec_model -> getVaccine_batchNumber($vacc_id);

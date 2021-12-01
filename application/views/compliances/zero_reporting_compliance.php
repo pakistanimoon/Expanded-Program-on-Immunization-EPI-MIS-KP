@@ -33,11 +33,11 @@
  <!--fortooltip-->
 <script type="text/javascript">
 	$(document).ready(function(){
-		<?php if(!$this-> session-> District){ ?>
-			$("#fixTable").tableHeadFixer({"left" : 2});
-		<?php } else{ ?>
-			$("#fixTable").tableHeadFixer({"left" : 3});
-		<?php } ?>
+	<?php if(!$this->session->District){ ?>
+		$("#fixTable").tableHeadFixer({"left" : 2});
+	<?php }else{ ?>
+		$("#fixTable").tableHeadFixer({"left" : 3});
+	<?php } ?>
 		
 		$('.clickedReport').css('cursor','pointer');
 		$('.mrClicked').css('cursor','pointer');

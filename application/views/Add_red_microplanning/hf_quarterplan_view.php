@@ -1,4 +1,4 @@
-<?php //print_r($filter_view);exit; ?>
+
 <html lang="en"><head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -44,9 +44,11 @@ table.none-td-border tbody td{
 			}
 		}
     </style>
-	</head>
-	<body>
-		<div class="container">
+   
+   
+  </head>
+  <body>
+    <div class="container">
 		<div class="row">
 		    <div class="col-lg-12 panel panel-primary" >
 				<a href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_view/<?php echo $data[0]['facode']; ?>/<?php echo $data[0]['year']; ?>/<?php echo $data[0]['quarter']; ?>/<?php echo $data[0]['techniciancode'];?>/<?php echo 'excel'; ?>" data-toggle="tooltip" title="Excel" class="btn btn-xs btn-default noprint" style="float: right;"><img src="<?php echo base_url(); ?>/includes/images/excel.png" style="width:37px;"></a>
@@ -287,12 +289,18 @@ table.none-td-border tbody td{
 				<div class="row">
 					<div class="col-md-11">
 						<div class="save_cancel">
-						<?php if($filter_view == 1){?>
-							<a href="<?php echo base_url();?>Compliance-Filter/HF-Quarterplan">	<button type="button" id="form_cancel"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
-						<?php } elseif ($filter_view == 2) {?>
-							<a href="<?php echo base_url();?>red_rec_microplan/RedRec_report/redrec_Filters"><button type="button" id="form_cancel"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+						<?php 
+					 	if($filter_view == 1){
+							
+					 	?>
+						
+						<a href="<?php echo base_url();?>Compliance-Filter/HF-Quarterplan">	<button type="button" id="form_cancel"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+						<?php 
+						} elseif ($filter_view == 2) {?>
+						<a href="<?php echo base_url();?>red_rec_microplan/RedRec_report/redrec_Filters">	<button type="button" id="form_cancel"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
 						<?php } else {?>
-							<a href="<?php echo base_url();?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_list"><button type="button" id="form_cancel"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+						<a href="<?php echo base_url();?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_list">	<button type="button" id="form_cancel"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>
+							
 						<?php } ?>
 						</div>
 					</div>
@@ -300,10 +308,11 @@ table.none-td-border tbody td{
 		    </div>
 		</div>
 	</div>
-	<!-- Optional JavaScript -->
+
+    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="js/jquery-3.2.1.slim.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-</body>
-</html>
+  
+</body></html>

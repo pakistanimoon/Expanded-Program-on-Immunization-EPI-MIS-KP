@@ -105,9 +105,9 @@
               
 
                
-				</div>
-				<div class="row">
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "permanent_address" > Marital Status </label> 
+              </div>
+			  <div class="row">
+			  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "permanent_address" > Marital Status </label> 
                 <div class="col-xs-3">
         					<select id="marital_status" name="marital_status" class="form-control" size="1" >
         						<option value="Married" <?php echo set_select('marital_status', 'Married', TRUE); ?>>Married</option>
@@ -121,7 +121,7 @@
                 <div class="col-xs-3">
                   <input type="text"  name="phone" id="phone" placeholder="Phone"  class="form-control numberclass" value="<?php echo set_value('phone'); ?>"/><?php echo form_error('phone'); ?>
                 </div>
-				</div>
+			  </div>
 			  
 			    <!--<div class="row">  
                     <label class="col-xs-2 col-xs-offset-1 control-label"  for = "lhscode" > Supervisor Name <span style="color:red;">*</span></label>
@@ -139,23 +139,23 @@
                     </div>-->
 
             </div>  
-			<div class="row bgrow" style="text-align: center;color: white;font-size: 15px; font-family: Arial;padding-top: 5px; "> Address and Qualification</div>
+			  <div class="row bgrow" style="text-align: center;color: white;font-size: 15px; font-family: Arial;padding-top: 5px; "> Address and Qualification</div>
             <div class="form-group">
                <div class="row">
-                  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "permanent_address" > Postal Code </label>
-               <div class="col-xs-3">
+                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "permanent_address" > Postal Code </label>
+                <div class="col-xs-3">
                   <input type="text"  name="postalcode" id="postalcode" placeholder="Postal Code"  class="form-control " value="<?php echo set_value('postalcode'); ?>"/>
-               </div>
-                  <label class="col-xs-2 control-label"  for = "present_address" > City </label>
-               <div class="col-xs-3">
+                </div>
+                <label class="col-xs-2 control-label"  for = "present_address" > City </label>
+                  <div class="col-xs-3">
                     <input type="text"  name="city" id="city" placeholder="City"  class="form-control " value="<?php echo set_value('city'); ?>"/>
-               </div>
+                  </div>
                
                
-				</div>
+              </div>
 
-            <div class="row">  
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "permanent_address" > Permanent Address </label>
+                <div class="row">  
+               <label class="col-xs-2 col-xs-offset-1 control-label"  for = "permanent_address" > Permanent Address </label>
                 <div class="col-xs-3">
                   <input type="text"  name="  permanent_address" id="permanent_address" placeholder="Permanent Address"  class="form-control " value="<?php echo set_value('permanent_address'); ?>"/>
                 </div>
@@ -163,10 +163,12 @@
                 <div class="col-xs-3">
                   <input type="text"  name="  present_address" id="present_address" placeholder="Present Address"  class="form-control " value="<?php echo set_value('present_address'); ?>"/>
                 </div>
-			</div>
+               
+                
+              </div>
 
-            <div class="row">
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "present_address" > Area Type </label>
+              <div class="row">
+              <label class="col-xs-2 col-xs-offset-1 control-label"  for = "present_address" > Area Type </label>
                 <div class="col-xs-3">
                   <select id="area_type" name="area_type" class="form-control" size="1" >
                     <option value="Urban">Urban</option>
@@ -177,16 +179,15 @@
                 <div class="col-xs-3">
                   <select name="lastqualification" id="lastqualification" class="form-control">
 					<option value="Matric" <?php echo set_select('lastqualification', 'Matric'); ?>>Matric</option>
-					<option value="FA" <?php echo set_select('lastqualification', 'FA'); ?>>F.A/F.Sc</option>
-					<option value="BA" <?php echo set_select('lastqualification', 'BA'); ?>>B.A/BCS/B.Sc/B.Ed</option>
-					<option value="MA" <?php echo set_select('lastqualification', 'MA'); ?>>M.A/MCS/M.Sc/M.Ed</option> 
-					<option value="BBA/MBA" <?php echo set_select('lastqualification', 'BBA/MBA'); ?>>BBA/MBA</option>
-					<option value="Diploma" <?php echo set_select('lastqualification', 'Diploma'); ?>>Diploma</option>
-					<option value="MBBS" <?php echo set_select('lastqualification', 'MBBS'); ?>>MBBS</option>
-					<option value="MBBS,MPH" <?php echo set_select('lastqualification', 'MBBS,MPH'); ?>>MBBS,MPH</option>
-					<option value="MD" <?php echo set_select('lastqualification', 'MD'); ?>>MD</option>
-					<option value="MD,MPH" <?php echo set_select('lastqualification', 'MD,MPH'); ?>>MD,MPH</option>
-					<option value="SE" <?php echo set_select('lastqualification', 'SE'); ?>>Software Engineering</option>
+													<option value="FA" <?php echo set_select('lastqualification', 'FA'); ?>>F.A/F.Sc</option>
+													<option value="BA" <?php echo set_select('lastqualification', 'BA'); ?>>B.A/BCS/B.Sc/B.Ed</option>
+													<option value="MA" <?php echo set_select('lastqualification', 'MA'); ?>>M.A/MCS/M.Sc/M.Ed</option> 
+													<option value="BBA/MBA" <?php echo set_select('lastqualification', 'BBA/MBA'); ?>>BBA/MBA</option>
+													<option value="Diploma" <?php echo set_select('lastqualification', 'Diploma'); ?>>Diploma</option>
+													<option value="MBBS" <?php echo set_select('lastqualification', 'MBBS'); ?>>MBBS</option>
+													<option value="MBBS,MPH" <?php echo set_select('lastqualification', 'MBBS,MPH'); ?>>MBBS,MPH</option>
+													<option value="MD" <?php echo set_select('lastqualification', 'MD'); ?>>MD</option>
+													<option value="MD,MPH" <?php echo set_select('lastqualification', 'MD,MPH'); ?>>MD,MPH</option>
 				</select>
 
                 </div>
@@ -194,11 +195,11 @@
               </div>
               <div class="row">
               
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "institutename" > Institute Name </label>
+                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "institutename" > Institute Name </label>
                 <div class="col-xs-3">
                   <input type="text"  name="  institutename" id="institutename" placeholder="Institute Name"  class="form-control " value="<?php echo set_value('institutename'); ?>"/>
                 </div>
-					<label class="col-xs-2 control-label"  for = "passingyear" > Passing Year </label>
+  <label class="col-xs-2 control-label"  for = "passingyear" > Passing Year </label>
                 <div class="col-xs-3">
                   <input type="text" name="  passingyear" id="passingyear" placeholder="Passing Year"  class="form-control " value="<?php echo set_value('passingyear'); ?>"/>
                 </div> 
@@ -209,16 +210,20 @@
             
             </div>
              <div class="row bgrow " style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Joining Details</div>
-			<div class="form-group"> 
-			<div class="row">
+
+
+            <div class="form-group"> 
+
+              
+              <div class="row">
                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "place_of_joining" > Designation </label>
-            <div class="col-xs-3">
+                <div class="col-xs-3">
                   <input type="text"  name="designation" id="designation" placeholder="Designation"  class="form-control " value="<?php echo set_value('designation'); ?>"/>
-            </div>
+                </div>
                 <label class="col-xs-2 control-label"  for = "date_joining" > Date Of Joining </label>
-            <div class="col-xs-3">
+                <div class="col-xs-3">
                   <input type="text"  name="date_joining" id="date_joining" placeholder="Date Of Joining"  class="form-control " value="<?php echo set_value('date_joining'); ?>"/>
-            </div>
+                </div>
                
               </div>
 
@@ -233,7 +238,7 @@
                 </div>
                 
               </div>
-		<div class="row"> 
+			  <div class="row"> 
 			  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "present_address" > Status </label>
                 <div class="col-xs-3">
                   <select id="status" name="status" class="form-control" size="1" >
@@ -243,92 +248,99 @@
 					<option value="Died" <?php echo set_select('status', 'Died'); ?>>Died</option>
 					<option value="Retired" <?php echo set_select('status', 'Retired'); ?>>Retired</option>-->
 				</select>
+                </div>
+					<label class="col-xs-2 control-label"  for = "employee_type" > Employee Type </label>
+											<div class="col-xs-3">
+												<select id="employee_type" name="employee_type" class="form-control" size="1" >
+													<option value="Contract" <?php echo set_select('employee_type', 'Contract', TRUE); ?>>Contract</option>
+													<option value="Permanent" <?php echo set_select('employee_type', 'Permanent'); ?>>Permanent </option>
+													
+												</select>
+												</div>
+							 </div>
+			  <div class="row"> 					
+				<div class="showTerminated" id="showTerminated" style="display: none;">
+						<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Termination </label>
+						<div class="col-xs-3">
+							<input  type="text"  name="date_termination" id="date_termination" placeholder="Date Termination"  class="form-control " value="<?php echo set_value('date_termination'); ?>"/>
+						</div>
+						</div>
+						<div class="showRetired" id="showRetired" style="display: none;">
+						<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Retired </label>
+						<div class="col-xs-3">
+							<input  type="text"  name="date_retired" id="date_retired" placeholder="Date Retired"  class="form-control " value="<?php echo set_value('date_retired'); ?>"/>
+						</div>
+						</div>
+						<div class="showDied" id="showDied" style="display: none;">
+						<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Died </label>
+						<div class="col-xs-3">
+							<input  type="text"  name="date_died" id="date_died" placeholder="Date Died"  class="form-control " value="<?php echo set_value('date_died'); ?>"/>
+						</div>
+						</div>
+						<div class="showTransfer" id="showTransfer" style="display: none;">
+						<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Transfered </label>
+						<div class="col-xs-3">
+							<input  type="text"  name="date_transfer" id="date_transfer" placeholder="Date Transfered"  class="form-control " value="<?php echo set_value('date_transfer'); ?>"/>
+						</div>
+						</div>
+				</div>
+
+
+
+
+
             </div>
-				<label class="col-xs-2 control-label"  for = "employee_type" > Employee Type </label>
-				<div class="col-xs-3">
-					<select id="employee_type" name="employee_type" class="form-control" size="1" >
-						<option value="Contract" <?php echo set_select('employee_type', 'Contract', TRUE); ?>>Contract</option>
-						<option value="Permanent" <?php echo set_select('employee_type', 'Permanent'); ?>>Permanent </option>
-					</select>
-					</div>
-		</div>
-		<div class="row"> 					
-			<div class="showTerminated" id="showTerminated" style="display: none;">
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Termination </label>
-				<div class="col-xs-3">
-					<input  type="text"  name="date_termination" id="date_termination" placeholder="Date Termination"  class="form-control " value="<?php echo set_value('date_termination'); ?>"/>
-				</div>
-				</div>
-				<div class="showRetired" id="showRetired" style="display: none;">
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Retired </label>
-				<div class="col-xs-3">
-					<input  type="text"  name="date_retired" id="date_retired" placeholder="Date Retired"  class="form-control " value="<?php echo set_value('date_retired'); ?>"/>
-				</div>
-				</div>
-				<div class="showDied" id="showDied" style="display: none;">
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Died </label>
-				<div class="col-xs-3">
-					<input  type="text"  name="date_died" id="date_died" placeholder="Date Died"  class="form-control " value="<?php echo set_value('date_died'); ?>"/>
-				</div>
-				</div>
-				<div class="showTransfer" id="showTransfer" style="display: none;">
-					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Transfered </label>
-				<div class="col-xs-3">
-					<input  type="text"  name="date_transfer" id="date_transfer" placeholder="Date Transfered"  class="form-control " value="<?php echo set_value('date_transfer'); ?>"/>
-				</div>
-				</div>
-		</div>
-    </div>
-		
-		<div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Training Information</div>
-	<div class="form-group">
-		<div class="row">
-			<div class="col-xs-3 col-xs-offset-1 control-label">
-				<label>Training</label>
-			</div>
-			<div class="col-xs-3 text-center">
-				<label style="padding-top: 8px;">Start Date</label>
-			</div>
-			<div class="col-xs-3 text-center">
-				<label style="padding-top: 8px;">End Date</label>
-			</div>
-		</div>
-			  <hr>
-		<div class="row">
+
+			
+			<div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Training Information</div>
+								<div class="form-group">
+							 <div class="row">
+								<div class="col-xs-3 col-xs-offset-1 control-label">
+								  <label>Training</label>
+								</div>
+								<div class="col-xs-3 text-center">
+								  <label style="padding-top: 8px;">Start Date</label>
+								</div>
+								<div class="col-xs-3 text-center">
+								  <label style="padding-top: 8px;">End Date</label>
+								</div>
+							  </div>
+							  <hr>
+							  <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="tenmonth_training_start_date"> Basic Training </label>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  basic_training_start_date" id="basic_training_start_date" placeholder="Basic Training Start Date" class="form-control" value="<?php echo set_value('basic_training_start_date'); ?>" type="text">           </div>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  basic_training_end_date" id="basic_training_end_date" placeholder="Basic Training End Date" class="form-control " value="<?php echo set_value('basic_training_end_date'); ?>" type="text">           </div>
-        </div>
-		<div class="row">
+          </div>
+		  <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="routine_epi"> Routine EPI </label>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  routine_epi_start_date" id="routine_epi_start_date" placeholder="Routine EPI Training Start Date" class="form-control" value="<?php echo set_value('routine_epi_start_date'); ?>" type="text">           </div>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  routine_epi_end_date" id="routine_epi_end_date" placeholder="Routine EPI Training End Date" class="form-control " value="<?php echo set_value('routine_epi_end_date'); ?>" type="text">           </div>
-        </div>
-		<div class="row">
+          </div>
+		  <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="survilance_training_start_date"> Surveillance </label> 
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  survilance_training_start_date" id="survilance_training_start_date" placeholder="Survilance Training Start Date" class="form-control" value="<?php echo set_value('survilance_training_start_date'); ?>" type="text">           </div>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  survilance_training_end_date" id="survilance_training_end_date" placeholder="Survilance Training End Date" class="form-control " value="<?php echo set_value('survilance_training_end_date'); ?>" type="text">           </div>
-        </div>
-		<div class="row">
+          </div>
+		  <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="cold_chain_training_start_date"> Cold Chain </label>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  cold_chain_training_start_date" id="cold_chain_training_start_date" placeholder="Cold Chain Training Start Date" class="form-control" value="<?php echo set_value('cold_chain_training_start_date'); ?>" type="text">           </div>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input  name="  cold_chain_training_end_date" id="cold_chain_training_end_date" placeholder="Cold Chain Training End Date" class="form-control " value="<?php echo set_value('cold_chain_training_end_date'); ?>" type="text">           </div>
-        </div>
-		<div class="row">
+          </div>
+		 <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="vlmis_training_start_date"> vLMIS/EPI-MIS </label>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input name="  vlmis_training_start_date" id="vlmis_training_start_date" placeholder="vLMIS/EPI-MIS Training Start Date" class="form-control" value="<?php echo set_value('vlmis_training_start_date'); ?>" type="text">           </div>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input  name="  vlmis_training_end_date" id="vlmis_training_end_date" placeholder="vLMIS/EPI-MIS Training End Date" class="form-control " value="<?php echo set_value('vlmis_training_end_date'); ?>" type="text">           </div>
-        </div>
+          </div>
 		   <!--<div class="row">
            <label class="col-xs-3 control-label" for="epimis_training_start_date"> vLMIS/EPI-MIS </label>
            <div class="col-xs-3">
@@ -336,14 +348,16 @@
            <div class="col-xs-3">
             <input name="  epimis_training_end_date" id="epimis_training_end_date" placeholder="vLMIS/EPI-MIS Training End Date" class="form-control " value="<?php echo set_value('epimis_training_end_date'); ?>" type="text">           </div>
           </div>-->
-	</div>						
+				</div>						
 
-    <div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Banking Details</div>
-    <div class="form-group">
-	<div class="row">
+             <div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Banking Details</div>
+
+              
+           <div class="form-group">
+	   <div class="row">
 		<label class="col-xs-2 col-xs-offset-1 control-label"  for = "payscale" > Bank Information <span style="color:red;">*</span></label>
 		<div class="col-xs-3">
-			<select id="bankid"  name="bankid" class="form-control" size="1" >
+			  <select id="bankid"  name="bankid" class="form-control" size="1" >
 				<option value="">Select Bank</option>
 				<?php 
 				foreach($resultbank as $row){
@@ -351,60 +365,83 @@
 				  <option value="<?php echo $row['bankid'];?>" <?php echo set_select('bankid',$row['bankcode']."-".$row['bankname']); ?>  /><?php echo $row['bankcode']."-".$row['bankname'];?>
 					<?php
 				  }
-				  ?>
-			</select>
+												?>
+			  </select>
 		</div>
-			<label class="col-xs-2 control-label"  for = "branchcode" > Branch Code <span style="color:red;">*</span></label>
+		<label class="col-xs-2 control-label"  for = "branchcode" > Branch Code <span style="color:red;">*</span></label>
 		<div class="col-xs-3">
 			 <input name="branchcode" id="branchcode" placeholder="Branch Code"  class="form-control " value="<?php echo set_value('branchcode'); ?>"/><?php echo form_error('branchcode'); ?>
 		</div>
 		</div>
 		<div class="row">
-			<label class="col-xs-2 col-xs-offset-1 control-label"  for = "branchname" > Branch Name <span style="color:red;">*</span></label>
+		<label class="col-xs-2 col-xs-offset-1 control-label"  for = "branchname" > Branch Name <span style="color:red;">*</span></label>
 		<div class="col-xs-3">
 			 <input name="branchname" id="branchname" placeholder="Branch Name"  class="form-control " value="<?php echo set_value('branchname'); ?>"/><?php echo form_error('branchname'); ?>
 		</div>
-			<label class="col-xs-2 control-label"  for = "bankaccountno" > Bank Account Number <span style="color:red;">*</span></label>
+		<label class="col-xs-2 control-label"  for = "bankaccountno" > Bank Account Number <span style="color:red;">*</span></label>
 		<div class="col-xs-3">
 			 <input name="bankaccountno" id="bankaccountno" placeholder="Bank Account Number"  class="form-control " value="<?php echo set_value('bankaccountno'); ?>"/><?php echo form_error('bankaccountno'); ?>
 		</div>
 		</div>
 		<div class="row">
-			<label class="col-xs-2 col-xs-offset-1 control-label"  for = "bankbranch" > Basic Pay Scale <span style="color:red;">*</span></label>
+		<label class="col-xs-2 col-xs-offset-1 control-label"  for = "bankbranch" > Basic Pay Scale <span style="color:red;">*</span></label>
 		<div class="col-xs-3">
-			<select id="payscale"  name="payscale" class="form-control" size="1" >
-				<option value="">Select Pay Scale</option>
-				<?php 
-				for($i=1;$i<23;$i++){?>
-				<option value="<?php echo "BPS-".$i ;?>" <?php echo set_select('payscale',"BPS-".$i); ?> /><?php echo "BPS-".$i ;?>
-				<?php }
-					?>
-			</select>
+			  <select id="payscale"  name="payscale" class="form-control" size="1" >
+						<option value="">Select Pay Scale</option>
+						<?php 
+						for($i=1;$i<23;$i++){?>
+		  <option value="<?php echo "BPS-".$i ;?>" <?php echo set_select('payscale',"BPS-".$i); ?> /><?php echo "BPS-".$i ;?>
+			  <?php }
+						?>
+																			  </select>
 		</div>
-			<label class="col-xs-2 control-label"  for = "nic" > Basic Pay <span style="color:red;">*</span></label>
+		<label class="col-xs-2 control-label"  for = "nic" > Basic Pay <span style="color:red;">*</span></label>
 		<div class="col-xs-3">
 			 <input type="text"  name="basicpay" id="basicpay" placeholder="Basic Pay"  class="form-control " value="<?php echo set_value('basicpay'); ?>"/><?php echo form_error('basicpay'); ?>
 		</div>
 		</div>
-		</div>
+													</div>
+               
+
+
+
+
+
             <hr>
-	<div class="row">
-             <div class="col-xs-11" style="padding:0px; text-align:right;">
+
+            <div class="row">
+             <div class="col-xs-7" style="margin-left:53.5%;" >
+
                <button type="submit" name="is_temp_saved" value="1" id="save" class="btn btn-md btn-success bc1"><i class="fa fa-floppy-o "></i> Save</button>
-			 <!--- <button type="submit" name="is_temp_saved" value="0" class="btn btn-md btn-success bc1" style="margin-left: 0.12%;"><i class="fa fa-floppy-o "></i> Submit </button>--->
-				<button type="reset" class="btn btn-md btn-success"><i class="fa fa-repeat"></i> Reset </button>
-				<a href="<?php echo base_url();?>Measles-Focal-Person-List" class="btn btn-md btn-success"><i class="fa fa-times"></i> Cancel </a>
-	</div>
-    </div>
-	</form>
-	</div> <!--end of panel body-->
-    </div> <!--end of panel panel-primary-->
-	</div><!--end of row-->
-	</div><!--End of page content or body-->
+			   <button type="submit" name="is_temp_saved" value="0" class="btn btn-md btn-success bc1" style="margin-left: 0.12%;"><i class="fa fa-floppy-o "></i> Submit </button>
+
+               <button type="reset" class="btn btn-md btn-success"><i class="fa fa-repeat"></i> Reset </button>
+
+               <a href="<?php echo base_url();?>Measles-Focal-Person-List" class="btn btn-md btn-success"><i class="fa fa-times"></i> Cancel </a>
+
+             </div>
+
+           </div>
+
+
+
+         </form>
+
+
+
+       </div> <!--end of panel body-->
+     </div> <!--end of panel panel-primary-->
+   </div><!--end of row-->
+
+ </div><!--End of page content or body-->
 
 <script src="<?php echo base_url(); ?>includes/js/jquery.alphanumeric.js"></script>
 <script type="text/javascript">
-function checkNICNumber(num) {
+
+
+
+
+  function checkNICNumber(num) {
     var regexp = /[0-9]{5}\-[0-9]{7}\-[0-9]{1}/; 
     var valid = regexp.test(num);
     return valid;
@@ -426,7 +463,7 @@ function checkNICNumber(num) {
     
     var code = $('#mfpcodel').val();
     if(checkCode(code)){
-//alert(checkCode);
+
       if($('#nic').val().length == 15 ){
         var nic = $('#nic').val();
         if(!checkNICNumber(nic)){
@@ -440,8 +477,7 @@ function checkNICNumber(num) {
       }
 
     }else{
-  
-  alert('Please Enter Correct Code');
+      alert('Please Enter Correct Code');
       $('mfpcodel').focus();
     }
 

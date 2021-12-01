@@ -116,21 +116,6 @@ class Measles_maps_model extends CI_Model {
 		$query = "SELECT fweek, count(*) as cnt from case_investigation_db where procode='$procode' and (specimen_result='Positive Measles' OR specimen_result='Positive Rubella') and case_epi_no IS NOT NULL and case_type='Msl' and year='$year' $distcodeVar group by fweek order by fweek asc";
 		$result = $this -> db -> query($query);
 		return $result -> result_array();
-		// $this -> db -> select("fweek, count(*) as cnt");
-		// $this -> db -> from('case_investigation_db');
-		// $this -> db -> where(array('procode' => $procode,'specimen_result' => 'Positive Measles','year' => $year));
-		// $this -> db -> or_where('specimen_result', 'Positive Measles');
-		// $this -> db -> or_where('specimen_result', 'Positive Rubella');
-		// //$this -> db -> or_where('final_classification !=', 'Discarded Case');
-		// $this -> db -> where('case_epi_no IS NOT NULL');
-		// $this -> db -> where('case_type', 'Msl');
-		// //$this -> db -> where('year', $year);
-		// if($distcode)
-		// 	$this -> db -> where('distcode',$distcode);
-		// $this -> db -> group_by('fweek');
-		// $this -> db -> order_by('fweek','asc');
-		//echo $this -> db -> last_query();exit();
-		//return $this -> db -> get() -> result_array();
 	}
 	
 	function getMeaslesWeeklyDeathsCasesDetail($distcode=NULL, $year=NULL)
@@ -159,20 +144,6 @@ class Measles_maps_model extends CI_Model {
 		$query = "SELECT fweek, count(*) as cnt from case_investigation_db where procode='$procode' and outcome='Cured' and (specimen_result='Positive Measles' OR specimen_result='Positive Rubella') and case_epi_no IS NOT NULL and case_type='Msl' and year='$year' $distcodeVar group by fweek order by fweek asc";
 		$result = $this -> db -> query($query);
 		return $result -> result_array();
-
-		// $this -> db -> select("fweek, count(*) as cnt");
-		// $this -> db -> from('case_investigation_db');
-		// $this -> db -> where(array('procode' => $procode, 'outcome' => 'Cured', 'specimen_result' => 'Positive Measles', 'year' => $year));
-		// $this -> db -> or_where('specimen_result', 'Positive Rubella');
-		// //$this -> db -> or_where('final_classification !=', 'Discarded Case');
-		// $this -> db -> where('case_epi_no IS NOT NULL');
-		// $this -> db -> where('case_type', 'Msl');
-		// //$this -> db -> where('year', $year);
-		// if($distcode)
-		// 	$this -> db -> where('distcode',$distcode);
-		// $this -> db -> group_by('fweek');
-		// $this -> db -> order_by('fweek','asc');
-		// return $this -> db -> get() -> result_array();
 	}
 	
 	function getMeaslesWeeklyMaleCasesDetail($distcode=NULL, $year=NULL)

@@ -197,7 +197,7 @@
 								
 								foreach($closingbalance as $key=>$row)
 								{
-								if($row['stock'] >=0){									
+								if($row['stock'] >0){									
 									echo '<tr>';
 										echo '<td>'.$serial_number++.'</td>';
 										echo '<td><b>'.date("Y-m-d", strtotime($enddate)).'</b></td>';

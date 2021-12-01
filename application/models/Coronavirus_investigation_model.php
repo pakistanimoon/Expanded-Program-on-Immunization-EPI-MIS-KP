@@ -24,7 +24,6 @@ class Coronavirus_investigation_model extends CI_Model {
 	
 		return $data;
 	}
-	
 	public function coronavirus_investigation_list($per_page,$startpoint)
 	{
 		//////////////////////////////Adding BreadCrums////////////////////
@@ -52,7 +51,7 @@ class Coronavirus_investigation_model extends CI_Model {
 		$resultWeek=$this -> db -> query($query);
 		$data['resultWeek'] = $resultWeek -> result_array();
 
-		$query="SELECT id,cross_notified,approval_status,cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, facilityname(facode) as fac_name, unname(uncode) as uc, tehsilname(tcode) as tehsil, name, gender, age_in_year, is_temp_saved, fweek, year, case_number, case_epi_no, pvh_date from corona_case_investigation_form_db where case_type = 'Covid' AND (distcode='". $this -> session -> District ."' OR cross_notified_from_distcode='". $this -> session -> District ."' OR rb_distcode='". $this -> session -> District ."') and $wc order by case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}  ";
+		$query="SELECT id,cross_notified,approval_status,cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, facilityname(facode) as fac_name, unname(uncode) as uc, tehsilname(tcode) as tehsil, name, gender, age_in_year, is_temp_saved, fweek, year, case_number, case_epi_no, pvh_date from corona_case_investigation_form_db where case_type = 'Covid' AND (distcode='". $this -> session -> District ."' OR cross_notified_from_distcode='". $this -> session -> District ."' OR rb_distcode='". $this -> session -> District ."') order by year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		//exit();
 		$result=$this -> db -> query ($query);
 		$data['result'] = $result -> result_array();

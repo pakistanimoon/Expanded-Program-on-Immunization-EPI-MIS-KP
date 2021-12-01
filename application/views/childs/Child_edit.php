@@ -3,7 +3,7 @@
 <?php //print_r($data); exit; ?>
 <!--<?php print_r($data['childData']);?>-->
  <div class="container bodycontainer">
-  <div class="row"> 
+  <div class="row">
     <div class="panel panel-primary">
      <ol class="breadcrumb">
            <?php  echo $this->breadcrumbs->show();?>
@@ -77,8 +77,7 @@
 						</select>
 					</div>
 				</div>
-			<div class="row">
-				<label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" >Address</label>
+				<label class="col-xs-2 col-xs-offset-1 control-label"  for = "Address" >Address</label>
                 <div class="col-xs-3">
 						<select  id="address" required="required" name="address" class="form-control" size="1" >
 						    <option value="<?php echo $childData[0]['villagemohallah']; ?>" >
@@ -87,13 +86,13 @@
 								<?php //echo getallTehsil_options(false,$childData[0]['tcode'],$childData[0]['distcode']); ?>
 						</select>
 					</div>
-		   </div>
+		   
 			</div>
 			<br>
 		<div class="panel-heading" style="height: 26px;font-size: 14px;padding: 4px;color: white;">Child Basic info</div>
 			<br>
 			<div class="row">
-			    
+			
 				<label class="col-xs-2 col-xs-offset-1 control-label"  for = "CardNO" > Card No: </label>
                 <div class="col-xs-3">
 					<input type="text"  name="cardno" id="cardno" readonly placeholder="Card No"  value="<?php if(validation_errors() != false) { echo set_value('cardno'); } else { echo $childData[0]['cardno']; } ?>"  class="form-control "/><?php echo form_error('cardno'); ?>

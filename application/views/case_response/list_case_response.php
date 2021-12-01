@@ -88,24 +88,6 @@ $(document).ready(function () {
           }
 		   
         ]; 
-	<?php } elseif (($_SESSION['UserLevel']=='4') && ($_SESSION['utype']=='DEO')){?>
-  
-    var columns = [
-          { data: "serial",
-		  orderable: false,
-		  },
-          { data: "vcode" },
-          { data: "tehsil" },
-          { data: "unioncouncil" },
-          { data: "disease" },
-          { data: "date_of_activity" },
-          { orderable: false,
-            render : function(data, type, full) {
-                return '   <a href="<?php echo base_url(); ?>Case-View/'+full.vcode+'/'+full.date_of_activity+'" class="btn view-btn"><i class="fa fa-eye" aria-hidden="true"></i></a>';
-            }  
-          }
-		   
-        ]; 	
   <?php } elseif (($_SESSION['utype']=='Manager')||($_SESSION['UserLevel']=='2')){?>
 	var columns = [
           { data: "serial",

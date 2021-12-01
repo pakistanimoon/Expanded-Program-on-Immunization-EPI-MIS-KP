@@ -195,14 +195,16 @@ class Investigation_forms extends CI_Controller {
 				$data['uncode'] = $this -> input -> post('nnt_uncode');				
 			}
 			if(!$this -> input -> post('cross_notified')){
-				$data['procode'] = $procode = $_SESSION["Province"];				
+				$data['procode'] = $procode = $_SESSION["Province"];
+				
 			}
 			else{
 				if(!$this -> input -> post('edit') && !$this -> input -> post('id'))
 				{
 					//$data['procode'] = $procode = $this -> input -> post('procode');
 					$data['cross_notified_from_distcode'] = $this -> input -> post('rb_distcode');
-					$data['approval_status'] = "Pending";					
+					$data['approval_status'] = "Pending";
+					
 				}
 			}
 			$query = "SELECT max(cn_id_from) AS cn_id_from FROM nnt_investigation_form";
@@ -279,7 +281,7 @@ class Investigation_forms extends CI_Controller {
 	}
 	public function nntApprove_and_save(){
 		//dataEntryValidator(0);
-		if($this -> input -> post('facode')>0){
+		if($this -> input -> post('facode')>0 ){
 			$distcode = $this -> session -> District;
 			$data['facode'] = $this -> input -> post('facode');
 			$data['uncode'] = $this -> input -> post('uncode');
@@ -326,6 +328,7 @@ class Investigation_forms extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
+
 	public function nnt_investigation_edit(){
 		//dataEntryValidator(0);
 		$distcode = $this -> session -> District;
@@ -365,8 +368,7 @@ class Investigation_forms extends CI_Controller {
 			$facode = $this -> uri -> segment(3);
 			$id   = $this -> uri -> segment(4);
 			$data['a'] = $this -> Common_model -> get_info('nnt_investigation_form', '', '','*', array('id' => $id, 'facode' => $facode));
-		}
-		else{
+		}else{
 			$id   = $this -> uri -> segment(3);
 			$data['a'] = $this -> Common_model -> get_info('nnt_investigation_form', '', '','*', array('id' => $id));
 		}
@@ -388,18 +390,18 @@ class Investigation_forms extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
-	//-----------------------------AEFI Case Investigation-------------------------------//
-	//-----------------------------------------------------------------------------------//	
+	//-------------------------------------------------AEFI Case Investigation-------------------------------------------------------------//
+	//-------------------------------------------------------------------------------------------------------------------------------------//	
 	public function aefi_investigation(){
 		//$data['data']=$this -> Investigation_forms_model -> aefi_investigation();
 		$distcode = $this -> session -> District;
-		$query = "SELECT epid_code from districts where distcode='$distcode'";
+		$query = "select epid_code from districts where distcode='$distcode'";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
 		$data['distCode'] = $result['epid_code']; 	
 		$dcode=$result['epid_code'];
 		$year = date('Y');
-		$query = "SELECT max(aefi_number) as aefi_number from aefi_case_investigation_form where year='$year' AND dcode='$dcode'";
+		$query = "select max(aefi_number) as aefi_number from aefi_case_investigation_form where year='$year' AND dcode='$dcode'";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
 		$data['aefiNumber'] = str_split(sprintf('%04u', ($result['aefi_number'] + 1)));
@@ -560,7 +562,7 @@ class Investigation_forms extends CI_Controller {
 		}
 	}
 
-	//-----------------------------Measles Case Investigation---------------------------------//
+	//------------------------------Measles Case Investigation--------------------------------//
 	//----------------------------------------------------------------------------------------//
 	public function measles_case_investigation(){
 		$data['data']=$this -> Investigation_forms_model -> measles_case_investigation(); 
@@ -645,6 +647,7 @@ class Investigation_forms extends CI_Controller {
 				redirect('Measles-CIF/Add');
 			}
 	}
+	
 	public function measles_Approve(){
 		dataEntryValidator(0);
 		if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
@@ -665,6 +668,7 @@ class Investigation_forms extends CI_Controller {
 			redirect($this->session->flashdata('redirectToCurrent'));
 		}
 	}
+	
 	public function measles_list(){
 		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
 		if ($page <= 0){ 
@@ -693,6 +697,7 @@ class Investigation_forms extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
+	
 	public function measles_edit(){
 		dataEntryValidator(0);
 		//$facode = $this -> uri -> segment(3);
@@ -755,7 +760,7 @@ class Investigation_forms extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
-	//-------------------------------AFP Case Investigation---------------------------------//
+	///////////////////////////////////AFP Forms/////////////////////////////////////////////////////////////////////////
 	public function afp_investigation(){
 		$data['data']=$this -> Investigation_forms_model -> afp_investigation();
 		$distcode = $this -> session -> District;
@@ -872,13 +877,12 @@ class Investigation_forms extends CI_Controller {
 				}
 				else if($this -> input -> post('cross_notified') == 1 && $this -> input -> post('cross_case_id')){
 					//echo "b";exit();
-					$data['cross_case_id'] = $this -> input -> post('cross_case_id');
+					$data['cross_case_id'] =$this -> input -> post('cross_case_id');
 				}
 				else{
 					//echo "c";exit();
 					$data['cross_case_id'] = NULL;
 				}
-				$data['cross_notified'] = ($this-> input-> post('cross_notified'))?$this-> input-> post('cross_notified'):0;
 				$inserted_id = $this -> Common_model -> insert_record('afp_case_investigation',$data);
 				$query = "SELECT max(id) AS id FROM afp_case_investigation";
 				$result = $this -> db -> query($query);
@@ -890,7 +894,7 @@ class Investigation_forms extends CI_Controller {
 					$dataMeasles = $this -> getDataToSave($url, $filepath, $data);
 				}
 				if($this -> input -> post('cross_notified') != 1){
-					syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$distcode,$doses_received,$patient_gender);
+				syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$distcode,$doses_received,$patient_gender);
 				//}
 				}
 				$this -> session -> set_flashdata('message','You have successfully saved your record!');
@@ -901,6 +905,7 @@ class Investigation_forms extends CI_Controller {
 			redirect('AFP-CIF/Add');
 		}
 	}
+	
 	public function afp_receive_and_save(){
 		//print_r($_POST);exit();
 		//dataEntryValidator(0);
@@ -1123,7 +1128,8 @@ class Investigation_forms extends CI_Controller {
 		else{
 			$data['message'] ="You must have rights to access this page.";
 			$this -> load -> view ('message',$data);
-		}			
+		}
+			
 	}
 	public function afp_investigation_view(){
 		//echo "danish";exit;
@@ -1154,7 +1160,7 @@ class Investigation_forms extends CI_Controller {
 	public function afp_investigation_delete(){
 		dataEntryValidator(0);
 		$id = $this -> uri -> segment(3);
-		$year = $this -> uri -> segment(4);		
+		$year = $this -> uri -> segment(4);
 		$query = "DELETE from afp_case_investigation where procode='".$_SESSION["Province"]."' and year='$year' and id=$id";
 		//echo $query; exit();
 		$this->db->query($query);
@@ -1193,7 +1199,7 @@ class Investigation_forms extends CI_Controller {
 		$resultGroupid = $this -> db -> query($query);
 		$data['max_group_id'] = $resultGroupid -> result_array();
 		//print_r($data['max_gid']); exit();
-
+		
 		$data['startpoint'] = $startpoint;
 		$data['UserLevel'] = $this -> session -> UserLevel;
 		$data['edit']="Yes";
@@ -1585,7 +1591,7 @@ class Investigation_forms extends CI_Controller {
 		}
 	}
 	function getDataToSave($url=NULL,$filepath=NULL,$Array=NULL)
-	{
+	{		
 		//$data = array('procode' => $procode,'distcode' => $distcode,'tcode' => $tcode,);
 		$data = $Array;
 		//print_r($data);exit();
@@ -1618,28 +1624,30 @@ class Investigation_forms extends CI_Controller {
 		}else{
 			return array();
 		}
-	}	
+	}
 	public function DistNames(){
 		$distcode = $this-> input-> post('distcode'); 
 		$Districtname = $this -> CrossProvince_DistrictName($distcode);
 		echo $Districtname;
 	}
+	
 	function CrossProvince_DistrictName($distcode)
-   	{
+   {      
 		$_query = "SELECT district from districts where distcode = '$distcode'";
 		$results = $this-> db-> query($_query);
 		$rows = $results->row_array();        
 		return $rows['district'];	    
-   	}
-   	public function DistOptions(){
+   }
+   public function DistOptions(){
 		$distcode = $this-> input-> post('distcode'); 
 		$Districtname = $this -> getCrossProvince_DistrictsOptions(false,$distcode);
 		echo $Districtname;
 	}
+	
 	function getCrossProvince_DistrictsOptions($isreturn=false,$distcode=NULL,$allDistricts=NULL)
-    {
+    { 
     	$procode = substr($distcode, 0,1);        
-      	$output = '<option value="" >-- Select District --</option>';
+      $output = '<option value="" >-- Select District --</option>';
 		$query="SELECT district,distcode from districts where procode = '$procode' order by district asc";
 		$result = $this -> db ->query($query);
 		$result1 = $result->result_array();
@@ -1653,7 +1661,8 @@ class Investigation_forms extends CI_Controller {
 		}
 		if($isreturn)
 			return $output;
-		echo $output; 
+		echo $output;
+	    
     }
     public function TehsilNames(){
 		$tcode = $this-> input-> post('tcode'); 
@@ -1661,13 +1670,13 @@ class Investigation_forms extends CI_Controller {
 		echo $TehsilName;
 	}	
 
-    function CrossProvince_TehsilName($tcode)
-    {
+   function CrossProvince_TehsilName($tcode)
+   {        
 		$_query = "SELECT tehsil from tehsil where tcode = '$tcode'";
 		$results = $this-> db-> query($_query);
 		$rows = $results->row_array();        
 		return $rows['tehsil'];	    
-    }
+   }
 
 	public function TehsilOptions(){
 		$tcode = $this-> input-> post('tcode'); 
@@ -1676,7 +1685,7 @@ class Investigation_forms extends CI_Controller {
 	}	
 
 	function getCrossProvince_TehsilOptions($isreturn=false,$tcode=NULL,$distcode=NULL)
-	{
+	{       
 		$procode = substr($tcode,0,1);
 		$distcode = substr($tcode,0,3);
 		$output = '<option value="" >-- Select Tehsil --</option>';
@@ -1694,29 +1703,30 @@ class Investigation_forms extends CI_Controller {
 		if($isreturn)
 			return $output;
 		echo $output;
+
 	}
-   	public function UCNames(){
+   public function UCNames(){
 		$uncode = $this-> input-> post('uncode'); 
 		$UCName = $this -> CrossProvince_UCName($uncode);
 		echo $UCName;
 	}
     
-    function CrossProvince_UCName($uncode)
-    {
+   function CrossProvince_UCName($uncode)
+   {     
 		$_query = "SELECT un_name from unioncouncil where uncode = '$uncode'";
 		$results = $this-> db-> query($_query);
 		$rows = $results->row_array();        
 		return $rows['un_name'];	    
-    }
-    public function UCsOptions(){
+   }
+   public function UCsOptions(){
 		$uncode = $this-> input-> post('uncode'); 
 		$UCName = $this -> getCrossProvince_UCsOptions(false,$uncode);
 		echo $UCName;
 	}
     
-    function getCrossProvince_UCsOptions($isreturn=false,$uncode=NULL)
-    {
-      	$procode = substr($uncode,0,1);
+   function getCrossProvince_UCsOptions($isreturn=false,$uncode=NULL)
+   {  
+      $procode = substr($uncode,0,1);
 		$distcode = substr($uncode,0,3);
 		$tcode = substr($uncode,0,6);
 		$output = '<option value="" >-- Select Unioncouncil --</option>';
@@ -1734,19 +1744,20 @@ class Investigation_forms extends CI_Controller {
 		if($isreturn)
 			return $output;
 		echo $output;
-   	}
+	    
+   }
     public function FacilityNames(){
 		$facode = $this-> input-> post('facode');
 		$FacilityName = $this -> CrossProvince_FacilityName($facode);
 		echo $FacilityName;
 	}
 	function CrossProvince_FacilityName($facode)
-   	{
+   {           
 		$_query = "SELECT fac_name from facilities where facode = '$facode'";
 		$results = $this-> db-> query($_query);
 		$rows = $results->row_array();        
 		return $rows['fac_name'];	    
-   	}
+   }
 
  //   public function FacilityOptions(){
 	// 	$facode = $this-> input-> post('facode');

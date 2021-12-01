@@ -15,8 +15,9 @@
           <thead>
           <tr>
                 <th class="text-center Heading">S#</th>
-                <th class="text-center Heading">EPI Center</th>
-                <th class="text-center Heading">EPI Center Code</th> 
+                <th class="text-center Heading">EPI Center Code</th>
+                <th class="text-center Heading">EPI Center</th>                 
+                <th class="text-center Heading">Union Council</th>  
                 <th class="text-center Heading">Previous Year (<?php echo date("Y")-1;?>)</th>
                 <th class="text-center Heading">Current Year Population (<?php echo date("Y");?>)</th> 
                 <th class="text-center Heading">Next Year Population (<?php echo date("Y")+1;?>)<input type="checkbox" id="nextYear" onclick="EnableDisableTextBox(this)"  style="display: inline-block;vertical-align:text-bottom; margin-bottom:2px; margin-left:6px;" />
@@ -36,21 +37,23 @@
             <tbody id="tbody">
             <?php foreach ($data as $i => $value) { ?>
             <tr>
-               <td class='text-center Heading'><?php echo $index; ?></td>
-               <td class='text-left'><input type='text' name='facility[]' value="<?php echo $value->fac_name; ?>" readonly class='form-control'></td>
-               <td class='text-left' ><input name='facode[]' readonly value="<?php echo $value->facode; ?>" class='form-control text-center'></td>
-              <input type='hidden' name='uncode[]' value="<?php echo $value->uncode; ?>">
-              <input type='hidden' name='tcode[]' value="<?php echo $value->tcode; ?>">
-              <input type='hidden' name='distcode[]' value="<?php echo $value->distcode; ?>">
-               <td class='text-center'><input readonly value='<?php if(isset($value->previous) && !empty($value->previous)){echo $value->previous;}else{ echo 0; } ?>' class='form-control text-center numberclass previous'></td>
-			   <td class='text-left'><input class='form-control text-center numberclass current' name='current[]' value='<?php if(isset($value->current) && !empty($value->current)){echo $value->current ;} ?>'></td>
-              <td class='text-left'><input class='form-control text-center group1 numberclass next'   name='next[]' id='textNextYear' disabled='disabled' value='<?php if(isset($value->next) && !empty($value->next)){echo $value->next;} ?>'></td> 
+				<td class='text-center Heading'><?php echo $index; ?></td>
+				<td class='text-left' ><input name='facode[]' readonly value="<?php echo $value->facode; ?>" class='form-control text-center'></td>
+				<td class='text-left'><input type='text' name='facility[]' value="<?php echo $value->fac_name; ?>" readonly class='form-control'></td>
+				<td class='text-left' ><input readonly value="<?php echo get_UC_Name($value->uncode); ?>" class='form-control text-center'></td>
+				<input type='hidden' name='uncode[]' value="<?php echo $value->uncode; ?>">
+				<input type='hidden' name='tcode[]' value="<?php echo $value->tcode; ?>">
+				<input type='hidden' name='distcode[]' value="<?php echo $value->distcode; ?>">
+				<td class='text-center'><input readonly value='<?php if(isset($value->previous) && !empty($value->previous)){echo $value->previous;}else{ echo 0; } ?>' class='form-control text-center numberclass previous'></td>
+				<td class='text-left'><input class='form-control text-center numberclass current' name='current[]' value='<?php if(isset($value->current) && !empty($value->current)){echo $value->current ;} ?>'></td>
+				<td class='text-left'><input class='form-control text-center group1 numberclass next'   name='next[]' id='textNextYear' disabled='disabled' value='<?php if(isset($value->next) && !empty($value->next)){echo $value->next;} ?>'></td> 
             </tr>
             <input type='hidden' name='addeddate[]' value='<?php echo $value->addeddate; ?>'>
             <?php $index++;
           }
           ?> 
             <tr>
+            	<td></td>
 				<td class="text-right" colspan="3"><strong>Total: </strong></td>
 				<td class="text-center"><strong><p id="previoustotal"></p></strong></td>
 				<td class="text-center"><strong><p id="currenttotal"></p></strong></td>

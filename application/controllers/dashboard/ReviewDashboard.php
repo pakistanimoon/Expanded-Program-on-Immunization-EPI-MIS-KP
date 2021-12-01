@@ -11,7 +11,6 @@ class ReviewDashboard extends CI_Controller
 	
 	public function index()
 	{
-  
 		/* Get Request Filters */
 		$data['period'] = $filters['period'] = $this -> input -> get('filter')?$this -> input -> get('filter'):'yearly';
 		switch($data['period']){
@@ -34,6 +33,34 @@ class ReviewDashboard extends CI_Controller
 				$data['year'] = $filters['year'] = $this -> input -> get('year')?$this -> input -> get('year'):date('Y',strtotime("first day of previous month"));
 				break;
 		}
+		///for selected time period of filter
+		switch($data['period']){
+			case 'yearly':
+				$date=$data['year'];
+				break;
+			case 'biyearly':
+				$date=$data['year'].($data['biyear']== 1 ? ' - First Half' :' - Second Half');
+				break;
+			case 'quarterly':
+				if($data['quarter']== 1){
+					$quarter=' - Quarter 1st';
+				}elseif($data['quarter']== 2){
+					$quarter=' - Quarter 2nd';
+				}elseif($data['quarter']== 3){
+					$quarter=' - Quarter 3rd';
+				}else{
+					$quarter=' - Quarter 4th';
+				}
+				$date=$data['year'].$quarter;
+				break;
+			case 'monthly':
+				$date=$data['year'].' - '.monthname($data['month']);
+				break;
+			default:
+				$date=$data['year'];
+				break;
+		}
+		///
 		/*For function return values in variable to avoid reuseablility By USAMA SHER KAHN */
 			$compliance_sub=$this -> complianceCount('sub',$filters);
 			$compliance_due=$this -> complianceCount('due',$filters);
@@ -49,7 +76,7 @@ class ReviewDashboard extends CI_Controller
 			'compliances' => array(
 								'id' => 'compliances',
 								'isactive' => ($indicatorid && $indicatorid == 'compliances')?true:false,
-								'viewMainHeading' => 'Coverage Compliance data for selected period of time',
+								'viewMainHeading' => 'Coverage Compliance data ,'.$date.'',
 								'topheading' => 'Compliance',
 								'bottomheading' => 'Coverage',
 								'carousel' => true,
@@ -57,7 +84,7 @@ class ReviewDashboard extends CI_Controller
 															'consumption' => array(
 																	'id'=>'consumption',
 																	'name'=>'Consumption',
-																	'viewMainHeading' => 'Consumption Compliance data for selected period of time',
+																	'viewMainHeading' => 'Consumption Compliance data ,'.$date.'',
 																	'value'=>round($consumption_sub/$consumption_due*100),
 																	'topcards' => ($indicatorid == 'compliances' && $subindicatorId == 'consumption')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Total Due Reports','leftvalue'=>$consumption_due, 'leftvaluetype' => 'number'),
@@ -71,20 +98,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"compliances","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> complianceCount('due',$filters,'consumptioncompliance c',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'Consumption Compliance Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Consumption Compliance Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'compliances' && $subindicatorId == 'consumption')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"compliances","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> complianceCount('due',$filters,'consumptioncompliance c',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> complianceCount('due',$filters,'consumptioncompliance c',true,true,true).']',
-																					'heading' => array('barName' => 'Consumption Compliance wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Consumption Compliance wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'zeroreport' => array(
 																	'id'=>'zeroreport',
 																	'name'=>'Zero Report',
-																	'viewMainHeading' => 'Zero Report Compliance data for selected period of time',
+																	'viewMainHeading' => 'Zero Report Compliance data ,'.$date.'',
 																	//'value'=>rand(40,100),
 																	'value'=>round($weeklycompliance_sub/$weeklycompliance_due*100),
 																	'topcards' => ($indicatorid == 'compliances' && $subindicatorId == 'zeroreport')?array(
@@ -99,21 +126,16 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"compliances","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> WeeklyComplianceCount('due',$filters,'zeroreportcompliance c',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'Zero Report Compliance Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Zero Report Compliance Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'compliances' && $subindicatorId == 'zeroreport')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"compliances","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> WeeklyComplianceCount('due',$filters,'zeroreportcompliance c',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> WeeklyComplianceCount('due',$filters,'zeroreportcompliance c',true,true,true).']',
-																					'heading' => array('barName' => 'Zero Report Compliance wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Zero Report Compliance wise Ranking','subtittle' => $date)
 																				):false
 																),
-						 
-					  
-					  
-					  
-					  
 														),
 								//'value' => round($this -> complianceCount('sub',$filters)/$this -> complianceCount('due',$filters)*100),
 								'value' => round($compliance_sub/$compliance_due*100),
@@ -130,14 +152,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"compliances","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> complianceCount('due',$filters,'vaccinationcompliance c',true).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'Coverage Compliance Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'Coverage Compliance Thematic Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'compliances' && $subindicatorId == false)?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":"compliances","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> complianceCount('due',$filters,'vaccinationcompliance c',true,true).'}]',
 												'serieses_ranking_cat' => '['.$this -> complianceCount('due',$filters,'vaccinationcompliance c',true,true,true).']',
-												'heading' => array('barName' => 'Coverage Compliance wise Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Coverage Compliance wise Ranking','subtittle' => $date)
 											):false
 			),
 			'coverages' => array(
@@ -150,7 +172,7 @@ class ReviewDashboard extends CI_Controller
 															'bcg' => array(
 																'id'=>'bcg',
 																'name'=>'BCG',
-																'viewMainHeading' => 'BCG Coverage data for selected period of time',
+																'viewMainHeading' => 'BCG Coverage ,'.$date.'',
 																'value'=>$this -> coverageData(1,$filters,'newborn','3','province'),
 																'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'bcg')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(1,$filters,'maletarger_newborn','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(1,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -163,20 +185,20 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(1,$filters,'malevacination_newborn','3','province',true).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'BCG Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'BCG Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'bcg')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(1,$filters,'malevacination_newborn','3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> coverageData(1,$filters,'malevacination_newborn','3','province',true,true,true).']',
-																				'heading' => array('barName' => 'BCG Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'BCG Coverage wise Ranking','subtittle' => $date)
 																			):false
 															),
 															'hepb' =>array(
 																	'id'=>'hepb',
 																	'name'=>'HEP-B',
-																	'viewMainHeading' => 'HEP-B Coverage data for selected period of time',
+																	'viewMainHeading' => 'HEP-B Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(2,$filters,'newborn','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'hepb')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(2,$filters,'maletarger_newborn','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(2,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -189,20 +211,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(2,$filters,'malevacination_newborn','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'hepb')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(2,$filters,'malevacination_newborn','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(2,$filters,'malevacination_newborn','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'opv0' =>array(
 																	'id'=>'opv0',
 																	'name'=>'OPV-0',
-																	'viewMainHeading' => 'OPV-0 Coverage data for selected period of time',
+																	'viewMainHeading' => 'OPV-0 Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(3,$filters,'newborn','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'opv0')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(3,$filters,'maletarger_newborn','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(3,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -215,21 +237,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(3,$filters,'malevacination_newborn','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'OPV-0 Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'opv0')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(3,$filters,'malevacination_newborn','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(3,$filters,'malevacination_newborn','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'OPV-0 Coverage wise Ranking','subtittle' => $date)
 																				):false
 																		
 																),
 															'opv1' =>array(
 																	'id'=>'opv1',
 																	'name'=>'OPV-I',
-																	'viewMainHeading' => 'OPV-I Coverage data for selected period of time',
+																	'viewMainHeading' => 'OPV-I Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(4,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'opv1')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(4,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(4,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -242,20 +264,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(4,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'OPV-I Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'opv1')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(4,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(4,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'OPV-I Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'opv2' =>array(
 																	'id'=>'opv2',
 																	'name'=>'OPV-II',
-																	'viewMainHeading' => 'OPV-II Coverage data for selected period of time',
+																	'viewMainHeading' => 'OPV-II Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(5,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'opv2')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(5,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(5,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -268,20 +290,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(5,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'OPV-II Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'opv2')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(5,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(5,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'OPV-II Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'opv3' =>array(
 																	'id'=>'opv3',
 																	'name'=>'OPV-III',
-																	'viewMainHeading' => 'OPV-III Coverage data for selected period of time',
+																	'viewMainHeading' => 'OPV-III Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(6,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'opv3')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(6,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(6,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -294,20 +316,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(6,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'OPV-III Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'opv3')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(6,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(6,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'OPV-III Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'penta1' =>array(
 																	'id'=>'penta1',
 																	'name'=>'Penta-I',
-																	'viewMainHeading' => 'Penta-I Coverage data for selected period of time',
+																	'viewMainHeading' => 'Penta-I Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(7,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'penta1')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(7,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(7,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -320,20 +342,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(7,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Penta-I Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'penta1')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(7,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(7,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Penta-I Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'penta2' =>array(
 																	'id'=>'penta2',
 																	'name'=>'Penta-II',
-																	'viewMainHeading' => 'Penta-II Coverage data for selected period of time',
+																	'viewMainHeading' => 'Penta-II Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(8,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'penta2')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(8,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(8,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -346,21 +368,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(8,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Penta-II Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'penta2')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(8,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(8,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Penta-II Coverage wise Ranking','subtittle' => $date)
 																				):false
 																	
 																),
 															'penta3' =>array(
 																	'id'=>'penta3',
 																	'name'=>'Penta-III',
-																	'viewMainHeading' => 'Penta-III Coverage data for selected period of time',
+																	'viewMainHeading' => 'Penta-III Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(9,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'penta3')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(9,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(9,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -373,21 +395,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(9,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Penta-III Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'penta3')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(9,$filters,'femalevacination_survivinginfants','3','province',true,true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(9,$filters,'femalevacination_survivinginfants','3','province',true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Penta-III Coverage wise Ranking','subtittle' => $date)
 																				):false
 																	
 																),
 															'pcv101' =>array(
 																	'id'=>'pcv101',
 																	'name'=>'PCV10-I',
-																	'viewMainHeading' => 'PCV10-I Coverage data for selected period of time',
+																	'viewMainHeading' => 'PCV10-I Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(10,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'pcv101')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(10,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(10,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -400,20 +422,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(10,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'PCV10-I Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'pcv101')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(10,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(10,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'PCV10-I Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'pcv102' =>array(
 																	'id'=>'pcv102',
 																	'name'=>'PCV10-II',
-																	'viewMainHeading' => 'PCV10-II Coverage data for selected period of time',
+																	'viewMainHeading' => 'PCV10-II Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(11,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'pcv102')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(11,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(11,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -426,20 +448,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(11,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'PCV10-II Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'pcv102')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(11,$filters,'femalevacination_survivinginfants','3','province',true,true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(11,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'PCV10-II Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'pcv103' =>array(
 																	'id'=>'pcv103',
 																	'name'=>'PCV10-III',
-																	'viewMainHeading' => 'PCV10-III Coverage data for selected period of time',
+																	'viewMainHeading' => 'PCV10-III Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(12,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'pcv103')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(12,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(12,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -452,21 +474,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(12,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'PCV10-III Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'pcv103')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(12,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(12,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'PCV10-III Coverage wise Ranking','subtittle' => $date)
 																				):false
 																	
 																),
 															'ipv' =>array(
 																	'id'=>'ipv',
 																	'name'=>'IPV',
-																	'viewMainHeading' => 'IPV Coverage data for selected period of time',
+																	'viewMainHeading' => 'IPV Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(13,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'ipv')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(13,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(13,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -479,20 +501,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(13,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'IPV Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'ipv')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(13,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(13,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'IPV Coverage wise Ranking','subtittle' => $date)
 																				):false
 																),
 															'rota1' =>array(
 																	'id'=>'rota1',
 																	'name'=>'Rota-I',
-																	'viewMainHeading' => 'Rota-I Coverage data for selected period of time',
+																	'viewMainHeading' => 'Rota-I Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(14,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'rota1')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(14,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(14,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -505,21 +527,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(14,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Rota-I Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'rota1')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(14,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(14,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Rota-I Coverage wise Ranking','subtittle' => $date)
 																	            ):false
 																	
 																),
 															'rota2' =>array(
 																	'id'=>'rota2',
 																	'name'=>'Rota-II',
-																	'viewMainHeading' => 'Rota-II Coverage data for selected period of time',
+																	'viewMainHeading' => 'Rota-II Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(15,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'rota2')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(15,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(15,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -532,21 +554,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(15,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Rota-II Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'rota2')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(15,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(15,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Rota-II Coverage wise Ranking','subtittle' => $date)
 																	            ):false
 																	
 																),
 															'measles1' =>array(
 																	'id'=>'measles1',
 																	'name'=>'Measles-I',
-																	'viewMainHeading' => 'Measles-I Coverage data for selected period of time',
+																	'viewMainHeading' => 'Measles-I Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(16,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'measles1')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(16,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(16,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -559,20 +581,20 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(16,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Measles-I Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'measles1')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(16,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(16,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Measles-I Coverage wise Ranking','subtittle' => $date)
 																	            ):false
 																	),
 															'fullyimmunized' =>array(
 																	'id'=>'fullyimmunized',
 																	'name'=>'Fully Immunized',
-																	'viewMainHeading' => 'Fully Immunized Coverage data for selected period of time',
+																	'viewMainHeading' => 'Fully Immunized Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(17,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'fullyimmunized')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(17,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(17,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -585,21 +607,21 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(17,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Fully Immunized Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'fullyimmunized')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(17,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(17,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Fully Immunized Coverage wise Ranking','subtittle' => $date)
 																	            ):false
 																	
 																),
 															'measles2' =>array(
 																	'id'=>'measles2',
 																	'name'=>'Measles-II',
-																	'viewMainHeading' => 'Measles-II Coverage data for selected period of time',
+																	'viewMainHeading' => 'Measles-II Coverage ,'.$date.'',
 																	'value'=>$this -> coverageData(18,$filters,'survivinginfants','3','province'),
 																	'topcards' => ($indicatorid == 'coverages' && $subindicatorId == 'measles2')?array(
 																		array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Male Target','leftvalue'=>$this -> coverageData(18,$filters,'maletarger_survivinginfants','3','province'), 'leftvaluetype' => 'number','rightinfo'=>'Male Vaccination','rightvalue'=>$this -> coverageData(18,$filters,'malevacination_newborn','3','province'), 'rightvaluetype' => 'number'),
@@ -612,14 +634,14 @@ class ReviewDashboard extends CI_Controller
 																					'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(18,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 																					'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																					'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																					'heading' => array('mapName' => 'HEP-B Coverage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																					'heading' => array('mapName' => 'Penta-III Coverage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																				):false,
 																	/* Ranking Data for the indicator if the indicator is active */
 																	'ranking' => ($indicatorid == 'coverages' && $subindicatorId == 'measles2')?array(
 																					'id' => 'ranking-bar',
 																					'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(18,$filters,'femalevacination_survivinginfants','3','province',true,true).'}]',
 																					'serieses_ranking_cat' => '['.$this -> coverageData(18,$filters,'femalevacination_survivinginfants','3','province',true,true,true).']',
-																					'heading' => array('barName' => 'HEP-B Coverage wise Ranking','subtittle' => 'During the selected period of time')
+																					'heading' => array('barName' => 'Penta-III Coverage wise Ranking','subtittle' => $date)
 																	            ):false
 																)
 														),
@@ -637,14 +659,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(9,$filters,'malevacination_survivinginfants','3','province',true).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'New Map Name','subtittle' => 'New Subtitle','run' => 'New Run')
+												'heading' => array('mapName' => 'Measle Coverage wise Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'coverages')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> coverageData(9,$filters,'malevacination_survivinginfants','3','province',true,true).'}]',
 												'serieses_ranking_cat' => '['.$this -> coverageData(9,$filters,'malevacination_survivinginfants','3','province',true,true,true).']',
-												'heading' => array('barName' => 'New Ranking Name','subtittle' => 'New ranking Subtitle')
+												'heading' => array('barName' => 'Measle Coverage wise Ranking','subtittle' => $date)
 											):false
 			),
 			'openvialwastage' => array(
@@ -657,7 +679,7 @@ class ReviewDashboard extends CI_Controller
 															'bcg20' =>array(
 																			'id'=>'bcg20',
 																			'name'=>'BCG-20',
-																			'viewMainHeading' => 'BCG-20 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'BCG-20 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(5,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'bcg20')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(5,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -668,22 +690,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'bcg20')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(5,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'BCG-20 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":30,"color":"#0B7546","name":"0-30%"},{"from":31,"to":40,"color":"#3366ff","name":"31-40%"},{"from":41,"to":50,"color":"#EBB035","name":"41-50%"},{"from":50,"to":1000,"color":"#DD1E2F","name":">50%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":30,"color":"#0B7546","name":"0-30%"},{"from":31,"to":40,"color":"#3366ff","name":"31-40%"},{"from":41,"to":50,"color":"#EBB035","name":"41-50%"},{"from":50,"to":1000,"color":"#DD1E2F","name":">50%"}]}',
+																									'heading' => array('mapName' => 'BCG-20 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'bcg20')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(5,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(5,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'BCG-20 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'BCG-20 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'bOPV' =>array(
 																			'id'=>'bOPV',
 																			'name'=>'bOPV',
-																			'viewMainHeading' => 'bOPV Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'bOPV Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(2,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'bOPV')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(2,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -694,22 +716,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'bOPV')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(2,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'bOPV Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																									'heading' => array('mapName' => 'bOPV Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'bOPV')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(2,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(2,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'bOPV Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'bOPV Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'penta1' =>array(
 																			'id'=>'penta1',
 																			'name'=>'Pentavalent-1',
-																			'viewMainHeading' => 'Pentavalent-1 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Pentavalent-1 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(7,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'penta1')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(7,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -720,22 +742,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'penta1')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(7,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Pentavalent-1 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":5,"to":100,"color":"#DD1E2F","name":">5%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":5,"to":100,"color":"#DD1E2F","name":">5%"}]}',
+																									'heading' => array('mapName' => 'Pentavalent-1 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'penta1')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(7,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(7,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Pentavalent-1 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Pentavalent-1 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'pvc10-2' =>array(
 																			'id'=>'pvc10-2',
 																			'name'=>'Pneumococcal-2 (PCV10)',
-																			'viewMainHeading' => 'Pneumococcal-2 (PCV10) Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Pneumococcal-2 (PCV10) Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(8,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'pvc10-2')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(8,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -746,48 +768,48 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'pvc10-2')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(8,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Pneumococcal-2 (PCV10) Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":100,"color":"#DD1E2F","name":">10%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":100,"color":"#DD1E2F","name":">10%"}]}',
+																									'heading' => array('mapName' => 'Pneumococcal-2 (PCV10) Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'pvc10-2')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(8,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(8,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Pneumococcal-2 (PCV10) Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Pneumococcal-2 (PCV10) Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'pvc10-4' =>array(
 																			'id'=>'pvc10-4',
 																			'name'=>'Pneumococcal-4 (PCV10)',
-																			'viewMainHeading' => 'Pneumococcal-4 (PCV10) Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Pneumococcal-4 (PCV10) Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(90,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'pvc10-4')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(90,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
 																						array('cardicon'=>'woman.svg','leftinfo'=>'Children Vaccinated','leftvalue'=>$this -> OpenCloseVialWastage(90,$filters,'Children Vaccinated','3','province',false,false,66), 'leftvaluetype' => 'number'),
 																						array('cardicon'=>'target.svg','leftinfo'=>'Doses Wasted','leftvalue'=>$this -> OpenCloseVialWastage(90,$filters,'Doses Wasted','3','province',false,false,66), 'leftvaluetype' => 'number')
 																					):false,
-																					/* Map Data for the indicator if the indicator is active */
+																					/* Map Data for the indicator if the indicator is active  */
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'pvc10-4')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(90,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Pneumococcal-4 (PCV10) Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">30%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">30%"}]}',
+																									'heading' => array('mapName' => 'Pneumococcal-4 (PCV10) Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'pvc10-4')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(90,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(90,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Pneumococcal-4 (PCV10) Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Pneumococcal-4 (PCV10) Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'measles'=> array(
 																			'id'=>'measles',
 																			'name'=>'Measles-10',
-																			'viewMainHeading' => 'Measles-10  Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Measles-10  Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'measles')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(9,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -798,22 +820,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'measles')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Measles-10  Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#3366ff","name":"6-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#3366ff","name":"6-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																									'heading' => array('mapName' => 'Measles-10  Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'measles')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Measles-10  Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Measles-10  Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'tt10'=>	array(
 																			'id'=>'tt10',
 																			'name'=>'TT-10',
-																			'viewMainHeading' => 'TT-10 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'TT-10 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(37,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'tt10')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(37,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -824,22 +846,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'tt10')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(37,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'TT-10 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																									'heading' => array('mapName' => 'TT-10 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'tt10')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(37,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(37,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'TT-10 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'TT-10 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'tt20'=>    array(
 																			'id'=>'tt20',
 																			'name'=>'TT-20',
-																			'viewMainHeading' => 'TT-20 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'TT-20 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(11,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'tt20')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(11,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -850,22 +872,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'tt20')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(11,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'TT-20 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":20,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":20,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																									'heading' => array('mapName' => 'TT-20 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'tt20')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(11,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(11,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'TT-20 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'TT-20 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'hepb10'=>  array(
 																			'id'=>'hepb10',
 																			'name'=>'Hep-B-10',
-																			'viewMainHeading' => 'Hep-B-10 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Hep-B-10 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(1,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb10')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(1,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -876,22 +898,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb10')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(1,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Hep-B-10 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":5"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																									'heading' => array('mapName' => 'Hep-B-10 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb10')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(1,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(1,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Hep-B-10 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Hep-B-10 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'hepb2'=>	array(
 																			'id'=>'hepb2',
 																			'name'=>'Hep-B-02',
-																			'viewMainHeading' => 'Hep-B-02 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Hep-B-02 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(38,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb2')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(38,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -902,22 +924,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb2')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(38,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Hep-B-02 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'heading' => array('mapName' => 'Hep-B-02 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb2')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(38,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(38,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Hep-B-02 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Hep-B-02 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'hepb'=>	array(
 																			'id'=>'hepb',
 																			'name'=>'Hep-B',
-																			'viewMainHeading' => 'Hep-B Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Hep-B Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(89,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(89,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -928,22 +950,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(89,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Hep-B Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'heading' => array('mapName' => 'Hep-B Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'hepb')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(89,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(89,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Hep-B Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Hep-B Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'ipv5'=>	array(
 																			'id'=>'ipv5',
 																			'name'=>'IPV-5',
-																			'viewMainHeading' => 'IPV-5 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'IPV-5 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(3,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'ipv5')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(3,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -954,22 +976,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'ipv5')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(3,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'IPV-5 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'heading' => array('mapName' => 'IPV-5 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'ipv5')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(3,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(3,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'IPV-5 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'IPV-5 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'ipv10'=>	array(
 																			'id'=>'ipv10',
 																			'name'=>'IPV-10',
-																			'viewMainHeading' => 'IPV-10 Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'IPV-10 Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(4,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'ipv10')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(4,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -980,22 +1002,22 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'ipv10')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(4,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'IPV-10 Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																									'heading' => array('mapName' => 'IPV-10 Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'ipv10')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(4,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(4,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'IPV-10 Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'IPV-10 Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		),
 															'rotarix'=>	array(
 																			'id'=>'rotarix',
 																			'name'=>'Rotarix',
-																			'viewMainHeading' => 'Rotarix Open vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Rotarix Open vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(12,$filters,'Open Vial Wastage Rate','3','province',false,false,66),
 																			'topcards' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'rotarix')?array(
 																						array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(12,$filters,'Doses Used','3','province',false,false,66), 'leftvaluetype' => 'number'),
@@ -1006,16 +1028,16 @@ class ReviewDashboard extends CI_Controller
 																					'map' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'rotarix')?array(
 																									'id' => 'thematic-map',
 																									'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(12,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-																									'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																									'heading' => array('mapName' => 'Rotarix Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																									'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																									'heading' => array('mapName' => 'Rotarix Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																								):false,
 																					/* Ranking Data for the indicator if the indicator is active */
 																					'ranking' => ($indicatorid == 'openvialwastage' && $subindicatorId == 'rotarix')?array(
 																									'id' => 'ranking-bar',
 																									'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(12,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 																									'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(12,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-																									'heading' => array('barName' => 'Rotarix Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																									'heading' => array('barName' => 'Rotarix Open vial wastage wise Ranking','subtittle' => $date)
 																								):false
 																		)
 																		),
@@ -1030,16 +1052,16 @@ class ReviewDashboard extends CI_Controller
 								'map' => ($indicatorid == 'openvialwastage')?array(
 												'id' => 'thematic-map',
 												'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',true,false,66).'}]',
-												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'Measles-10  Open vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#3366ff","name":"6-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+												'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#3366ff","name":"6-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+												'heading' => array('mapName' => 'Measles-10  Open vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'openvialwastage')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',true,true,66).'}]',
 												'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(9,$filters,'Open Vial Wastage Rate','3','province',true,true,66,true).']',
-												'heading' => array('barName' => 'Measles-10  Open vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Measles-10  Open vial wastage wise Ranking','subtittle' => $date)
 											):false
 			),
 			'closevialwastage' => array(
@@ -1052,7 +1074,7 @@ class ReviewDashboard extends CI_Controller
 															'bcg20' =>array(
 																			'id'=>'bcg20',
 																			'name'=>'BCG-20',
-																			'viewMainHeading' => 'BCG-20 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'BCG-20 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'bcg20')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(5,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1063,16 +1085,16 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'bcg20')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'BCG-20 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":30,"color":"#0B7546","name":"0-30%"},{"from":31,"to":40,"color":"#3366ff","name":"31-40%"},{"from":41,"to":50,"color":"#EBB035","name":"41-50%"},{"from":50,"to":1000,"color":"#DD1E2F","name":">50%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":30,"color":"#0B7546","name":"0-30%"},{"from":31,"to":40,"color":"#3366ff","name":"31-40%"},{"from":41,"to":50,"color":"#EBB035","name":"41-50%"},{"from":50,"to":1000,"color":"#DD1E2F","name":">50%"}]}',
+																							'heading' => array('mapName' => 'BCG-20 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'bcg20')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'BCG-20 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'BCG-20 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																			),
 															
@@ -1082,7 +1104,7 @@ class ReviewDashboard extends CI_Controller
 															'bOPV' =>array(
 																			'id'=>'bOPV',
 																			'name'=>'bOPV',
-																			'viewMainHeading' => 'bOPV Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'bOPV Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(2,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'bOPV')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(2,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1093,22 +1115,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'bOPV')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(2,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'bOPV Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":"100%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":"100%"}]}',
+																							'heading' => array('mapName' => 'bOPV Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'bOPV')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(2,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(2,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'bOPV Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'bOPV Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'penta1'  =>array(
 																			'id'=>'penta1',
 																			'name'=>'Pentavalent-1',
-																			'viewMainHeading' => 'Pentavalent-1 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Pentavalent-1 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(7,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'penta1')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(7,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1119,22 +1141,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'penta1')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(7,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Pentavalent-1 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":5,"to":100,"color":"#DD1E2F","name":">5%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":5,"to":100,"color":"#DD1E2F","name":">5%"}]}',
+																							'heading' => array('mapName' => 'Pentavalent-1 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'penta1')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(7,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(7,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Pentavalent-1 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Pentavalent-1 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'pvc10-2'  => array(
 																			'id'=>'pvc10-2',
 																			'name'=>'Pneumococcal-2 (PCV10)',
-																			'viewMainHeading' => 'Pneumococcal-2 (PCV10) Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Pneumococcal-2 (PCV10) Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(8,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'pvc10-2')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(8,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1145,22 +1167,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'pvc10-2')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(8,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Pneumococcal-2 (PCV10) Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":100,"color":"#DD1E2F","name":">10%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":100,"color":"#DD1E2F","name":">10%"}]}',
+																							'heading' => array('mapName' => 'Pneumococcal-2 (PCV10) Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'pvc10-2')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(8,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(8,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Pneumococcal-2 (PCV10) Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Pneumococcal-2 (PCV10) Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'pvc10-4'  => array(
 																			'id'=>'pvc10-4',
 																			'name'=>'Pneumococcal-4 (PCV10)',
-																			'viewMainHeading' => 'Pneumococcal-4 (PCV10) Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Pneumococcal-4 (PCV10) Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(90,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'pvc10-4')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(90,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1171,22 +1193,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'pvc10-4')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(90,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Pneumococcal-4 (PCV10) Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">30%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">30%"}]}',
+																							'heading' => array('mapName' => 'Pneumococcal-4 (PCV10) Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'pvc10-4')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(90,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(90,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Pneumococcal-4 (PCV10) Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Pneumococcal-4 (PCV10) Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'measles'  => array(
 																			'id'=>'measles',
 																			'name'=>'Measles-10',
-																			'viewMainHeading' => 'Measles-10 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Measles-10 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(9,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'measles')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(9,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1197,22 +1219,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'measles')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(9,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Measles-10 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#3366ff","name":"6-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#3366ff","name":"6-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":21,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																							'heading' => array('mapName' => 'Measles-10 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'measles')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(9,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(9,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Measles-10 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Measles-10 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'tt10'  => array(
 																			'id'=>'tt10',
 																			'name'=>'TT-10',
-																			'viewMainHeading' => 'TT-10 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'TT-10 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(37,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'tt10')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(37,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1223,22 +1245,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'tt10')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(37,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'TT-10 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																							'heading' => array('mapName' => 'TT-10 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'tt10')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(37,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(37,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'TT-10 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'TT-10 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'tt20'  => array(
 																			'id'=>'tt20',
 																			'name'=>'TT-20',
-																			'viewMainHeading' => 'TT-20 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'TT-20 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(11,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'tt20')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(11,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1249,48 +1271,48 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'tt20')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(11,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'TT-20 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":20,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#EBB035","name":"11-20%"},{"from":20,"to":1000,"color":"#DD1E2F","name":">20%"}]}',
+																							'heading' => array('mapName' => 'TT-20 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'tt20')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(11,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(11,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'TT-20 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'TT-20 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'hepb10' =>array(
 																			'id'=>'hepb10',
 																			'name'=>'Hep-B-10',
-																			'viewMainHeading' => 'Hep-B-10 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Hep-B-10 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb10')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(1,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
 																					array('cardicon'=>'woman.svg','leftinfo'=>'Doses Used','leftvalue'=>$this -> OpenCloseVialWastage(1,$filters,'Doses Used','3','province',false,false,67), 'leftvaluetype' => 'number'),
 																					array('cardicon'=>'target.svg','leftinfo'=>'Unused Doses','leftvalue'=>$this -> OpenCloseVialWastage(1,$filters,'Unused Doses','3','province',false,false,67), 'leftvaluetype' => 'number')
 																				):false,
-																			/* Map Data for the indicator if the indicator is active */
+																			/* Map Data for the indicator if the indicator is active # */
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb10')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Hep-B-10 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":5"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																							'heading' => array('mapName' => 'Hep-B-10 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb10')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Hep-B-10 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Hep-B-10 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'hepb2' =>	array(
 																			'id'=>'hepb2',
 																			'name'=>'Hep-B-02',
-																			'viewMainHeading' => 'Hep-B-02 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Hep-B-02 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb2')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(1,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1301,22 +1323,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb2')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Hep-B-02 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'heading' => array('mapName' => 'Hep-B-02 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb2')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(1,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Hep-B-02 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Hep-B-02 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'hepb' => array(
 																			'id'=>'hepb',
 																			'name'=>'Hep-B',
-																			'viewMainHeading' => 'Hep-B Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Hep-B Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(89,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(89,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1327,22 +1349,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(89,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Hep-B Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'heading' => array('mapName' => 'Hep-B Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'hepb')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(89,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(89,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Hep-B Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Hep-B Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'ipv5' => array(
 																			'id'=>'ipv5',
 																			'name'=>'IPV-5',
-																			'viewMainHeading' => 'IPV-5 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'IPV-5 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(3,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'ipv5')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(3,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1353,22 +1375,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'ipv5')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(3,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'IPV-5 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'heading' => array('mapName' => 'IPV-5 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'ipv5')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(3,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(3,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'IPV-5 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'IPV-5 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'ipv10' => array(
 																			'id'=>'ipv10',
 																			'name'=>'IPV-10',
-																			'viewMainHeading' => 'IPV-10 Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'IPV-10 Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(4,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'ipv10')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(4,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1379,22 +1401,22 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'ipv10')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(4,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'IPV-10 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":5,"color":"#0B7546","name":"0-5%"},{"from":6,"to":10,"color":"#EBB035","name":"6-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																							'heading' => array('mapName' => 'IPV-10 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'ipv10')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(4,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(4,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'IPV-10 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'IPV-10 Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		),
 															'rotarix' => array(
 																			'id'=>'rotarix',
 																			'name'=>'Rotarix',
-																			'viewMainHeading' => 'Rotarix Close vial wastage data for selected period of time',
+																			'viewMainHeading' => 'Rotarix Close vial wastage ,'.$date.'',
 																			'value'=>$this -> OpenCloseVialWastage(12,$filters,'Close Vial Wastage Rate','3','province',false,false,67),
 																			'topcards' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'rotarix')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Available Doses','leftvalue'=>$this -> OpenCloseVialWastage(12,$filters,'Available doses','3','province',false,false,67), 'leftvaluetype' => 'number'),
@@ -1405,16 +1427,16 @@ class ReviewDashboard extends CI_Controller
 																			'map' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'rotarix')?array(
 																							'id' => 'thematic-map',
 																							'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(12,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-																							'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																							'heading' => array('mapName' => 'Rotarix Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																							'dataClasses' => '{"dataClasses":[{"from":0,"to":10"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":11,"to":20,"color":"#31f8dd","name":"11-20%"},{"from":21,"to":30,"color":"#EBB035","name":"21-30%"},{"from":31,"to":1000,"color":"#DD1E2F","name":">31%"}]}',
+																							'heading' => array('mapName' => 'Rotarix Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 																						):false,
 																			/* Ranking Data for the indicator if the indicator is active */
 																			'ranking' => ($indicatorid == 'closevialwastage' && $subindicatorId == 'rotarix')?array(
 																							'id' => 'ranking-bar',
 																							'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(12,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 																							'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(12,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-																							'heading' => array('barName' => 'Rotarix Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+																							'heading' => array('barName' => 'Rotarix Close vial wastage wise Ranking','subtittle' => $date)
 																						):false
 																		)
 														),
@@ -1428,9 +1450,9 @@ class ReviewDashboard extends CI_Controller
 								'map' => ($indicatorid == 'closevialwastage' )?array(
 												'id' => 'thematic-map',
 												'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',true,false,67).'}]',
-												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'BCG-20 Close vial wastage Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'dataClasses' => '{"dataClasses":[{"from":0,"to":30,"color":"#0B7546","name":"0-30%"},{"from":31,"to":40,"color":"#3366ff","name":"31-40%"},{"from":41,"to":50,"color":"#EBB035","name":"41-50%"},{"from":50,"to":1000,"color":"#DD1E2F","name":">50%"}]}',
+												'colorAxis' => '{"dataClasses":[{"from":0,"to":30,"color":"#0B7546","name":"0-30%"},{"from":31,"to":40,"color":"#3366ff","name":"31-40%"},{"from":41,"to":50,"color":"#EBB035","name":"41-50%"},{"from":50,"to":1000,"color":"#DD1E2F","name":">50%"}]}',
+												'heading' => array('mapName' => 'BCG-20 Close vial wastage Thematic Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Map Data for the indicator if the indicator is active */
 								/* 'map' => ($indicatorid == 'closevialwastage')?array(
@@ -1445,7 +1467,7 @@ class ReviewDashboard extends CI_Controller
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',true,true,67).'}]',
 												'serieses_ranking_cat' => '['.$this -> OpenCloseVialWastage(5,$filters,'Close Vial Wastage Rate','3','province',true,true,67,true).']',
-												'heading' => array('barName' => 'BCG-20 Close vial wastage wise Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'BCG-20 Close vial wastage wise Ranking','subtittle' => $date)
 											):false
 			),
 			'diseaseoutbreak' => array(
@@ -1458,7 +1480,7 @@ class ReviewDashboard extends CI_Controller
 															'Diph'=>array(
 																		'id'=>'Diph',
 																		'name'=>'Acute watery diarrhea < 5',
-																		'viewMainHeading' => 'Acute watery diarrhea < 5 Outbreak for selected period of time',
+																		'viewMainHeading' => 'Acute watery diarrhea < 5 Outbreak ,'.$date.'',
 																		'value'=>$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',false,false,'Total Epid'),
 																		'topcards' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Diph')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Total Epid','leftvalue'=>$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',false,false,'Total Epid'), 'leftvaluetype' => 'number'),
@@ -1469,22 +1491,22 @@ class ReviewDashboard extends CI_Controller
 																		'map' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Diph')?array(
 																						'id' => 'thematic-map',
 																						'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',true,false,'Total Epid').'}]',
-																						'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'heading' => array('mapName' => 'Acute watery diarrhea < 5 Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																						'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'heading' => array('mapName' => 'Acute watery diarrhea < 5 Thematic Map','subtittle' => $date,'run' => 'New Run')
 																					):false,
 																		/* Ranking Data for the indicator if the indicator is active */
 																		'ranking' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Diph')?array(
 																						'id' => 'ranking-bar',
 																						'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',true,true,'Total Epid').'}]',
 																						'serieses_ranking_cat' => '['.$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',true,true,'Total Epid',true).']',
-																						'heading' => array('barName' => 'Acute watery diarrhea < 5 wise Ranking','subtittle' => 'During the selected period of time')
+																						'heading' => array('barName' => 'Acute watery diarrhea < 5 wise Ranking','subtittle' => $date)
 																					):false
 																	),
 															'Msl'=>array(
 																		'id'=>'Msl',
 																		'name'=>'Measles',
-																		'viewMainHeading' => 'Measles Outbreak for selected period of time',
+																		'viewMainHeading' => 'Measles Outbreak ,'.$date.'',
 																		'value'=>$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',false,false,'Disease Case'),
 																		'topcards' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Msl')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Total Epid','leftvalue'=>$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',false,false,'Total Epid'), 'leftvaluetype' => 'number'),
@@ -1495,22 +1517,22 @@ class ReviewDashboard extends CI_Controller
 																		'map' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Msl')?array(
 																						'id' => 'thematic-map',
 																						'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',true,false,'Total Epid').'}]',
-																						'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'heading' => array('mapName' => 'Measles Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																						'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'heading' => array('mapName' => 'Measles Thematic Map','subtittle' => $date,'run' => 'New Run')
 																					):false,
 																		/* Ranking Data for the indicator if the indicator is active */
 																		'ranking' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Msl')?array(
 																						'id' => 'ranking-bar',
 																						'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',true,true,'Total Epid').'}]',
 																						'serieses_ranking_cat' => '['.$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',true,true,'Total Epid',true).']',
-																						'heading' => array('barName' => 'Measles wise Ranking','subtittle' => 'During the selected period of time')
+																						'heading' => array('barName' => 'Measles wise Ranking','subtittle' => $date)
 																					):false
 																	),
 															'Afp'=>array(
 																		'id'=>'Afp',
 																		'name'=>'Acute Flacid Paralysis',
-																		'viewMainHeading' => 'Acute Flacid Paralysis Outbreak for selected period of time',
+																		'viewMainHeading' => 'Acute Flacid Paralysis Outbreak ,'.$date.'',
 																		'value'=>$this -> Outbreak('Afp',$filters,'afp_case_investigation','3','province',false,false,'Total Epid'),
 																		'topcards' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Afp')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Total Epid','leftvalue'=>$this -> Outbreak('Afp',$filters,'afp_case_investigation','3','province',false,false,'Total Epid'), 'leftvaluetype' => 'number'),
@@ -1521,22 +1543,22 @@ class ReviewDashboard extends CI_Controller
 																		'map' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Afp')?array(
 																						'id' => 'thematic-map',
 																						'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Afp',$filters,'afp_case_investigation','3','province',true,false,'Total Epid').'}]',
-																						'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'heading' => array('mapName' => 'Acute Flacid Paralysis Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																						'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'heading' => array('mapName' => 'Acute Flacid Paralysis Thematic Map','subtittle' => $date,'run' => 'New Run')
 																					):false,
 																		/* Ranking Data for the indicator if the indicator is active */
 																		'ranking' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Afp')?array(
 																						'id' => 'ranking-bar',
 																						'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Afp',$filters,'afp_case_investigation','3','province',true,true,'Total Epid').'}]',
 																						'serieses_ranking_cat' => '['.$this -> Outbreak('Afp',$filters,'afp_case_investigation','3','province',true,true,'Total Epid',true).']',
-																						'heading' => array('barName' => 'Acute Flacid Paralysis wise Ranking','subtittle' => 'During the selected period of time')
+																						'heading' => array('barName' => 'Acute Flacid Paralysis wise Ranking','subtittle' => $date)
 																					):false
 																	),
 															'Nnt'=>array(
 																		'id'=>'Nnt',
 																		'name'=>'NNT',
-																		'viewMainHeading' => 'NNT Outbreak for selected period of time',
+																		'viewMainHeading' => 'NNT Outbreak ,'.$date.'',
 																		'value'=>$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',false,false,'Total Epid'),
 																		'topcards' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Nnt')?array(
 																					array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Total Epid','leftvalue'=>$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',false,false,'Total Epid'), 'leftvaluetype' => 'number'),
@@ -1547,16 +1569,16 @@ class ReviewDashboard extends CI_Controller
 																		'map' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Nnt')?array(
 																						'id' => 'thematic-map',
 																						'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',true,false,'Total Epid').'}]',
-																						'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																						'heading' => array('mapName' => 'NNT Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																						'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																						'heading' => array('mapName' => 'NNT Thematic Map','subtittle' => $date,'run' => 'New Run')
 																					):false,
 																		/* Ranking Data for the indicator if the indicator is active */
 																		'ranking' => ($indicatorid == 'diseaseoutbreak' && $subindicatorId == 'Nnt')?array(
 																						'id' => 'ranking-bar',
 																						'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',true,true,'Total Epid').'}]',
 																						'serieses_ranking_cat' => '['.$this -> Outbreak('Diph',$filters,'case_investigation_db','3','province',true,true,'Total Epid',true).']',
-																						'heading' => array('barName' => 'NNT wise Ranking','subtittle' => 'During the selected period of time')
+																						'heading' => array('barName' => 'NNT wise Ranking','subtittle' => $date)
 																					):false
 																	),
 																	/* array('id'=>'','name'=>'Visceral Leishmaniasis','value'=>rand(40,100)),
@@ -1590,16 +1612,16 @@ class ReviewDashboard extends CI_Controller
 								'map' => ($indicatorid == 'diseaseoutbreak')?array(
 																	'id' => 'thematic-map',
 																	'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',true,false,'Total Epid').'}]',
-																	'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																	'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																	'heading' => array('mapName' => 'Acute Flacid Paralysis Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																	'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																	'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"District Without Disease OutBreak"},{"from":1,"to":1000,"color":"#DD1E2F","name":"District With Disease OutBreak"}]}',
+																	'heading' => array('mapName' => 'Acute Flacid Paralysis Thematic Map','subtittle' => $date,'run' => 'New Run')
 															):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'diseaseoutbreak' )?array(
 																	'id' => 'ranking-bar',
 																	'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',true,true,'Total Epid').'}]',
 																	'serieses_ranking_cat' => '['.$this -> Outbreak('Msl',$filters,'case_investigation_db','3','province',true,true,'Total Epid',true).']',
-																	'heading' => array('barName' => 'Acute Flacid Paralysis wise Ranking','subtittle' => 'During the selected period of time')
+																	'heading' => array('barName' => 'Acute Flacid Paralysis wise Ranking','subtittle' => $date)
 																):false
 			),
 			'dropout' => array(
@@ -1612,7 +1634,7 @@ class ReviewDashboard extends CI_Controller
 													'penta1penta3'=>array(
 																'id'=>'penta1penta3',
 																'name'=>'Penta1-Penta3',
-																'viewMainHeading' => 'Penta1-Penta3 for selected period of time',
+																'viewMainHeading' => 'Penta1-Penta3 ,'.$date.'',
 																'value'=>$this -> Dropout('Penta1-Penta3 dropout Total',$filters,'3','province',false,false),
 																'topcards' => ($indicatorid == 'dropout' && $subindicatorId == 'penta1penta3')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Penta1-Penta3 dropout Male','leftvalue'=>$this -> Dropout('Penta1-Penta3 dropout Male',$filters,'3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1623,22 +1645,22 @@ class ReviewDashboard extends CI_Controller
 																'map' => ($indicatorid == 'dropout' && $subindicatorId == 'penta1penta3')?array(
 																				'id' => 'thematic-map',
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->Dropout('Penta1-Penta3 dropout Total',$filters,'3','province',true,false).'}]',
-																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Penta1-Measle1 Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'heading' => array('mapName' => 'Penta1-Measle1 Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'dropout' && $subindicatorId == 'penta1penta3')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Dropout('Penta1-Penta3 dropout Total',$filters,'3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Dropout('Penta1-Penta3 dropout Total',$filters,'3','province',true,true,true).']',
-																				'heading' => array('barName' => 'Penta1-Measle1 wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Penta1-Measle1 wise Ranking','subtittle' => $date)
 																			):false
 															),
 													'penta1measles1'=>array(
 																'id'=>'penta1measles1',
 																'name'=>'Penta1-Measle1',
-																'viewMainHeading' => 'Penta1-Measle1 for selected period of time',
+																'viewMainHeading' => 'Penta1-Measle1 ,'.$date.'',
 																'value'=>$this -> Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',false,false),
 																'topcards' => ($indicatorid == 'dropout' && $subindicatorId == 'penta1measles1')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Penta1-Measle1 dropout Male','leftvalue'=>$this -> Dropout('Penta1-Measle1 dropout Male',$filters,'3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1649,22 +1671,22 @@ class ReviewDashboard extends CI_Controller
 																'map' => ($indicatorid == 'dropout' && $subindicatorId == 'penta1measles1')?array(
 																				'id' => 'thematic-map',
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',true,false).'}]',
-																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Penta1-Measle1 Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'heading' => array('mapName' => 'Penta1-Measle1 Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'dropout' && $subindicatorId == 'penta1measles1')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',true,true,true).']',
-																				'heading' => array('barName' => 'Penta1-Measle1 wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Penta1-Measle1 wise Ranking','subtittle' => $date)
 																			):false
 															),
 													'measle1measle2'=>array(
 																'id'=>'measle1measle2',
 																'name'=>'Measle1-Measle2',
-																'viewMainHeading' => 'Measle1-Measle2 for selected period of time',
+																'viewMainHeading' => 'Measle1-Measle2 ,'.$date.'',
 																'value'=>$this -> Dropout('Measles1-Measles2 dropout Total',$filters,'3','province',false,false),
 																'topcards' => ($indicatorid == 'dropout' && $subindicatorId == 'measle1measle2')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Penta1-Measle1 dropout Male','leftvalue'=>$this -> Dropout('Measles1-Measles2 dropout Male',$filters,'3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1675,22 +1697,22 @@ class ReviewDashboard extends CI_Controller
 																'map' => ($indicatorid == 'dropout' && $subindicatorId == 'measle1measle2')?array(
 																				'id' => 'thematic-map',
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->Dropout('Measles1-Measles2 dropout Total',$filters,'3','province',true,false).'}]',
-																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Measles1-Measles2 Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'heading' => array('mapName' => 'Measles1-Measles2 Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'dropout' && $subindicatorId == 'measle1measle2')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Dropout('Measles1-Measles2 dropout Total',$filters,'3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Dropout('Measles1-Measles2 dropout Total',$filters,'3','province',true,true,true).']',
-																				'heading' => array('barName' => 'Measles1-Measles2 wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Measles1-Measles2 wise Ranking','subtittle' => $date)
 																			):false
 															),
 													'tt1tt2'=>array(
 																'id'=>'tt1tt2',
 																'name'=>'TT1-TT2',
-																'viewMainHeading' => 'TT1-TT2 for selected period of time',
+																'viewMainHeading' => 'TT1-TT2 ,'.$date.'',
 																'value'=>$this -> Dropout('TT1-TT2 dropout Total',$filters,'3','province',false,false),
 																'topcards' => ($indicatorid == 'dropout' && $subindicatorId == 'tt1tt2')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'TT1-TT2 dropout Male','leftvalue'=>$this -> Dropout('TT1-TT2 dropout Male',$filters,'3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1701,16 +1723,16 @@ class ReviewDashboard extends CI_Controller
 																'map' => ($indicatorid == 'dropout' && $subindicatorId == 'tt1tt2')?array(
 																				'id' => 'thematic-map',
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->Dropout('TT1-TT2 dropout Total',$filters,'3','province',true,false).'}]',
-																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'TT1-TT2 Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+																				'heading' => array('mapName' => 'TT1-TT2 Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'dropout' && $subindicatorId == 'tt1tt2')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Dropout('TT1-TT2 dropout Total',$filters,'3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Dropout('TT1-TT2 dropout Total',$filters,'3','province',true,true,true).']',
-																				'heading' => array('barName' => 'TT1-TT2 wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'TT1-TT2 wise Ranking','subtittle' => $date)
 																			):false
 															),
 															/* array('id'=>'','name'=>'Visceral Leishmaniasis','value'=>rand(40,100)),
@@ -1745,16 +1767,16 @@ class ReviewDashboard extends CI_Controller
 								'map' => ($indicatorid == 'dropout')?array(
 												'id' => 'thematic-map',
 												'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',true,false).'}]',
-												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'Penta1-Measle1 Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'dataClasses' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+												'colorAxis' => '{"dataClasses":[{"from":0,"to":10,"color":"#0B7546","name":"0-10%"},{"from":10,"to":1000,"color":"#DD1E2F","name":">10%"}]}',
+												'heading' => array('mapName' => 'Penta1-Measle1 Thematic Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'dropout')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',true,true).'}]',
 												'serieses_ranking_cat' => '['.$this -> Dropout('Penta1-Measle1 dropout Total',$filters,'3','province',true,true,true).']',
-												'heading' => array('barName' => 'Penta1-Measle1 wise Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Penta1-Measle1 wise Ranking','subtittle' => $date)
 											):false
 			),
 			'sessoinsplan' => array(
@@ -1767,7 +1789,7 @@ class ReviewDashboard extends CI_Controller
 													'fixedsesseion'=>array(
 																'id'=>'fixedsesseion',
 																'name'=>'Fixed Vaccinator Session',
-																'viewMainHeading' => 'Vaccinator Session for selected period of time',
+																'viewMainHeading' => 'Vaccinator Session ,'.$date.'',
 																'value'=>$this -> Sessionplan('fixed',$filters,'ratio','3','province',false,false),
 																'topcards' => ($indicatorid == 'sessoinsplan' && $subindicatorId == 'fixedsesseion')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Fixed Vaccinator Session Planned','leftvalue'=>$this -> Sessionplan('fixed',$filters,'planned','3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1780,20 +1802,20 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('fixed',$filters,'ratio','3','province',true,false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Fixed Vaccinator Session Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Fixed Vaccinator Session Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sessoinsplan' && $subindicatorId == 'fixedsesseion')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('fixed',$filters,'ratio','3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Sessionplan('fixed',$filters,'ratio','3','province',true,true,true).']',
-																				'heading' => array('barName' => 'Fixed Vaccinator Session wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Fixed Vaccinator Session wise Ranking','subtittle' => $date)
 																			):false
 															),
 													'householdsesseion'=>array(
 																'id'=>'householdsesseion',
 																'name'=>'House Hold Vaccinator Session',
-																'viewMainHeading' => 'House Hold Vaccinator Session for selected period of time',
+																'viewMainHeading' => 'House Hold Vaccinator Session ,'.$date.'',
 																'value'=>$this -> Sessionplan('hh',$filters,'ratio','3','province',false,false),
 																'topcards' => ($indicatorid == 'sessoinsplan' && $subindicatorId == 'householdsesseion')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'House Hold Vaccinator Session Planned','leftvalue'=>$this -> Sessionplan('hh',$filters,'planned','3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1806,20 +1828,20 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('hh',$filters,'ratio','3','province',true,false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'House Hold Vaccinator Session Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'House Hold Vaccinator Session Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sessoinsplan' && $subindicatorId == 'householdsesseion')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('hh',$filters,'ratio','3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Sessionplan('hh',$filters,'ratio','3','province',true,true,true).']',
-																				'heading' => array('barName' => 'House Hold Vaccinator Session wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'House Hold Vaccinator Session wise Ranking','subtittle' => $date)
 																			):false
 															),
 													'mobilesesseion'=>array(
 																'id'=>'mobilesesseion',
 																'name'=>'Mobile Vaccinator Session',
-																'viewMainHeading' => 'Mobile Vaccinator Session for selected period of time',
+																'viewMainHeading' => 'Mobile Vaccinator Session ,'.$date.'',
 																'value'=>$this -> Sessionplan('mv',$filters,'ratio','3','province',false,false),
 																'topcards' => ($indicatorid == 'sessoinsplan' && $subindicatorId == 'mobilesesseion')?array(
 																			array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Mobile Vaccinator Session Planned','leftvalue'=>$this -> Sessionplan('mv',$filters,'planned','3','province',false,false), 'leftvaluetype' => 'number'),
@@ -1832,14 +1854,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('mv',$filters,'ratio','3','province',true,false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Mobile Vaccinator Session Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Mobile Vaccinator Session Thematic Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sessoinsplan' && $subindicatorId == 'mobilesesseion')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('mv',$filters,'ratio','3','province',true,true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> Sessionplan('mv',$filters,'ratio','3','province',true,true,true).']',
-																				'heading' => array('barName' => 'Mobile Vaccinator Session wise Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Mobile Vaccinator Session wise Ranking','subtittle' => $date)
 																			):false
 															),
 								
@@ -1851,7 +1873,6 @@ class ReviewDashboard extends CI_Controller
 												array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Outreach Vaccinator Session Planned','leftvalue'=>$this -> Sessionplan('or',$filters,'planned','3','province',false,false), 'leftvaluetype' => 'number'),
 												array('cardicon'=>'woman.svg','leftinfo'=>'Outreach Vaccinator Session Held','leftvalue'=>$this -> Sessionplan('or',$filters,'held','3','held',false,false), 'leftvaluetype' => 'number'),
 												array('cardicon'=>'target.svg','leftinfo'=>'Outreach Vaccinator Session Ratio','leftvalue'=>$this -> Sessionplan('or',$filters,'ratio','3','ratio',false,false), 'leftvaluetype' => 'number')
-						  
 											):false,
 								/* Map Data for the indicator if the indicator is active */
 								'map' => ($indicatorid == 'sessoinsplan')?array(
@@ -1859,14 +1880,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('or',$filters,'ratio','3','province',true,false).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'Outreach Vaccinator Session Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'Outreach Vaccinator Session Thematic Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'sessoinsplan')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":"coverages","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> Sessionplan('or',$filters,'ratio','3','province',true,true).'}]',
 												'serieses_ranking_cat' => '['.$this -> Sessionplan('or',$filters,'ratio','3','province',true,true,true).']',
-												'heading' => array('barName' => 'Outreach Vaccinator Session wise Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Outreach Vaccinator Session wise Ranking','subtittle' => $date)
 											):false
 			)
 		);
@@ -1947,14 +1968,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->FacZeroTech('faczerotech',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"0"},{"from":1,"to":10,"color":"#3366FF","name":"1-10"},{"from":10,"to":50,"color":"#EBB035","name":"10-50"},{"from":50,"to":999999,"color":"#DD1E2F","name":">50"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#0B7546","name":"0"},{"from":1,"to":10,"color":"#3366FF","name":"1-10"},{"from":10,"to":50,"color":"#EBB035","name":"10-50"},{"from":50,"to":999999,"color":"#DD1E2F","name":">50"}]}',
-												'heading' => array('mapName' => 'District`s Facilities without EPI Center Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'District`s Facilities without EPI Center Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'faczerotech')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->FacZeroTech('faczerotech',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 												'serieses_ranking_cat' => '['.$this ->FacZeroTech('faczerotech',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-												'heading' => array('barName' => 'District`s Facilities without EPI Center Ranking ','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'District`s Facilities without EPI Center Ranking ','subtittle' => $date)
 											):false
 			),
 			'epizeroilr' => array(
@@ -1994,14 +2015,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->FacNoIlr('faczeroilr',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":0,"color":"#DD1E2F","name":"0"},{"from":1,"to":10,"color":"#3366FF","name":"1-10"},{"from":10,"to":50,"color":"#EBB035","name":"10-50"},{"from":50,"to":999999,"color":"#0B7546","name":">50"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":0,"color":"#DD1E2F","name":"0"},{"from":1,"to":10,"color":"#3366FF","name":"1-10"},{"from":10,"to":50,"color":"#EBB035","name":"10-50"},{"from":50,"to":999999,"color":"#0B7546","name":">50"}]}',
-												'heading' => array('mapName' => 'District`s Facilities without ILR Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'District`s Facilities without ILR Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'epizeroilr')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->FacNoIlr('faczeroilr',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 												'serieses_ranking_cat' => '['.$this ->FacNoIlr('faczeroilr',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-												'heading' => array('barName' => 'District`s Facilities without ILR Ranking ','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'District`s Facilities without ILR Ranking ','subtittle' => $date)
 											):false
 			),
 			'vaccinatortopopulationratio' => array(
@@ -2023,14 +2044,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":" ","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> VaccinatorToPopulationRatio('ratio',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":10000,"color":"#0B7546","name":"0-10k"},{"from":10000,"to":20000,"color":"#EBB035","name":"10k-20k"},{"from":20000,"to":9999999,"color":"#DD1E2F","name":"20k and above"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":10000,"color":"#0B7546","name":"0-10k"},{"from":10000,"to":20000,"color":"#EBB035","name":"10k-20k"},{"from":20000,"to":9999999,"color":"#DD1E2F","name":"20k and above"}]}',
-												'heading' => array('mapName' => 'Vaccinator To Population Ratio Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'Vaccinator To Population Ratio Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'vaccinatortopopulationratio' )?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> VaccinatorToPopulationRatio('ratio',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 												'serieses_ranking_cat' => '['.$this -> VaccinatorToPopulationRatio('ratio',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-												'heading' => array('barName' => 'Vaccinator To Population Ratio Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Vaccinator To Population Ratio Ranking','subtittle' => $date)
 											):false
 			),
 			'stockout' => array(
@@ -2058,14 +2079,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(6,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'tt_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(6,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(6,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'recon_syr_2'=>array(
@@ -2086,14 +2107,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(29,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'recon_syr_2')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(29,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(29,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'bopv_stockout'=>array(
@@ -2114,14 +2135,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(15,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'bopv_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(15,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(15,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'bcg_stockout'=>array(
@@ -2142,14 +2163,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(2,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'bcg_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(2,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(2,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'dropper_stockout'=>array(
@@ -2170,14 +2191,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(18,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'dropper_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(18,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(18,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 														
@@ -2199,14 +2220,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(4,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'pneu_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(4,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(4,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 														),
 													'rota_stockout'=>array(
@@ -2227,14 +2248,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(19,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'rota_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(19,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(19,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 														),
 													'dil_bcg_stockout'=>array(
@@ -2255,14 +2276,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(27,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'dil_bcg_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(27,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(27,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 														),
 													'dil_measle_stockout'=>array(
@@ -2283,14 +2304,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(28,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'dil_measle_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(28,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(28,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'measle_stockout'=>array(
@@ -2311,14 +2332,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(5,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'measle_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(5,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(5,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'recon_syr_2'=>array(
@@ -2339,14 +2360,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(29,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'recon_syr_2')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(29,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(29,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'recon_syr_50'=>array(
@@ -2367,14 +2388,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(8,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'recon_syr_50')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(8,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(8,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'ipv_stockout'=>array(
@@ -2395,14 +2416,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(17,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'ipv_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(17,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(17,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'pentavalent_stockout'=>array(
@@ -2423,14 +2444,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(3,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'pentavalent_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(3,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(3,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'safetybox_stockout'=>array(
@@ -2451,14 +2472,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(10,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'safetybox_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(10,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(10,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'vitamin_a_stockout'=>array(
@@ -2479,14 +2500,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(12,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'vitamin_a_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(12,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(12,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'recon_syr_5'=>array(
@@ -2507,14 +2528,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(9,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'recon_syr_5')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(9,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(9,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'hep_stockout'=>array(
@@ -2535,14 +2556,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(20,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'hep_stockout')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(20,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(20,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'recon_syr_20'=>array(
@@ -2563,14 +2584,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(7,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'stockout' && $subindicatorId == 'recon_syr_20')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(7,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> stockout(7,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 																			):false
 															)/* ,
 															array('id'=>'hepb','name'=>'HEP-B','value'=>rand(40,100)),
@@ -2603,14 +2624,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(5,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=false).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'Stockout Rate Post Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'stockout')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> stockout(5,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true).'}]',
 												'serieses_ranking_cat' => '['.$this -> stockout(5,$filters,'stockout_rate',$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-												'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Stockout Rate Post Ranking','subtittle' => $date)
 											):false
 			),
 			'Accessandutilization' => array(
@@ -2628,10 +2649,10 @@ class ReviewDashboard extends CI_Controller
 								'value'=>$this -> AccessAndUtilization('category',$filters,$code='3',$type='province',$map=false,$ranking=false),
 								/* Indicator top cards information if the indicator is active */
 								'topcards' => ($indicatorid == 'Accessandutilization')?array(
-									array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Category 1','leftvalue'=> $this ->AccessAndUtilization('cat1sum',$filters,$code='3',$type='province',$map=false,$ranking=false)),
-									array('cardicon'=>'woman.svg','leftinfo'=>'Category 2','leftvalue'=> $this ->AccessAndUtilization('cat2sum',$filters,$code='3',$type='province',$map=false,$ranking=false)),
-									array('cardicon'=>'target.svg','leftinfo'=>'Category 3','leftvalue'=> $this ->AccessAndUtilization('cat3sum',$filters,$code='3',$type='province',$map=false,$ranking=false)),
-									array('cardicon'=>'target.svg','leftinfo'=>'Category 4','leftvalue'=> $this ->AccessAndUtilization('cat4sum',$filters,$code='3',$type='province',$map=false,$ranking=false))
+									array('cardicon'=>'manager%20(1).svg','leftinfo'=>'Districts in Category 1','leftvalue'=> $this ->AccessAndUtilization('cat1sum',$filters,$code='3',$type='province',$map=false,$ranking=false)),
+									array('cardicon'=>'woman.svg','leftinfo'=>'Districts in Category 2','leftvalue'=> $this ->AccessAndUtilization('cat2sum',$filters,$code='3',$type='province',$map=false,$ranking=false)),
+									array('cardicon'=>'target.svg','leftinfo'=>'Districts in Category 3','leftvalue'=> $this ->AccessAndUtilization('cat3sum',$filters,$code='3',$type='province',$map=false,$ranking=false)),
+									array('cardicon'=>'target.svg','leftinfo'=>'Districts in Category 4','leftvalue'=> $this ->AccessAndUtilization('cat4sum',$filters,$code='3',$type='province',$map=false,$ranking=false))
 								):false,
 								/* Map Data for the indicator if the indicator is active *///#0B7546 green//#3366FF blue//#EBB035 yellow//#DD1E2F red
 								'map' => ($indicatorid == 'Accessandutilization')?array(
@@ -2639,14 +2660,14 @@ class ReviewDashboard extends CI_Controller
 											'serieses' => '[{"name":"coverages","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->AccessAndUtilization('cat1sum',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 											'dataClasses' => '{"dataClasses":[{"from":1,"to":1,"color":"#0B7546","name":"Category 1"},{"from":2,"to":2,"color":"#3366FF","name":"Category 2"},{"from":3,"to":3,"color":"#EBB035","name":"Category 3"},{"from":4,"to":4,"color":"#DD1E2F","name":"Category 4"},{"from":0,"to":0,"color":"#efefef","name":"No record"}]}',
 											'colorAxis' => '{"dataClasses":[{"from":1,"to":1,"color":"#0B7546","name":"Category 1"},{"from":2,"to":2,"color":"#3366FF","name":"Category 2"},{"from":3,"to":3,"color":"#EBB035","name":"Category 3"},{"from":4,"to":4,"color":"#DD1E2F","name":"Category 4"},{"from":0,"to":0,"color":"#efefef","name":"No record"}]}',
-											'heading' => array('mapName' => 'Access and Utilization Thematic Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+											'heading' => array('mapName' => 'Access and Utilization Thematic Map','subtittle' => $date,'run' => 'New Run')
 										):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'Accessandutilization')?array(
 												'id' => 'ranking-bar',
 												'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this ->AccessAndUtilization('cat1sum',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 												'serieses_ranking_cat' => '['.$this ->AccessAndUtilization('cat1sum',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-												'heading' => array('barName' => 'Access and Utilization Ranking ','subtittle' => 'During the selected period of time')
+												'heading' => array('barName' => 'Access and Utilization Ranking ','subtittle' => $date)
 											):false
 			),
 			'sanctionvsfilledpost' => array(
@@ -2674,14 +2695,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('epi_coordinator','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'epicoordinator')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('epi_coordinator','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('epi_coordinator','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'DSO'=>array(
@@ -2702,14 +2723,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('dso','persent','dsodb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'DSO')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('dso','persent','dsodb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('dso','persent','dsodb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 															),
 													'tsv'=>array(
@@ -2730,14 +2751,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('tsv','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'tsv')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('tsv','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('tsv','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 																
 															),
@@ -2759,14 +2780,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('asv','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'asv')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('asv','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('asv','persent','supervisordb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 																
 															),
@@ -2788,14 +2809,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('computer_operator','persent','codb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'computer_operator')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('computer_operator','persent','codb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('computer_operator','persent','codb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 																
 															),
@@ -2817,14 +2838,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('hf_incharge','persent','med_techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'hfincharge')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('hf_incharge','persent','med_techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('hf_incharge','persent','med_techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 																
 															),
@@ -2846,14 +2867,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('epi_tech','persent','techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'epitechnician')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('epi_tech','persent','techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('epi_tech','persent','techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 																
 															),
@@ -2875,14 +2896,14 @@ class ReviewDashboard extends CI_Controller
 																				'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('cc_technician','persent','cc_techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 																				'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 																				'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+																				'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 																			):false,
 																/* Ranking Data for the indicator if the indicator is active */
 																'ranking' => ($indicatorid == 'sanctionvsfilledpost' && $subindicatorId == 'cctechnician')?array(
 																				'id' => 'ranking-bar',
 																				'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('cc_technician','persent','cc_techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 																				'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('cc_technician','persent','cc_techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+																				'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 																			):false
 																
 															)
@@ -2902,14 +2923,14 @@ class ReviewDashboard extends CI_Controller
 												'serieses' => '[{"name":"","type":"map","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('epi_tech','persent','techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=false).'}]',
 												'dataClasses' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
 												'colorAxis' => '{"dataClasses":[{"from":0,"to":70,"color":"#DD1E2F","name":"0-70%"},{"from":71,"to":99,"color":"#EBB035","name":"71-99%"},{"from":100,"to":1000,"color":"#0B7546","name":"100%"}]}',
-												'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => 'During the selected period of time','run' => 'New Run')
+												'heading' => array('mapName' => 'Sanction VS Filled Post Map','subtittle' => $date,'run' => 'New Run')
 											):false,
 								/* Ranking Data for the indicator if the indicator is active */
 								'ranking' => ($indicatorid == 'sanctionvsfilledpost')?array(
 													'id' => 'ranking-bar',
 													'serieses_ranking' => '[{"name":" ","animation":true,"dataLabels":{"enabled":true,"align":"center"},"data":'.$this -> SanctionedVsFilledPost('epi_tech','persent','techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true).'}]',
 													'serieses_ranking_cat' => '['.$this -> SanctionedVsFilledPost('epi_tech','persent','techniciandb',$filters,$code='3',$type='province',$map=true,$ranking=true,$category=true).']',
-													'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => 'During the selected period of time')
+													'heading' => array('barName' => 'Sanction VS Filled Post Ranking','subtittle' => $date)
 												):false
 			)
 		);
@@ -2940,12 +2961,14 @@ class ReviewDashboard extends CI_Controller
 		/* Bar Graph for ranking */
 		$data['ranking'] = $this -> load -> view('thematic_maps/parts_view/bar_graph',$ranking,TRUE);
 		/* Load View */
+		$data['subindicatorid'] = $this->input->get("subindicatorid");;
+		$data['indicatorid'] = $this->input->get("indicatorid");;
 		$this -> load -> view('review_dashboard/review',$data);
 	}
 	
 	function complianceCount($col='due',$filters,$table='vaccinationcompliance c',$map=false,$ranking=false,$category=false)
 	{
-  
+		
 		$startCount = 1;
 		$endCount = 12;
 		switch($filters['period']){
@@ -3040,7 +3063,6 @@ class ReviewDashboard extends CI_Controller
 		$this -> db -> where($where);
 		
 		if($map){
-   
 			$compliance = $serieses = array();
 			$result = $this -> db -> get() -> result_array();
 			foreach($result as $i => $row){
@@ -3085,6 +3107,7 @@ class ReviewDashboard extends CI_Controller
 	}
 	function WeeklyComplianceCount($col='due',$filters,$table='zeroreportcompliance c',$map=false,$ranking=false,$category=false)
 	{
+		//print_r($filters);exit;
 		$startCount = 1;
 		$endCount = 54;
 		
@@ -3092,15 +3115,15 @@ class ReviewDashboard extends CI_Controller
 		switch($filters['period']){
 			case 'yearly':
 				$startCount = 1;
-				$endCount = ($filters['year'] == date('Y',strtotime('first day of previous month')))?getMonthsEpiWeeks($filters['year'],date('n')):getMonthsEpiWeeks($filters['year'],12);
+				$endCount = ($filters['year'] == date('Y',strtotime('first day of previous month')))?getMonthsEpiWeeks($filters['year'],date('n')-1):getMonthsEpiWeeks($filters['year'],12);
 				break;
 			case 'biyearly':
 				if($filters['biyear'] == 1 && $filters['year'] == date('Y',strtotime('first day of previous month')) && date('n',strtotime('first day of previous month')) < 6){
 					$startCount = 1;
-					$endCount = getMonthsEpiWeeks($filters['year'],date('n'));
+					$endCount = getMonthsEpiWeeks($filters['year'],date('n')-1);
 				}else if($filters['biyear'] == 2 && $filters['year'] == date('Y',strtotime('first day of previous month')) && date('n',strtotime('first day of previous month')) > 6 && date('n',strtotime('first day of previous month')) < 12){
 					$startCount = getMonthsEpiWeeks($filters['year'],7);
-					$endCount = getMonthsEpiWeeks($filters['year'],date('n'));
+					$endCount = getMonthsEpiWeeks($filters['year'],date('n')-1);
 				}else if($filters['biyear'] == 1){
 					$startCount = 1;
 					$endCount = getMonthsEpiWeeks($filters['year'],6);
@@ -3114,28 +3137,28 @@ class ReviewDashboard extends CI_Controller
 					case 1:
 						$startCount = 1;
 						if($filters['year'] == date('Y',strtotime('first day of previous month')) && date('n',strtotime('first day of previous month')) < 3)
-							$endCount = getMonthsEpiWeeks($filters['year'],date('n'));
+							$endCount = getMonthsEpiWeeks($filters['year'],date('n')-1);
 						else
 							$endCount = getMonthsEpiWeeks($filters['year'],3);
 						break;
 					case 2:
 						$startCount = getMonthsEpiWeeks($filters['year'],3)+1 ;
 						if($filters['year'] == date('Y',strtotime('first day of previous month')) && date('n',strtotime('first day of previous month')) < 6)
-							$endCount = getMonthsEpiWeeks($filters['year'],date('n'));
+							$endCount = getMonthsEpiWeeks($filters['year'],date('n')-1);
 						else
 							$endCount = getMonthsEpiWeeks($filters['year'],6);
 						break;
 					case 3:
 						$startCount = getMonthsEpiWeeks($filters['year'],6)+1;
 						if($filters['year'] == date('Y',strtotime('first day of previous month')) && date('n',strtotime('first day of previous month')) < 9)
-							$endCount = getMonthsEpiWeeks($filters['year'],date('n'));
+							$endCount = getMonthsEpiWeeks($filters['year'],date('n')-1);
 						else
 							$endCount = getMonthsEpiWeeks($filters['year'],9);
 						break;
 					case 4:
 						$startCount = getMonthsEpiWeeks($filters['year'],9)+1;
 						if($filters['year'] == date('Y',strtotime('first day of previous month')) && date('n',strtotime('first day of previous month')) < 12)
-							$endCount = getMonthsEpiWeeks($filters['year'],date('n'));
+							$endCount = getMonthsEpiWeeks($filters['year'],date('n')-1);
 						else
 							$endCount = getMonthsEpiWeeks($filters['year'],12);
 						break;
@@ -3526,6 +3549,7 @@ class ReviewDashboard extends CI_Controller
 			//print_r($data);exit;
 			$data['OpenVialWastage']=$this -> Indicator_reports_model -> consumptionIndicator($data);
 			$result=$data['OpenVialWastage'];
+			//print_r($result);exit;
 			$compliance = $serieses = array();
 			foreach($result as $i => $row){
 				if ($row['code'] == '3') {
@@ -3535,16 +3559,52 @@ class ReviewDashboard extends CI_Controller
 				$serieses[$i]['id'] = $row['distcode'];
 				$serieses[$i]['path'] = getDistrict_Coordinates($row['distcode']);
 				if($ranking){
-					if($row[$wastage] >= 100){
-						//$serieses[$i]['color'] = "#0B7546";
-						$serieses[$i]['color'] = "#DD1E2F";
-					}
-					else if($row[$wastage] <= 99 && $row[$wastage] >= 71){
-						$serieses[$i]['color'] = "#EBB035";
-					}
-					else if($row[$wastage] <= 70){
-						//$serieses[$i]['color'] = "#DD1E2F";
-						$serieses[$i]['color'] = "#0B7546";
+					if($vaccineId==9){
+						if($row[$wastage] >= 20)
+							$serieses[$i]['color'] = "#DD1E2F";
+						else if($row[$wastage] >= 6 && $row[$wastage] <= 10)
+							$serieses[$i]['color'] = "#3366ff";
+						else if($row[$wastage] >= 11 && $row[$wastage] <= 20)
+							$serieses[$i]['color'] = "#EBB035";
+						else if($row[$wastage] <= 5)
+							$serieses[$i]['color'] = "#0B7546";
+					}elseif($vaccineId==5){
+						if($row[$wastage] >= 50)
+							$serieses[$i]['color'] = "#DD1E2F";
+						else if($row[$wastage] >= 31 && $row[$wastage] <= 40)
+							$serieses[$i]['color'] = "#3366ff";
+						else if($row[$wastage] >= 41 && $row[$wastage] <= 50)
+							$serieses[$i]['color'] = "#EBB035";
+						else if($row[$wastage] <= 30)
+							$serieses[$i]['color'] = "#0B7546";
+					}elseif($vaccineId==2 || $vaccineId==11){
+						if($row[$wastage] >= 20)
+							$serieses[$i]['color'] = "#DD1E2F";
+						else if($row[$wastage] >= 11 && $row[$wastage] <= 20)
+							$serieses[$i]['color'] = "#EBB035";
+						else if($row[$wastage] <= 10)
+							$serieses[$i]['color'] = "#0B7546";
+					}elseif($vaccineId==7){
+						if($row[$wastage] >= 5)
+							$serieses[$i]['color'] = "#DD1E2F";
+						else if($row[$wastage] <= 5)
+							$serieses[$i]['color'] = "#0B7546";
+					}elseif($vaccineId==90 || $vaccineId==38 || $vaccineId==89 || $vaccineId==3 || $vaccineId==12){
+						if($row[$wastage] >= 30)
+							$serieses[$i]['color'] = "#DD1E2F";
+						else if($row[$wastage] >= 11 && $row[$wastage] <= 20)
+							$serieses[$i]['color'] = "#3366ff";
+						else if($row[$wastage] >= 21 && $row[$wastage] <= 30)
+							$serieses[$i]['color'] = "#EBB035";
+						else if($row[$wastage] <= 10)
+							$serieses[$i]['color'] = "#0B7546";
+					}elseif($vaccineId==8 || $vaccineId==37 || $vaccineId==1 || $vaccineId==4){
+						if($row[$wastage] >= 10)
+							$serieses[$i]['color'] = "#DD1E2F";
+						else if($row[$wastage] >= 6 && $row[$wastage] <= 10)
+							$serieses[$i]['color'] = "#EBB035";
+						else if($row[$wastage] <= 5)
+							$serieses[$i]['color'] = "#0B7546";
 					}
 					$serieses[$i]['y'] = $row[$wastage];
 				}else
@@ -3678,16 +3738,10 @@ class ReviewDashboard extends CI_Controller
 					$serieses[$i]['id'] = $row['code'];
 					$serieses[$i]['path'] = $row['path'];
 					if($ranking){
-						if($row['val'] >= 100){
-							$serieses[$i]['color'] = "#0B7546";
-							//$serieses[$i]['color'] = "#DD1E2F";
-						}
-						else if($row['val'] <= 99 && $row['val'] >= 71){
-							$serieses[$i]['color'] = "#EBB035";
-						}
-						else if($row['val'] <= 70){
+						if($row['val'] >= 1){
 							$serieses[$i]['color'] = "#DD1E2F";
-							//$serieses[$i]['color'] = "#0B7546";
+						}else if($row['val'] < 1){
+							$serieses[$i]['color'] = "#0B7546";
 						}
 						$serieses[$i]['y'] = $row['val'];
 					}else
@@ -4034,7 +4088,7 @@ class ReviewDashboard extends CI_Controller
 				return $data[0]['ratio'];
 			//echo $this->db->last_query();exit;
 	}
-	public function AccessAndUtilization($value='cat1sum',$filters,$code='3',$type='province',$map=false,$ranking=false,$indicator=66,$category=false){
+	public function AccessAndUtilization($value='cat1sum',$filters,$code='3',$type='province',$map=false,$ranking=false,$category=false){
 		
 		$year = $filters['year'];
 		$startMonth = 1;
@@ -4144,6 +4198,7 @@ class ReviewDashboard extends CI_Controller
 															ON districts.distcode=b.distcode ORDER BY districts.distcode";
 			$result = $this -> db -> query($query);
 			$data= $result->result_array();
+			//print_r($data);exit;
 			$compliance = $serieses = array();
 			foreach($data as $i => $row){
 				$serieses[$i]['name'] = $row['name'];
@@ -4208,7 +4263,7 @@ class ReviewDashboard extends CI_Controller
 				}
 		}
 		//--select a.procode,a.access,a.utilization  ,case when (Access >= 80) and (utilization < 10) then 1 else 0 end as cat1 from (select procode,	 round(((sumvaccinevacination(7,fac_mvrf_db.procode,'2019-01','2019-09')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.procode,'province','2019','01','2019','09') :: float,0))*100):: numeric,0) as Access,								round(((sumvaccinevacination(7,fac_mvrf_db.procode,'2019-01','2019-09') :: numeric - sumvaccinevacination(9,fac_mvrf_db.procode,'2019-01','2019-09'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.procode,'2019-01','2019-09'):: float,0) :: numeric)*100 ,1) as utilization from fac_mvrf_db where procode = '3' and distcode in (select distinct distcode from unioncouncil_population where year = '2019') group by procode order by procode) as a group by a.procode,a.access,a.utilization;
-		$query = "SELECT SUM(cat1) AS cat1sum,SUM(cat2) AS cat2sum,SUM(cat3) AS cat3sum,SUM(cat4) AS cat4sum 
+		/* $query = "SELECT SUM(cat1) AS cat1sum,SUM(cat2) AS cat2sum,SUM(cat3) AS cat3sum,SUM(cat4) AS cat4sum 
 					FROM(SELECT distcode,
 							SUM(case when (Access >= 80) and (utilization < 10) then 1 else 0 end) AS cat1,
 							SUM(case when (Access >= 80) and (utilization >= 10) then 1 else 0 end) AS cat2,
@@ -4219,7 +4274,19 @@ class ReviewDashboard extends CI_Controller
 										round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$year}-{$startMonth}','{$year}-{$endMonth}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.uncode,'{$year}-{$startMonth}','{$year}-{$endMonth}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.uncode,'{$year}-{$startMonth}','{$year}-{$endMonth}'):: float,0) :: numeric)*100 ,1) as utilization 
 											FROM fac_mvrf_db 
 											WHERE procode = '{$code}' and distcode in (select distinct distcode from unioncouncil_population where year = '{$year}') 
-											Group BY distcode,uncode order by distcode,uncode)as a group by distcode) as b";
+											Group BY distcode,uncode order by distcode,uncode)as a group by distcode) as b"; */
+				$query = "SELECT SUM(cat1) AS cat1sum,SUM(cat2) AS cat2sum,SUM(cat3) AS cat3sum,SUM(cat4) AS cat4sum 
+					FROM(SELECT distcode,
+							SUM(case when (Access >= 80) and (utilization < 10) then 1 else 0 end) AS cat1,
+							SUM(case when (Access >= 80) and (utilization >= 10) then 1 else 0 end) AS cat2,
+							SUM(case when (Access < 80) and (utilization < 10) then 1 else 0 end) AS cat3,
+							SUM(case when (Access < 80) and (utilization >= 10) then 1 else 0 end) AS cat4 
+								FROM(select distcode,
+										round(((sumvaccinevacination(7,fac_mvrf_db.distcode,'{$year}-{$startMonth}','{$year}-{$endMonth}')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.distcode,'districts','{$year}','{$startMonth}','{$year}','{$endMonth}') :: float,0))*100):: numeric,0) as Access,
+										round(((sumvaccinevacination(7,fac_mvrf_db.distcode,'{$year}-{$startMonth}','{$year}-{$endMonth}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.distcode,'{$year}-{$startMonth}','{$year}-{$endMonth}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.distcode,'{$year}-{$startMonth}','{$year}-{$endMonth}'):: float,0) :: numeric)*100 ,1) as utilization 
+											FROM fac_mvrf_db 
+											WHERE procode = '{$code}' and distcode in (select distinct distcode from unioncouncil_population where year = '{$year}') 
+											Group BY distcode order by distcode)as a group by distcode) as b"; 
 			$result = $this -> db -> query($query);
 			$data= $result->result_array();
 			$query = "SELECT (CASE WHEN (cat1 > 0) THEN '1st' WHEN (cat2 > 0) THEN '2nd' WHEN (cat3 > 0) THEN '3rd' WHEN (cat4 > 0) THEN 'No Rec' ELSE 'No Rec' END) as category 
@@ -4365,14 +4432,10 @@ class ReviewDashboard extends CI_Controller
 				$serieses[$i]['id'] = $row['code'];
 				$serieses[$i]['path'] = $row['path'];
 				if($ranking){
-				if($row[$record] >= 100){
-						$serieses[$i]['color'] = "#0B7546";
-					}
-					else if($row[$record] <= 99 && $row[$record] >= 71){
-						$serieses[$i]['color'] = "#EBB035";
-					}
-					else if($row[$record] <= 70){
+					if($row[$record] >= 10){
 						$serieses[$i]['color'] = "#DD1E2F";
+					}else if($row[$record] <= 10){
+						$serieses[$i]['color'] = "#0B7546";
 					}
 					$serieses[$i]['y'] = $row[$record];
 				}else
@@ -4443,7 +4506,6 @@ class ReviewDashboard extends CI_Controller
 	}
 	function SanctionedVsFilledPost($post='epi_tech',$value='persent',$table='techniciandb',$filters,$code='3',$type='province',$map=false,$ranking=false,$category=false)
 	{
-  
 		if($map){
 			if($post=='epi_coordinator'){
 				$wc_type="AND supervisor_type='EPI Coordinator'";
@@ -4527,9 +4589,6 @@ class ReviewDashboard extends CI_Controller
 								WHERE status='Active' {$wc_type}  ) as a";
 			$result = $this -> db -> query($query);
 			$data= $result->result_array();
-	   
-			
-		
 			if($value=='filled')
 				return $data[0]['filled'];
 			if($value=='sanctioned')
@@ -4538,7 +4597,6 @@ class ReviewDashboard extends CI_Controller
 				return $data[0]['vaccant'];
 			if($value=='persent')
 				return $data[0]['persent'];
-			
 	}
 	public function Stockout($vaccineId=5,$filters,$value='stockout',$code='3',$type='province',$map=false,$ranking=false,$category=false){
 		//print_r($filters);exit;
@@ -4783,7 +4841,7 @@ class ReviewDashboard extends CI_Controller
 		if($map){
 			
 			$query = "SELECT 
-						districts.distcode as code,districtname(districts.distcode) as name,(case when ( val > 0 ) then val else 0 end) as val,districts.highchart_coordinates AS path 
+						districts.distcode as code,unname(districts.distcode) as name,(case when ( val > 0 ) then val else 0 end) as val,districts.highchart_coordinates AS path 
 							FROM 
 								districts 
 							LEFT JOIN (SELECT distcode,round((sum({$column}_vacc_held)//sum({$column}_vacc_planned))*100) as val 

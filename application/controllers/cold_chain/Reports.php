@@ -56,18 +56,12 @@ class Reports extends CI_Controller {
 	    if($this -> session -> UserLevel == '3'){
 			//$stroelevel = array(0=>'Store Level',''=>'--Select Level--','4'=>'District','5'=>'Tehsil','6'=>'Union Council','unallocated'=>'Unallocated'); 
 			$stroelevel = array(0=>'Store Level','4'=>'District','5'=>'Tehsil','unallocated'=>'Unallocated'); 
-		}else if($this -> session -> UserLevel == '4'){
-			$stroelevel = array(0=>'Store Level','5'=>'Tehsil','6'=>'Union Council','unallocated'=>'Unallocated'); 
 		}else{
 			$stroelevel = array(0=>'Store Level','2'=>'Provincial Store','5'=>'Tehsil','6'=>'Union Council','unallocated'=>'Unallocated'); 
 		}
 		$status = array(0=>'Working Status',''=>'--Select Status--','1'=>'Working well','2'=>'Working but needs maintenance','3'=>'Not working','4'=>'Working well & fuel available','5'=>'Working well but fuel not available');
 		//$reportPeriod=array("specific_year"=>array("title"=>"Year Of Supply"));
-		if($this -> session -> UserLevel == '4'){
-			$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,false,false,NULL,NULL,'No','No',NULL,array($assettype,$stroelevel,$status));	
-		}else{
-			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,false,false,NULL,NULL,'No','No',NULL,array($assettype,$stroelevel,$status));	
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,false,false,NULL,NULL,'No','No',NULL,array($assettype,$stroelevel,$status));	
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;

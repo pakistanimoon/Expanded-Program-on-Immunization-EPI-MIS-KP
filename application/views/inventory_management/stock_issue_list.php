@@ -118,38 +118,6 @@ span.markYellow {
 span.markBlue {
   background: blue;
   color: white;
-}
-
-.custom-add-voucher{
-	    background-color: #3c8dbc;
-    color: #fff;
-    padding: 10px;
-    border-radius: 50px 0px 0px 50px;
-    position: fixed;
-    right: -113px;
-    transition: all 0.3s;
-    top: 214px;
-    box-shadow: 1px 1px 6px 3px #e0dede;
-	z-index:99;
-}
-.custom-add-voucher > i{
-	font-size:20px;
-	position:relative;
-	top:2px;
-}
-.custom-add-voucher > span{
-	margin-left:10px;
-}
-.custom-add-voucher:hover{
-	right: -5px;
-	color:#fff;
-}
-.custom-add-voucher:active{
-	color:#fff;
-}
-.custom-add-voucher:visited{
-	color:#fff;
-}
 </style>
 <section class="content">
     <div class="container bodycontainer">
@@ -210,11 +178,7 @@ span.markBlue {
 								if($this -> session -> flashdata('message')){ ?>
 									<label class="text-center pull-left" style="padding-top: 9px;"><strong><?php echo $this -> session -> flashdata('message'); ?></strong></label> <?php 
 								} ?>
-								<!--<a href="<?php echo base_url("invnissue"); ?>" style="background:#008d4c;" class="btn btn-primary btn-md pull-right"><i class="fa fa-arrow-right"></i> Add New Voucher </a>-->
-								<a href="<?php echo base_url("invnissue"); ?>" class="custom-add-voucher">
-								<i class="fas fa-plus"></i>
-									<span>Add new Voucher</span>
-								</a>
+								<a href="<?php echo base_url("invnissue"); ?>" style="background:#008d4c;" class="btn btn-primary btn-md pull-right"><i class="fa fa-arrow-right"></i> Add New Voucher </a>
 							</div>
 						</div>
 						<div class="voucherslist">

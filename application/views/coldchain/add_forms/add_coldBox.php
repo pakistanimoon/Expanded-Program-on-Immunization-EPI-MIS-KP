@@ -2,7 +2,7 @@
 	<!--                       */
  /*                      */
   /*Custom Css for Model*/
-   /*                  */ 
+   /*                  */
     /*                */
 -->
 
@@ -80,7 +80,7 @@
 										<label for="AssetSubType">Supply Year<span style="color:red;">*</span></label>
 									</div>
 									<div class="col-md-8">
-										<input type="text" id="working_since" name="working_since" class="dpcct form-control date readonly" required />
+										<input type="text" id="working_since" name="working_since" class="dpcct form-control" required readonly="true">
 									</div>
 								</div>
 						</div>
@@ -90,7 +90,7 @@
 										<label for="AssetSubType">Manufacture Date<span style="color:red;">*</span></label>
 									</div>
 									<div class="col-md-8">
-										<input type="text" id="manufacturer_year" name="manufacturer_year" class="dpcct form-control date readonly" required />	
+										<input type="text" id="manufacturer_year" name="manufacturer_year" class="dpcct form-control" readonly="true">	
 									</div>
 								</div>
 						</div>
@@ -126,9 +126,9 @@
 													}?>
 											</select>
 									</div>
-									<div class="col-md-2">
-									<!--<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make and Modal"  data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>-->
-								   </div>
+									<!--<div class="col-md-2">
+									<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make and Modal"  data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>
+								   </div>-->
 								</div>
 						</div>
 						<div class="col-md-4">
@@ -312,11 +312,6 @@
 			
 		
 <script type="text/javascript">
-$(".readonly").keydown(function(e){
-        e.preventDefault();
-    });
-	
-
  var res=null;
 $(document).on('change','#status_w',function(){
 	var id=$(this).val();

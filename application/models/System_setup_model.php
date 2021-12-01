@@ -1,15 +1,15 @@
 <?php
 class System_setup_model extends CI_Model {
-	//================ Constructor Function Starts================//
+	//================ Constructor Function Starts ================//
 	public function __construct() {
 		parent::__construct();
 		$this -> load -> model('Common_model');
 		$this -> load -> library('breadcrumbs');
-		$this->load->helper('my_functions_helper'); 
+		$this->load->helper('my_functions_helper');
 	}
 	//================ Constructor Function Ends Here ====================//
 		//--------------------------------------------------------------------//
-	//================ AddHR Listing Function Starts ================//					
+	//================ AddHR Listing Function Starts ================//
 	public function addhr_list($per_page, $startpoint) {
 		//////////////////////ADDING BREADCRUMS//////////////////////////
 		$this -> breadcrumbs -> push('Home', '/');
@@ -49,8 +49,8 @@ class System_setup_model extends CI_Model {
 		/////////////////////////////////////////////////////////////////
 		//$query="SELECT distcode, district FROM districts order by district ASC";
 			//$result=$this->db->query($query);
-			//$data['result']=$result->result_array();			
-			$query="SELECT * from bankinfo";
+			//$data['result']=$result->result_array();
+			$query="select * from bankinfo";
 			$resultAR= $this -> db ->query($query);
 			$data['resultbank']= $resultAR -> result_array();
 			return $data;
@@ -80,7 +80,7 @@ class System_setup_model extends CI_Model {
 				redirect($location);
 			}
 		}else{
-			$checkquery = "SELECT count(*) as cnt from hrdb where hrcode='$hrCode'";
+			$checkquery = "select count(*) as cnt from hrdb where hrcode='$hrCode'";
 			$checkresult=$this -> db -> query ($checkquery);
 			$checkrow=$checkresult -> row_array();
 			$recexist=(int)$checkrow['cnt'];
@@ -114,26 +114,26 @@ class System_setup_model extends CI_Model {
 		$this->breadcrumbs->push('Update AddHR', '/System_setup/AddHR_edit');
 		///////////////////////////////////////////////////////////////////
 		//$district = $this -> session -> District;
-		$query="SELECT * from hrdb where hrcode = '$hrcode' ";
+		$query="select * from hrdb where hrcode = '$hrcode' ";
 		$result=$this -> db -> query ($query);
 		$data['hrdata']=$result -> row_array();
 		//echo '<pre>';print_r($data['dsodata']);exit;
-		$query="SELECT * from hrdb where hrcode = '$hrcode' ";
+		$query="select * from hrdb where hrcode = '$hrcode' ";
 		$result=$this -> db -> query ($query);
 		$data['hrdata']=$result -> row_array();
 
-		$query = "SELECT hrcode, designation_type FROM hrdb  order by designation_type ASC";
+		$query = "select hrcode, designation_type FROM hrdb  order by designation_type ASC";
 		$result = $this -> db -> query($query);
 		$data['result'] = $result -> result_array();	
-		//$query = "SELECT facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
+		//$query = "Select facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
 		//$resultFac = $this -> db -> query($query);
 		//$data['resultFac'] = $resultFac -> result_array();		
 
-		//$query="SELECT tcode, tehsil from tehsil where distcode='$district' order by tehsil ASC";
+		//$query="Select tcode, tehsil from tehsil where distcode='$district' order by tehsil ASC";
 		//$resultTeh=$this -> db -> query($query);
 		//$data['resultTeh'] = $resultTeh -> result_array();
 		
-		$query="SELECT * from bankinfo";
+		$query="select * from bankinfo";
 		$resultAR= $this -> db ->query($query);
 		$data['resultbank']= $resultAR -> result_array();
        
@@ -149,31 +149,31 @@ class System_setup_model extends CI_Model {
 		$this->breadcrumbs->push('AddHR View', '/System_setup/AddHR_view');
 		/////////////////////////////////////////////////////////////////
 		//$district = $this -> session -> District;
-		$query="SELECT *  from hrdb where hrcode = '$hrcode' ";
-		$query="SELECT hrdb.* ,bankinfo.bankcode as bcode,bankinfo.bankname as bank from hrdb  left join bankinfo  on  hrdb.bid= bankinfo.bankid where hrdb.hrcode='$hrcode'"; 
+		$query="select *  from hrdb where hrcode = '$hrcode' ";
+		$query="select hrdb.* ,bankinfo.bankcode as bcode,bankinfo.bankname as bank from hrdb  left join bankinfo  on  hrdb.bid= bankinfo.bankid where hrdb.hrcode='$hrcode'"; 
 
 		$result=$this -> db -> query ($query);
 		$data['hrdata']=$result -> row_array();
 		//echo '<pre>';print_r($data['hrdata']);echo '</pre>';exit;
 		return $data;
 	}
-	
-	//================ Constructor Function Ends Here ====================//
-	//--------------------------------------------------------------------//
+	//================ Function to Show Page for Viewing Existing AddHR Record Ends Here ================//
+	//--------------------------------------------------------------------------------------------------------//
+																		 
 	//================ Supervisor Listing Function Starts ================//
-		public function supervisor_list($per_page, $startpoint) {
+	public function supervisor_list($per_page, $startpoint) {
 		//////////////////////ADDING BREADCRUMS//////////////////////////
 		$this -> breadcrumbs -> push('Home', '/');
 		$this -> breadcrumbs -> push('Manage Supervisor', '/System_setup/supervisor_list');
 		/////////////////////////////////////////////////////////////////
 		$wc = getWC();//helper function
-		$query = "SELECT facode, fatype ,fac_name from facilities where $wc and hf_type='e' order by fac_name ASC";
+		$query = "Select facode, fatype ,fac_name from facilities where $wc and hf_type='e' order by fac_name ASC";
 		$Fac_result = $this -> db -> query($query);
 		$data['resultFac'] = $Fac_result -> result_array();
-		$query = "SELECT uncode, un_name from unioncouncil where $wc order by un_name ASC";
+		$query = "Select uncode, un_name from unioncouncil where $wc order by un_name ASC";
 		$UC_result = $this -> db -> query($query);
 		$data['resultUnC'] = $UC_result -> result_array();
-		$query = "SELECT tcode, tehsil from tehsil where $wc order by tehsil ASC";
+		$query = "Select tcode, tehsil from tehsil where $wc order by tehsil ASC";
 		$Teh_result = $this -> db -> query($query);
 		$data['resultTeh'] = $Teh_result -> result_array();
 		$query = "SELECT distinct fatype from facilities where $wc order by fatype ASC";
@@ -184,20 +184,16 @@ class System_setup_model extends CI_Model {
 		$data['resultSuper_type'] = $Sup_result -> result_array();
 		//Workaround for Column name difference in districts table. i.e procode is prvince.
 		$neWc = str_replace("procode", "province", $wc);
-		$query = "SELECT distcode, district from districts where $neWc order by district ASC";
+		$query = "Select distcode, district from districts where $neWc order by district ASC";
 		$Dist_result = $this -> db -> query($query);
 		$data['resultDist'] = $Dist_result -> result_array();
 		// Change `records` according to your table name.
-		//$wc .=" AND status != 'Post Back' ";
 		if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='Manager')){
 			$wc .="AND is_temp_saved = '0'";
 		}
-		$query = "SELECT supervisorname,supervisorcode,supervisor_type,is_temp_saved,nic,districtname(supervisordb.distcode) as districtname,status from supervisordb where $wc  LIMIT {$per_page} OFFSET {$startpoint}";
+		$query = "select supervisorname,supervisorcode,supervisor_type,is_temp_saved,nic,districtname(supervisordb.distcode) as districtname,status from supervisordb where $wc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		$results = $this -> db -> query($query);
-		//$str = $this->db->last_query();
-	//print_r($str); exit;
 		$data['results'] = $results -> result_array();
-		
 		//echo '<pre>';print_r($data['results']);exit();
 		return $data;
 	}
@@ -213,49 +209,50 @@ class System_setup_model extends CI_Model {
 		$district = $this -> session -> District;
 
 		if($district != null){
-			$query="SELECT distcode, district FROM districts WHERE distcode='$district' order by district ASC";
+			$query="select distcode, district FROM districts WHERE distcode='$district' order by district ASC";
 			$result=$this->db->query($query);
 			$data['result']=$result->result_array();
-			$query="SELECT facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
+			$query="Select facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
 			$resultFac=$this->db->query($query);
 			$data['resultFac']=$resultFac->result_array();			
-			$query="SELECT tcode, tehsil from tehsil where distcode='$district' order by tehsil ASC";
+			$query="Select tcode, tehsil from tehsil where distcode='$district' order by tehsil ASC";
 			$resultTeh=$this->db->query($query);
 			$data['resultTeh']=$resultTeh->result_array();
-			$query="SELECT ar_id, title from arallowances where ar_id IS NOT NULL";
+			$query="select ar_id, title from arallowances where ar_id IS NOT NULL";
 			$resultAR= $this -> db ->query($query);
 			$data['resultAR']= $resultAR -> result_array();
-			$query="SELECT * from bankinfo";
+			$query="select * from bankinfo";
 			$resultAR= $this -> db ->query($query);
 			$data['resultbank']= $resultAR -> result_array();
-			$query="SELECT d_id, title from ardeductions where d_id IS NOT NULL";
+			$query="select d_id, title from ardeductions where d_id IS NOT NULL";
 			$resultAR= $this -> db ->query($query);
 			$data['resultARD']= $resultAR -> result_array();
 			
 		}else{
-			$query="SELECT distcode, district FROM districts order by district ASC";
+			$query="select distcode, district FROM districts order by district ASC";
 			$result=$this->db->query($query);
 			$data['result']=$result->result_array();
 
-			$query="SELECT * from bankinfo";
+			$query="select * from bankinfo";
 			$resultAR= $this -> db ->query($query);
 			$data['resultbank']= $resultAR -> result_array();
 		}
 		return $data;
-		
 	}
 	//================ Function to Show Page for Adding New Supervisor Ends Here =========================//
 	//----------------------------------------------------------------------------------------------------//
 	//================ Function for Saving New or Existing Supervisor Record Starts Here =================//
 	public function supervisor_save($supervisorData,$supervisorCode,$supervisorDataNewData){
+									
 		$temp=$supervisorDataNewData['post_type'];
-		            /* New Uncode, Facode, Tcode */
+		            /* New Uncode, Facode, Tcode */ 
 			       //$faccode=$supervisorDataNewData['new_facode'];
 		           //$tehcode=$supervisorDataNewData['new_tcode'];
 		           //$unccode=$supervisorDataNewData['new_uncode'];
 		                   /* END */
 				//$temp=$supervisorData['post_type'];
 	    $status=$supervisorData['status'];		
+	   
 			unset($supervisorData['post_type']);
 			unset($supervisorData['newfacode']);
 			unset($supervisorData['newtcode']);
@@ -296,7 +293,11 @@ class System_setup_model extends CI_Model {
 			/*For EPI Technician */
 			if($temp=='EpiTechnician')
 			{
+							 
+									 
+			
 				$technicianData=array('status'=>'Active');						
+	  
 				//replace status of epitech to active from tempost
 				$updateQuery = $this -> Common_model -> update_record('techniciandb',$technicianData,array('techniciancode'=>$svtcode));
 				//delete temporary post from supervisordb
@@ -897,7 +898,32 @@ class System_setup_model extends CI_Model {
 				$message="Record Updated for Supervisor with Code ".$supervisorCode;
 				$this -> session -> set_flashdata('message',$message);
 				redirect($location);
+	
+	   
+   
+																
+																																	
+																			
+										 
+								   
+					
+																	  
+															 
+								
+						   
+				 
+			
 				}
+																					 
+			
+																					 
+							 
+					
+																			   
+											 
+															 
+																					   
+						
 			}
 			else
 				{
@@ -999,9 +1025,7 @@ class System_setup_model extends CI_Model {
 	public function supervisor_view($supervisorcode){
 		//////////////////////ADDING BREADCRUMS//////////////////////////
 		$this->breadcrumbs->push('Home','/');
-		if (($_SESSION['UserLevel']!='4') && ($_SESSION['utype']=='Store')){
-			$this->breadcrumbs->push('Manage Supervisor', '/System_setup/supervisor_list');
-		}
+		$this->breadcrumbs->push('Manage Supervisor', '/System_setup/supervisor_list');
 		$this->breadcrumbs->push('Supervisor View', '/System_setup/supervisor_view');
 		/////////////////////////////////////////////////////////////////
 		$district = $this -> session -> District;
@@ -1012,17 +1036,6 @@ class System_setup_model extends CI_Model {
 		$data['supervisordata']=$result -> row_array();
 		//echo '<pre>';print_r($data['supervisordata']);echo '</pre>';exit;
 		return $data;
-		//Excel file code is here*******************
-		if($this->input->post('export_excel'))
-		{
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Supervisor_Details.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-		//Excel file code ENDS*******************
 	}
 	//================ Function to Show Page for Viewing Existing Supervisor Record Ends Here ================//
 	//--------------------------------------------------------------------------------------------------------//
@@ -2043,6 +2056,7 @@ class System_setup_model extends CI_Model {
 						//latest code
 						$deoData['skcode']=$skcode;
 						//$deoData['previous_table']="deodb";
+                    
 					//insert into skdb
 					$result = $this -> Common_model -> insert_record('skdb', $deoData);
 					//delete deodb record
@@ -2166,7 +2180,7 @@ class System_setup_model extends CI_Model {
 					else if($temp=="Field Superintendent Vaccinator")
 					{
 					$name=$deoData['deoname'];
-							 /* Unset Data */
+					    /* Unset Data */
 						unset($deoData['deoname']);
 						unset($deoData['deocode']);
 						unset($deoData['husbandname']);
@@ -2240,7 +2254,7 @@ class System_setup_model extends CI_Model {
 				echo $script;
 				exit();	
 			}
-			/* $result = $this -> Common_model -> insert_record('deodb', $deoData); */
+			//$result = $this -> Common_model -> insert_record('deodb', $deoData);
 			if($result != 0){
 				createTransactionLog("Data Entry DB", "Data ENtry Added ".$deocode);
 				$location = base_url(). "DataEntry-Operator-List";
@@ -2900,7 +2914,7 @@ class System_setup_model extends CI_Model {
 					$technicianData['previous_table']="techniciandb";
 					$result = $this -> Common_model -> insert_record('med_techniciandb', $technicianData);
 					$location = base_url(). "TechnicianList";
-					$message="Record Posted As HF Incahrge Successfully.";
+					$message="Record Posted HF Incahrge Successfully.";
 					$this -> session -> set_flashdata('message',$message);
 					redirect($location);
 				}
@@ -3248,19 +3262,18 @@ class System_setup_model extends CI_Model {
 			
 		//$distcode  	= isset($_REQUEST['distcode'])?$_REQUEST['distcode']:$_SESSION['District'];
 		$distcode=$this->input->get('distcode');
-		$query="select *,districtname(distcode) as district,tehsilname(tcode),coalesce(unname(uncode),'') as unioncouncil, fac_address, is_vacc_fac from facilities  where facode='$facode'";
+	    $query="select *,districtname(distcode) as district,tehsilname(tcode),coalesce(unname(uncode),'') as unioncouncil, fac_address, is_vacc_fac from facilities  where facode='$facode'";
 		//select technicianname  from techniciandb where status='Active',
 		//select technicianname from med_techniciandb where status='Active'";
 		$result=$this->db->query($query);
 		$data['resultfac']=$result->row_array();
-										  
 		
 		$query="SELECT * from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery  where post_status='Active' and post_hr_sub_type_id='01' and post_facode ='$facode'";
 		$result=$this -> db -> query ($query);
 		$data['epitechname'] = $result -> result_array();
 		//$str = $this->db->last_query();
 		//print_r($str); exit;
-		$query="select techniciancode,technicianname,fathername,nic,phone,status from med_techniciandb where status='Active' and facode='$facode'";
+		$query="SELECT * from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery  where post_status='Active' and post_hr_sub_type_id='09' and post_facode ='$facode'";
 		$result=$this -> db -> query ($query);
 		$data['hftechname'] = $result -> result_array();
 		
@@ -3277,11 +3290,24 @@ class System_setup_model extends CI_Model {
 		$data['working_status'] = $result -> result_array();
         //$str = $this->db->last_query();
 		//print_r($str); exit;
-						
 		return $data;
 	}
-  												
-  
+	
+	public function flcf_view_ajax($facode){
+		$this -> db -> select('master.fmonth, get_product_name(item_id) as item, detail.batch_doses, count(distinct(detail.batch_number)) as batch_number, sum(detail.closing_vials) as closing_vials, sum(detail.closing_doses) as closing_doses');
+		$this->db->from('epi_consumption_master master');
+		$this->db->join('epi_consumption_detail detail', 'master.pk_id=detail.main_id', 'left');
+		$this->db->group_start();
+		$this -> db -> where('master.facode',$facode);
+		$this -> db -> where('detail.main_id is not null');
+		$this -> db -> where('detail.closing_doses > 0'); 
+		$this -> db -> where("fmonth  = (SELECT MAX(fmonth) FROM epi_consumption_master where facode = '$facode')");
+		$this->db->group_end();
+		$this -> db -> group_by(array("detail.item_id", "detail.batch_doses", "master.fmonth" ));
+
+		return $this -> db -> get() -> result_array();
+	}
+	
 	public function getMainIndicatorsData($facode,$years){
 		if(isset($facode)){
 			$this -> db -> select('population as pop');
@@ -3311,24 +3337,18 @@ class System_setup_model extends CI_Model {
 		
 		// --------------------------------------------------------------------------------------------- //
 		$data['provincePopulation']		 = (isset($result->pop) && $result->pop > 0)?(int)$result->pop:0;
-		//$data['anuualTargetPopulation']  = round(($data['provincePopulation']*3.533)/100);
-		$data['anuualTargetPopulation']  = round(($data['provincePopulation']*get_indicator_periodic_multiplier('newborn',$years))/100);
+		$data['anuualTargetPopulation']  = round(($data['provincePopulation']*3.533)/100);
 		$data['monthlyTargetPopulation'] = round($data['anuualTargetPopulation']/12);
-		//$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
-		$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*get_indicator_periodic_multiplier('survivinginfant',$years))/100);
+		$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
 		$data['monthlySurvivingInfants'] = round($data['annualSurvivingInfants']/12);
-		//$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*1.02);
-		$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*get_indicator_periodic_multiplier('plwomen',$years));
+		$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*1.02);
 		$data['monthlyPregnantLactatingPlWomen'] = round($data['annualPregnantLactatingPlWomen']/12);
 		// --------------------------------------------------------------------------------------------- //
 		$data['annualPnnMortality'] = round(($data['annualSurvivingInfants']*98.3)/100);
 		$data['monthlyPnnMortality'] = round($data['annualPnnMortality']/12);
-		//$data['childrenLessThan5Years'] = round(($data['provincePopulation']*16)/100);
-		$data['childrenLessThan5Years'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less5year',$years))/100);
-	//	$data['cbaLadies'] = round(($data['provincePopulation']*22)/100);
-		$data['cbaLadies'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('cba',$years))/100);
-		//$data['below15Years'] = round(($data['provincePopulation']*45)/100);
-		$data['below15Years'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less15year',$years))/100);
+		$data['childrenLessThan5Years'] = round(($data['provincePopulation']*16)/100);
+		$data['cbaLadies'] = round(($data['provincePopulation']*22)/100);
+		$data['below15Years'] = round(($data['provincePopulation']*45)/100);
 		$data['totalPopulation'] = ($data['provincePopulation']);
 		// --------------------------------------------------------------------------------------------- //
 		$this -> db -> select('sum(tot_lhw_involved_vacc) as tot_lhws');
@@ -3361,23 +3381,10 @@ class System_setup_model extends CI_Model {
 		$this -> db -> like('fmonth',date('Y'),'after');
 		$result = $this -> db -> get('fac_mvrf_db') -> row();
 		$data['totalEpiVaccinationReports'] = (int)$result->tot_reports;
-																  
-																																							 
-							   
-																																																					
-																																															
-																																															
-																																																		 
-																																															   
-																																																				   
-																																					  
-									  
-										
 		return $data;
 	}
 	
 	
- 
 	//================ Function to Show Page for Editing Existing Supervisor Record Ends Here =============//
 	//-----------------------------------------------------------------------------------------------------//
 	//================ Function to Show Listing Page for Health Facility Starts Here ======================//
@@ -3396,18 +3403,16 @@ class System_setup_model extends CI_Model {
 		
 		
 		
-		if($_SESSION['UserLevel']=='2'){
-			$neWc = str_replace("procode", "province", $wc);
-			$query="SELECT distcode, district from districts where $neWc order by district ASC";
-			$Dist_result = $this -> db -> query($query);
-			$data['resultDist']=$Dist_result -> result_array();
-		}
+		$neWc = str_replace("procode", "province", $wc);
+		$query="Select distcode, district from districts where $neWc order by district ASC";
+		$Dist_result = $this -> db -> query($query);
+		$data['resultDist']=$Dist_result -> result_array();
+		
 		//$wc .= " AND hf_type='e' ";
 		
-		$query = "SELECT tcode, tehsil from tehsil where $wc order by tehsil ASC";
+		$query = "Select tcode, tehsil from tehsil where $wc order by tehsil ASC";
 		$Teh_result = $this -> db -> query($query);
 		$data['resultTeh'] = $Teh_result -> result_array();
-													 
 		
 		$wc .= " AND hf_type='e' ";
 		
@@ -3416,12 +3421,11 @@ class System_setup_model extends CI_Model {
 		$data['resultFac'] = $Fac_result -> result_array();
 		$fmonth = date('Y-m');
 		$curr_date = date('Y-m-d');
-		$my_week = currentWeek(date('Y'), true); //$result->epi_week_numb;
-		$q = "SELECT epi_week_numb FROM epi_weeks WHERE date_from >='$curr_date' ORDER BY epi_week_numb";
+		$q = "SELECT epi_week_numb FROM epi_weeks WHERE date_from >='$curr_date' ORDER BY epi_week_numb LIMIT 1";
 		$result = $this ->db->query($q)->row();
-		$fweek = date('Y').'-'.sprintf("%02d", $my_week);
-		$query ="SELECT facilities.facode, facilities.fac_name,facilities.areatype, districtname(facilities.distcode) as district, tehsilname(facilities.tcode) as tehsil,unname(facilities.uncode) as unioncouncil, facilities.fatype, facilities.catchment_area_pop, getfstatus_vacc('$fmonth', facilities.facode) as vacc_status, getfstatus_ds('$fweek', facilities.facode) as ds_status, facilities.is_vacc_fac, facilities.is_ds_fac,
-				(select count(facode) from hr_db where hr_db.facode=facilities.facode and hr_sub_type_id='01') as total_technicians				
+		$fweek = date('Y').'-'.sprintf("%02d", $result->epi_week_numb);
+		$query ="select facilities.facode, facilities.fac_name,facilities.areatype, districtname(facilities.distcode) as district, tehsilname(facilities.tcode) as tehsil,unname(facilities.uncode) as unioncouncil, facilities.fatype, facilities.catchment_area_pop, getfstatus_vacc('$fmonth', facilities.facode) as vacc_status, getfstatus_ds('$fweek', facilities.facode) as ds_status, facilities.is_vacc_fac, facilities.is_ds_fac,
+				(select count(facode) from techniciandb where techniciandb.facode=facilities.facode) as total_technicians				
 			  	from facilities where $wc order by facilities.fac_name  LIMIT {$per_page} OFFSET {$startpoint}";
 		$results = $this -> db -> query($query);
 		$data['results'] = $results -> result_array();
@@ -3462,7 +3466,7 @@ class System_setup_model extends CI_Model {
 			$this -> session -> set_flashdata('message','Facilities Marked/Unmarked Successfully!');
 			return 1;
 		}
-		createTransactionLog("Facilities", "Facilities Mark/Un-Mark Updated ");
+		createTransactionLog("Health Facility-DB", "Facilities Mark/Un-Mark Updated");
 	}
 	//================ Function for Marking and Unmarking Health Facility Ends Here ==========================//
 	//----------------------------------------------------------------------------------------------------//
@@ -3484,7 +3488,7 @@ class System_setup_model extends CI_Model {
 		$query = "SELECT distinct fatype FROM facilities WHERE distcode = '$distcode' ORDER BY fatype ASC";
 		$data['resultFac'] = $this->db->query($query)->result_array();
 		
-		$query="SELECT facode,hf_type, is_vacc_fac, is_ds_fac, fac_name, districtname(distcode) AS district, tehsilname(tcode) AS tehsil, fatype, catchment_area_pop FROM facilities WHERE distcode='$distcode' ORDER BY facode ASC";
+		$query="SELECT facode,hf_type, is_vacc_fac, is_ds_fac, fac_name, unname(uncode) as unioncouncil, districtname(distcode) AS district, tehsilname(tcode) AS tehsil, fatype, catchment_area_pop FROM facilities WHERE distcode='$distcode' ORDER BY facode ASC";
 		$data['results'] = $this->db->query($query)->result_array();
 
 		$vacc_flcf_query = "SELECT DISTINCT facode FROM fac_mvrf_db WHERE distcode='$distcode'";
@@ -3494,7 +3498,6 @@ class System_setup_model extends CI_Model {
 		$ds_flcf_query = "SELECT DISTINCT facode FROM zero_report WHERE distcode='$distcode'";
 		$data['ds_flcf'] = $this->db->query($ds_flcf_query)->result_array();
 		$data['ds_flcf'] = array_column($data['ds_flcf'],"facode");
-															 
 		return $data;
 	}
 	//================ Function for Showing Marking List to Mark/Unmark Health Facility Ends Here =============//
@@ -3515,20 +3518,20 @@ class System_setup_model extends CI_Model {
 			/////////////////////////////////////////////////////////////////
 		}
 		$district	= $this -> session -> District;
-		$query="SELECT distcode, district FROM districts WHERE distcode='$district' order by district ASC";
+		$query="select distcode, district FROM districts WHERE distcode='$district' order by district ASC";
 		$result=$this->db->query($query);
 		$data['district']=$result->result_array();
-		$query="SELECT facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
+		$query="Select facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
 		$resultFac=$this->db->query($query);
 		$data['resultFac']=$resultFac->result_array();
 		$query = "SELECT fatype from facilities_types  order by fatype ASC";
 		$Fac_result = $this -> db -> query($query);
 		$data['resultFac_type'] = $Fac_result -> result_array();
 
-		$query="SELECT tcode, tehsil from tehsil where distcode='$district' order by tcode, tehsil ASC";
+		$query="Select tcode, tehsil from tehsil where distcode='$district' order by tcode, tehsil ASC";
 		$resultTeh=$this->db->query($query);
 		$data['resultTeh']=$resultTeh->result_array();
-		$query="SELECT uncode, un_name from unioncouncil where distcode='$district' order by un_name ASC";
+		$query="Select uncode, un_name from unioncouncil where distcode='$district' order by un_name ASC";
 		$resultun=$this->db->query($query);
 		$data['resultun']=$resultun->result_array();
 		//variables for insert query into facilities_population
@@ -3545,13 +3548,8 @@ class System_setup_model extends CI_Model {
 		else if($this->input->post('submit')){
 			if($this -> input -> post('edit')){
 				$facode = $this -> input -> post('facode');
-																	  
-				unset($flcfData['is_ds_fac']);
-				unset($flcfData['is_vacc_fac']);
-				unset($flcfData['catchment_area_pop']);
-				unset($flcfData['tcode']);
-				unset($flcfData['uncode']);
-				unset($flcfData['distcode']);
+				unset($flcfData['is_ds_fac']);unset($flcfData['is_vacc_fac']);unset($flcfData['catchment_area_pop']);
+				unset($flcfData['tcode']);unset($flcfData['uncode']);unset($flcfData['distcode']);
 				$updateQuery = $this -> Common_model -> update_record('facilities',$flcfData,array('facode'=>$facode));
 				createTransactionLog("Health Facility-DB", "Health Facility Updated ".$facode);				
 				$location = base_url(). "System_setup/flcf_view?facode=$facode";
@@ -3577,7 +3575,6 @@ class System_setup_model extends CI_Model {
 					$result = $this -> Common_model -> insert_record('facilities', $flcfData);
 					//$queryForpop = "insert into facilities_population (facode,year,population,created_date,distcode,tcode,uncode) values ('{$facodee}','{$year}','{$population}',now(),'{$district}','{$flcfData['tcode']}','{$flcfData['uncode']}')";
 					//$this->db->query($queryForpop);
-													  
 					/* Facility Status Code Starts Here */
 					$dateToday = date('Y-m-d');
 					$currentMonth = date('Y-m');
@@ -3587,7 +3584,6 @@ class System_setup_model extends CI_Model {
 					$queryPreviousWeek = "select fweek from epi_weeks where fweek < '{$currentWeek->fweek}' order by fweek desc limit 1";
 					$previousWeek = $this->db->query($queryPreviousWeek)->row();
 					$weekYearTo = $previousWeek->fweek;
-															
 					$queryNonFunctionalStatusofVaccination = "insert into facilities_status(id,facode,status,m_y_from,m_y_to,added_date,reason_vacc,reason_ds) 
 													values ('{$facodee}-1','{$facodee}','N','2016-01','{$monthYearTo}','{$dateToday}','NC','NC');";
 					$this->db->query($queryNonFunctionalStatusofVaccination);
@@ -3600,25 +3596,6 @@ class System_setup_model extends CI_Model {
 					$queryFunctionalStatusofSurveillance = "insert into facilities_status(id,facode,status,w_y_from,added_date,reason_vacc,reason_ds) 
 													values ('{$facodee}-4','{$facodee}','F','{$currentWeek->fweek}','{$dateToday}','NC','NC');";
 					$this->db->query($queryFunctionalStatusofSurveillance);
-																										  
-	  
-																															 
-																																																																																			  
-																																										
-																											 
-																																																										 
-																								   
-																										
-	  
-																															 
-																																																																																			   
-																																									  
-																												
-																																																																			   
-																																								   
-																										  
-	   
-	 
 					/* Population Updation Code Start here */
 					/* $this->db->delete('unioncouncil_population', array(
 						'distcode'=> $district,
@@ -3643,7 +3620,6 @@ class System_setup_model extends CI_Model {
 					$this->db->query($tehsilUpdateQuery);
 					$districtQuery = "insert into districts_population (distcode,population,year) select distcode,sum(population::integer),year from tehsil_population where distcode = '$district' and year = '$year' group by distcode,year";
 					$this->db->query($districtQuery); */
-														 
 					if ($this->db->trans_status() === FALSE)
 					{
 						$this->db->trans_rollback();
@@ -3655,19 +3631,17 @@ class System_setup_model extends CI_Model {
 					if($result != 0){
 						createTransactionLog("Health Facility-DB", "Health Facility Added ".$facode);
 						$location = base_url(). "System_setup/flcf_list";
-						$message="Record Saved Successfully......";
-						$this -> session -> set_flashdata('message',$message);
-						//test to check at level 3  of sync when ever user login from any district.
 						syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
 						syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
 						syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
+						$message="Record Saved Successfully......";
+						$this -> session -> set_flashdata('message',$message);
 						redirect($location);
 						
 					}
 					exit();
 				}
 			}
-	
 		}
 		return $data;
 	}
@@ -3741,6 +3715,29 @@ class System_setup_model extends CI_Model {
 		$this -> breadcrumbs -> push('Manage Drivers', '/System_setup/driverdb_list');
 		/////////////////////////////////////////////////////////////////
 		$wc = getWC();//helper function
+		$query = "Select facode, fatype ,fac_name from facilities where $wc and hf_type='e' order by fac_name ASC";
+		$Fac_result = $this -> db -> query($query);
+		$data['resultFac'] = $Fac_result -> result_array();
+		$query = "Select tcode, tehsil from tehsil where $wc order by tehsil ASC";
+		$Teh_result = $this -> db -> query($query);
+		$data['resultTeh'] = $Teh_result -> result_array();
+		$query = "SELECT distinct fatype from facilities where $wc order by fatype ASC";
+		$Fac_result = $this -> db -> query($query);
+		$data['resultFac_type'] = $Fac_result -> result_array();
+		//Workaround for Column name difference in districts table. i.e procode is prvince.
+		$neWc = str_replace("procode", "province", $wc);
+		$query = "Select distcode, district from districts where $neWc order by district ASC";
+		$Dist_result = $this -> db -> query($query);
+		$data['resultDist'] = $Dist_result -> result_array();
+		//Get Union council.
+		$query = "Select uncode, un_name from unioncouncil where $wc order by un_name ASC";
+		$Dist_result = $this -> db -> query($query);
+		$data['resultUnC'] = $Dist_result -> result_array();
+		//Get Supervisorname.
+		$query = "select supervisorcode, supervisorname FROM supervisordb WHERE $wc order by supervisorname ASC";
+		$Dist_result = $this -> db -> query($query);
+		$data['resultSupervisor'] = $Dist_result -> result_array();
+		// Change `records` according to your table name.
 		$query = "select drivername,drivercode,nic,status, is_temp_saved,facilitytype(facode) as facilitytype, districtname(distcode) as district from driverdb where $wc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		$results = $this -> db -> query($query);
 		$data['results'] = $results -> result_array();
@@ -3812,8 +3809,6 @@ class System_setup_model extends CI_Model {
 		unset($driverData['newfacode']);	
 		unset($driverData['newuncode']);	
 		unset($driverData['newtcode']);	
-		//unset($driverData['bankaccountno']);	
-		//unset($driverData['employee_type']);	
 
 		///new working starting 
 		$previous_table = $driverData['previous_code'];
@@ -4900,15 +4895,9 @@ class System_setup_model extends CI_Model {
 		$resultAR= $this -> db ->query($query);
 		$data['resultbank']= $resultAR -> result_array();*/
 
-		/* $query="select * from bankdb";
-		$resultAR= $this -> db ->query($query);
-		$data['resultbank']= $resultAR -> result_array(); */
-		
-		//$district_new=$data['codata']['distcode']; 
-		$query="select * from bankinfo";
+		$query="select * from bankdb";
 		$resultAR= $this -> db ->query($query);
 		$data['resultbank']= $resultAR -> result_array();
-		
 
 		$query="select d_id, title from ardeductions where d_id IS NOT NULL";
 		$resultAR= $this -> db ->query($query);
@@ -5076,7 +5065,6 @@ class System_setup_model extends CI_Model {
 		unset($coData['newfacode']);	
 		unset($coData['newuncode']);	
 		unset($coData['newtcode']);	
-		unset($coData['date_resigned']);	
 		$pre_code=$coData['previous_code'];
 		
 		if($this -> input -> post ('edit')){
@@ -5160,6 +5148,9 @@ class System_setup_model extends CI_Model {
 			
 			}
 			else if($temp=='District Superintendent Vaccinator'){
+   
+	
+																					
 			  $coData['supervisorname']=$coData['coname'];
 			  $coData['supervisor_type']=$temp;
 				/* Unset Data  */
@@ -5266,18 +5257,34 @@ class System_setup_model extends CI_Model {
 			}
 			// Start - data send to District Surveillance Officer
 			else if($temp=='dsodb'){
+	
 			//stcode for supervisor 
+							   
+	   
 					$coData['dsoname']=$coData['coname'];
+	   
 					unset($coData['coname']);
 					unset($coData['status']);
 					unset($coData['cocode']);
 					unset($coData['husbandname']);
 					unset($coData['reason']);
 					unset($coData['facode']);
+									  
+								
 					unset($coData['date_resigned']);
+										 
 					//  unset($coData['previous_code']);
+																				  
 					unset($coData['current_status']);
 					$coData['status']='Active';
+																			  
+																				  
+								
+																					 
+																					   
+																		 
+																		 
+											
 					$coData['date_joining']=$doj;
 					//echo "<pre>";print_r($coData);exit;
 					//getting latest dsocode from db 
@@ -5290,10 +5297,19 @@ class System_setup_model extends CI_Model {
 					foreach($query->result() as $row){
 					$dsocode=$row->dsocode;
 			}
+											  
 			//check code exits
 			if($dsocode!=null && $dsocode!=0)
 				{
 					$dsocode=$dsocode+1;
+									  
+	   
+							   
+						  
+	   
+	   
+		   
+				   
 
 				} 
 			else
@@ -5750,10 +5766,6 @@ class System_setup_model extends CI_Model {
 		$resultAR= $this -> db ->query($query);
 		$data['resultbank']= $resultAR -> result_array();
 		
-		//$query="select supervisorcode, supervisorname FROM supervisordb WHERE distcode='$district' order by supervisorname ASC";
-		//$resultSupervisor=$this -> db -> query ($query);
-		//$data['resultSupervisor'] = $resultSupervisor -> result_array();
-				
 		$query="select distcode, district FROM districts order by district ASC";
 		$result=$this -> db -> query ($query);
 		$data['dists'] = $result -> result_array();
@@ -5846,7 +5858,6 @@ class System_setup_model extends CI_Model {
 	//================ Function to Show Page for Adding New  Measles Focal Person Ends Here =========================//
 	//----------------------------------------------------------------------------------------------------//
 	//================ Function for Saving New or Existing  Measles Focal Person Record Starts Here =================//
-	
 	public function mfpdb_save($mfpData,$mfpcode,$mfpDataNewData){ 
 		  /* Post Type FOr Posting  */
 		 //print_r($mfpData);exit;
@@ -6060,6 +6071,9 @@ class System_setup_model extends CI_Model {
 			}
 		else if($temp=='Storekeeper')
 					 {
+	
+							   
+	   
 						$mfpData['skname']=$mfpData['mfpname'];
 						//unset these values bcx these are for techniciandb
 						unset($mfpData['mfpname']);
@@ -6299,6 +6313,22 @@ class System_setup_model extends CI_Model {
 				     $location = base_url(). "Measles-Focal-Person-List";
 				$message="Record Posted As DataEntry Operator Successfully. ";
 				$this -> session -> set_flashdata('message',$message);
+															 
+																  
+																					   
+						
+		  
+	  
+	
+   
+										   
+																															 
+																
+																						
+																					   
+						
+		 
+																															 
 				redirect($location); */
 				     }				
 				}
@@ -6517,7 +6547,7 @@ class System_setup_model extends CI_Model {
 				}
 			}
 			exit();
-			}
+   }
 	//================ Function for Saving New or Existing  Measles Focal Person Record Ends Here ========================//
 	//---------------------------------------------------------------------------------------------------------//
 	//================ Function to Show Page for Editing Existing  Measles Focal Person Record Starts Here ===============//
@@ -7648,7 +7678,7 @@ class System_setup_model extends CI_Model {
 	//================ Function to Show Page for Adding New Cold Chain Generator Operator Ends Here =========================//
 	//----------------------------------------------------------------------------------------------------//
 	//================ Function for Saving New or Existing Cold Chain Generator Operator Record Starts Here =================//
-	public function ccgdb_save($ccgData,$ccgCode,$ccgNewData){
+	public function ccgdb_save($ccgData,$ccgCode,$ccgNewData) {
 		//echo 'complete but not testing yet';
 		//echo 'asd';exit;
 		
@@ -11249,20 +11279,6 @@ exit;	 */
 				redirect($location);
 			}
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		exit();
 	}

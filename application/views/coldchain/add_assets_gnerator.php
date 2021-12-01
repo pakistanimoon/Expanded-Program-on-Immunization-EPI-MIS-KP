@@ -75,7 +75,7 @@ a.btn{
 					<?php echo getWorkingstatus(); ?>
 				</select>
 			</div>
-			<div class="col-md-5 text-right" > 
+			<div class="col-md-5 text-right" >
 			<a href="<?php echo base_url(); ?>Coldchain/generator_add" data-toggle="tooltip" title=" Add Asset">
 				<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add Asset</button>
 			</a>

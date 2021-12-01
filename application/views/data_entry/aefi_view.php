@@ -1,11 +1,10 @@
-<?php //print_r($aefi_info); exit(); ?>
 <div class="container bodycontainer">
     <div class="row">
         <div class="panel panel-primary">
             <div class="panel-heading"> Adverse Events Following Immunisation (AEFI) Report Form</div>
             <div class="panel-body">
                 <form class="form-horizontal">
-                    <table class="table table-bordered table-striped table-hover mytable3">
+                    <table class="table table-bordered   table-striped table-hover  mytable3">
                         <tbody>
                             <tr>
                                 <td><label>Name of Case</label></td>
@@ -55,7 +54,7 @@
                                 <td><?php if(isset($aefi_info)){ echo $aefi_info["year"];} ?></td>
                                 <td><label>EPI Week No</label></td>
                                 <td><?php if(isset($aefi_info)){ echo $aefi_info["week"];} ?></td>
-                            </tr>	  
+                            </tr>     
                             <tr>
                                 <td><label>Date From</label></td>
                                 <td><?php if(isset($aefi_info)){ echo date('d-M-Y',strtotime($aefi_info["datefrom"]));} ?></td>

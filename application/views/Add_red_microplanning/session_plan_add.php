@@ -10,7 +10,7 @@
 				<div class="panel-heading" style="font-size:15px;">
 					Session Plan Template <br><span class="urdu" style="font-size:12px; font-weight:400;">حفاظتی ٹیکہ جات کے سیشن کی منصوبہ بندی</span>
 				</div>
-				<form id="register">
+				<form>
 					
 					<div class="panel-body" style="padding-top:1px;">
 						<table class="table table-bordered plan_table" >
@@ -60,8 +60,6 @@
 										<!--<input type="hidden" name="fk[<?php echo $key+1; ?>]" value="<?php echo $val['foreign_key']; ?>">-->
 										<td><input type="text"  value="<?php echo $val['f3_total_population']; ?>" name="total_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation total_population" readonly></td>	
 										<td><input type="text" value="<?php echo $val['less_one_year']; ?>" name="target_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation target_population " readonly ></td>
-										<!-- for ajk<td><input type="text"  value="<?php echo $val['pop']; ?>" name="total_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation total_population" readonly></td>	
-										<td><input type="text" value="<?php echo get_surviving_infants($val['pop']); ?>" name="target_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation target_population " readonly ></td>-->
 										<td>
 											<select class="form-control text-center session_type" name="session_type[<?php echo $key+1; ?>]" id="session_type" required>
 												<option value="">-- Select --</option>	
@@ -74,7 +72,7 @@
 										<td><input type="text" name="injections_per_month[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation injections_per_month" readonly="readonly"></td>
 										<!--<td><input type="text" name="estimated_sessions[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation estimated_sessions"></td>	-->	
 										<td><input type="text" name="sessions_per_month[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation sessions_per_month" readonly="readonly"></td>										
-										<td><input type="text" id="actual_sessions_plan"  name="actual_sessions_plan[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation actual_sessions_plan"></td>			
+										<td><input type="text" name="actual_sessions_plan[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation actual_sessions_plan"></td>			
 										<td><input type="text" name="child_survival_interventions[<?php echo $key+1; ?>]" class="form-control asp "></td>									
 										<td><input type="text" value="<?php echo $val['f2_hard_to_reach']; ?>" name="hard_to_reach[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation hard_to_reach " readonly ></td>
 										<!--<td>
@@ -104,7 +102,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function(){
-		
+			
 				
 	/*		$(function () {
 
@@ -172,43 +170,26 @@
 		});
 	  $(function () {
 			var x;
-			
 			$( ".next" ).click(function(e) {
-			var actual_sessions = 1 ;
 			var save_next    = document.getElementById("next").value = "snext";
-			$(".actual_sessions_plan").each(function(){ 
-				var l = parseInt($(this).closest('tr').find(".actual_sessions_plan").val());
-				if(l > 0){
-				trash=0;
-				}else if(isNaN(l)){
-				actual_sessions=0;
-				}
-			});
-			if(actual_sessions == 0){
-				$(".next").prop("disabled", true);
-				$(".next").css("background-color","#88ad9c");
-				$(".clos").prop("disabled", true);
-				$(".clos").css("background-color","#88ad9c");
-				alert("Enter Number of actual sessions plan !");
-				event.preventDefault();
-				
-			}else{
-				e.preventDefault();
+			e.preventDefault();
 				$.ajax({
 					type: 'post',
 					url: "<?php echo base_url(); ?>red_rec_microplan/Session_plan/session_plan_save",
 					data: $('form').serialize(),
 					success: function (data) {
-						if(data == "yes"){
-							alert("Cannot save data because data already exists for this Technician and Year!")
-							window.location = "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/Situation_analysis_list";
-						}else{
-							x = data;
-							$( "#d").trigger( "click", [x] );
-						}	
-					}
+										if(data == "yes"){
+										alert("Cannot save data because data already exists for this Technician and Year!")
+										window.location = "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/Situation_analysis_list";
+									}                                    
+									else{
+										x = data;
+										$( "#d").trigger( "click", [x] );
+									}	
+									
+									}
 				});
-			}
+			
         });
       });
 	
@@ -356,7 +337,7 @@
 					$(this).closest('tr').find(".actual_sessions_plan").css("background-color","#FFF");
 				}
 				var actual_sessions = parseInt($(this).closest('tr').find(".actual_sessions_plan").val());
-					if(actual_sessions == 0 ){
+					if(actual_sessions == 0){
 						$(".next").prop("disabled", true);
 						$(".next").css("background-color","#88ad9c");
 						$(".clos").prop("disabled", true);

@@ -280,6 +280,7 @@
 				}
 			});
 			var options = {
+				clearBtn:true,
 				format : "dd-mm-yyyy",
 				todayHighlight: true,
 				autoclose: true,

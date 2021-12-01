@@ -59,9 +59,6 @@
 										<!--<input type="hidden" name="fk[<?php echo $key+1; ?>]" value="<?php echo $val['foreign_key']; ?>">-->
 										<td><input type="text" value="<?php if ($data != 'undefined'){ echo $val['f3_total_population']; }else { echo '';} ?>" name="total_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation total_population" readonly ></td>	
 										<td><input type="text" value="<?php if ($data != 'undefined'){ echo $val['less_one_year']; }else { echo '';} ?>" name="target_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation target_population" readonly></td>
-										<!-- for ajk<td><input type="text" value="<?php if ($data != 'undefined'){ echo $val['pop']; }else { echo '';} ?>" name="total_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation total_population" readonly ></td>	
-										<td><input type="text" value="<?php if ($data != 'undefined'){ echo get_surviving_infants($val['pop']); }else { echo '';} ?>" name="target_population[<?php echo $key+1; ?>]" class="form-control text-center numberclass calculation target_population" readonly></td>-->
-										
 										<td>
 											<select class="form-control text-center session_type" name="session_type[<?php echo $key+1; ?>]" id="session_type" required>
 												<option value="">-- Select --</option>	

@@ -69,14 +69,13 @@ background: #fbfbfb;box-shadow: 0px 1px 4px 0px #dadada;" >
 			</div>
 		</div>
        <div class="row" style="margin-top:10px;">
-	   <?php if($data[0]['ccm_sub_asset_type_id']!=23 && $data[0]['ccm_sub_asset_type_id']!=26 && $data[0]['ccm_sub_asset_type_id']!=33){?>
 	     <div class="col-md-3">
 		    <label for="Store">Equipment Code<span style="color:red;">*</span></label>
 		 </div>
 		 <div class="col-md-3">
 		 <span><?php echo $data[0]['ccm_user_asset_id']; ?></span>
 		 </div>
-		 <?php } ?>
+		 
 	     <div class="col-md-3">
 		    <label for="Store">Store Level<span style="color:red;">*</span></label>
 		 </div>
@@ -755,7 +754,7 @@ $(document).on('change','#facode_th', function(){
 function checkRequired(id=false){
 	var located = (id===false) ? $('input[name=placed_at-0]:checked').val() :id;
 	var store_id = $('#store_id').val();
-	var distcode = $('#distcodeREF').val();
+	var distcode = $('#distcodeREF').val(); 
 	var tcode = $('#tcodeREF').val();
 	var uncode = $('#uncodeREF').val();
 	var facode = $('#facode_th').val();

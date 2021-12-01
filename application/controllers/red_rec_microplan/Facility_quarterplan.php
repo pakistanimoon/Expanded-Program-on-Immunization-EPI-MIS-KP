@@ -266,9 +266,6 @@
 						$addDataArray1['sp_mobile_m'.$k] = (isset(${'sp_Mobile_m'.$k}) AND ${'sp_Mobile_m'.$k} > 0)?${'sp_Mobile_m'.$k}:0;
 					}//print_r($addDataArray1);
 					$id =$this-> Common_model-> insert_record('hf_quarterplan_db',$addDataArray1);
-					/* echo "<br>";
-					echo 'test1////////////////'; */
-					//echo $this->db->last_query();exit;
 					//creat addDataArray2 and insert on single loop itreation insert addDataArray3    
 					foreach($this->input->post('area_code') as $key=>$val){
 					$addDataArray2=array(
@@ -297,8 +294,6 @@
 						);
 						//print_r($addDataArray2);
 						$link_id = $this-> Common_model-> insert_record('hf_quarterplan_nm_db',$addDataArray2);
-						/* echo "<br>";
-						//echo 'test2////////////////'; */
 						if($link_id > 0){
 							//creat addDataArray3 and insert
 							foreach($this->input->post('area_dateschedule_m1')[$key] as $key3=>$val3){
@@ -325,8 +320,6 @@
 								'area_dateheld_m3' => (isset($area_dateheld_m3[$key][$key3]) AND $area_dateheld_m3[$key][$key3] > 0)?$area_dateheld_m3[$key][$key3]:NULL,
 								);
 								$this-> Common_model-> insert_record('hf_quarterplan_dates_db',$addDataArray3);	
-							/* echo "<br>";
-							echo 'test3////////////////'; */
 							}
 						}//print_r($addDataArray3);
 					}//exit;
@@ -368,7 +361,8 @@
 		    $techniciancode = $this-> uri -> segment(7);
 		    $excel = $this-> uri -> segment(8);
 			$data = $this-> Facility_quarterplan_model-> hf_quarterplan_view($facode,$year,$quarter,$techniciancode);
-			if($excel=='excel'){
+			
+			if($excel == 'excel'){
 				header("Content-type: application/octet-stream");
 				header("Content-Disposition: attachment; filename=HF_Quarterplan.xls");
 				header("Pragma: no-cache");
@@ -376,7 +370,7 @@
 				$data['export_excel'] = True;
 			}
 			$data['filter_view']=$this-> uri -> segment(8);
-			$data['fileToLoad'] = 'Add_red_microplanning/hf_quarterplan_view';
+		    $data['fileToLoad'] = 'Add_red_microplanning/hf_quarterplan_view';
 			$data['pageTitle'] = 'RED/REC Micro Plannning | EPI-MIS';
 			$this-> load-> view('template/epi_template',$data);
 		}

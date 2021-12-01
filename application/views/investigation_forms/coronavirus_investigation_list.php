@@ -110,17 +110,12 @@
 						<th class="text-center Heading">Cross Notified(District)</th>
 						<th class="text-center Heading">Date Patient Visited Hospital</th>
 						<!-- <th class="text-center Heading">Form Status</th> -->
-						<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){ ?>
 						<th class="text-center Heading">
 							<a href="<?php echo base_url(); ?>Coronavirus_investigation/coronavirus_investigation" data-toggle="tooltip" title="Add New">
 								<button class="submit btn-success btn-sm">
 								<i class="fa fa-plus"></i> Add New</button>
 							</a>
 						</th>
-						<?php }?>
-						<?php if (($_SESSION['UserLevel']=='99') || ($_SESSION['UserLevel']=='4')){?>
-							<th class="text-center Heading">Action</th>
-						<?php }?>
 					</tr>
 				</thead>        
 
@@ -193,12 +188,10 @@
 	<!-- <td class="text-center"><?php echo $row['is_temp_saved'] == '0' ? 'Submitted' : ''; ?></td> -->
 	<td class="text-center">
 		<a href="<?php echo base_url(); ?>Coronavirus_investigation/coronavirus_investigation_view/<?php echo $row['id']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-		<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
 		<?php if($row['year'] >= "2018") { ?>
 			<?php if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1){ ?>
 		<a href="<?php echo base_url(); ?>Coronavirus_investigation/coronavirus_investigation_edit/<?php echo $row['id']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 	<?php } } ?>
-	<?php } ?>
 	</td>
 </tr>
 					<?php } ?>

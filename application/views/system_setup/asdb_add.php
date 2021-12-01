@@ -146,7 +146,7 @@
                     <option value="fa">F.A/F.Sc</option>
                     <option value="ba">B.A/B.Sc/B.Ed</option>
                     <option value="ma">M.A/M.Sc/M.Ed</option>
-					<option value="SE">Software Engineering</option> 
+
                   </select>
 
                 </div>

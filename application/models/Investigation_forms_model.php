@@ -21,7 +21,8 @@ class Investigation_forms_model extends CI_Model {
 		$resultUnc=$this -> db -> query($query);
 		$data['resultdist'] = $resultUnc -> row_array();
 		return $data;
-	}	
+	}
+	
 	public function nnt_investigation_list($per_page,$startpoint){
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
@@ -56,7 +57,8 @@ class Investigation_forms_model extends CI_Model {
   		// $result=$this -> db -> query ($query);
 		// $data['result'] = $result -> result_array();
 		return $data;
-	}	
+	}
+	
 	public function aefi_investigation(){
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
@@ -70,6 +72,7 @@ class Investigation_forms_model extends CI_Model {
 		$data['resultdist'] = $resultUnc -> row_array();
 		return $data;
 	}
+
 	public function aefi_investigation_list($per_page,$startpoint){
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
@@ -82,6 +85,7 @@ class Investigation_forms_model extends CI_Model {
 	    $data['result'] = $result -> result_array();
 		return $data;
 	}
+
 	public function measles_case_investigation(){
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
@@ -136,6 +140,7 @@ class Investigation_forms_model extends CI_Model {
 		return $data;
 	}
 	public function afp_list($per_page,$startpoint){
+
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
 		$this->breadcrumbs->push('AFP Case Investigation List', '/AFP-CIF/List');
@@ -160,6 +165,7 @@ class Investigation_forms_model extends CI_Model {
 		$data['result'] = $result -> result_array();
 		//print_r($data['result']);exit;
 		return $data;
+
 	}
 	///////////////////////////////////Zero Reporting Form//////////////////////////////////////////////
 	public function zero_reporting(){

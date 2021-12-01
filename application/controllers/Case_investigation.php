@@ -34,29 +34,7 @@ class Case_investigation extends CI_Controller {
 			//$wc=" ";
 		$data = $this -> Case_investigation_model -> case_investigation_list($per_page,$startpoint);
 		$data['pagination'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?',$wc);
-		$curyear = date('Y');
-		$preyear = date('Y')-1;
 		//print_r($data['pagination']);exit();
-		if($this -> session -> District){
-			$wcd1 = " procode='".$_SESSION["Province"]."' and case_type != 'Msl' and ((distcode='".$this -> session -> District."' and cross_notified=0) OR (cross_notified_from_distcode='".$this -> session -> District."' and approval_status='Pending') OR (distcode='".$this -> session -> District."' and approval_status='Approved')) and year in ('$curyear')";
-
-			$wcd2 = " procode='".$_SESSION["Province"]."' and case_type != 'Msl' and ((distcode='".$this -> session -> District."' and cross_notified=0) OR (cross_notified_from_distcode='".$this -> session -> District."' and approval_status='Pending') OR (distcode='".$this -> session -> District."' and approval_status='Approved')) and year in ('$preyear')";
-		}
-		else{
-			$wcd1 = " procode='".$_SESSION["Province"]."' and year in ('$curyear')";
-
-			$wcd2 = " procode='".$_SESSION["Province"]."' and year in ('$preyear')";
-		}
-		$query1 = "SELECT max(id) as max_id from case_investigation_db where $wcd1";
-		//echo $query1; exit();
-		$resultGroupid = $this -> db -> query($query1);
-		$data['max_id1'] = $resultGroupid -> result_array();
-
-		$query2 = "SELECT max(id) as max_id from case_investigation_db where $wcd2";
-		//echo $query2; exit();
-		$resultGroupid = $this -> db -> query($query2);
-		$data['max_id2'] = $resultGroupid -> result_array();
-		//print_r($data['max_gid']); exit();
 		$data['startpoint'] = $startpoint;
 		$data['UserLevel'] = $this -> session -> UserLevel;
 		$data['edit']="Yes";
@@ -227,9 +205,9 @@ class Case_investigation extends CI_Controller {
 		   $submitted_date = ($this-> input-> post('submitted_date'))?date('Y-m-d', strtotime($this-> input-> post('submitted_date'))):NULL;
 			//--------------------------------- Array ---------------------------------//
 			/////////////////////////////////////////////////////////////////////////////	
-		    //$clinical_representation = $this-> input-> post('clinical_representation');
-		    $symptomlist = ($this-> input-> post('clinical_representation'))?$this-> input-> post('clinical_representation'):0;
-		    //$case_representation=NULL;
+		   //$clinical_representation = $this-> input-> post('clinical_representation');
+		   $symptomlist = ($this-> input-> post('clinical_representation'))?$this-> input-> post('clinical_representation'):0;
+		   //$case_representation=NULL;
 			if(isset($symptomlist) && $symptomlist!=''){
 				foreach($symptomlist as $row){
 					$newlist[] = $row;
@@ -239,8 +217,8 @@ class Case_investigation extends CI_Controller {
 			$clinical_representation=$symptoms;
 			//$clinical_representation=$symptomlist;
 			if($this -> input-> post('edit') && $_SESSION["Province"] != $this-> input-> post('procode')){
-		   		$clinical_representation = ($this-> input-> post('clinical_representation'))?$this-> input-> post('clinical_representation'):0;
-		    }
+		   	$clinical_representation = ($this-> input-> post('clinical_representation'))?$this-> input-> post('clinical_representation'):0;
+		   }
 			$query = "SELECT max(cn_id_from) AS cn_id_from FROM case_investigation_db";
 			$result = $this -> db -> query($query);
 			$result = $result -> row_array();
@@ -459,6 +437,7 @@ class Case_investigation extends CI_Controller {
 				syncEpidCountDataWithFederalEPIMIS($year,$case_type,$distcode);
 				$doses_received = ($doses_received > 2)?99:$doses_received;
 				if($cross_notified != 1){
+				
 				syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$distcode,$doses_received,$patient_gender);
 				//}
 				}
@@ -479,7 +458,6 @@ class Case_investigation extends CI_Controller {
 					//echo "c";exit();
 					$DataArray['cross_case_id'] = NULL;
 				}
-				//echo'test';exit;
 				$inserted_id = $this -> Common_model -> insert_record('case_investigation_db',$DataArray);
 				$query = "SELECT max(id) AS id FROM case_investigation_db";
 				$result = $this -> db -> query($query);
@@ -496,8 +474,8 @@ class Case_investigation extends CI_Controller {
 				syncEpidCountDataWithFederalEPIMIS($year,$case_type,$distcode);
 				$doses_received = ($doses_received > 2)?99:$doses_received;
 				if($cross_notified != 1){
-					syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$distcode,$doses_received,$patient_gender);
-					//}
+				syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$distcode,$doses_received,$patient_gender);
+				//}
 				}
 				$this -> session -> set_flashdata('message','You have successfully saved your record!');
 				redirect('Case_investigation/case_investigation_list');				
@@ -508,8 +486,8 @@ class Case_investigation extends CI_Controller {
 			redirect('Case_investigation/case_investigation_list');
 		}
 	}
+	
 	public function caseInvestigation_Approve(){
-		//dataEntryValidator(0);
 		/////parameter for sync by usama /////
 		$year = $this -> input -> post('year');
 		$week = $this -> input -> post('week');
@@ -518,6 +496,7 @@ class Case_investigation extends CI_Controller {
 		$patient_gender = $this -> input -> post('gender');
 		$doses_received = $this -> input -> post('doses_received');
 		//////////end
+		//dataEntryValidator(0);
 		if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
 			$distcode = $this -> session -> District;
 			$query = "SELECT epid_code from districts where distcode='$distcode'";
@@ -624,7 +603,8 @@ class Case_investigation extends CI_Controller {
 			$data['message'] ="You must have rights to access this page.";
 			$this -> load -> view ('message',$data);
 		}
-	}
+	}		
+	
 	public function case_investigation_view(){
 		$id = $this -> uri -> segment(3);
 		$year = $this -> uri -> segment(4);
@@ -654,24 +634,7 @@ class Case_investigation extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
-	public function case_investigation_delete(){
-		dataEntryValidator(0);
-		$id = $this -> uri -> segment(3);
-		$year = $this -> uri -> segment(4);
-		$case_type = $this -> uri -> segment(5);
-		echo $id; echo " / "; echo $year; echo " / "; echo $case_type; exit();
-		// if($this -> session -> District){
-		// 	$wc=" procode='".$_SESSION["Province"]."' and substr(cross_notified_from_distcode, 0, 1)='".$_SESSION["Province"]."' and distcode='".$this -> session -> District."'";
-		// }
-		// else{
-		// 	$wc=" procode='".$_SESSION["Province"]."'";
-		// }
-		$query = "DELETE from case_investigation_db where procode='".$_SESSION["Province"]."' and year='$year' and id=$id";
-		//echo $query; exit();
-		$this->db->query($query);
-		$this -> session -> set_flashdata('message','You have successfully deleted your record!');
-		redirect('Case_investigation/case_investigation_list');
-	}
+	
 	///////////////////////////////////AFP Approve/////////////////////////////////////////////////////////////////////////
 	public function afp_Approve(){
 		dataEntryValidator(0);

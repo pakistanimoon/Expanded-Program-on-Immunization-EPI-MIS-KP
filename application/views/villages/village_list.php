@@ -62,9 +62,9 @@
 								<input id="cnicSearch" name="cnicSearch" placeholder="UcName,Tehsil" class="form-control filter-status" type="text">           
 							</div>
 						</div>
-						<div class="row" style="margin-left: 925px;">
-							<button class="submit btn-success btn-sm"  style="position: relative; z-index: 999;"><a style="color: white;"  href="<?php echo base_url(); ?>Villages/merge_villages" title="Merge Villages">Merge Villages</a></button>
-						</div>
+						<!--<div class="row" style="margin-left: 925px;">
+							<button class="submit btn-success btn-sm" style="position: relative; z-index: 999;"><a style="color: white;"  href="<?php echo base_url(); ?>Villages/merge_villages" title="Merge Villages">Merge Villages</a></button>
+						</div>-->
 					</form>
 				</div>	
 					<table id="village_table" class="table footable table-bordered table-hover table-sessiontype" data-filter="#filter" data-filter-text-only="true">

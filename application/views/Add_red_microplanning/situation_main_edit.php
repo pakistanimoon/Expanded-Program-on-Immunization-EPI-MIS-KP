@@ -1,7 +1,7 @@
 <?php 
 	date_default_timezone_set('Asia/Karachi'); // CDT
 	$current_date = date('Y-m-d');
-	//print_r($data[0]['uncode']);
+	//print_r($data[0]);exit;
 ?>
 <!-- <div class="content-wrapper"> -->
 <section class="content">			

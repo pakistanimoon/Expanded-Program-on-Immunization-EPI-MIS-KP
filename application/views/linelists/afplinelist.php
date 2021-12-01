@@ -19,10 +19,10 @@
           <tr>
             <td><label># of Report Received</label></td>
             <td><?php if(isset($ReportingFLCF)){ echo $ReportingFLCF; } ?></td>
-            <td><label>Epi Week From</label></td>
+            <td><label>Epid Week From</label></td>
             <td><?php echo (isset($week_from))?$year.'-'.sprintf('%02d',$week_from):''; ?>
 			</td>
-			<td><label>Epi Week To</label></td>
+			<td><label>Epid Week To</label></td>
             <td><?php echo (isset($week_to))?$year.'-'.sprintf('%02d',$week_to):''; ?>
 			</td>
             

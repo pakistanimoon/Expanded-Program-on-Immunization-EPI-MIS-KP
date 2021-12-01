@@ -101,7 +101,7 @@
 						<input type="hidden" name="gender" value="<?php if(isset($a)){ echo $a -> patient_gender;} ?>">
 						<input type="hidden" name="doses_received" value="<?php if(isset($a)){ echo $a -> doses_received;} ?>">
 						<!--end-->
-						<select name="tcode" id="tcode" required="required" class="form-control">
+                        <select name="tcode" id="tcode" required="required" class="form-control">
                            <?php echo getTehsils_options(false,$a-> patient_address_tcode,$a-> patient_address_distcode); ?>
                         </select>
                      </td>
@@ -126,7 +126,7 @@
                <tr>
                   <td><label class="pt7">Year</label></td>
                   <td><?php if(isset($a)){ echo $a -> year;} ?></td>
-                  <td><label class="pt7">EPI Week No</label></td>
+                  <td><label class="pt7">Epid Week No</label></td>
                   <td><?php if(isset($a)){ echo $a -> week;} ?></td>
                </tr>
                <tr>               
@@ -319,17 +319,17 @@
             <table class="table table-bordered table-condensed table-striped table-hover mytable3 disabledclass">
               <tbody>
                 <tr>
-                     <td><label>Fever at onset</label>
-                     <td><?php echo (isset($a) && $a -> fever_onset=="1")?'Yes':'No'; ?></td>
-                  </tr>
-                  <tr>
-                     <td><label>Rapid progression</label></td>                 
-                     <td><?php echo (isset($a) && $a -> rapid_progression=="1")?'Yes':'No'; ?></td>
-                  </tr>
-                  <tr>
-                     <td><label>Asymm paralysis</label></td>
-                     <td><?php echo (isset($a) && $a -> asymm_paralysis=="1")?'Yes':'No'; ?></td>            
-                  </tr>
+					<td><label>Fever at onset</label>
+					<td><?php echo (isset($a) && $a -> fever_onset=="1")?'Yes':'No'; ?></td>
+				</tr>
+				<tr>
+					<td><label>Rapid progression</label></td> 
+					<td><?php echo (isset($a) && $a -> rapid_progression=="1")?'Yes':'No'; ?></td>
+				</tr>
+				<tr>
+					<td><label>Asymm paralysis</label></td>
+					<td><?php echo (isset($a) && $a -> asymm_paralysis=="1")?'Yes':'No'; ?></td> 
+				</tr>
               </tbody>
             </table>
           </td>

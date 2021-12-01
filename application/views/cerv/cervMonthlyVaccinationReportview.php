@@ -164,7 +164,7 @@
 						$interval = '23 months';
 					}else if(in_array($row,array(5,6,11,12,17,18,23,24))){
 						$interval = '2 years';
-					} 
+					}
 				  ?>
                     <tr>
                       <td  style="text-align:center;"  <?php  $var="cri_r".$row."_f".$col; echo (in_array($var,$individualColumnsToDisableArr) || in_array($col,$columnsToDisableArr))?'readonly="readonly"':''; ?> ><?php echo getvaccinereport($vaccineArray[$col-1],$interval,$gender,$data); ?></td>

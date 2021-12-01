@@ -217,17 +217,6 @@ class Case_response extends CI_Controller {
 				"date_of_activity"
 			);
 		}
-		else if($this->session->UserLevel=='4' && $this->session->utype=='DEO')
-		{
-			$columns_valid = array(
-				"serial",
-				"vcode",
-				"tehsil",		
-				"unioncouncil",
-				"disease",
-				"date_of_activity"
-			);
-		}
 		else
 		{
 			$columns_valid = array(

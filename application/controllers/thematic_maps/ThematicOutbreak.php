@@ -77,9 +77,9 @@ class ThematicOutbreak extends CI_Controller {
 			$serieses['data'][$i]['name'] = $row -> name;
 			$serieses['data'][$i]['id'] = $row -> code;
 			$serieses['data'][$i]['path'] = $row -> path;
-			$serieses['data'][$i]['value'] = $row -> cnt;
+			$serieses['data'][$i]['y'] = $row -> cnt;
 			$totaldrops += $row -> cnt;
-			$count = $serieses['data'][$i]['value'];
+			$count = $serieses['data'][$i]['y'];
 			if($count > 0){
 					$serieses['data'][$i]['color'] = "#DD1E2F";
 					$withdrops++;
@@ -158,7 +158,7 @@ class ThematicOutbreak extends CI_Controller {
 				$table = "case_investigation_db";
 				$case_type = "Typhoid";
 				$case_typewc = " and case_type = 'Typ' ";
-				break;	
+				break;	  
 			case 'all':
 				$table = "";
 				$case_type = "";
@@ -262,8 +262,8 @@ class ThematicOutbreak extends CI_Controller {
 			$serieses['data'][$i]['name'] = $row -> name;
 			$serieses['data'][$i]['id'] = $row -> code;
 			$serieses['data'][$i]['path'] = $row -> path;
-			$serieses['data'][$i]['value'] = $row -> cnt;	
-			$count = $serieses['data'][$i]['value'];
+			$serieses['data'][$i]['y'] = $row -> cnt;	
+			$count = $serieses['data'][$i]['y'];
 			if($count > 0){
 					$serieses['data'][$i]['color'] = "#DD1E2F";
 					$withdrop++;

@@ -1,4 +1,4 @@
-<?php //print_r($data);exit; kp ?>
+<?php //print_r($data);exit; ?>
 <div class="container bodycontainer">
 	<?php
 		echo $TopInfo;

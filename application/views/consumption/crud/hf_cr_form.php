@@ -76,8 +76,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 									<?php if(isset($formB_Result)){ ?>
 							<option value="<?php echo $formB_Result -> facode; ?>"><?php echo get_Facility_Name($formB_Result -> facode); ?></option>
 									<?php }else{ ?>
-									<?php //getFacilities_options(false);
-									} ?>
+									<?php getFacilities_options(false); } ?>
 								</select>
 							</td>
 						</tr> 

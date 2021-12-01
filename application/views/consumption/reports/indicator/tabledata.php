@@ -1,5 +1,5 @@
-<?php  
-//print_r($tabledata);  exit;
+<?php    
+//print_r($tabledata);exit;
 if(!empty($tabledata)) 
 {
 	$count = 0;
@@ -127,11 +127,13 @@ if(!empty($tabledata))
 				$moon[$last_key] = round(($moon[$dash_separater[0]]-$moon[$dash_separater[1]])/$moon[$dash_separater[0]]*100,2);  
 			}
 		//}
-		/*$returnData .= "<tr style='font-weight:bold; background-color: #111;color: #FFF;'><td style='font-weight:bold; background-color: #111;color: #FFF;'></td><td style='font-weight:bold; background-color: #111;color: #FFF;'>Total:</td><td class='text-center' style='font-weight:bold; background-color: #111;color: #FFF;'>";
+		//print_r($moon);;
+		/* $returnData .= "<tr style='font-weight:bold; background-color: #111;color: #FFF;'><td style='font-weight:bold; background-color: #111;color: #FFF;'></td><td style='font-weight:bold; background-color: #111;color: #FFF;'>Total:</td><td class='text-center' style='font-weight:bold; background-color: #111;color: #FFF;'>";
 		$returnData .= implode("</td><td class='text-center' style='font-weight:bold; background-color: #111;color: #FFF;'>",$moon);
 		$returnData .= "</td></tr>"; */
 		$moon = array();
 	} 
+	
 	//for last row total
 	/* if($allTotal && $indicator_report!='NO')
 	{

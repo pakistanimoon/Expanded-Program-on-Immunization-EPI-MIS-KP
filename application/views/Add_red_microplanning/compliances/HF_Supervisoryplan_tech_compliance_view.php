@@ -11,7 +11,7 @@
 					<th>Supervisor Name</th>
 					<th>Supervisor Designation</th>
 					<?php
-							$current_year = date('yy');
+						$current_year = date('yy');
 							if($year == $current_year)
 							{
 								$currentmonth = date('m');

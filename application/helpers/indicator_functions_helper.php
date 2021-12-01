@@ -78,19 +78,20 @@ if(!function_exists('extract_query')){
 			$qformula=($denominator==""?$numerator:"(($numerator)::numeric//($denominator)::numeric)");
 			if($multiplier!="")
 				$qformula.="*".$multiplier;
+			//getpopulationpop for total pop add in query by usama 											  
 			switch($data['reportPeriodnew'])
 			{
 				case 'district':
-					$firstquery="select distcode,districtname(distcode)as district,getperiodicpopulation(distcode,'district',$y1,$m1,$y2,$m2) as population, $str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode order by districtname(distcode)";
+					$firstquery="select distcode,districtname(distcode)as district,getpopulationpop(distcode,'district','$y1') as \"total Population\",getperiodicpopulation(distcode,'district',$y1,$m1,$y2,$m2) as \"preiodic Population\", $str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode order by districtname(distcode)";
 					break;
 				case 'tehsil':
-					$firstquery="select districtname(distcode) as district,tehsilname(tcode)as tehsil,getperiodicpopulation(tcode,'tehsil',$y1,$m1,$y2,$m2) as population,$str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode,tcode order by distcode,tehsilname(tcode)";
+					$firstquery="select districtname(distcode) as district,tehsilname(tcode)as tehsil,getpopulationpop(tcode,'tehsil','$y1') as \"total Population\",getperiodicpopulation(tcode,'tehsil',$y1,$m1,$y2,$m2) as \"preiodic Population\",$str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode,tcode order by distcode,tehsilname(tcode)";
 					break;
 				case 'uc':
-					$firstquery="select districtname(distcode) as district,tehsilname(tcode) as tehsil,unname(uncode) as \"UC\",getperiodicpopulation(uncode,'unioncouncil',$y1,$m1,$y2,$m2) as population, $str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode,tcode,uncode order by distcode,tehsilname(tcode),unname(uncode)";
+					$firstquery="select districtname(distcode) as district,tehsilname(tcode) as tehsil,unname(uncode) as \"UC\",getpopulationpop(uncode,'unioncouncil','$y1') as \"total Population\",getperiodicpopulation(uncode,'unioncouncil',$y1,$m1,$y2,$m2) as \"preiodic Population\", $str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode,tcode,uncode order by distcode,tehsilname(tcode),unname(uncode)";
 					break;
 				case 'fac':
-					$firstquery="select districtname(distcode) as district,tehsilname(tcode) as tehsil,unname(uncode) as \"UC\",facilityname(facode) as \"EPI Center\",getperiodicpopulation(facode,'facility',$y1,$m1,$y2,$m2) as population,$str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode,tcode,uncode,facode order by distcode,tehsilname(tcode),unname(uncode),facilityname(facode)";
+					$firstquery="select districtname(distcode) as district,tehsilname(tcode) as tehsil,unname(uncode) as \"UC\",facilityname(facode) as \"EPI Center\",getpopulationpop(facode,'facility','$y1') as \"total Population\",getperiodicpopulation(facode,'facility',$y1,$m1,$y2,$m2) as \"preiodic Population\",$str round(coalesce($qformula,0)::numeric) as \"$result_text\" from $table where $wherecondition $whereFmonth group by distcode,tcode,uncode,facode order by distcode,tehsilname(tcode),unname(uncode),facilityname(facode)";
 					break;
 			}
 		}

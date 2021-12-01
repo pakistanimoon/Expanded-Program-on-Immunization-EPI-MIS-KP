@@ -50,27 +50,6 @@
 <?php 
 	if($filter == 'Coverage'){ 
 		$link = 'CervCoverage';
-		
-		
-		
-	/* $month = (isset($data['yearmonth_from']))?$data['yearmonth_to']:'';
-	//$year = (isset($data['year']))?$data['year']:'';
-	$fmonth = $year.'-'.$month;
-		
-		$yearfrom = $data['yearmonth_from'];
-		$yearto = $data['yearmonth_to'];
-		
-		//$date = "07/08/2015";
-		//$date = explode('/', $date);
-		$yearto = explode('-', $yearto);
-		
-		$year = $yearto[0];
-		$day   = $yearto[1];
-		$month  = $yearto[2];
-	echo '<pre>'; print_r($month);exit; */
-  
-		
-		
 		?>
 	<form class="" method="post" action="<?php echo base_url(); ?>Cerv/thematic_maps/<?php echo $link; ?>">
 		<?php
@@ -78,29 +57,11 @@
 			$reportType = $data['reportType'];
 			$vaccineId = $data['vaccineId'];
 		}
-		
-			$fmonthfrom = $data['yearmonth_from'];
-		$monthfromarr = explode('-',$fmonthfrom);
-		$monthfrom = $monthfromarr[1];
-		$yearfrom = $monthfromarr[0];
-		
-		$fmonthto = $data['yearmonth_to'];
-		$monthtoarr = explode('-',$fmonthto);
-		$monthto = $monthtoarr[1];
-		$yearto = $monthtoarr[0];
-		
-		
-		$monthfrom = $yearfrom.'-'.$monthfrom;
-		$monthto = $yearto.'-'.$monthto;
-		
 		?> 
+		
 		<div class="form-group" id="vaccineDiv">
-			<input type="text" name="yearmonth_from" id="yearmonth_from" class="form-control form-group dp-my" placeholder="Year Month From" required="required" data-date-end-date='-1d' value="<?php echo (isset($monthfrom)?$monthfrom:'') ?>">
-			<input type="text" name="yearmonth_to" id="yearmonth_to" class="form-control form-group dp-my" placeholder="Year Month To" required="required" data-date-end-date='-1d' value="<?php echo (isset($monthto)?$monthto:'') ?>">
-			
-			
-			
-			
+			<input type="text" name="yearmonth_from" id="yearmonth_from" class="form-control form-group dp-my" placeholder="Year Month From">
+			<input type="text" name="yearmonth_to" id="yearmonth_to" class="form-control form-group dp-my" placeholder="Year Month To">
 			<select name="vaccineId" id="vaccineId" class="form-control form-group" required="required">
 				<option <?php echo (isset($vaccineId) && $vaccineId == "1")?'selected="selected"':''; ?> value="1">BCG</option>
 				<option <?php echo (isset($vaccineId) && $vaccineId == "2")?'selected="selected"':''; ?> value="2">Hep B-Birth</option>

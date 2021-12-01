@@ -226,7 +226,7 @@ class Ajax_red_rec_model extends CI_Model {
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
 		return json_encode($resultJson);
 	}
-	//-----------------------------------NNT LINE LIST FILTER----------------------------------------//
+	//----------------------------------------NNT LINE LIST FILTER--------------------------------------------------//
 	public function nnt_linelist_filter($uncode) {
 		//Code for Pagination Updated by Nouman
 		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
@@ -299,10 +299,7 @@ class Ajax_red_rec_model extends CI_Model {
 		if($year > 0){
 			$wc[] = " year = '$year' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
+
 		//print_r($query);exit;
 		$query="SELECT tcode,uncode,facode,techniciancode,year, tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil, facilityname(facode) as facility, (case when (year ='2019' OR year ='2018')  then technicianname(techniciancode) else hr_name(techniciancode) end) as technician, year from situation_analysis_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " group by techniciancode,tcode,uncode,facode,year order by year DESC, facode ASC LIMIT {$per_page} OFFSET {$startpoint}";
 		//$query="SELECT tcode,uncode,facode,techniciancode,year, tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil, facilityname(facode) as facility, technicianname(techniciancode) as technician, year from situation_analysis_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year DESC, facode, priority ASC LIMIT {$per_page} OFFSET {$startpoint}";
@@ -323,11 +320,9 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-center">' . $row['technician'] . '</td>
 							<td class="text-left">' . $row['year'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_rec_microplan/Situation_analysis/situation_analysis_view/' . $row['techniciancode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-								if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
-									$tbody .= '<a href="' . base_url() . 'red_rec_microplan/Situation_analysis/situation_analysis_edit/' . $row['techniciancode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
-								}
-							$tbody .= '</td>
+								<a href="' . base_url() . 'red_rec_microplan/Situation_analysis/situation_analysis_view/' . $row['techniciancode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Situation_analysis/situation_analysis_edit/' . $row['techniciancode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+							</td>
 						</tr>';
 		}
 		$resultJson["tbody"] = $tbody;
@@ -558,10 +553,7 @@ class Ajax_red_rec_model extends CI_Model {
 		if($quarter > 0){
 			$wc[] = " quarter = '$quarter' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
+
 		//print_r($query);exit;
 		$query="SELECT tcode, uncode, facode, facilityname(facode) as facility,(case when (year ='2019' OR year ='2018')  then technicianname(techniciancode) else hr_name(techniciancode) end) as technician,techniciancode, unname(uncode) as uc_name, tehsilname(tcode) as tehsil, submitted_date, year, quarter from hf_quarterplan_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year DESC, facode ASC LIMIT {$per_page} OFFSET {$startpoint}";
 		//print_r($query); exit();
@@ -584,11 +576,9 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-center">' . $row['year'] . '</td>
 							<td class="text-center">' . $row['quarter'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_rec_microplan/Facility_quarterplan/hf_quarterplan_view/' . $row['facode'] . '/'. $row['year'].'/'. $row['quarter'].'/'. $row['techniciancode'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-								if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
-									$tbody .= '<a href="' . base_url() . 'red_rec_microplan/Facility_quarterplan/hf_quarterplan_edit/' . $row['facode'] .'/'. $row['year'].'/'. $row['quarter'].'/'. $row['techniciancode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
-								}
-							$tbody .= '</td>
+								<a href="' . base_url() . 'red_rec_microplan/Facility_quarterplan/hf_quarterplan_view/' . $row['facode'] . '/'. $row['year'].'/'. $row['quarter'].'/'. $row['techniciancode'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Facility_quarterplan/hf_quarterplan_edit/' . $row['facode'] .'/'. $row['year'].'/'. $row['quarter'].'/'. $row['techniciancode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+							</td>
 						</tr>';
 		}
 		$resultJson["tbody"] = $tbody;
@@ -618,10 +608,6 @@ class Ajax_red_rec_model extends CI_Model {
 		if($quarter != ''){
 			$wc[] = " quarter = '$quarter' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
 		//print_r($query);exit;
 		$query="SELECT supervisorcode,designation,quarter,status,CASE WHEN quarter='01' then 'Quarter 1' WHEN quarter ='02' then 'Quarter 2' WHEN  quarter='03' then 'Quarter 3' WHEN  quarter='04' then 'Quarter 4' ELSE '' END from supervisory_plan " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . "group by supervisorcode,quarter,designation,status order by supervisorcode asc   LIMIT {$per_page} OFFSET {$startpoint}";
 		//$str = $this->db->last_query();
@@ -645,16 +631,13 @@ class Ajax_red_rec_model extends CI_Model {
 									
 							  if($row['status'] == 1) { 
 									$tbody .='
-										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>'; 
-										if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
-											$tbody .='<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
-										}
-									 } else {  
-									$tbody .='   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-										if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
-											$tbody .='<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_edit/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-											<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
-								     } } 
+										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> 
+										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
+								     } else {  
+									$tbody .='   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+									   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_edit/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+									   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
+								     }  
                             $tbody .= '</td>
 		            </tr>';
 		}
@@ -753,7 +736,7 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 		return json_encode($toEncode);
 	}
-	//------------------------ Form A2 Filter -------------------------------------------//
+	//------- Form A2 Filter ------------------------------------------------//
 	public function form_a2_filter_new($campaign_type) {
 		//Code for Pagination Updated by Nouman
 	
@@ -903,18 +886,9 @@ class Ajax_red_rec_model extends CI_Model {
 			//$wc = getWC_Array($_SESSION["Province"]);
 			$wc[] = " case_type != 'Msl'";
 		}
-		if($this -> session -> District){
-			$wcd[] = " procode='".$_SESSION["Province"]."' and case_type != 'Msl' and ((distcode='".$this -> session -> District."' and cross_notified=0) OR (cross_notified_from_distcode='".$this -> session -> District."' and approval_status='Pending') OR (distcode='".$this -> session -> District."' and approval_status='Approved'))";
-		}
-		else{
-			$wcd[] = " procode='".$_SESSION["Province"]."'";
-		}
-		$query = "SELECT max(id) as max_id from case_investigation_db " . (empty($wcd) ? '' : ' where ' . implode(" AND ", $wcd)) . " ";
-		$result = $this -> db -> query($query);
-		$max_id = $result ->row()->max_id;
 		//Code for Pagination Updated by Nouman
 		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
-		if($page <= 0)
+		if ($page <= 0)
 			$page = 1;
 		$per_page = 15;
 		// Set how many records do you want to display per page.
@@ -930,14 +904,10 @@ class Ajax_red_rec_model extends CI_Model {
 		if($week!="0"){
 			$wc[] = " week = '$week' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
 		//print_r($wc);exit;
 		// Change `records` according to your table name.
 		//echo
-		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name,fweek, case_number, case_epi_no, case_type, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc, year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode,facode, uncode, tcode, distcode,procode, is_temp_saved, patient_name, fweek, case_number, case_epi_no, case_type, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
@@ -948,18 +918,18 @@ class Ajax_red_rec_model extends CI_Model {
 			$is_temp_saved = $row['is_temp_saved'] == '0' ? 'Submitted' : '';
 			$i++;
 			if($row['cross_notified_from_distcode'] == $this  -> session -> District && $row['approval_status'] == "Approved"){
-				$color = "background-color:#8FEBAD;";
-			}else if($row['cross_notified_from_distcode'] != $this  -> session -> District && $row['approval_status'] == "Approved"){
-				$color = "background-color:#EBD38F;";
-			}
-			else if($row['approval_status'] == "Pending" && $row['procode'] != $_SESSION["Province"]){
-				$color = "background-color:#33ACFF;";
-			}
-			else if($row['approval_status'] == "Pending"){
-				$color = "background-color:rgba(219, 37, 37, 0.5);";
-			}else{
-				$color = "";
-			}
+				 $color = "background-color:#8FEBAD;";
+			 }else if($row['cross_notified_from_distcode'] != $this  -> session -> District && $row['approval_status'] == "Approved"){
+				 $color = "background-color:#EBD38F;";
+			 }
+			 else if($row['approval_status'] == "Pending" && $row['procode'] != $_SESSION["Province"]){
+				  $color = "background-color:#33ACFF;";
+			 }
+			 else if($row['approval_status'] == "Pending"){
+				  $color = "background-color:rgba(219, 37, 37, 0.5);";
+			 }else{
+				 $color = "";
+			 }
 			$pvhDate = ($row['pvh_date'] != '')?date("d-M-Y",strtotime($row['pvh_date'])):'';
 			if(isset($row['cross_notified']) && $row['cross_notified'] == '0') {  
 				$districtName = ''; 
@@ -974,7 +944,7 @@ class Ajax_red_rec_model extends CI_Model {
 				$districtName = CrossProvince_DistrictName($row['cross_notified_from_distcode'],true);
 			}
 			else if($row['cross_notified'] == 1 && substr($row['cross_notified_from_distcode'],0,1) != $_SESSION["Province"]) { 
-				$districtName = CrossProvince_DistrictName($row['distcode'],true); 
+						$districtName = CrossProvince_DistrictName($row['distcode'],true); 
 			} else {
 				$districtName =  ''; 
 			}
@@ -984,41 +954,34 @@ class Ajax_red_rec_model extends CI_Model {
 			$tehsilname = ((($row['tcode']) && $row['tcode']!= NULL && $row['tcode']!= '')?CrossProvince_TehsilName($row['tcode'],true):'');
 			$caseName = ((($row['case_type']) && $row['case_type']!= NULL && $row['case_type']!= '')?get_CaseType_Name($row['case_type']): '');
 			$tbody .= '<tr style="'.$color.'">
-				<td class="text-center">
-					<input type="hidden" class="id" name="id" value="'.$row['id'].'">
-					<input type="hidden" class="year" name="year" value="'.$row['year'].'">
-					<input type="hidden" class="case_type" name="case_type" value="'.$row['case_type'].'">'.$i.'</td>
+			   <td class="text-center">'.$i.'</td>
 				<td class="text-left">'.$row['patient_name'].'</td>
-				<td class="text-left">'.$facilityname.'</td>
-				<td class="text-left">'.$tehsilname.'</td>
-				<td class="text-center">'.$row['case_epi_no'].'</td>
+			   <td class="text-left">'.$facilityname.'</td>
+			   <td class="text-left">'.$tehsilname.'</td>
+			   <td class="text-center">'.$row['case_epi_no'].'</td>
 				<td class="text-center">'.$row['fweek'].'</td>
 				<td class="text-center">'.$districtName.'</td>
 				<td class="text-center">'.$caseName.'</td>
-				<td class="text-center">'.$pvhDate.'</td>
-				<td class="text-center">
+				<td class="text-center">'.$pvhDate.'</td>							    
+			   <td class="text-center">
 					<a href="' . base_url() . 'Case_investigation/case_investigation_view/'  . $link .  '" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-					if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
-						if($row['year'] >= "2018"){
-							if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
-							{	
-								$tbody .= '<a href="' . base_url() . 'Case_investigation/case_investigation_edit/' . $link . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
-							}
-						}
-					}
-					if($max_id==$row['id']){
-						$tbody .= '<a onclick="delete_report(this)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>';
+					if($row['year'] >= "2018"){
+						if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
+						{	
+							$tbody .= '<a href="' . base_url() . 'Case_investigation/case_investigation_edit/' . $link . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
+						} 
 					}
 			  	$tbody .= '</td>
 		    </tr>';
 		}
-		$resultJson["tbody"] = $tbody;
+		$resultJson["tbody"] = $tbody;		
 		//$wc = getWC(); this condition results in extra pages when specific filter is selected
 		//print_r($wc);exit();
 		$wc = implode(" AND ", $wc);
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
 		return json_encode($resultJson);
 	}
+
 	public function cross_notified_case_investigation_filter($distcode,$facode,$year,$week) {
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
 		$pro_code = $_SESSION['Province'];
@@ -1138,8 +1101,9 @@ class Ajax_red_rec_model extends CI_Model {
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
 		return json_encode($resultJson);
 	}
+
 	public function measles_investigation_filter($distcode,$facode,$year,$week) {
-		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
+		$procode = isset($_REQUEST['procode'])?$_REQUEST['procode']:$_SESSION['Province'];
 		$pro_code = $_SESSION['Province'];
 		$districtCondition = $distcode;
 		$yearr = $year;
@@ -1177,7 +1141,8 @@ class Ajax_red_rec_model extends CI_Model {
 			// $distcode = $this -> session -> District;
 			// $wc = getWC_Array($_SESSION["Province"],$distcode);
 			$wc[] = " case_type = 'Msl' and (distcode = '".$this -> session -> District."' OR cross_notified_from_distcode = '".$this -> session -> District."' OR rb_distcode = '".$this -> session -> District."')";
-		}else{
+		}
+		else{
 			//$wc = getWC_Array($_SESSION["Province"]);
 			$wc[] = " case_type = 'Msl'";
 		}
@@ -1213,14 +1178,10 @@ class Ajax_red_rec_model extends CI_Model {
 		if($week!="0"){
 			$wc[] = " week = '$week' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
 		//print_r($wc);exit;
 		// Change `records` according to your table name.
 		//echo 
-		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name, fweek, case_epi_no, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc, year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name, fweek, case_number, case_epi_no, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc, year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
@@ -1260,7 +1221,8 @@ class Ajax_red_rec_model extends CI_Model {
 			}
 			else if($row['cross_notified'] == 1 && substr($row['cross_notified_from_distcode'],0,1) != $_SESSION["Province"]) { 
 				$districtName = CrossProvince_DistrictName($row['distcode'],true); 
-			} else {
+			}
+			else {
 				$districtName =  ''; 
 			}
 			$link = (isset($row['year']) && $row['year'] > 0)?$row['id'].'/'.$row['year']:$row['id'];
@@ -1281,13 +1243,11 @@ class Ajax_red_rec_model extends CI_Model {
 				<td class="text-center">'.$is_temp_saved.'</td>			    
 				<td class="text-center">
 					<a href="' . base_url() . 'Measles_investigation/measles_investigation_view/'  . $link .  '" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-					if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
-						if($row['year'] >= "2018"){
-							if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
-							{	
-								$tbody .= '<a href="' . base_url() . 'Measles_investigation/measles_investigation_edit/' . $link . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
-							}
-						}
+					if($row['year'] >= "2018"){
+						if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
+						{	
+							$tbody .= '<a href="' . base_url() . 'Measles_investigation/measles_investigation_edit/' . $link . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
+						} 
 					}
 					if($max_id==$row['id']){
 						$tbody .= '<a onclick="delete_report(this)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>';
@@ -1296,12 +1256,13 @@ class Ajax_red_rec_model extends CI_Model {
 		    </tr>';
 		}
 		$resultJson["tbody"] = $tbody;		
-				//$wc = getWC(); this condition results in extra pages when specific filter is selected
-				//print_r($wc);exit();
+		//$wc = getWC(); this condition results in extra pages when specific filter is selected
+		//print_r($wc);exit();
 		$wc = implode(" AND ", $wc);
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
 		return json_encode($resultJson,true);
 	}
+
 	public function coronavirus_investigation_filter($distcode,$facode,$year,$week) {
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
 		$pro_code = $_SESSION['Province'];
@@ -1368,14 +1329,10 @@ class Ajax_red_rec_model extends CI_Model {
 		if($week!="0"){
 			$wc[] = " week = '$week' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
 		//print_r($wc);exit;
 		// Change `records` according to your table name.
 		//echo 
-		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, name, age_in_year, fweek, case_number, case_epi_no, pvh_date from corona_case_investigation_form_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, name, age_in_year, fweek, case_number, case_epi_no, pvh_date from corona_case_investigation_form_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
@@ -1433,13 +1390,11 @@ class Ajax_red_rec_model extends CI_Model {
 				<td class="text-center">'.$pvhDate.'</td>						    
 				<td class="text-center">
 					<a href="' . base_url() . 'Coronavirus_investigation/coronavirus_investigation_view/'  . $link .  '" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-					if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
 					if($row['year'] >= "2018"){
 						if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
 						{	
 							$tbody .= '<a href="' . base_url() . 'Coronavirus_investigation/coronavirus_investigation_edit/' . $link . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
 						} 
-					}
 					}
 			  	$tbody .= '</td>
 		    </tr>';
@@ -1498,7 +1453,7 @@ class Ajax_red_rec_model extends CI_Model {
 		//print_r($wc);exit;
 		// Change `records` according to your table name.
 		//echo 
-		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name,fweek, case_epi_no, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id ,cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name,fweek, case_epi_no, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
@@ -1543,16 +1498,16 @@ class Ajax_red_rec_model extends CI_Model {
 			$tehsilname = ((($row['tcode']) && $row['tcode']!= NULL && $row['tcode']!= '')?CrossProvince_TehsilName($row['tcode'],true):'');
 
 			$tbody .= '<tr style="'.$color.'">
-				<td class="text-center">'.$i.'</td>
+			   <td class="text-center">'.$i.'</td>
 				<td class="text-left">'.$row['patient_name'].'</td>
-				<td class="text-left">'.$facilityname.'</td>
-				<td class="text-left">'.$tehsilname.'</td>
-				<td class="text-center">'.$row['case_epi_no'].'</td>
+			   <td class="text-left">'.$facilityname.'</td>
+			   <td class="text-left">'.$tehsilname.'</td>
+			   <td class="text-center">'.$row['case_epi_no'].'</td>
 				<td class="text-center">'.$row['fweek'].'</td>
 				<td class="text-center">'.$districtName.'</td>
 				<td class="text-center">'.$pvhDate.'</td>
 				<td class="text-center">'.$is_temp_saved.'</td>				    
-				<td class="text-center">
+			   <td class="text-center">
 					<a href="' . base_url() . 'Measles_investigation/measles_investigation_view/'  . $link .  '" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
 					if($row['year'] >= "2018"){
 						if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
@@ -1690,7 +1645,7 @@ class Ajax_red_rec_model extends CI_Model {
 		return json_encode($resultJson);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//------------------------------Measles LINE LIST FILTER---------------------------------------//
+	//---------------------------------Measles LINE LIST FILTER------------------------------------------//
 	public function afp_investigation_filter($distcode,$facode,$year,$week) {
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
 		$pro_code = $_SESSION['Province'];
@@ -1849,7 +1804,7 @@ class Ajax_red_rec_model extends CI_Model {
 			  	$tbody .= '</td>
 		    </tr>';
 		}
-		$resultJson["tbody"] = $tbody;		
+		$resultJson["tbody"] = $tbody;
 		//$wc = getWC();
 		//print_r($wc);exit();
 		$wc = implode(" AND ", $wc);		
@@ -2040,10 +1995,6 @@ class Ajax_red_rec_model extends CI_Model {
 		if($week != '0'){
 			$wc[] = " week = '$week' ";
 		}
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc[] = "tcode = '$tcode' ";
-		}
 		//print_r($query);exit;
 		//echo
 		$query="SELECT id, cross_notified, approval_status, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, date_investigation, full_mother_name, fweek,is_temp_saved, investigated_by, date_notification from nnt_investigation_form " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " OR (cross_notified_from_distcode='". $this -> session -> District ."' " . (empty($wc) ? '' : ' and ' . implode(" AND ", $wc)) . ")  order by fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
@@ -2106,13 +2057,11 @@ class Ajax_red_rec_model extends CI_Model {
 				<td class="text-center">' . $is_temp_saved . '</td>
 			    <td class="text-center">
 		      	<a href="' . base_url() . 'NNT-CIF/View/' . $link . '" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
-				if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){	
 					if(($row['cross_notified'] == 1 && $row['approval_status'] == "Approved" && $row['cross_notified_from_distcode'] != $this -> session -> District) || ($row['cross_notified'] == 1 && $row['approval_status'] == "Pending" && $row['cross_notified_from_distcode'] == $this -> session -> District) || $row['cross_notified'] != 1)
 					{
 						$tbody .= '<a href="' . base_url() . 'NNT-CIF/Edit/' . $link . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
 
 					}
-				}	
 			  	$tbody .= '</td>
 		            </tr>';
 		}
@@ -2264,11 +2213,10 @@ class Ajax_red_rec_model extends CI_Model {
 	}
 	public function getTechnicians($facode) {
 		//$query = "SELECT techniciancode,technicianname from techniciandb where facode = '$facode' and status='Active' order by technicianname ASC ";
-		//$query = "SELECT distinct(code) as techniciancode,name as technicianname   from hr_db_history_new where post_facode = '$facode'  order by technicianname ASC ";
+		//$query = "SELECT code as techniciancode,name as technicianname   from hr_db where facode = '$facode' order by technicianname ASC ";
 		$query = "SELECT new as techniciancode,name as technicianname from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_facode = '$facode' and  post_status='Active' and post_hr_sub_type_id='01'";
 		$result = $this-> db-> query($query);
 		$result = $result-> result_array();
-		//echo $this->db->last_query();exit;
 		$data = '<option value="">--Select--</option>';
 		foreach ($result as $tech_data) {
 			$data .= '<option value="' . $tech_data['techniciancode'] . '">' . $tech_data['technicianname'] . '</option>';
@@ -2294,7 +2242,7 @@ class Ajax_red_rec_model extends CI_Model {
 		$var =  $this-> load-> view('Add_red_microplanning/hf_quaterplan_row',$data);		
 	}
 	public function checkTechnician_avalible($faicode,$techniciancode,$selectedYear=NULL) {
-		$checkquery = "SELECT count(*) as recordnum from situation_analysis_db where techniciancode='$techniciancode' and facode = '$faicode' ";
+		$checkquery = "SELECT count(*) as recordnum from situation_analysis_db where facode='$faicode' and techniciancode='$techniciancode' ";
 		if($selectedYear){
 			$checkquery .= " and year = '$selectedYear'";
 		}
@@ -2477,20 +2425,7 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 		return $return;
 	}
-	public function getUcMergedVillagesList($uncode,$year){
-		$this -> db -> select('*');
-		$this -> db -> from('village_merger');
-		$this -> db -> where(array('uncode'=>$uncode,'year'=>$year));
-		$this -> db -> where("merger_group_id IN (select merger_group_id from villages_population where uncode='{$uncode}' and year = '{$year}' and merged_village = 1)",NULL,FALSE);
-		return $this -> db -> get() -> result_array();
-	}
-	public function getUcVillages($uncode,$year){
-		$this -> db -> select('*,villagename(vcode) as village');
-		$this -> db -> from('villages_population');
-		$this -> db -> where(array('uncode'=>$uncode,'year'=>$year,'merged_village'=>0));
-		return $this -> db -> get() -> result_array();
-	}
-	
+
 	public function getVaccine_batchNumber($vacc_id) {
 		$district = $this -> session -> District;
 		$username = $this->session->userdata("username");

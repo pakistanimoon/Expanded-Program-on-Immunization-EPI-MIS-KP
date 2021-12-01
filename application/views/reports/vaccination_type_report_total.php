@@ -126,14 +126,13 @@
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total Vaccination</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;"><?php echo $vaccinationType; ?> Vaccination</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;"><?php echo $vaccinationType; ?> %</th>
-					
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total Vaccination</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;"><?php echo $vaccinationType; ?> Vaccination</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;"><?php echo $vaccinationType; ?> %</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total Vaccination</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;"><?php echo $vaccinationType; ?> Vaccination</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;"><?php echo $vaccinationType; ?> %</th>
-					
+				
 				</tr>
 			</thead>
 			<tbody>  

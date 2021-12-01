@@ -1,5 +1,4 @@
-<?php 
-//kp
+<?php
 class Reports_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
@@ -14,30 +13,21 @@ class Reports_model extends CI_Model {
 	//--------------------------------------------------------------------------------//
 	//======= Function to Create Filters for Sepecific Reports Starts Here ===========//
 	public function Create_Reporting_Filters($reportName) {
-		$data = posted_Values();
-		$wc	  = getWC_Array($data['procode'],$this -> session -> District,$data['tcode']);
-		$newWC= WC_replacement($wc);
-		//print_r($newWC); exit;				  
-		$neWc = $newWC[0];
-		$neWc1 = $newWC[1];
+		$data = posted_Values();//posted values from last page
+		$wc	  = getWC_Array($data['procode'],$this -> session -> District,$data['facode']); // function to get wc array
+		$newWC= WC_replacement($wc);//Workaround for Cloumn name difference in districts table. i.e procode is province.
+		$neWc = $newWC[0];$neWc1 = $newWC[1];
 		$UserLevel = $this -> session -> UserLevel;
-		if($UserLevel==4){
-			unset($neWc1[2]);
-		}
 		$Caption = "Report";
 		$subTitle = "District Report";
 		$datArray = NULL;
 		$datArray['years'] = "";
 		$link="Reports";
-		if($this -> session -> UserLevel==4){
-			$query="Select tehsil, tcode from tehsil ".(!empty($wc) ? ' WHERE '.implode(" AND ", $wc) : '')." order by tcode";
-			$resultTeh=$this->db->query($query);
-			$datArray['tehsil'] = $resultTeh->result_array();
-		}else{
-			$datArray['districts'] = get_resultArray('district',$neWc1);
-		}
+		$datArray['districts'] = get_resultArray('district',$neWc1);	
+		//$datArray['flcf'] = get_resultArray('flcf',$wc);
 		if ($reportName == 'flcf_wise_vaccination') {
 			$Caption = "Monthly Facility wise Vaccination Report";
+			//$datArray['current-month-included'] = "";
 			$datArray['vaccinationType'] = "";
 			$datArray['typeWise'] = "";
 			$datArray['months']= "";
@@ -58,11 +48,14 @@ class Reports_model extends CI_Model {
 		}
 		if ($reportName == 'sessionInfoReport') {
 			$Caption = "Sessions Planned/Conducted";
+			//unset($datArray['years']);
 			$datArray['yearMonthWise']="";
 			$datArray['quarterwise'] = ""; 
 			$datArray['months'] = "";
 			$datArray['years'] = "";
 			$datArray['vaccinationTypeSession'] = "";
+			//$datArray['vacc_to'] = "";
+			//unset($datArray['years']);
 		}
 		if ($reportName == 'vaccine_demand') {
 			$this -> load -> library('reportfilters');		
@@ -112,9 +105,9 @@ class Reports_model extends CI_Model {
 			$Caption = "Access Utilization Report";
 			//$datArray['typeWise'] = "";
 			$datArray['month-from-to'] = "";
-			//$datArray['UC and HF'] = "";
-			$datArray['acces_type'] = "";
+			//$datArray['acces_type'] = "";
 			//$datArray['vacc_to'] = "";
+			$datArray['acces_type'] = "";
 			unset($datArray['years']);
 		}
 		if ($reportName == 'flcf_vacc_coverage_compliance') {
@@ -225,9 +218,7 @@ class Reports_model extends CI_Model {
 			$Caption = "Cold Chain Assets";
 			$link = "Colchain_reports";
 		}
-		//echo "<pre>"; print_r($datArray); exit;			 
 		$datArray['listing_filters'] = $this -> Filter_model -> createListingFilter($datArray, $datArray, base_url() .$link.'/' . str_replace(" ", "_", $reportName) , $UserLevel, $Caption);
-		//echo "<pre>"; print_r($datArray); exit;					 
 		return $datArray;
 	}
 	//================ Function to Create Filters for Sepecific Reports Ends Here ===================//
@@ -379,16 +370,22 @@ class Reports_model extends CI_Model {
 	//======= (Male Female wise)FLCF Wise Vaccination for Children and Women Report Function Starts Here =======//
 	public function flcf_wise_vaccination_malefemale_coverage($code=NULL,$year=NULL,$data=NULL)
 	{
+		//print_r($_REQUEST);exit();
+		//print_r($data); exit();
 		if($this -> session -> federaluser == true){
 			$fedDrilldown = $this -> session -> federaluser;
 		}
+		//echo $data['monthfrom'];exit();
 		$start_year = substr($data['monthfrom'],0,4);
 		$start_month = substr($data['monthfrom'],5,2);
 		$end_year = substr($data['monthto'],0,4);
 		$end_month = substr($data['monthto'],5,2);
+		// echo $start_year;echo '-'; //echo $start_month; echo ',,,,,';
+		// echo $end_year; //echo '-'; echo $end_month; 
+		// exit();
 		$in_out_coverage = $this-> input-> get_post('in_out_coverage');
 		if(!isset($data["distcode"])){
-			$data["distcode"] = $this-> input-> get_post("distcode");
+			$data["distcode"] = ($this-> input-> get_post("distcode"))?$this->input-> get_post("distcode"):$this->session->District;
 		}
 		$data['procode'] = $_SESSION["Province"];
 		$wc	  = getWC_Array($data['procode'],$data['distcode']); // function to get wc array
@@ -404,10 +401,12 @@ class Reports_model extends CI_Model {
 		);
 		$ttNames1 	= array("Total_TTPL1","Total_TTPL2","Total_TTPL3","Total_TTPL4","Total_TTPL5");
 		$ttNames2 	= array("Total_TTNonPL1","Total_TTNonPL2","Total_TTNonPL3","Total_TTNonPL4","Total_TTNonPL5");
-		if($data['distcode'] > 0)
+		if((isset($data['distcode']) && $data['distcode'] > 0) || (isset($data['tcode']) && $data['tcode'] > 0))
 		{
+			//echo "a";exit();		
 			if($data['typeWise']=='uc')
 			{
+				//echo "a";exit();
 				if($data["monthfrom"] && $data['monthto'])
 				{
 					$subTitle = 'Union Council-wise Monthly Vaccination of Children and Women(with Percentage)';
@@ -428,6 +427,7 @@ class Reports_model extends CI_Model {
 			}
 			else if($data['typeWise']=='tehsil')
 			{
+				//echo "b";exit();
 				if($data["monthfrom"] && $data['monthto'])
 				{
 					$subTitle = 'Tehsil-wise Monthly Vaccination of Children and Women(with Percentage)';
@@ -448,6 +448,7 @@ class Reports_model extends CI_Model {
 			}
 			else
 			{
+				//echo "c";exit();
 				if($data["monthfrom"] && $data['monthto'])
 				{
 					$vacc_to = $this->input->get_post('vacc_to');
@@ -467,7 +468,7 @@ class Reports_model extends CI_Model {
 						$targetFeMaleChildren = "COALESCE( NULLIF(((getmonthlytarget_specificyearrsurvivinginfants(flcf1.facode::text,'facility'::text,$start_year,$start_month,$end_year,$end_month)::numeric)*49)/100,0) , 0 )";
 						$targetWomen = "COALESCE( NULLIF(round((getmonthly_plwomen_target_specificyears(flcf1.facode::text,$start_year,$start_month,$end_year,$end_month)::numeric),2),0) , 0 )";
 					}	
-					else{ 
+					else{
 						$subTitle = 'Facility-wise Monthly Vaccination of Children and Women(with Percentage)';
 						$fmonthCondition = " and fmonth >= '".$data['monthfrom']."' and fmonth <= '".$data['monthto']."'";
 						$tmp_new_borns_male = "round((getmonthlytarget_specificyearr(flcf1.facode::text,$start_year,$start_month,$end_year,$end_month)::numeric*51)/100) as \"New Borns Male\",";
@@ -482,7 +483,7 @@ class Reports_model extends CI_Model {
 						$targetMaleChildren = "COALESCE( NULLIF(round(((getmonthlytarget_specificyearrsurvivinginfants(flcf1.facode::text,'facility'::text,$start_year,$start_month,$end_year,$end_month)::numeric)*51)/100,2),0) , 0 )";
 						$targetFeMaleChildren = "COALESCE( NULLIF(round(((getmonthlytarget_specificyearrsurvivinginfants(flcf1.facode::text,'facility'::text,$start_year,$start_month,$end_year,$end_month)::numeric)*49)/100,2),0) , 0 )";
 						$targetWomen = "COALESCE( NULLIF(round((getmonthly_plwomen_target_specificyears(flcf1.facode::text,$start_year,$start_month,$end_year,$end_month)::numeric),2),0) , 0 )";
-					}
+					}					
 				}
 			}
 		}
@@ -518,13 +519,14 @@ class Reports_model extends CI_Model {
 			$tmp = "$tmp_new_borns_male $tmp_new_borns_female $tmp_target_male_child $tmp_target_female_child $tmp_target_woman";
 		}
 
-		if($data['distcode'] > 0)
+		if((isset($data['distcode']) && $data['distcode'] > 0) || (isset($data['tcode']) && $data['tcode'] > 0))
 		{
+			//echo "District"; exit();
 			//case when district selected or deo logged in
 			if($data['typeWise']=='uc')
-			{
+			{	//echo "uc"; exit();
 				if($in_out_coverage == 'out_uc'){
-					$queryForYearlyData="SELECT flcf1.uncode, unname(flcf1.uncode), ";
+					$queryForYearlyData="SELECT flcf1.uncode, unname(flcf1.uncode), ";					
 				}
 				else{
 					$queryForYearlyData="SELECT flcf1.uncode, unname(flcf1.uncode), $tmp ";
@@ -542,14 +544,17 @@ class Reports_model extends CI_Model {
 						case 'all':
 						
 							if($in_out_coverage == 'in_uc'){
+								//echo "a";exit();
 								$m_cols = "sum(cri_r1_f".$i.")+sum(cri_r3_f".$i.")+sum(cri_r5_f".$i.")+sum(cri_r7_f".$i.")+sum(cri_r9_f".$i.")+sum(cri_r11_f".$i.")+sum(cri_r13_f".$i.")+sum(cri_r15_f".$i.")+sum(cri_r17_f".$i.")+sum(cri_r19_f".$i.")+sum(cri_r21_f".$i.")+sum(cri_r23_f".$i.")";
 								$f_cols = "sum(cri_r2_f".$i.")+sum(cri_r4_f".$i.")+sum(cri_r6_f".$i.")+sum(cri_r8_f".$i.")+sum(cri_r10_f".$i.")+sum(cri_r12_f".$i.")+sum(cri_r14_f".$i.")+sum(cri_r16_f".$i.")+sum(cri_r18_f".$i.")+sum(cri_r20_f".$i.")+sum(cri_r22_f".$i.")+sum(cri_r24_f".$i.")";
 							}
 							if($in_out_coverage == 'out_uc'){
+								//echo "b";exit();
 								$m_cols = "sum(oui_r1_f".$i.")+sum(oui_r3_f".$i.")+sum(oui_r5_f".$i.")+sum(oui_r7_f".$i.")+sum(oui_r9_f".$i.")+sum(oui_r11_f".$i.")+sum(oui_r13_f".$i.")+sum(oui_r15_f".$i.")+sum(oui_r17_f".$i.")+sum(oui_r19_f".$i.")+sum(oui_r21_f".$i.")+sum(oui_r23_f".$i.")";
 								$f_cols = "sum(oui_r2_f".$i.")+sum(oui_r4_f".$i.")+sum(oui_r6_f".$i.")+sum(oui_r8_f".$i.")+sum(oui_r10_f".$i.")+sum(oui_r12_f".$i.")+sum(oui_r14_f".$i.")+sum(oui_r16_f".$i.")+sum(oui_r18_f".$i.")+sum(oui_r20_f".$i.")+sum(oui_r22_f".$i.")+sum(oui_r24_f".$i.")";
 							}
 							if($in_out_coverage == 'total_ucs' || $in_out_coverage == 'in_district'){
+								//echo "c";exit();
 								$m_cols_in = "sum(cri_r1_f".$i.")+sum(cri_r3_f".$i.")+sum(cri_r5_f".$i.")+sum(cri_r7_f".$i.")+sum(cri_r9_f".$i.")+sum(cri_r11_f".$i.")+sum(cri_r13_f".$i.")+sum(cri_r15_f".$i.")+sum(cri_r17_f".$i.")+sum(cri_r19_f".$i.")+sum(cri_r21_f".$i.")+sum(cri_r23_f".$i.")";
 								$m_cols_out = "sum(oui_r1_f".$i.")+sum(oui_r3_f".$i.")+sum(oui_r5_f".$i.")+sum(oui_r7_f".$i.")+sum(oui_r9_f".$i.")+sum(oui_r11_f".$i.")+sum(oui_r13_f".$i.")+sum(oui_r15_f".$i.")+sum(oui_r17_f".$i.")+sum(oui_r19_f".$i.")+sum(oui_r21_f".$i.")+sum(oui_r23_f".$i.")";
 								$m_cols = "$m_cols_in + $m_cols_out";
@@ -687,7 +692,7 @@ class Reports_model extends CI_Model {
 								(select CASE WHEN $newbornMale > 0 OR $newbornFemale > 0 THEN round((coalesce($t_cols,0)*100)/(NULLIF($newbornFemale,0) + NULLIF($newbornMale,0))) ELSE 0 END from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as percT$asValueCRI,
 								";
 							}
-						}
+						}						
 					}
 					else
 					{
@@ -705,7 +710,7 @@ class Reports_model extends CI_Model {
 								$queryForYearlyData .= "
 								(select coalesce($t_cols,0) from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode) as T$asValueCRI,
 								(select CASE WHEN $targetMaleChildren > 0 OR $targetFeMaleChildren > 0 THEN round((coalesce($t_cols,0)*100)/(NULLIF($targetFeMaleChildren,0) + NULLIF($targetMaleChildren,0))) ELSE 0 END from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode) as percT$asValueCRI,";
-							}
+							}							
 						}
 						else
 						{
@@ -733,7 +738,7 @@ class Reports_model extends CI_Model {
 						{
 							$asValueTT1=$ttNames1[$k-1];
 							if($k >=1 && $k<=2)
-							{
+							{							
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttri_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as PW$asValueTT1 ,
 									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as PWperc$asValueTT1 ,";
@@ -755,7 +760,7 @@ class Reports_model extends CI_Model {
 						{
 							$asValueTT1=$ttNames1[$k-1];
 							if($k >=1 && $k<=2)
-							{
+							{							
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttoui_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as PW$asValueTT1 ,";
 							}
@@ -779,7 +784,7 @@ class Reports_model extends CI_Model {
 							{
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttri_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as PW$asValueTT1 ,
-									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as PWperc$asValueTT1 ,";
+									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k.")+sum(ttoui_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.uncode=flcf1.uncode $fmonthCondition group by fac_mvrf_db.uncode ) as PWperc$asValueTT1 ,";
 							}
 							else
 							{
@@ -794,13 +799,18 @@ class Reports_model extends CI_Model {
 						}
 					}
 				}
+				if(isset($data['tcode'])){
+					$wc = " flcf1.tcode = '{$data['tcode']}'";
+				}else{
+					$wc = " flcf1.distcode='{$distcode}'";
+				}
 				$queryForYearlyData = rtrim($queryForYearlyData,",");
-				$queryForYearlyData .= " from unioncouncil flcf1 join fac_mvrf_db fac on flcf1.uncode=fac.uncode where flcf1.distcode ='$distcode' group by flcf1.uncode,un_name order by un_name";
+				$queryForYearlyData .= " from unioncouncil flcf1 join fac_mvrf_db fac on flcf1.uncode=fac.uncode where $wc group by flcf1.uncode,un_name order by un_name";
 			}
 			elseif($data['typeWise']=='tehsil')
-			{
+			{	//echo "tehsil"; exit();
 				if($in_out_coverage == 'out_uc'){
-					$queryForYearlyData="SELECT flcf1.tcode, tehsilname(flcf1.tcode), ";
+					$queryForYearlyData="SELECT flcf1.tcode, tehsilname(flcf1.tcode), ";					
 				}
 				else{
 					$queryForYearlyData="SELECT flcf1.tcode, tehsilname(flcf1.tcode), $tmp ";
@@ -966,7 +976,7 @@ class Reports_model extends CI_Model {
 								(select CASE WHEN $newbornMale > 0 OR $newbornFemale > 0 THEN round((coalesce($t_cols,0)*100)/(NULLIF($newbornFemale,0) + NULLIF($newbornMale,0))) ELSE 0 END from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as percT$asValueCRI,
 								";
 							}
-						}
+						}						
 					}
 					else
 					{
@@ -984,7 +994,7 @@ class Reports_model extends CI_Model {
 								$queryForYearlyData .= "
 								(select coalesce($t_cols,0) from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode) as T$asValueCRI,
 								(select CASE WHEN $targetMaleChildren > 0 OR $targetFeMaleChildren > 0 THEN round((coalesce($t_cols,0)*100)/(NULLIF($targetFeMaleChildren,0) + NULLIF($targetMaleChildren,0))) ELSE 0 END from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode) as percT$asValueCRI,";
-							}
+							}							
 						}
 						else
 						{
@@ -1012,7 +1022,7 @@ class Reports_model extends CI_Model {
 						{
 							$asValueTT1=$ttNames1[$k-1];
 							if($k >=1 && $k<=2)
-							{
+							{							
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttri_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as PW$asValueTT1 ,
 									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as PWperc$asValueTT1 ,";
@@ -1034,7 +1044,7 @@ class Reports_model extends CI_Model {
 						{
 							$asValueTT1=$ttNames1[$k-1];
 							if($k >=1 && $k<=2)
-							{
+							{							
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttoui_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as PW$asValueTT1 ,";
 							}
@@ -1058,7 +1068,7 @@ class Reports_model extends CI_Model {
 							{
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttri_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as PW$asValueTT1 ,
-									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as PWperc$asValueTT1 ,";
+									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k.")+sum(ttoui_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.tcode=flcf1.tcode $fmonthCondition group by fac_mvrf_db.tcode ) as PWperc$asValueTT1 ,";
 							}
 							else
 							{
@@ -1073,11 +1083,16 @@ class Reports_model extends CI_Model {
 						}
 					}
 				}
+				if($data['tcode']){
+					$wc = " flcf1.tcode = '{$data['tcode']}'";
+				}else{
+					$wc = " flcf1.distcode='{$distcode}'";
+				}
 				$queryForYearlyData = rtrim($queryForYearlyData,",");
-				$queryForYearlyData .= " from tehsil flcf1 join fac_mvrf_db fac on flcf1.tcode=fac.tcode where flcf1.distcode ='$distcode' group by flcf1.tcode, tehsil order by tehsil";
+				$queryForYearlyData .= " from tehsil flcf1 join fac_mvrf_db fac on flcf1.tcode=fac.tcode where $wc group by flcf1.tcode, tehsil order by tehsil";
 			}
 			else
-			{
+			{	//echo "facility"; exit();
 				if($in_out_coverage == 'out_uc'){
 					$queryForYearlyData="SELECT flcf1.facode, facilityname(flcf1.facode), ";				
 				}
@@ -1096,14 +1111,17 @@ class Reports_model extends CI_Model {
 						
 						case 'all':
 							if($in_out_coverage == 'in_uc'){
+								//echo'inst';exit;
 								$m_cols = "sum(cri_r1_f".$i.")+sum(cri_r3_f".$i.")+sum(cri_r5_f".$i.")+sum(cri_r7_f".$i.")+sum(cri_r9_f".$i.")+sum(cri_r11_f".$i.")+sum(cri_r13_f".$i.")+sum(cri_r15_f".$i.")+sum(cri_r17_f".$i.")+sum(cri_r19_f".$i.")+sum(cri_r21_f".$i.")+sum(cri_r23_f".$i.")";
 								$f_cols = "sum(cri_r2_f".$i.")+sum(cri_r4_f".$i.")+sum(cri_r6_f".$i.")+sum(cri_r8_f".$i.")+sum(cri_r10_f".$i.")+sum(cri_r12_f".$i.")+sum(cri_r14_f".$i.")+sum(cri_r16_f".$i.")+sum(cri_r18_f".$i.")+sum(cri_r20_f".$i.")+sum(cri_r22_f".$i.")+sum(cri_r24_f".$i.")";
 							}
 							if($in_out_coverage == 'out_uc'){
+								//echo'outst';exit;
 								$m_cols = "sum(oui_r1_f".$i.")+sum(oui_r3_f".$i.")+sum(oui_r5_f".$i.")+sum(oui_r7_f".$i.")+sum(oui_r9_f".$i.")+sum(oui_r11_f".$i.")+sum(oui_r13_f".$i.")+sum(oui_r15_f".$i.")+sum(oui_r17_f".$i.")+sum(oui_r19_f".$i.")+sum(oui_r21_f".$i.")+sum(oui_r23_f".$i.")";
 								$f_cols = "sum(oui_r2_f".$i.")+sum(oui_r4_f".$i.")+sum(oui_r6_f".$i.")+sum(oui_r8_f".$i.")+sum(oui_r10_f".$i.")+sum(oui_r12_f".$i.")+sum(oui_r14_f".$i.")+sum(oui_r16_f".$i.")+sum(oui_r18_f".$i.")+sum(oui_r20_f".$i.")+sum(oui_r22_f".$i.")+sum(oui_r24_f".$i.")";
 							}
 							if($in_out_coverage == 'total_ucs' || $in_out_coverage == 'in_district'){
+								//echo'inoutst';exit;
 								$m_cols_in = "sum(cri_r1_f".$i.")+sum(cri_r3_f".$i.")+sum(cri_r5_f".$i.")+sum(cri_r7_f".$i.")+sum(cri_r9_f".$i.")+sum(cri_r11_f".$i.")+sum(cri_r13_f".$i.")+sum(cri_r15_f".$i.")+sum(cri_r17_f".$i.")+sum(cri_r19_f".$i.")+sum(cri_r21_f".$i.")+sum(cri_r23_f".$i.")";
 								$m_cols_out = "sum(oui_r1_f".$i.")+sum(oui_r3_f".$i.")+sum(oui_r5_f".$i.")+sum(oui_r7_f".$i.")+sum(oui_r9_f".$i.")+sum(oui_r11_f".$i.")+sum(oui_r13_f".$i.")+sum(oui_r15_f".$i.")+sum(oui_r17_f".$i.")+sum(oui_r19_f".$i.")+sum(oui_r21_f".$i.")+sum(oui_r23_f".$i.")";
 								$m_cols = "$m_cols_in + $m_cols_out";
@@ -1113,6 +1131,7 @@ class Reports_model extends CI_Model {
 								$f_cols = "$f_cols_in + $f_cols_out";
 							}
 							$t_cols = "$m_cols + $f_cols";
+							//print_r($t_cols);exit;
 							$show_pl_cba = TRUE;
 							break;
 						case '0to11':
@@ -1221,7 +1240,7 @@ class Reports_model extends CI_Model {
 								(select coalesce($t_cols,0) from fac_mvrf_db where fac_mvrf_db.facode=flcf1.facode $fmonthCondition  group by fac_mvrf_db.facode ) as T$asValueCRI,
 								(select CASE WHEN $newbornMale > 0 OR $newbornFemale > 0 THEN round((coalesce($t_cols,0)*100)/(NULLIF($newbornFemale,0) + NULLIF($newbornMale,0))) ELSE 0 END from fac_mvrf_db where fac_mvrf_db.facode=flcf1.facode $fmonthCondition group by fac_mvrf_db.facode ) as percT$asValueCRI,
 								";
-							}
+							}							
 						}
 						else{
 							if($vacc_to == 'gender')
@@ -1325,7 +1344,7 @@ class Reports_model extends CI_Model {
 							{
 								$queryForYearlyData .= "
 									(select coalesce(sum(ttri_r9_f".$k.")+sum(ttoui_r9_f".$k."),0) from fac_mvrf_db where fac_mvrf_db.facode=flcf1.facode $fmonthCondition group by fac_mvrf_db.facode ) as PW$asValueTT1 ,
-									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.facode=flcf1.facode $fmonthCondition group by fac_mvrf_db.facode ) as PWperc$asValueTT1 ,";
+									(select CASE WHEN $targetWomen = 0 THEN 0 ELSE round((coalesce(sum(ttri_r9_f".$k.")+sum(ttoui_r9_f".$k."),0)*100)/NULLIF($targetWomen,0)) END from fac_mvrf_db where fac_mvrf_db.facode=flcf1.facode $fmonthCondition group by fac_mvrf_db.facode ) as PWperc$asValueTT1 ,";
 							}
 							else
 							{
@@ -1340,13 +1359,19 @@ class Reports_model extends CI_Model {
 						}
 					}
 				}
+				//if($data['tcode']){
+					//$wc = " flcf1.tcode = '{$data['tcode']}'";
+				//}else{
+					$wc = " flcf1.distcode='{$distcode}'";
+				//}
 				$queryForYearlyData = rtrim($queryForYearlyData,", ");
 				//print_r($queryForYearlyData);exit();
-				$queryForYearlyData .= " from facilities flcf1 join fac_mvrf_db fac on flcf1.facode=fac.facode where flcf1.distcode='$distcode' and $whereFmonth group by flcf1.facode,fac_name order by fac_name";
+				$queryForYearlyData .= " from facilities flcf1 join fac_mvrf_db fac on flcf1.facode=fac.facode where $wc and $whereFmonth group by flcf1.facode,fac_name order by fac_name";
 			}
 		}
 		else
 		{
+			//echo "Province"; exit();
 			if($in_out_coverage == 'out_district'){
 				$queryForYearlyData="SELECT distcode, districtname(distcode), ";
 			}
@@ -1449,6 +1474,7 @@ class Reports_model extends CI_Model {
 						# code...
 						break;
 				}
+				//print_r($t_cols);exit();
 				if($in_out_coverage == 'in_district'){
 					if($i >=1 && $i <= 3)
 					{
@@ -1562,14 +1588,14 @@ class Reports_model extends CI_Model {
 			}
 			$queryForYearlyData = rtrim($queryForYearlyData,",");
 			if(isset($fedDrilldown)){
-				$queryForYearlyData .= " from districts dist order by dist_order";
+				$queryForYearlyData .= " from districts dist order by dist_order";				
 			}
 			else{
 				$queryForYearlyData .= " from districts dist order by district";
 			}
 		}
 
-		/* if(isset($fedDrilldown)){
+		/* if(isset($fedDrilldown)){	
 			if($this -> input -> get_post('distcode') != '' && $this -> input -> get_post('in_out_coverage') == 'in_district'){
 				$data['in_out_coverage'] = 'in_uc';
 			}
@@ -1579,8 +1605,9 @@ class Reports_model extends CI_Model {
 				$data['in_out_coverage'] = 'in_uc';
 			}
 		} */
+		//echo $data['distcode']; exit();
 		$result = $this -> db -> query($queryForYearlyData) -> result_array();
-		//echo $this -> db -> last_query();exit;
+		//echo $this -> db -> last_query(); exit();
 		if ($this -> input -> post('export_excel')) {
 			//if request is from excel
 			header("Content-type: application/octet-stream");
@@ -1590,6 +1617,7 @@ class Reports_model extends CI_Model {
 			//Excel Ending here
 		}
 		//Excel file code ENDS*******************
+		//print_r($data); exit();
 		$result['TopInfo'] = reportsTopInfo($subTitle, $data);
 		$result['exportIcons']=exportIcons($_REQUEST);
 		return $result;
@@ -1622,9 +1650,11 @@ class Reports_model extends CI_Model {
 		$data['vaccination_type'] = $this -> input -> get_post('vaccination_type');
 		$data['in_out_coverage'] = $in_out_coverage = $this-> input-> get_post('in_out_coverage');
 		if($data['distcode'] > 0 || $data['tcode']){
+			//print_r($_REQUEST);exit();
 			if($data['typeWise']=='uc'){
+				//echo "a"; exit();
 				if($data["monthfrom"] && $data['monthto']){
-					$subTitle = 'Facility-wise Monthly Vaccination of Children and Women';
+					$subTitle = 'Facility-wise Monthly Vaccination of Children and Women';					
 					$fmonthCondition = " and fmonth >= '".$data['monthfrom']."' and fmonth <= '".$data['monthto']."'";
 				}
 				if(!$data['monthfrom'] && $data['monthto']){
@@ -1640,6 +1670,7 @@ class Reports_model extends CI_Model {
 				$queryEndPart = " from unioncouncil flcf1 where ".((!empty($wc)) ? '  ' . implode(' AND ', $wc) : '' )." order by un_name";
 			}
 			else if($data['typeWise']=='tehsil'){
+				//echo "b"; exit();
 				if($data["monthfrom"] && $data['monthto']){
 					$subTitle = 'Facility-wise Monthly Vaccination of Children and Women';					
 					$fmonthCondition = " and fmonth >= '".$data['monthfrom']."' and fmonth <= '".$data['monthto']."'";
@@ -1657,6 +1688,7 @@ class Reports_model extends CI_Model {
 				$queryEndPart = " from tehsil flcf1 where ".((!empty($wc)) ? '  ' . implode(' AND ', $wc) : '' )." order by tehsil";
 			}
 			else{
+				//echo "c"; exit();
 				if($data["monthfrom"] && $data['monthto']){
 					$subTitle = 'Facility-wise Monthly Vaccination of Children and Women';
 					$fmonthCondition = " and fmonth >= '".$data['monthfrom']."' and fmonth <= '".$data['monthto']."'";
@@ -1944,6 +1976,7 @@ class Reports_model extends CI_Model {
 					# code...
 					break;
 			}
+			// print_r($t_cols1);exit();
 			if($vacc_to == 'gender')
 			{
 				if($in_out_coverage == 'out_district'){
@@ -1981,6 +2014,7 @@ class Reports_model extends CI_Model {
 				}
 			}
 		}
+		//print_r($t_cols);exit();
 		if($show_pl_cba)
 		{
 			if($in_out_coverage == 'in_uc'){
@@ -2141,14 +2175,13 @@ class Reports_model extends CI_Model {
 		$whereCondition.=((!empty($wc)) ? implode(' AND ', $wc) : '' );	
 		//print_r($whereCondition);print_r($wc1);
 			$this->db->select("epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,
-					round(coalesce(sum(case when fmonth = '$new_date_from' then epi_consumption_detail.opening_doses Else 0 End),0),1) as opening,
-					round(coalesce(sum(epi_consumption_detail.received_doses),0),1) as received,
-					sum(coalesce(epi_consumption_detail.vaccinated,0)) as children_vaccinated, 
+					coalesce(sum(case when fmonth = '$new_date_from' then epi_consumption_detail.opening_doses Else 0 End),0) as opening,
+					coalesce(sum(epi_consumption_detail.received_doses),0) as received, 
+					sum(coalesce(epi_consumption_detail.vaccinated,0)) as children_vaccinated,
 					sum(coalesce(epi_consumption_detail.used_doses,0)) as useddose, 
 					sum(coalesce(epi_consumption_detail.used_vials,0)) as usedvials, 
 					sum(coalesce(epi_consumption_detail.unused_doses,0)) as unuseddose,
 					sum(coalesce(epi_consumption_detail.unused_vials,0)) as unusedvials");
-					//sum(coalesce(case when fmonth = '$new_date_to' then epi_consumption_detail.closing_vials Else 0 End,0)) as closing ");
 			$this->db->from('epi_consumption_master');
 			$this->db->join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
 			$this->db->join("epi_item_pack_sizes ips","epi_consumption_detail.item_id = ips.pk_id");
@@ -2177,44 +2210,6 @@ class Reports_model extends CI_Model {
 		$result['dateto'] = $new_date_to;
 		//print_r($result);exit;
 		return $result; 
-			//echo $this->db->last_query();exit;
-			 
-			/* $d = "select epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,
-				round(coalesce(sum(case when fmonth='2019-01' then epi_consumption_detail.opening_doses else 0 end)/ips.number_of_doses,0),1) as opening,
-				round(coalesce(sum(epi_consumption_detail.received_doses)/ips.number_of_doses,0),1) as received, 
-				sum(epi_consumption_detail.used_vials) as used, 
-				sum(epi_consumption_detail.unused_vials) as unused,
-				sum(case when fmonth='2019-02' then epi_consumption_detail.closing_vials else 0 end) as closing 
-				from epi_consumption_master 
-				join epi_consumption_detail on epi_consumption_detail.main_id = epi_consumption_master.pk_id 
-				join epi_item_pack_sizes ips on epi_consumption_detail.item_id = ips.pk_id 
-				where fmonth between '2019-01' and '2019-02' and procode = '3' and ips.item_category_id <> 4 and ips.activity_type_id = 1 
-				group by  epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,ips.list_rank
-				order by ips.list_rank"; */
-				//echo $d;exit;
-			
-	/* 	
-	   ////////////////end////////////// 
-	   $result = $this-> db -> query($queryForYearlyData) -> result_array();
-		if ($this -> input -> post('export_excel')) {
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Consolidated_Consumption_Requisition_Report.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-		//Excel file code ENDS*******************
-		$subTitle = 'Consolidated Consumption and Requisition Report';
-		$result['TopInfo'] = reportsTopInfo($subTitle, $data);
-		$result['exportIcons']=exportIcons($_REQUEST);
-		$result['monthfrom'] =  $data['monthfrom'];
-		$result['monthto'] =  $data['monthto'];
-		$result['datefrom'] = $new_date_from;
-		$result['dateto'] = $new_date_to;
-		$result['Name'] = $items_doses;
-		//print_r($result);exit;
-		return $result; */
 	}
 	
 	/* 
@@ -3155,7 +3150,7 @@ class Reports_model extends CI_Model {
 		$data['exportIcons']=exportIcons($_REQUEST);
 		return $data;
 	}
-	//======= Pertussis Line List Report Function Starts Here ========//
+		//======= Pertussis Line List Report Function Starts Here ========//
 	public function pertussisLineList($wc,$tcode,$uncode,$year,$month){
 		if($tcode > 0){
 			$wc[] = " tcode = '$tcode' ";
@@ -3331,7 +3326,7 @@ class Reports_model extends CI_Model {
 		//echo $whereand; exit();
 		//print_r($data);exit;
 		//$UserLevel = $_SESSION['UserLevel'];
-		if(array_key_exists("distcode", $data) && $data['distcode'] > 0 && ($data['employee_desg'] == 'co')){
+		if(array_key_exists("distcode", $data) && $data['distcode'] > 0 && ($data['employee_desg'] == 'technician' || $data['employee_desg'] == 'med_technician')){
 			$query = 'SELECT '.$tablename.'.facode as "Facility Code", facilityname('.$tablename.'.facode) AS "Facility Name", facilitytype('.$tablename.'.facode) AS "Facility Type", 
 			(select count(e.'.$code.') from '.$tablename.' e '.$whereInner.' AND e.facode='.$tablename.'.facode) AS "Total Employees",
 			(select distinct count(e.'.$code.') from '.$tablename.' e '.$whereInner.' AND e.facode='.$tablename.'.facode AND
@@ -3346,10 +3341,7 @@ class Reports_model extends CI_Model {
 			 e.status = \'Retired\') AS "Retired",
 			(select distinct count(e.'.$code.') from '.$tablename.' e '.$whereInner.' AND e.facode='.$tablename.'.facode AND 
 			 e.status <> \'Active\') AS "Total In-Active"			
-			FROM '.$tablename.' '.$where.' and codb.facode is not NULL GROUP BY '.$tablename.'.facode'; 
-			
-			//echo $query;exit;
-			
+			FROM '.$tablename.' '.$where.' GROUP BY '.$tablename.'.facode'; 
 		}
 		else{
 			$query = 'SELECT '.$tablename.'.distcode, districtname('.$tablename.'.distcode) AS "District",
@@ -3367,11 +3359,10 @@ class Reports_model extends CI_Model {
 			(select distinct count(e.'.$code.') from '.$tablename.' e '.$whereand.'  e.distcode='.$tablename.'.distcode AND 
 			 e.status <> \'Active\') AS "Total In-Active"			
 			FROM '.$tablename.' '.$where.' GROUP BY '.$tablename.'.distcode ';
-			
-			///echo $query;exit;
 		}
+		//print_r($query);exit;
 		$result=$this->db->query($query);
-		$allData = $result->result_array();	
+		$allData = $result->result_array();		
 		$data['employee_desg'] = $data['employee_desg'];
 		$data['exportIcons'] = exportIcons($_REQUEST);
 		$data['TopInfo'] = reportsTopInfo($title, $data);
@@ -3431,11 +3422,7 @@ class Reports_model extends CI_Model {
 		if(array_key_exists("distcode", $data)){
 			$wc[] = "distcode = '". $data['distcode'] . "'";
 		}
-        $tcode=$this -> session -> Tehsil;
-		 if(isset($tcode) AND $tcode > 0){
-			$wc[] = "tcode = '". $tcode . "'";
-		}
-        $nwc = $wc;		
+		$nwc = $wc;		
 		//print_r($wc);exit();
 		$where = ((!empty($wc))? 'where '.implode(" AND ",$wc):'  ');
 		$whereInner = ((!empty($nwc))? 'where '.implode(" AND ",$nwc):'  ');
@@ -3720,7 +3707,7 @@ class Reports_model extends CI_Model {
 	 *	@return Array 	$returned_data
 	 *
 	 */
-	public function vaccine_demand($data)
+		public function vaccine_demand($data)
 	{
 		//print_r($data);//exit;
 		$tcode=$this -> session -> Tehsil;
@@ -3734,7 +3721,7 @@ class Reports_model extends CI_Model {
 		 }
 		//If data is required Facility wise
 		if(isset($data['distcode']) AND $data['distcode'] > 0   AND $data['typewise'] == 'facility')
-		{ 
+		{
 			/* $m_portion = "SELECT facode, facilityname(facode),";
 			$t_portion = "SELECT ";
 			while ($fmonth <= $data['monthto']) 
@@ -3765,9 +3752,9 @@ class Reports_model extends CI_Model {
 			COALESCE(SUM($column_name), 0) as \"Total\"
 			from facilities FULL JOIN epi_consumption_master on facilities.facode = epi_consumption_master.facode 
 			JOIN epi_consumption_detail on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
-			WHERE facilities.distcode='{$data['distcode']}' AND hf_type='e' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product and epi_consumption_master.is_compiled='1' 
+			WHERE facilities.distcode='{$data['distcode']}' AND hf_type='e' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product and epi_consumption_master.is_compiled='1'
 			".((!empty($wc)) ? 'AND ' . implode(' AND ', $wc) : '' )."
-			group by facilities.facode order by facilityname(facilities.facode)";  
+			group by facilities.facode order by facilities.facode";  
 			//in above query  AND is_vacc_fac='1' check remaining but if you are going to add it then it must be added into district query aswell.
 		}
 		//If data is required UC wise
@@ -3801,7 +3788,7 @@ class Reports_model extends CI_Model {
 			COALESCE(SUM($column_name), 0) as \"Total\"
 			from unioncouncil FULL JOIN epi_consumption_master on unioncouncil.uncode = epi_consumption_master.uncode 
 			JOIN epi_consumption_detail on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
-			WHERE unioncouncil.distcode='{$data['distcode']}' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product and  epi_consumption_master.is_compiled='1'
+			WHERE unioncouncil.distcode='{$data['distcode']}' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product and epi_consumption_master.is_compiled='1'
 			".((!empty($wc)) ? 'AND ' . implode(' AND ', $wc) : '' )."
 			group BY unioncouncil.uncode ORDER BY uncode";  
 			
@@ -3834,7 +3821,7 @@ class Reports_model extends CI_Model {
 			COALESCE(SUM($column_name), 0) as \"Total\"
 			from tehsil FULL JOIN epi_consumption_master on tehsil.tcode = epi_consumption_master.tcode 
 			JOIN epi_consumption_detail on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
-			WHERE tehsil.distcode='{$data['distcode']}' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product and  epi_consumption_master.is_compiled='1'
+			WHERE tehsil.distcode='{$data['distcode']}' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product and epi_consumption_master.is_compiled='1'
 			".((!empty($wc)) ? 'AND ' . implode(' AND ', $wc) : '' )."
 			group BY tehsil.tcode ORDER BY tcode";  
 		}
@@ -3847,14 +3834,14 @@ class Reports_model extends CI_Model {
 			{
 				$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
 								join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
-								WHERE fmonth='$fmonth' AND distcode=districts.distcode AND item_id = $product and  epi_consumption_master.is_compiled='1') AS \"$th\",";
+								WHERE fmonth='$fmonth' AND distcode=districts.distcode AND item_id = $product and epi_consumption_master.is_compiled='1') AS \"$th\",";
 				$t_portion .= "sum(\"$th\") AS \"Total $th\",";
 				$th = date('M Y', strtotime($fmonth. 'first day of next month'));
 				$fmonth = date('Y-m', strtotime($fmonth. 'first day of next month'));
 			}
 			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
 								join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
-								WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND distcode=districts.distcode AND item_id = $product and  epi_consumption_master.is_compiled='1') AS \"all total\"";
+								WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND distcode=districts.distcode AND item_id = $product and epi_consumption_master.is_compiled='1') AS \"all total\"";
 			$t_portion .= "sum(\"all total\") AS \"Total\",";
 			$m_portion .= " FROM districts ORDER BY distcode"; 			
 			
@@ -3957,14 +3944,6 @@ class Reports_model extends CI_Model {
 		{
 			$query = "SELECT uncode, unname(uncode), $str FROM fac_mvrf_db WHERE $whereCondition $whereFmonth GROUP BY uncode ORDER BY unname(uncode)";
 		}
-        elseif(isset($data['tcode']) AND $data['tcode'] > 0 AND $data['type_wise'] == 'facility')
-		{
-			$query = "SELECT facode, facilityname(facode), $str FROM fac_mvrf_db WHERE $whereCondition $whereFmonth GROUP BY facode ORDER BY facilityname(facode)";
-		}
-		elseif(isset($data['tcode']) AND $data['tcode'] > 0 AND $data['type_wise'] == 'uc')
-		{
-		    $query = "SELECT uncode, unname(uncode), $str FROM fac_mvrf_db WHERE $whereCondition $whereFmonth GROUP BY uncode ORDER BY unname(uncode)";
-		}
 		else
 		{
 			$query = "SELECT distcode, districtname(distcode), $str FROM fac_mvrf_db WHERE $whereCondition $whereFmonth GROUP BY distcode ORDER BY districtname(distcode)";
@@ -3972,12 +3951,10 @@ class Reports_model extends CI_Model {
 		$t_query = "SELECT $str FROM fac_mvrf_db WHERE $whereCondition $whereFmonth";
 		$result = $this->db->query($query)->result_array();
 		$result_total = $this->db->query($t_query)->result_array();
-		//$str = $this->db->last_query();
-		//print_r($str); exit;
 		if($this->input->post('export_excel')) 
 		{
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Vaccine_Demand_Report.xls");
+			header("Content-Disposition: attachment; filename=Dropouts_Report.xls");
 			header("Pragma: no-cache");
 			header("Expires: 0");
 		}
@@ -4169,29 +4146,24 @@ class Reports_model extends CI_Model {
 		$query = "SELECT * FROM indicator_main WHERE indmain IN (16) ORDER BY indmain";
 		$result = $this-> db-> query($query)-> result_array();
 		$mt = 1;
-		if(isset($data['distcode']) > 0){
-			$wc = " distcode = '".$data['distcode']."' ";
-		}else if(isset($data['tcode']) > 0){
-			$wc = " tcode = '".$data['tcode']."' ";
-		}
 		//If data is required Facility wise
-		if((isset($data['distcode']) AND $data['distcode'] > 0) || (isset($data['tcode']) AND $data['tcode'] > 0) AND $type_wise == 'facility')
+		if(isset($data['distcode']) AND $data['distcode'] > 0 AND $type_wise == 'facility')
 		{
 			$m_portion = "SELECT facode, facilityname(facode) AS \"Facility Name\",";
 			$code = 'facode';
 			$condition = 'facode=facilities.facode';
 			$type = 'fac';
-			$wc = "WHERE hf_type='e' AND {$wc} GROUP BY facode ORDER BY facilityname(facode)";
+			$wc = "WHERE hf_type='e' AND distcode='{$data['distcode']}' GROUP BY facode ORDER BY facilityname(facode)";
 			$table = "facilities";
 		}
 		//If data is required UC wise
-		elseif((isset($data['distcode']) AND $data['distcode'] > 0) || (isset($data['tcode']) AND $data['tcode'] > 0) AND $type_wise == 'uc' )
+		elseif(isset($data['distcode']) AND $data['distcode'] > 0 AND $type_wise == 'uc')
 		{
 			$m_portion = "SELECT uncode, unname(uncode) AS \"Union Council Name\",";
 			$code = 'uncode';
 			$condition = 'uncode=unioncouncil.uncode';
 			$type = 'uc';
-			$wc = "WHERE {$wc} GROUP BY uncode ORDER BY unname(uncode)";
+			$wc = "WHERE distcode='{$data['distcode']}' GROUP BY uncode ORDER BY unname(uncode)";
 			$table = "unioncouncil";
 		}
 		//If data is required District wise
@@ -4404,252 +4376,53 @@ class Reports_model extends CI_Model {
 		//echo "<pre>";print_r($returned_data);exit;
 		return $returned_data;
 	}
-
-// new code zsk
-
-//public function list_vaccination_children($data)
-	//{
-		
-		//new code Start
-		/* 
-		$new_date_from = $data['monthfrom'];
-		$new_date_to = $data['monthto'];
-		$wc[]=null;
-		if(isset($data['tcode']) && $data['tcode'] > 0){
-			$wc[] = " tcode = '".$data['tcode']."' ";
+	/**
+	 *
+	 *	District or UC wise Out UC coverage by other ucs
+	 *
+	 *	It May be viewed for single month or multiple months
+	 *	It May be viewed for all genders collectiveley or male/female seperate counts
+	 *	It May be viewed for all Age groups or individual
+	 *	It May be viewed for all vaccination types or fixed/outreach/mobile/healthhouse seperately
+	 *	@author: Raja Imran Qamer => rajaimranqamer@gmail.com
+	 *
+	 *	@param 	Array	$data	Filter values
+	 *	@return Array 	$returned_data
+	 *
+	 */
+	public function coverage_by_other_ucs($data)
+	{
+		if(isset($data["distcode"]) && $data["distcode"]>0){
+			$grouporderby = "uncode";
+			$where = "uncode like '".$data["distcode"]."%'";
+		}else{
+			$grouporderby = "distcode";
+			$where = "procode like '".$data["procode"]."%'";
 		}
-		if(isset($data['uncode']) && $data['uncode'] > 0 && $data['uncode']!=''){
-			$wc[] = " uncode = '".$data['uncode']."' ";
-		}
-		if(isset($data['facode']) && $data['facode'] > 0 && $data['facode']!=''){
-			$wc[] = " facode = '".$data['facode']."' ";
-		}
-		if(isset($data['monthfrom']) && $data['monthfrom'] != ''){
-			
-			$wc1[] = " fmonth >= '$new_date_from' ";
-		}
-		if(isset($data['monthto']) && $data['monthto'] != ''){
-			$wc1[] = " fmonth <= '$new_date_to' ";
-		}
-	   	if(isset($data['distcode']) && $data['distcode'] > 0)
-		{
-			$wc[] = " distcode = '".$data['distcode']."' ";
-		}
-		
-		$whereCondition=((!empty($wc1)) ? implode(' AND ', $wc1) : '' );	
-		$whereCondition.=((!empty($wc)) ? implode(' AND ', $wc) : '' );	
-		//print_r($whereCondition);print_r($wc1);
-		$this->db->select("cerv_child_registration.item_id,ips.item_name,ips.number_of_doses,
-					round(coalesce(sum(case when fmonth = '$new_date_from' then cerv_child_registration.opening_doses Else 0 End),0),1) as opening,
-					round(coalesce(sum(cerv_child_registration.received_doses),0),1) as received, 
-					sum(coalesce(cerv_child_registration.used_doses,0)) as useddose, 
-					sum(coalesce(cerv_child_registration.used_vials,0)) as usedvials, 
-					sum(coalesce(cerv_child_registration.unused_doses,0)) as unuseddose,
-					sum(coalesce(cerv_child_registration.unused_vials,0)) as unusedvials");
-					//sum(coalesce(case when fmonth = '$new_date_to' then cerv_child_registration.closing_vials Else 0 End,0)) as closing ");
-			$this->db->from('epi_consumption_master');
-			$this->db->join("cerv_child_registration","cerv_child_registration.main_id = epi_consumption_master.pk_id");
-			$this->db->join("epi_item_pack_sizes ips","cerv_child_registration.item_id = ips.pk_id");
-			$this->db->where($whereCondition);
-			$this->db->where('ips.item_category_id <> 4');
-			$this->db->where('ips.activity_type_id=1');
-			$this->db->group_by(' cerv_child_registration.item_id,ips.item_name,ips.number_of_doses,ips.list_rank');
-			$this->db->order_by('ips.list_rank');
-			$result['consumption']=$this -> db -> get() -> result_array();
-			if ($this -> input -> post('export_excel')) {
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Consolidated_Consumption_Requisition_Report.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-		//Excel file code ENDS*******************
-		$subTitle = 'Consolidated Consumption and Requisition Report';
-		$result['TopInfo'] = reportsTopInfo($subTitle, $data);
-		$result['exportIcons']=exportIcons($_REQUEST);
-		$result['monthfrom'] =  $data['monthfrom'];
-		$result['monthto'] =  $data['monthto'];
-		$result['datefrom'] = $new_date_from;
-		$result['dateto'] = $new_date_to;
-		//print_r($result);exit;
-		return $result; */
-		
-		//new code End
-		
-		
-	/* 	
-		$new_date_from = $data['monthfrom'];
-		$new_date_to = $data['monthto'];
-		$this->db->select("* from cerv_child_registration Where recno = '10643' ");
-		$result['consumption']=$this -> db -> get() -> result_array();
-		//print_r($result);exit;
-		//Excel file code ENDS*******************
-		$subTitle = 'List Of Vaccination Children Reports';
-		$result['TopInfo'] = reportsTopInfo($subTitle, $data);
-		$result['exportIcons']=exportIcons($_REQUEST);
-		$result['monthfrom'] =  $data['monthfrom'];
-		$result['monthto'] =  $data['monthto'];
-		$result['datefrom'] = $new_date_from;
-		$result['dateto'] = $new_date_to;
-		//print_r($result);exit;
-		return $result;   */
-		//echo 'asd';exit;
-		/////////////new code By usama sher khan  start///////
-		//code update by omer:for kpk new table format 
-		/* $new_date_from = $data['monthfrom'];
-		$new_date_to = $data['monthto'];
-		$wc[]=null;
-		if(isset($data['tcode']) && $data['tcode'] > 0){
-			$wc[] = " tcode = '".$data['tcode']."' ";
-		}
-		if(isset($data['uncode']) && $data['uncode'] > 0 && $data['uncode']!=''){
-			$wc[] = " uncode = '".$data['uncode']."' ";
-		}
-		if(isset($data['facode']) && $data['facode'] > 0 && $data['facode']!=''){
-			$wc[] = " facode = '".$data['facode']."' ";
-		}
-		if(isset($data['monthfrom']) && $data['monthfrom'] != ''){
-			
-			$wc1[] = " fmonth >= '$new_date_from' ";
-		}
-		if(isset($data['monthto']) && $data['monthto'] != ''){
-			$wc1[] = " fmonth <= '$new_date_to' ";
-		}
-	   	if(isset($data['distcode']) && $data['distcode'] > 0)
-		{
-			$wc[] = " distcode = '".$data['distcode']."' ";
-		}
-		
-		$whereCondition=((!empty($wc1)) ? implode(' AND ', $wc1) : '' );	
-		$whereCondition.=((!empty($wc)) ? implode(' AND ', $wc) : '' );	
-		//print_r($whereCondition);print_r($wc1);
-			$this->db->select("epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,
-					round(coalesce(sum(case when fmonth = '$new_date_from' then epi_consumption_detail.opening_doses Else 0 End),0),1) as opening,
-					round(coalesce(sum(epi_consumption_detail.received_doses),0),1) as received, 
-					sum(coalesce(epi_consumption_detail.used_doses,0)) as useddose, 
-					sum(coalesce(epi_consumption_detail.used_vials,0)) as usedvials, 
-					sum(coalesce(epi_consumption_detail.unused_doses,0)) as unuseddose,
-					sum(coalesce(epi_consumption_detail.unused_vials,0)) as unusedvials");
-					//sum(coalesce(case when fmonth = '$new_date_to' then epi_consumption_detail.closing_vials Else 0 End,0)) as closing ");
-			$this->db->from('epi_consumption_master');
-			$this->db->join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
-			$this->db->join("epi_item_pack_sizes ips","epi_consumption_detail.item_id = ips.pk_id");
-			$this->db->where($whereCondition);
-			$this->db->where('ips.item_category_id <> 4');
-			$this->db->where('ips.activity_type_id=1');
-			$this->db->group_by(' epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,ips.list_rank');
-			$this->db->order_by('ips.list_rank');
-			$result['consumption']=$this -> db -> get() -> result_array();
-			if ($this -> input -> post('export_excel')) {
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Consolidated_Consumption_Requisition_Report.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-		//Excel file code ENDS*******************
-		$subTitle = 'Consolidated Consumption and Requisition Report';
-		$result['TopInfo'] = reportsTopInfo($subTitle, $data);
-		$result['exportIcons']=exportIcons($_REQUEST);
-		$result['monthfrom'] =  $data['monthfrom'];
-		$result['monthto'] =  $data['monthto'];
-		$result['datefrom'] = $new_date_from;
-		$result['dateto'] = $new_date_to;
-		//print_r($result);exit;
-		return $result;  */
-			
-	//}
-	
-	
-//======= Function to Create Filters for Sepecific Reports Starts Here ===========//
-	function list_vaccination_children($title,$data,$per_page,$startpoint){
-		//$wc = $data;
-		//	print_r($facode);exit; 
-		if($this->input->post('export_excel'))
-		{
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=permanent_register.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-		//unset($wc['export_excel']);
-		$facode = $data['facode'];
-		$uncode = $data['uncode'];
-		$distcode = $data['distcode'];
- 	  	if (isset($_SESSION['Province'])) {
-			$wc = "  procode = '" . $_SESSION['Province'] . "' ";
-		}
-		if($distcode > 0)
-		{	
-			$wc = "distcode= '".$data['distcode']."'";
-		}
-		if(isset($data['tcode']) AND $data['tcode'] > 0){
-			$wc = "tcode= '".$data['tcode']."'";
-		}
-		if(isset($data['uncode']) AND $data['uncode'] > 0){
-			$wc = "uncode= '".$data['uncode']."'";
-		}
-		if(isset($data['facode']) AND $data['facode'] > 0){
-			$wc = "reg_facode= '".$data['facode']."'";
-		}
-		if(isset($data['technician']) AND $data['technician'] > 0){
-			$wc = "techniciancode= '".$data['technician']."'";
-		}
-		$data['techniciancode'] = $data['technician'];
-		//echo $wc;exit;
-		$defaultersWc = ' AND
-							deleted_at IS NULL';
-		if($data['defaulters'] == 1){
-			$date = date('Y-m-d');
-			$defaultersWc = "
-								AND
-								deleted_at IS NULL
-								AND 
-								((opv1 IS NULL AND opv2 IS NULL AND opv3 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								(rota1 IS NULL AND rota2 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								(pcv1 IS NULL AND pcv2 IS NULL AND pcv3 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								(penta1 IS NULL AND penta2 IS NULL AND penta3 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								
-								(opv1 IS NOT NULL AND opv2 IS NULL AND opv3 IS NULL AND '{$date}'::date >= opv1 + interval '30' day) OR
-								(rota1 is NOT NULL AND rota2 IS NULL AND '{$date}'::date >= rota1 + interval '30' day) OR
-								(pcv1 IS NOT NULL AND pcv2 IS NULL AND pcv3 IS NULL AND '{$date}'::date >= pcv1 + interval '30' day) OR
-								(penta1 IS NOT NULL AND penta2 IS NULL AND penta3 is NULL AND '{$date}'::date >= penta1 + interval '30' day) OR
-								
-								(opv2 IS NOT NULL AND opv3 IS NULL AND '{$date}'::date >= opv2 + interval '30' day) OR
-								(ipv IS NULL AND '{$date}'::date >= dateofbirth + interval '99' day) OR
-								(pcv2 IS NOT NULL AND pcv3 IS NULL AND '{$date}'::date >= pcv2 + interval '30' day) OR
-								(penta2 IS NOT NULL AND penta3 IS NULL AND '{$date}'::date >= penta2 + interval '30' day) OR
-								
-								(measles1 IS NULL AND measles2 IS NULL AND '{$date}'::date >= dateofbirth + interval '1 month'*9 + interval '1' day) OR
-								(measles1 IS NOT NULL AND measles2 IS NULL AND '{$date}'::date >= measles1 + interval '30' day AND '{$date}'::date >= dateofbirth + interval '1 year' + interval '1 month'*3 + interval '1' day))
-			";
-		}
-		$query="select recno,child_registration_no,cardno as childcode, nameofchild as name_of_child, dateofbirth as date_of_birth,
-		unname(uncode) as unioncouncil, contactno, villagename(villagemohallah) as villagemohallah,(case when gender='m' then 'Male' else 'Female' end) as \"Gender\", fathername as fname,
-		address as address, bcg, hepb, opv0, opv1, penta1, pcv1 as pcv10_1, opv2, penta2,
-		pcv2 as pcv10_2, opv3, penta3, pcv3 as pcv10_3, ipv, rota1, rota2, measles1, measles2 
-		from cerv_child_registration where ".$wc." {$defaultersWc} order by cardno "; 
-		if( ! $this -> input -> post('export_excel')){
-			$query .= "LIMIT {$per_page} OFFSET {$startpoint}";
-		}
-		$result=$this->db->query($query);
-        //$str = $this->db->last_query();
-		//print_r($str); exit;
-		$dataReturned["PVRresult"]=$result->result_array();
-		$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
-		$queryTotal = 'select count(*) as total from cerv_child_registration';
-		$resultTotal=$this->db->query($queryTotal);
-		$data['allDataTotal']=$resultTotal->result_array();
-		$dataReturned['pageTitle']='Children Registration';
-		//$dataReturned['reportdate']=getListingReportTable($dataReturned["tableData"],'',$data['allDataTotal'],'');
-		$dataReturned['exportIcons']=exportIcons($_REQUEST);
-		$dataReturned["defaulters"]=$data['defaulters'];
-		//$dataReturned['year'] = $data['year'];
-		return $dataReturned;
-	}	
+		$whereFmonth = " fmonth BETWEEN '" . $data['monthfrom'] . "' AND '" . $data['monthto'] . "'";
+		$query = "SELECT *,$grouporderby || colname as uniquecol,
+			(fm1+ff1+om1+of1+mm1+mf1+hm1+hf1+fm2+ff2+om2+of2+mm2+mf2+hm2+hf2+fm3+ff3+om3+of3+mm3+mf3+hm3+hf3+fp+fnp+op+onp+mp+mnp+hp+hnp) as total,
+			(fm1+ff1+fm2+ff2+fm3+ff3+fp+fnp) as fixedtotal,
+			(om1+of1+om2+of2+om3+of3+op+onp) as outtotal,
+			(mm1+mf1+mm2+mf2+mm3+mf3+mp+mnp) as mobiletotal,
+			(hm1+hf1+hm2+hf2+hm3+hf3+hp+hnp) as healthtotal,
+			(fm1+om1+mm1+hm1+fm2+om2+mm2+hm2+fm3+om3+mm3+hm3) as maletotal,
+			(ff1+of1+mf1+hf1+ff2+of2+mf2+hf2+ff3+of3+mf3+hf3) as femaletotal,
+			(fm1+fm2+fm3) as fixedmale,
+			(ff1+ff2+ff3) as fixedfemale,
+			(om1+om2+om3) as outmale,
+			(of1+of2+of3) as outfemale,
+			(mm1+mm2+mm3) as mobilemale,
+			(mf1+mf2+mf3) as mobilefemale,
+			(hm1+hm2+hm3) as healthmale,
+			(hf1+hf2+hf3) as healthfemale,
+			(fm1+ff1+om1+of1+mm1+mf1+hm1+hf1) as totalagegroup1,
+			(fm2+ff2+om2+of2+mm2+mf2+hm2+hf2) as totalagegroup2,
+			(fm3+ff3+om3+of3+mm3+mf3+hm3+hf3) as totalagegroup3,
+			(fp+op+mp+hp) as totalpregnant,
+			(fnp+onp+mnp+hnp) as totalnonpregnant
+			from (SELECT $grouporderby,item_id,antigen,coveragerepcolumns(item_id,antigen::text) as colname,sum(fm1) as fm1,sum(ff1) as ff1,sum(om1) as om1,sum(of1) as of1,sum(mm1) as mm1,sum(mf1) as mf1,sum(hm1) as hm1,sum(hf1) as hf1,sum(fm2) as fm2,sum(ff2) as ff2,sum(om2) as om2,sum(of2) as of2,sum(mm2) as mm2,sum(mf2) as mf2,sum(hm2) as hm2,sum(hf2) as hf2,sum(fm3) as fm3,sum(ff3) as ff3,sum(om3) as om3,sum(of3) as of3,sum(mm3) as mm3,sum(mf3) as mf3,sum(hm3) as hm3,sum(hf3) as hf3,sum(fp) as fp,sum(fnp) as fnp,sum(op) as op,sum(onp) as onp,sum(mp) as mp,sum(mnp) as mnp,sum(hp) as hp,sum(hnp) as hnp FROM public.monthly_outuc_coverage where ".$where." and ".$whereFmonth." group by ".$grouporderby.",item_id,antigen order by ".$grouporderby.",item_id,antigen) as allouter";
+		return $this->db->query($query)->result_array();
+	}
 }
 ?>

@@ -8,12 +8,15 @@ class Search extends CI_Controller {
 		$this -> load -> helper('inventory_helper');
 		$this -> load -> model ('Inventory_model',"invn");
 		$this -> load -> model ('Common_model',"common");
+		$this -> load -> helper('my_functions_helper');
 	}
 	/* 
 	* Stock Receive Search
 	*/
 	public function stock_receive_search()
 	{
+		$subTitle ="(Vaccine Managment) Stock Recevie - Search";
+		$data['subtitle']=$subTitle;
 		 if($this->input->post('export_excel'))
 		{
 			//if request is from excel
@@ -25,20 +28,23 @@ class Search extends CI_Controller {
 		$data['data'] =NULL;
 		if($this -> input -> post('date_from') && $this -> input -> post('date_to'))
 		{
-			$data['data']['date_from'] = $this -> input -> post('date_from');
-			$data['data']['date_to'] = $this -> input -> post('date_to');
-			if($this -> input -> post('from_warehouse_type_id') && $this -> input -> post('from_warehouse_type_id') > 0)
+			$data['data']['date_from'] = $date_from = $this -> input -> post('date_from');
+			$data['data']['date_to'] = $date_to = $this -> input -> post('date_to');
+			/* if($this -> input -> post('from_warehouse_type_id') && $this -> input -> post('from_warehouse_type_id') > 0){
 				$data['data']['from_warehouse_type_id'] = $this -> input -> post('from_warehouse_type_id');
-			if($this -> input -> post('activity') && $this -> input -> post('activity') > 0)
+			}
+			if($this -> input -> post('activity') && $this -> input -> post('activity') > 0){
 				$data['data']['activity']  = $this -> input -> post('activity');
-			if($this -> input -> post('product') && $this -> input -> post('product') > 0)
+			} */
+			if($this -> input -> post('product') && $this -> input -> post('product') > 0){
 				$data['data']['product'] = $this -> input -> post('product');
+			}
 			if($this -> input -> post('search_type') && $this -> input -> post('search_type') != ''){
 				$data['data']['search_type'] = $this -> input -> post('search_type');
 				$data['data']['search_key'] = $this -> input -> post('search_key');
 			}
-			$posteddateto = date("Y-m-d",strtotime($this -> input -> post('date_to').' + 1 day'));
-			$result=$this->invn->stockRecieve($this -> input -> post('date_from'),$posteddateto,$this -> input -> post('from_warehouse_type_id'),$this -> input -> post('activity'),$this -> input -> post('product'),$this -> input -> post('search_type'),$this -> input -> post('search_key'));
+			$posteddateto = date("Y-m-d",strtotime($date_to.' + 1 day'));
+			$result=$this->invn->stockRecieve($date_from,$posteddateto,0 /* $this -> input -> post('from_warehouse_type_id') */,0 /* $this -> input -> post('activity') */,$this -> input -> post('product'),$this -> input -> post('search_type'),$this -> input -> post('search_key'));
 			$data['data']['searchResult']=$result['data']['search'];
 			
 		}
@@ -156,8 +162,10 @@ class Search extends CI_Controller {
 	*/
 	public function stock_issue_search()
 	{
+		$subTitle ="(Vaccine Managment) Stock Issue - Search";
+		$data['subtitle']=$subTitle;
 		 if($this->input->post('export_excel'))
-		{
+		{ 
 			//if request is from excel
 			header("Content-type: application/octet-stream");
 			header("Content-Disposition: attachment; filename=Stock_Issue.xls");
@@ -185,6 +193,7 @@ class Search extends CI_Controller {
 			$data['data']['searchResult']=$result['data']['issue'];
 		}
 		//print_r($this->db->last_query());exit;
+		createTransactionLog("Stock Issue - Search", $subTitle." - Viewed -  Also Incluse search Button in view page");
 		$data['exportIcons']=exportIcons($_REQUEST,NULL,'excel');
 		$data['fileToLoad'] = 'inventory_management/stock_issue_search';
 		$data['pageTitle'] = 'EPI-MIS | Stock Issue - Search';
@@ -324,6 +333,8 @@ class Search extends CI_Controller {
 	*/
 	public function stock_adjustment_search()
 	{
+		$subTitle ="(Vaccine Managment) Adjustment - Search";
+		$data['subtitle']=$subTitle;
 		 if($this->input->post('export_excel'))
 		{
 			//if request is from excel
@@ -332,7 +343,7 @@ class Search extends CI_Controller {
 			header("Pragma: no-cache");
 			header("Expires: 0"); 
 		} 
-		$data['data'] =NULL;
+		$data['data'] = NULL;
 		$data['data']["adjsttypes"] = $this->common->fetchall("epi_transaction_types",NULL,"pk_id as id,transaction_type_name as name,nature",array("is_adjustment"=>1),NULL,array("by"=>"transaction_type_name","type"=>"ASC"));
 		if($this -> input -> post('date_from') && $this -> input -> post('date_to'))
 		{
@@ -353,6 +364,7 @@ class Search extends CI_Controller {
 			$data['data']['searchResult']=$result['data']['adjustment'];
 			
 		}
+		createTransactionLog("Adjustment - Search", $subTitle." - Viewed");
 		$data['fileToLoad'] = 'inventory_management/stock_adjustment_search';
 		$data['exportIcons']=exportIcons($_REQUEST,NULL,'excel');
 		$data['pageTitle'] = 'EPI-MIS | Adjustment - Search';
@@ -360,7 +372,7 @@ class Search extends CI_Controller {
 	}
 	public function stock_adjustment_search_detail()
 	{
-		$data['data'] =NULL;
+		$data['data'] = NULL;
 		$data['data']['date_from'] = $_REQUEST['date_from'];
 		$data['data']['date_to'] =  $_REQUEST['date_to'];
 		$expiry=$_REQUEST['expiry'];
@@ -380,6 +392,8 @@ class Search extends CI_Controller {
 	}
 	public function stock_transfer_search($product=NULL,$date_from=NULL,$date_to=NULL)
 	{
+		$subTitle ="(Vaccine Managment) Purpose Transfer Search";
+		$data['subtitle']=$subTitle;
 		 if($this->input->post('export_excel'))
 		{
 			//if request is from excel
@@ -388,7 +402,7 @@ class Search extends CI_Controller {
 			header("Pragma: no-cache");
 			header("Expires: 0"); 
 		} 	
-		$data['data'] =NULL;
+		$data['data'] = NULL;
 		if($this -> input -> post('date_from') && $this -> input -> post('date_to') )
 		{
 			$data['data']['date_from'] = $this -> input -> post('date_from');
@@ -400,7 +414,6 @@ class Search extends CI_Controller {
 			$result=$this->invn->stock_transfer($this -> input -> post('date_from'),$posteddateto,$this -> input -> post('product'));
 			$data['data']['searchResult']=$result['data']['transfer'];
 		}
-		
 			$data['exportIcons']=exportIcons($_REQUEST,NULL,'excel');
 			$data['fileToLoad'] = 'inventory_management/stock_transfer_search';
 			$data['pageTitle'] = 'EPI-MIS | Stock Transfer Search';
@@ -408,7 +421,7 @@ class Search extends CI_Controller {
 	}
 	public function Stock_Transfer_Report()
 	{
-		$data['data'] =NULL;
+		$data['data'] = NULL;
 		$data['data']['date_from'] =$date_from=$_REQUEST['date_from'];
 		$data['data']['date_to'] = $date_to=$_REQUEST['date_to'];
 		$data['data']['product'] =$product= $_REQUEST['product'];
@@ -477,7 +490,7 @@ class Search extends CI_Controller {
 	}
 	public function stock_batch_vacchine_summary()
 	{
-	//Vaccine Productstock_issue_dispatch_report
+		//Vaccine Productstock_issue_dispatch_report
 			$data['data']['searchResult'] = $this->invn->batch_summary('1');
 			$data['data']['exportIcons']=exportIcons($_REQUEST);
 			$data['fileToLoad'] = 'inventory_management/stock_batch_Vaccine_summary';
@@ -491,7 +504,8 @@ class Search extends CI_Controller {
 		$data['fileToLoad'] = 'inventory_management/stock_batch_nbrwise_summary';
 		$data['pageTitle'] = 'EPI-MIS | Stock Batch Vaccine Summary';
 		$this->load->view('template/reports_template',$data);
-		}
+	}
+	
 	public function stock_batch_manufacturer()
 	{
 		
@@ -501,6 +515,7 @@ class Search extends CI_Controller {
 			$data['pageTitle'] = 'EPI-MIS | Stock Batch -Manufacturer';
 			$this->load->view('template/reports_template',$data);
 	}
+	
 	public function stock_receive() 
 	{
 		$data['data']['searchResult'] = $this->invn->recevie_vaccine();
@@ -510,6 +525,7 @@ class Search extends CI_Controller {
 		//$data['fileToLoad'] = ['inventory_management/stock_batch_Receive'];
 	    $data['pageTitle'] = 'EPI-MIS | Stock Receive Report';
 		$this->load->view('inventory_management/stock_batch_Receive',$data); 
+		
 	}
 		public function stock_batch_Nonvacchine_summary()
 	{
@@ -517,6 +533,15 @@ class Search extends CI_Controller {
 			$data['data']['searchResult'] = $this->invn->batch_summary("'2','3'");
 			$data['data']['exportIcons']=exportIcons($_REQUEST);
 			$data['fileToLoad'] = 'inventory_management/stock_batch_NonVaccine_summary';
+			$data['pageTitle'] = 'EPI-MIS | Stock Batch Non-Vaccine Summary';
+			$this->load->view('template/reports_template',$data);
+	}	
+		public function batch_nonwise_summary()
+	{
+		//Non-Vaccine Product
+			$data['data']['searchResult'] = $this->invn->batch_nonwise_summary("'2','3'");
+			$data['data']['exportIcons']=exportIcons($_REQUEST);
+			$data['fileToLoad'] = 'inventory_management/stock_batch_nonwise_summary';
 			$data['pageTitle'] = 'EPI-MIS | Stock Batch Non-Vaccine Summary';
 			$this->load->view('template/reports_template',$data);
 	}

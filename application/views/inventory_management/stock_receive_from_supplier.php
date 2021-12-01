@@ -271,7 +271,17 @@ $batchexist = (isset($draftdata) and count($draftdata["batch"]))?true:false;
 		window.open(url); 
  	});
 		$(document).on('click','#savebtn',function(){
+			$(this).attr("disabled","disabled");
+			$(this).prop('disabled', true);
+	    var res=confirm('Are you sure you want to save the list');
+		if(res){
 		var url="<?php echo base_url();?>saveInvnSuppReceive";
 		window.location.href=url;
+		}
+		else
+		{
+			$(this).removeAttr("disabled");
+			return false;
+		}
 	});
 </script>

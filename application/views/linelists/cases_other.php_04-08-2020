@@ -224,7 +224,7 @@
 										<td>
 											<?php 
 												if($row['final_classification'] == 'Clinically Compatible'){
-													echo 'Clinically Compatible'; echo ' ('; echo $row['clinically_compatible_to']; echo ')';
+													echo 'Clinically Compatible'; echo ' ('; echo $row['clinically_compatible_with']; echo ')';
 												}
 												else{
 													echo $row['final_classification'];
@@ -238,7 +238,8 @@
 							</tbody>
 						</table>
 					</div>
-					<?php if(isset($pagination)){ ?>
+				<?php if(! $this->input->post('export_excel')) { ?>
+					<?php if(isset($pagination)) { ?>
 						<div class="row">
 								<div class="col-sm-12" align="center">
 									<div id="paging">
@@ -250,6 +251,7 @@
 								</div>
 						</div>
 					<?php } ?>
+				<?php } ?>
 					<div class="row">
 						<div class="col-sm-4">
 							<table class="table table-bordered table-striped">

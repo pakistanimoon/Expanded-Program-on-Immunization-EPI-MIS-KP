@@ -24,6 +24,7 @@ class Case_investigation_model extends CI_Model {
 		return $data;
 	}
 	public function case_investigation_list($per_page,$startpoint){
+
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
 		$this->breadcrumbs->push('Case Investigation List', '/Case_investigation/case_investigation_list');
@@ -48,12 +49,13 @@ class Case_investigation_model extends CI_Model {
 		$query="SELECT distinct week from case_investigation_db where $wc order by week";
 		$resultWeek=$this -> db -> query($query);
 		$data['resultWeek'] = $resultWeek -> result_array();
-		//echo
-		$query="SELECT id, cross_notified, approval_status, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, other_pro_district, facilityname(facode) as fac_name, tehsilname(tcode) as tehsil, patient_name, is_temp_saved, fweek, year, case_epi_no, case_type, pvh_date from case_investigation_db where case_type != 'Msl' AND (distcode='". $this -> session -> District ."' OR cross_notified_from_distcode='". $this -> session -> District ."' OR rb_distcode='". $this -> session -> District ."') order by id desc, year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}  ";
+
+		$query="SELECT id,cross_notified,approval_status,cross_notified_from_distcode,facode, uncode, tcode, distcode, procode, other_pro_district, facilityname(facode) as fac_name, tehsilname(tcode) as tehsil, patient_name, is_temp_saved, fweek, year, case_number, case_epi_no, case_type, pvh_date from case_investigation_db where case_type != 'Msl' AND (distcode='". $this -> session -> District ."' OR cross_notified_from_distcode='". $this -> session -> District ."' OR rb_distcode='". $this -> session -> District ."') order by year desc, case_number desc, fweek desc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		//exit();
 		$result=$this -> db -> query ($query);
 		$data['result'] = $result -> result_array();
 		return $data;
+
 	}	
 	
 	public function checkForExcessiveReocord($facode,$disease,$fweek){

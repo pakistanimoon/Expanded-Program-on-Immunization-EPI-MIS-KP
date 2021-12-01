@@ -403,7 +403,7 @@
 	$('#dateofbirth').datepicker({
 		"format": "yyyy-mm-dd",
 		'startView': 2,
-		'autoclose': true,
+		//'autoclose': true,
 		'endDate' : Date(),
 	}).on('changeDate', function(e) {
 		var dp = $(e.currentTarget).data('datepicker');
@@ -419,7 +419,7 @@
 		document.getElementById("hepb").disabled = false;
 		document.getElementById("penta1").disabled = false;
 		document.getElementById("rota1").disabled = false; 
-		document.getElementById("opv1").disabled = false; 
+		//document.getElementById("opv1").disabled = false; 
 		document.getElementById("pcv1").disabled = false;
 		document.getElementById("dateofdeath").disabled = false;
 		document.getElementById("dateofrefusal").disabled = false;
@@ -486,8 +486,8 @@
 		'autoclose': true,
 		'endDate' : Date(),
 	}).on('changeDate', function(e) {
-		//$("#opv1").val('');
-		//addDays('opv0', 'opv1', 42); 
+		$("#opv1").val('');
+		addDays('opv0', 'opv1', 42); 
 		document.getElementById("opv1").disabled = false;
 		
 		var dateofbirth  = new Date($('#dateofbirth').val());

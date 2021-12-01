@@ -54,7 +54,6 @@
 				<option value="On Leave">On Leave</option>
 				<option value="Active">Temporary-Post</option>
                 <option value="Transfered">Transfered</option>
-				<option value="Post Back">Post Back</option> 
               </select>
         </div>
        </div>
@@ -93,7 +92,6 @@
 				<option value="On Leave">On Leave</option>
 				<option value="Active">Temporary-Post</option>
                 <option value="Transfered">Transfered</option>
-				<option value="Post Back">Post Back</option> 
               </select>
         </div>
          </div>
@@ -122,8 +120,8 @@
 				<th class="text-center Heading">Form Status</th>
 
   <?php if ($_SESSION['UserLevel']=='3' && $utype=='DEO' ){?> 
-                <th class="text-center Heading" style="width:100px;">
-<a href="<?php echo base_url(); ?>Measles-Focal-Person/Add" class="red-tooltip" data-toggle="tooltip" title="Add New Measles-Focal-Person">
+                <th class="text-center Heading">
+<a href="<?php echo base_url(); ?>Measles-Focal-Person/Add" data-toggle="tooltip">
                     <button class="submit btn-success btn-sm">
                     <i class="fa fa-plus"></i> Add New</button>
                   </a>
@@ -203,7 +201,11 @@
           { data: "nic" },
           { data: "phone" },
           { data: "employee_type" },
+          
           { data: "districtname" },
+          
+          
+          
           { data: "status" },
           { data: "is_temp_saved" },
           { data: "mfpcode" ,
@@ -256,8 +258,6 @@
         "columns": columns,
         dom: 'lrtips'
       });
-	  // //default load active 
-	  table.columns(6).search("Active").draw();	 
 
   $('#distcode').on('change', function () {
     table.columns(5).search( this.value ).draw();

@@ -7,16 +7,12 @@
 		<table id="fixTable"  class="table table-bordered table-hover table-striped">
 			<thead>
 				<tr>
-				    <?php if($this->session->Tehsil){ ?>
-						<th>Tcode</th>
-						<th>Tehsil</th>
-					<?php } else{?>
-						<th>Distcode</th>
-						<th>Distname</th>
-					<?php } ?>
+				    
+					<th>Distcode</th>
+					<th>Distname</th>
 					<th>Due</th>
 					<?php
-							$current_year = date('yy');
+					$current_year = date('yy');
 							//print_r($current_year);exit;
 							if($year == $current_year)
 							{
@@ -52,15 +48,9 @@
 				 	foreach($data as $val)
 					{
 						echo "<tr class='DrillDownRow'><td class='text-center'>";
-					    if($this->session->Tehsil){
-							echo $val->tcode;
-							echo "</td><td class='text-center'>";
-							echo $val->tehsil;
-						}else{
-							echo $val->distcode;
-							echo "</td><td class='text-center'>";
-							echo $val->district;
-						}
+					    echo $val->distcode;
+						echo "</td><td class='text-center'>";
+						echo $val->district;
 						echo "</td><td class='text-center'>";
 						echo $val->due;
 						for ($qurt = 1; $qurt <= $quarter; $qurt++) {
@@ -95,16 +85,7 @@
 		var code = $(this).find("td:nth-child(1)").text();
 		if(code.toString().length == 3){
 			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_quarter_tech_compliance?distcode="+code+"&year="+year;
-			var win = window.open(url,'_blank');
-			if(win){
-				win.focus();
-			}else{
-				//Broswer has blocked it
-				alert('Please allow popups for this site');
-			}
-		}else if(code.toString().length == 6){
-			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_quarter_tech_compliance?tcode="+code+"&year="+year;
-			var win = window.open(url,'_blank');
+			var win = window.open(url,'_self');
 			if(win){
 				win.focus();
 			}else{

@@ -1,6 +1,5 @@
 <button style="float:right;padding:5px;color:white;" id="excel1" ><i class="fa fa-file-excel-o" aria-hidden="true">Excel</i></button>
 <?php 
-
 	date_default_timezone_set('Asia/Karachi'); // CDT
 	$current_date = date('Y-m-d');
 	
@@ -145,9 +144,7 @@
 							<a href="<?php echo base_url();?>red_rec_microplan/Situation_analysis/situation_analysis_list"><button type="button" class="form-btn"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button></a>							
 						
 						<?php } ?>
-						<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
 							<a href="<?php echo base_url();?>red_rec_microplan/Situation_analysis/situation_analysis_edit/<?php echo $data[0]['techniciancode']; ?>/<?php echo $data[0]['year']; ?>"><button type="button" class="form-btn"><i class="fa fa-pencil" aria-hidden="true"></i> Update</button></a>	
-						<?php } ?>
 						</div>
 					</div>				
 				</div> <!--end of panel body-->	
@@ -158,9 +155,13 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	$('#excel1').on('click', function () {
+			
 	var techniciancode =<?php echo $data[0]['techniciancode']; ?>;
 	var year =<?php echo $data[0]['year']; ?>;
-	var url="<?php echo base_url(); ?>Ajax_red_rec/excel_situation_analysis_view/"+techniciancode+"/"+year;
+		//alert(year);
+		 
+		 var url="<?php echo base_url(); ?>Ajax_red_rec/excel_situation_analysis_view/"+techniciancode+"/"+year;
 		window.open(url,"_blank");
+				
 	});
 </script>

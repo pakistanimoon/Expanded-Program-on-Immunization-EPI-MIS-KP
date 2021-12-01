@@ -1,4 +1,4 @@
-<!--start of page content or body kp-->
+<!--start of page content or body-->
  <div class="container bodycontainer">
   
 <div class="row">

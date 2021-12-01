@@ -1175,8 +1175,8 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 	{
 		$("#"+end_date_id).datepicker('setEndDate', from_date);
 	}
-   	//$("#"+end_date_id).datepicker('setEndDate', '+2y');
-   	if(from_date != '')
+   //$("#"+end_date_id).datepicker('setEndDate', '+2y');
+   if(from_date != '')
 	{
     	from_date = from_date.substring(6,10) + '-' + from_date.substring(3,5) + '-' + from_date.substring(0,2);
     	from_date = new Date(from_date.toString());
@@ -1186,14 +1186,14 @@ function fromDate(start_date_id, end_date_id, $gt=false)
     	to_date = to_date.substring(6,10) + '-' + to_date.substring(3,5) + '-' + to_date.substring(0,2);
     	to_date = new Date(to_date.toString());
     	if(to_date < from_date && $gt == false)
-	   	{
-	      	$("#"+end_date_id).val('');
-	      	$("#"+end_date_id).datepicker('setEndDate', '+0d');
-	   	}
-	   	if(to_date > from_date && $gt == true)
-	   	{
-	      	$("#"+end_date_id).val('');
-	   	}
+	   {
+	      $("#"+end_date_id).val('');
+	      $("#"+end_date_id).datepicker('setEndDate', '+0d');
+	   }
+	   if(to_date > from_date && $gt == true)
+	   {
+	      $("#"+end_date_id).val('');
+	   }
     }
 }
 
@@ -1218,16 +1218,15 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 	$("#pvh_date").on( "change", function() {
 		//console.log(startDate);
 	    fromDate('pvh_date', 'notification_date');//For Restrictions on notification date
-	    //fromDate('pvh_date', 'date_rash_onset',true);//For Restrictions on rash onset date
+	    fromDate('pvh_date', 'date_rash_onset',true);//For Restrictions on rash onset date
 	    fromDate('pvh_date', 'date_collection');//For Restrictions on specimen collection date
-	   	// addDays('pvh_date', 'followup_date', 45);//For Restrictions on specimen collection date
+	   // addDays('pvh_date', 'followup_date', 45);//For Restrictions on specimen collection date
 
-	 	// if($('#doses_received').val() != '0')
+	 //    if($('#doses_received').val() != '0')
 		// {
 		// 	fromDate('pvh_date', 'last_dose_date',true);//For Restrictions on last dose date
 		// }
 	});
-
 	//condition by usama for follow up AND SAMPLE COLLECTION 
 	$("#date_investigation").on( "change", function() {
 		//console.log(startDate);
@@ -1238,7 +1237,6 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 	    addDays('date_rash_onset');//For Restrictions on specimen collection date
 	    //addDays('date_rash_onset', 'date_collection', 2);//For Restrictions on specimen collection date
 	});
-
 	////end ////
 	$("#date_collection").on( "change", function() {
 	   fromDate('date_collection', 'date_sent_lab');
@@ -1260,10 +1258,10 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 			$("#last_dose_date").datepicker('remove');
 			$('#last_dose_date').addClass('dp');
 			$('#last_dose_date').prop('readonly', false);
-			$("#last_dose_date").datepicker({format: 'dd-mm-yyyy'});			
+			$("#last_dose_date").datepicker({format: 'dd-mm-yyyy'});
 			//fromDate('pvh_date', 'last_dose_date',true);//For Restrictions on last dose date
 			$('#last_dose_date').datepicker('setStartDate', "1925-01-01");
-			$('#last_dose_date').datepicker('setEndDate', date_investigation);			
+			$('#last_dose_date').datepicker('setEndDate', date_investigation);
 		}
 	});
 
@@ -1390,7 +1388,7 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 					success: function(data){
 						if(case_type == 'Msl' || case_type == 'Diph' || case_type == 'Anth'){
 							$("#case_representation").multiselect('destroy');
-							document.getElementById("case_representation").setAttribute("multiple", "multiple");			
+							document.getElementById("case_representation").setAttribute("multiple", "multiple");							
 							$('#case_representation').html(data);
 							$('#case_representation').multiselect({
 								includeSelectAllOption: true,
@@ -1405,7 +1403,7 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 							$('.btn-group').remove();
 							document.getElementById("case_representation").removeAttribute("multiple"); 
 						}
-					}
+					}					
 				});
 			}
 			else{
@@ -2032,6 +2030,11 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 	$('#type_specimen').multiselect('rebuild');
 	$('#type_specimen').multiselect("deselectAll", false).multiselect("refresh");
 
+	$('#type_specimen').change(function(){
+		selectedOptions = $(this).val();
+		$('.specimenButton').text(selectedOptions);
+	});
+
 	$('#caseInformation').addClass('hide');
 	$('#noEpidNumber').addClass('hide');
 	var type_specimen  = $('#type_specimen').val();
@@ -2209,21 +2212,21 @@ function fromDate(start_date_id, end_date_id, $gt=false)
      /*$("#date_rash_onset").on( "change", function() {
         fromDate('date_rash_onset', 'date_rash_onset');
       });*/
-	$("#pvh_date").on( "change", function() {
-		$('#date_rash_onset').datepicker('setStartDate', "1925-01-01");
-		$('#date_rash_onset').datepicker('setEndDate', $(this).val());
-	});
-	$("#pvh_date").on( "change", function() {
-		$('#notification_date').datepicker('setStartDate', $(this).val());
-		$('#notification_date').datepicker('setEndDate');
-	});
-	$("#notification_date").on( "change", function() {
-		$('#date_investigation').datepicker('setStartDate', $(this).val());
-		$('#date_investigation').datepicker('setEndDate');
-	});
-	
-   	//-------- Javascript for Cross Notification to other Provinces -------//
-   	$(document).on('change','#other_procode', function(){
+    	$("#pvh_date").on( "change", function() {
+        $('#date_rash_onset').datepicker('setStartDate', "1925-01-01");
+   		$('#date_rash_onset').datepicker('setEndDate', $(this).val());
+      });
+      $("#pvh_date").on( "change", function() {
+        $('#notification_date').datepicker('setStartDate', $(this).val());
+   		$('#notification_date').datepicker('setEndDate');
+      });
+       $("#notification_date").on( "change", function() {
+        $('#date_investigation').datepicker('setStartDate', $(this).val());
+   		$('#date_investigation').datepicker('setEndDate');
+      });
+
+   //-------- Javascript for Cross Notification to other Provinces -------//
+   $(document).on('change','#other_procode', function(){
 		var procode = $('#other_procode').val();
 		//if($("#other_procode").length == 0)
 		if(procode == '<?php echo $_SESSION["Province"]; ?>') {

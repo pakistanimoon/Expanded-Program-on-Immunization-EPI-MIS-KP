@@ -1,14 +1,8 @@
 <?php
-	$fmonthfrom = (isset($data['fmonthfrom']))?$data['fmonthfrom']:''; 
-	$fmonthto = (isset($data['fmonthto']))?$data['fmonthto']:'';
-	$month = (isset($data['month']))?$data['month']:''; 
-	$year = (isset($data['year']))?$data['year']:'';
-	$from_week = (isset($data['from_week']))?$data['from_week']:'1';
-	$to_week = (isset($data['to_week']))?$data['to_week']:lastWeek($year);
-	$fweekfrom = $year.'-'.sprintf("%02d", $from_week);
-	$fweekto = $year.'-'.sprintf("%02d", $to_week);
-	$fmonth = $year.'-'.$month;
-	//print_r($data);exit;
+  $month = (isset($data['month']))?$data['month']:''; 
+  $year = (isset($data['year']))?$data['year']:'';
+  $fmonth = $year.'-'.$month;
+  //print_r($data);exit;
     $dataId = 0;
     if(isset($data['id'])){
     	$dataId = $data['id'];
@@ -16,33 +10,26 @@
     $fmonth = $year.'-'.$month;
     if($data['reportType'] == 'monthly'){
     	$title_M_Y = date('M Y',strtotime($fmonth));
-		$hovermap1 = $fmonthfrom;
-		$hovermap2 = "Period From:";
-		$hovermap3 = $fmonthto;
-		$hovermap4 = "Period To:";
+		$hovermap = $year.'-'.$month;
+		$hovermap1 = "Year-Month:";
+	}else if($data['reportType'] == 'quarterly'){
+		$month = '';
+		$quarter = $data['quarter'];
+		$title_M_Y = 'Quarter '.$quarter.' of '.$year;
+		$hovermap = $year.'-'.$quarter;
+		$hovermap1 = "Year-Qtr:";
+	}else if($data['reportType'] == 'yearly'){
+		$title_M_Y = $year;
+		$hovermap = $year;
+		$hovermap1 = "Year:";
+	}else if($data['reportType'] == 'Weekly'){
+		$hovermap = $year;
+		$hovermap1 = "Week:";
+	}else if($data['reportType'] == 'biyearly'){
+		$title_M_Y = $year;
+		$hovermap = $year;
+		$hovermap1 = "Year : ".(($biyear==1)?'<b> 1ist </b>':'<b> 2nd </b>')."<b> Half </b>";
 	}
-	// else if($data['reportType'] == 'quarterly'){
-	// 	$month = '';
-	// 	$quarter = $data['quarter'];
-	// 	$title_M_Y = 'Quarter '.$quarter.' of '.$year;
-	// 	$hovermap = $year.'-'.$quarter;
-	// 	$hovermap1 = "Year-Qtr:";
-	// }else if($data['reportType'] == 'yearly'){
-	// 	$title_M_Y = $year;
-	// 	$hovermap = $year;
-	// 	$hovermap1 = "Year:";
-	// }
-	else if($data['reportType'] == 'Weekly'){
-		$hovermap1 = $fweekfrom;
-		$hovermap2 = "Week From:";
-		$hovermap3 = $fweekto;
-		$hovermap4 = "Week To:";
-	}
-	// else if($data['reportType'] == 'biyearly'){
-	// 	$title_M_Y = $year;
-	// 	$hovermap = $year;
-	// 	$hovermap1 = "Year : ".(($biyear==1)?'<b> 1ist </b>':'<b> 2nd </b>')."<b> Half </b>";
-	// }
 ?>
 <!--Content area--> 
 <div class="flypanels-main">
@@ -79,7 +66,7 @@
 							$cardOne['heading'] 	= "Total Due Reports";
 							$cardOne['image'] 		= "chart1.png";
 							$cardOne['value'] 		= (int)$totalDue; // For Numeric Values Send value formated in number_format.
-							$cardTwo['heading'] 	= "Submitted Reports";
+							$cardTwo['heading'] 	= "SUBMITTED REPORTS";
 							$cardTwo['image'] 		= "peichart.jpg";
 							$cardTwo['value'] 		= (int)$totalSub; // For Numeric Values Send value formated in number_format.
 							$cardThree['heading'] 	= "Timeliness  ";
@@ -191,10 +178,7 @@
 	$data['fmonth'] = $fmonth;
 	$data['filter'] = 'vaccineCompliance';
 	$data['colorAxis'] = $colorAxis;
-	//echo "abc"; exit();
-	//print_r($data); exit();
 	$this -> load -> view('thematic_maps/parts_view/map', $data); 
-	//print_r($data); exit();
 	unset($data['serieses']);
 	$data['id'] = 'bar_graph_1';
 	$data['serieses_ranking'] = $serieses_ranking;
@@ -244,8 +228,27 @@
 				$('#week').removeAttr('required','required');
 				$('#biyearDiv').hide();
 				$('#biyear').removeAttr('required','required');
-			}
-			else{
+			}else if($('#reportType').val() == "biyearly"){
+				$('#monthDiv').hide();
+				$('#month').removeAttr('required','required');
+				$('#month').val('0');
+				$('#quarter').removeAttr('required','required');
+				$('#weekDiv').hide();
+				$('#week').removeAttr('required','required');
+				$('#quarterDiv').hide();
+				$('#biyearDiv').show();
+				$('#biyear').attr('required','required');
+			}else if($('#reportType').val() == "quarterly"){
+				$('#monthDiv').hide();
+				$('#month').removeAttr('required','required');
+				$('#weekDiv').hide();
+				$('#week').removeAttr('required','required');
+				$('#quarterDiv').show();
+				$('#quarter').attr('required','required');
+				$('#weekDiv').hide();
+				$('#biyearDiv').hide();
+				$('#biyear').removeAttr('required','required');
+			}else{
 				$('#reportType').val('monthly');
 				$('#monthDiv').show();
 				$('#month').attr('required','required');
@@ -259,10 +262,10 @@
 			}
 		}
 	});
-	$('#compType').trigger('click');	
+	$('#compType').trigger('click');
 	$(document).on('change','#year',function(){
 		var year = $('#year').val();
-		var week = '<?php echo (isset($from_week))?$from_week:'1' ?>';
+		var week = '<?php echo (isset($week))?$week:'all' ?>';
 		$.ajax({
 			type: 'POST',
 			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
@@ -300,8 +303,25 @@
 			$('#weekDiv').hide();
 			$('#biyearDiv').hide();
 			$('#biyear').removeAttr('required','required');
-		}
-		else if($(this).val() == "monthly"){
+		}else if($(this).val() == "biyearly"){
+			$('#monthDiv').hide();
+			$('#month').removeAttr('required','required');
+			$('#month').val('0');
+			$('#quarter').removeAttr('required','required');
+			$('#quarterDiv').hide();
+			$('#biyearDiv').show();
+			$('#biyear').attr('required','required');
+		}else if($(this).val() == "quarterly"){
+			$('#monthDiv').hide();
+			$('#month').removeAttr('required','required');
+			$('#weekDiv').hide();
+			$('#week').removeAttr('required','required');
+			$('#quarterDiv').show();
+			$('#quarter').attr('required','required');
+			$('#weekDiv').hide();
+			$('#biyearDiv').hide();
+			$('#biyear').removeAttr('required','required');
+		}else if($(this).val() == "monthly"){
 			$('#monthDiv').show();
 			$('#month').attr('required','required');
 			$('#weekDiv').hide();
@@ -336,8 +356,26 @@
 				$('#week').removeAttr('required','required');
 				$('#biyearDiv').hide();
 				$('#biyear').removeAttr('required','required');
-			}
-			else if($('#reportType option:selected').val() == "monthly"){
+			}else if($('#reportType option:selected').val() == "biyearly"){
+				$('#monthDiv').hide();
+				$('#month').val('0');
+				$('#month').removeAttr('required','required');
+				$('#quarterDiv').hide();
+				$('#quarter').removeAttr('required','required');
+				$('#biyearDiv').show();
+				$('#biyear').attr('required','required');
+				$('#weekDiv').hide();
+				$('#week').removeAttr('required','required');
+			}else if($('#reportType option:selected').val() == "quarterly"){
+				$('#monthDiv').hide();
+				$('#month').removeAttr('required','required');
+				$('#quarterDiv').show();
+				$('#quarter').attr('required','required');
+				$('#weekDiv').hide();
+				$('#week').removeAttr('required','required');
+				$('#biyearDiv').hide();
+				$('#biyear').removeAttr('required','required');
+			}else if($('#reportType option:selected').val() == "monthly"){
 				$('#monthDiv').show();
 				$('#month').attr('required','required');
 				$('#quarterDiv').hide();
@@ -347,33 +385,41 @@
 				$('#biyearDiv').hide();
 				$('#biyear').removeAttr('required','required');
 			}else{}	
-		}		
+		}
+		
 	});
 	$(document).on('click', '.crdview_grphwrp', function (){
 		var dataId = <?php echo $dataId; ?>;
 		var reportType = '<?php echo $reportType; ?>';
 		var compType = '<?php echo $compType; ?>';
 		if(reportType == 'monthly' && compType != 'ZeroReporting'){
-			var fmonthfrom = '<?php echo (isset($fmonthfrom))?$fmonthfrom:'0'; ?>';
-			var fmonthto = '<?php echo (isset($fmonthto))?$fmonthto:'0'; ?>';
-			var year = '0';
-			var month = '0';
+			var month = '<?php echo (isset($month))?$month:'0'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
 			var quarter = 0;
-			var weekfrom = 0;
-			var weekto = 0;
-			var biyear = 0;
+			var week = 0;
+		}else if(reportType == 'quarterly' && compType != 'ZeroReporting'){
+			var month = 0;
+			var week = 0;
+			var quarter = '<?php echo (isset($quarter))?$quarter:'0'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
 		}
 		else if(reportType == 'Weekly'){
-			var fmonthfrom = '0';
-			var fmonthto = '0';
+			var week = '<?php echo (isset($week))?$week:'all'; ?>';
 			var year = '<?php echo (isset($year))?$year:'0'; ?>';
 			var month = '0';
 			var quarter = 0;
-			var from_week = '<?php echo (isset($from_week))?$from_week:'1'; ?>';
-			var to_week = '<?php echo (isset($to_week))?$to_week:lastWeek($year); ?>';
-			var biyear = 0;
+		}else if(reportType == 'biyearly' && compType != 'ZeroReporting'){
+			var month = 0;
+			var week = 0;
+			var quarter = 0;
+			var biyear = '<?php echo (isset($biyear))?$biyear:'01'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
+		}else if(reportType == 'yearly'){
+			var week = 0;
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
+			var month = '0';
+			var quarter = 0;
 		}
-
 		var index = $(this).parent().index();
 		var vaccination_by = '';
 		switch(index){
@@ -387,12 +433,11 @@
 				reportStatus = 'complete';
 		}
 		var fmonth = '<?php echo $fmonth; ?>';
-
 		if(dataId){
-			var data = {reportStatus:reportStatus,id:dataId,ajax:true,reportType:reportType,month:month,year:year,map_id:'livefeedleftmap',bar_id:'bar_graph_1',fmonthfrom:fmonthfrom,fmonthto:fmonthto,quarter:year,compType:compType,from_week:from_week,to_week:to_week};
+			var data = {reportStatus:reportStatus,id:dataId,ajax:true,reportType:reportType,month:month,year:year,map_id:'livefeedleftmap',bar_id:'bar_graph_1',fmonth:fmonth,quarter:quarter,compType:compType,week:week,biyear:biyear};
 		}
 		else{
-			var data = {reportStatus:reportStatus,id:dataId,ajax:true,reportType:reportType,month:month,year:year,map_id:'livefeedleftmap',bar_id:'bar_graph_1',fmonthfrom:fmonthfrom,fmonthto:fmonthto,quarter:year,compType:compType,from_week:from_week,to_week:to_week};
+			var data = {reportStatus:reportStatus,id:dataId,ajax:true,reportType:reportType,month:month,year:year,map_id:'livefeedleftmap',bar_id:'bar_graph_1',fmonth:fmonth,quarter:quarter,compType:compType,week:week,biyear:biyear};
 		}
 		if(index=='2' || index=='3')
 		{
@@ -413,7 +458,7 @@
 		var dataId = id;
 		var fmonth = '<?php echo $fmonth; ?>';
 		var url = '<?php echo base_url(); ?>/thematic_maps/ThematicCompliance/UcWiseMapData/'+id+'/'+fmonth;
-		 $.ajax({
+		/* $.ajax({
 			type: "POST",
 			data: {id:dataId,fmonth:fmonth,map_id:'livefeedleftmap1',bar_id:'bar_graph_2'},
 			url: "<?php echo base_url(); ?>thematic_maps/Thematic_compliance/UcWiseMapData",
@@ -422,75 +467,56 @@
 				$('#livefeedleftmap1').html(result.map);
 				$('#bar_graph_2').html(result.bar);
 			}
-		});  
+		}); */ 
 	}
-	$(document).on('change','#year',function(){
-		var year = $('#year').val();
-		var from_week = '<?php echo isset($from_week)?$from_week:'01' ?>';
-		var to_week = '<?php echo isset($to_week)?$to_week:'01' ?>';
-		$.ajax({
-			type: 'POST',
-			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
-			data:'year='+year+'&week='+from_week,
-			success: function(response){
-				$('#from_week').html(response);
-				$("#from_week option[value='0']").remove();
-				$("#to_week option[value='']").remove();
-			}
-		});
-		if(from_week!=''){
-			$.ajax({
-				type: 'POST',
-				url:'<?php echo base_url(); ?>Ajax_calls/getEpiFromTOWeeks',
-				data:'from_week='+from_week+'&to_week='+to_week+'&year='+year,
-				success: function(response){
-					$('#to_week').html(response);
-					$("#to_week option[value='']").remove();
-				}
-			});
-		}
-		
-	});
 	function formatter(e,ucwisemap='false'){
 		var text= 'District';
 		if(ucwisemap == 'true'){
 			text = 'Union Council';
 		}
-		return text+': <b>' + e.point.name + ' (' + e.point.id + ')' + '</b><br><?php echo $hovermap2; ?><b>' + ' <?php echo $hovermap1; ?>' + '</b><br><?php echo $hovermap4; ?><b>' + ' <?php echo $hovermap3; ?>' + '</b><br> Total Due: <b>' + e.point.due  + '</b><br> Total Submitted: <b>' + e.point.sub + '</b><br> Percentage: <b>' + e.point.value + ' %</b>';
+		return text+': <b>' + e.point.name + ' (' + e.point.id + ')' + '</b><br><?php echo $hovermap1; ?><b>' + '<?php echo $hovermap; ?>' + '</b><br> Total Due: <b>' + e.point.due  + '</b><br> Total Submitted: <b>' + e.point.sub + '</b><br> Percentage: <b>' + e.point.value + ' %</b>';
 	}
 	function eventHandler(e, run, fmonth){
 		var dataId = e.point.id;//alert(e.point.name);
 		var reportType = '<?php echo (isset($reportType))?$reportType:'monthly';?>';
 		var compType = '<?php echo $compType; ?>';
-		var curr_year = '<?php echo date('Y'); ?>';
-		var curr_month = '<?php echo date('m'); ?>';
+		/* var month = '<?php echo (isset($month))?$month:'month'; ?>';
+		var year = '<?php echo (isset($year))?$year:'0'; ?>';
+		var quarter = '<?php echo (isset($quarter))?$quarter:'0'; ?>'; */
 		if(reportType == 'monthly' && compType != 'ZeroReporting'){
-			var fmonthfrom = '<?php echo (isset($fmonthfrom))?$fmonthfrom:'0'; ?>';
-			var fmonthto = '<?php echo (isset($fmonthto))?$fmonthto:'0'; ?>';
-			var year = '0';
-			var month = '0';
+			var month = '<?php echo (isset($month))?$month:'0'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
 			var quarter = 0;
-			var from_week = 0;
-			var to_week = 0;
+			var week = 0;
 			var biyear = 0;
+		}else if(reportType == 'quarterly' && compType != 'ZeroReporting'){
+			var month = 0;
+			var week = 0;
+			var biyear = 0;
+			var quarter = '<?php echo (isset($quarter))?$quarter:'0'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
 		}
 		else if(reportType == 'Weekly'){
-			var fmonthfrom = '0';
-			var fmonthto = '0';
-			var year = '<?php echo (isset($year))?$year:date('Y'); ?>';
+			var week = '<?php echo (isset($week))?$week:'all'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
 			var month = '0';
 			var quarter = 0;
-			var from_week = '<?php echo (isset($from_week))?$from_week:'01'; ?>';
-			var to_week = '<?php echo (isset($to_week))?$to_week:lastWeek($year); ?>';
+			var biyear = 0;
+		}else if(reportType == 'biyearly' && compType != 'ZeroReporting'){
+			var month = 0;
+			var week = 0;
+			var quarter = 0;
+			var biyear = '<?php echo (isset($biyear))?$biyear:'01'; ?>';
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
+		}else if(reportType == 'yearly'){
+			var week = 0;
+			var year = '<?php echo (isset($year))?$year:'0'; ?>';
+			var month = '0';
+			var quarter = 0;
 			var biyear = 0;
 		}
 		if(run){
-			if(compType != 'ZeroReporting'){
-        		var url = '<?php echo base_url(); ?>thematic_maps/ThematicCompliance/UcWiseMapData/'+dataId+'/'+reportType+'/'+fmonthfrom+'/'+fmonthto+'/'+year+'/'+compType+'/'+from_week+'/'+to_week;
-        	}
-        	else{
-        		var url = '<?php echo base_url(); ?>thematic_maps/ThematicCompliance/UcWiseMapData/'+dataId+'/'+reportType+'/'+fmonthfrom+'/'+fmonthto+'/'+year+'/'+compType+'/'+from_week+'/'+to_week;
-        	}
+        	var url = '<?php echo base_url(); ?>thematic_maps/ThematicCompliance/UcWiseMapData/'+dataId+'/'+reportType+'/'+year+'/'+month+'/'+quarter+'/'+compType+'/'+week+'/'+biyear;
         	window.open(url, '_blank');
 			//draw_uc_map(e.point.id);
 			//$('.loading').removeClass('hide');

@@ -11,7 +11,7 @@
           var distcode = code.substr(0,3);
           //var tcode = code.substr(0,6);
           var url = '';
-          if(code.toString().length == 5 || code.toString().length == 7){
+          if(code.toString().length == 5){
             url = "<?php echo base_url();?>system_setup/codb_view/"+code+"/view";    
             var win = window.open(url,'_self');
             if(win){

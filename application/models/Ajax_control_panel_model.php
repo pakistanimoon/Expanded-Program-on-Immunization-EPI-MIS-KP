@@ -639,6 +639,6 @@ class Ajax_control_panel_model extends CI_Model {
 		$this->load->model("User_menu_model");
 		$resultJson["paging"] = $this->User_menu_model->pagination($statement,$per_page,$page,$url = "?");
 		return json_encode($resultJson,true);
-	}	 
+	}	
 }
 ?>

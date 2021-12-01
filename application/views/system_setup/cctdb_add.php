@@ -10,11 +10,8 @@
          <div class="panel-body">
  	 <form name="dataform" id="dataform" action="<?php echo base_url(); ?>System_setup/cctdb_save" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onSubmit="">			
                              <div class="form-group">
-                        <div class="row">
-									<label class="col-xs-12 col-xs-offset-1 control-label" style="font-size: 15px;">Note: <i>Fields marked with </i><span style="color:red;">*</span> <i>(asterisk) are mandatory.</i></label>
-								</div>
 								<div class="row">
-									<label class="col-xs-2 col-xs-offset-1 control-label"  for = "distcode" > District <span style="color:red;">*</span></label>
+									<label class="col-xs-2 col-xs-offset-1 control-label"  for = "distcode" > District </label>
 									<div class="col-xs-3">
 										 <select id="distcode" name="distcode" class="form-control" size="1" >
 				                      <?php 
@@ -119,7 +116,6 @@
 													<option value="FA" <?php echo set_select('lastqualification', 'FA'); ?>>F.A/F.Sc</option>
 													<option value="BA" <?php echo set_select('lastqualification', 'BA'); ?>>B.A/B.Sc/B.Ed</option>
 													<option value="MA" <?php echo set_select('lastqualification', 'MA'); ?>>M.A/M.Sc/M.Ed</option>
-													<option value="SE" <?php echo set_select('lastqualification', 'SE'); ?>>Software Engineering</option>
 												</select>
 											</div>
 											<label class="col-xs-2 control-label"  for = "passingyear" > Passing Out Year</label>
@@ -196,7 +192,7 @@
 											</div>
 										 </div>
 										</div>
-								  <div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Training Information</div>
+									<div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Training Information</div>
 								<div class="form-group">
 							 <div class="row">
 								<div class="col-xs-3 col-xs-offset-1 control-label">
@@ -303,7 +299,7 @@
 													</div>
 			<div class="row">
 			<hr>
-		<div class="col-xs-11" style="padding:0px; text-align:right;">
+		<div class="col-xs-7" style="margin-left:62.5%;">
 				<button type="submit" class="btn btn-md btn-success bc1"><i class="fa fa-floppy-o "></i> Save Form  </button>
 				<button type="reset" class="btn btn-md btn-success"><i class="fa fa-repeat"></i> Reset Form </button>
 				<a href="<?php echo base_url();?>CCTList" class="btn btn-md btn-success"><i class="fa fa-times"></i> Cancel </a>

@@ -26,7 +26,7 @@ class Measles extends CI_Controller {
 		$data['weeklyRecovered'] = $this -> maps -> getMeaslesWeeklyRecoveredCasesDetail($distcode, $year);
 		$data['weeklyMale'] = $this -> maps -> getMeaslesWeeklyMaleCasesDetail($distcode, $year);
 		$data['weeklyFemale'] = $this -> maps -> getMeaslesWeeklyFemaleCasesDetail($distcode, $year);
-		//echo $this -> db -> last_query();exit();
+		//echo $this -> db -> last_query();exit;
 		$this -> load -> view('thematic_maps/parts_view/ucmeasles',$data);
 	}
 	

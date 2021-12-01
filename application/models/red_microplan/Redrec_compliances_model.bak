@@ -33,7 +33,7 @@ class Redrec_compliances_model extends CI_Model {
 		}
 		$Allquarter = rtrim($Allquarter,",");
 	    $query="Select districtname(distcode) as district,distcode, count(techniciancode) as due,$Allquarter 
-			    from techniciandb  where $wc group by distcode order by districtname(distcode) ASC";
+			    from techniciandb  where $wc AND techniciandb.status = 'Active' group by distcode order by districtname(distcode) ASC";
 		$result = $this->db->query($query);
 		$result = $result->result();
 		return $result;
@@ -65,7 +65,7 @@ class Redrec_compliances_model extends CI_Model {
 		$Allshedule = rtrim($Allshedule,",");
 		$Allheld = rtrim($Allheld,",");
 		$Totalsite = rtrim($Totalsite,",");
-		$query="select  distinct(techniciancode) as techniciancode ,technicianname(techniciancode) as technicianname,$Allquarter,$Allshedule,$Allheld,$Totalsite  from techniciandb where distcode='$distcode'";
+		$query="select  distinct(techniciancode) as techniciancode ,technicianname(techniciancode) as technicianname,$Allquarter,$Allshedule,$Allheld,$Totalsite  from techniciandb where distcode='$distcode' AND techniciandb.status = 'Active'";
 		$result = $this->db->query($query);
 		$result = $result->result();
 		return $result;
@@ -90,18 +90,27 @@ class Redrec_compliances_model extends CI_Model {
 		}
 	     $query="Select districtname(distcode) as district,distcode, count(techniciancode) as due,
 		       (select count(distinct techniciancode) from situation_analysis_db where techniciandb.distcode=situation_analysis_db.distcode  and year='$year') as submit 
-			    from techniciandb  where $wc group by distcode order by districtname(distcode) ASC";
+			    from techniciandb  where $wc AND techniciandb.status = 'Active' group by distcode order by districtname(distcode) ASC";
 		$result = $this->db->query($query);
 		$result = $result->result();
 		return $result;
 	}
-	function RedRec_HF_microplan_tech_compliance ($distcode,$year){
+	function RedRec_HF_microplan_tech_compliance ($uncode,$year){
 		$procode=$this->session->Province;
 	    $query="select distinct(techniciancode) as techniciancode ,technicianname(techniciancode) as technicianname,
-					(select distinct(techniciancode)  from situation_analysis_db where year='$year' and techniciandb.techniciancode=situation_analysis_db.techniciancode) as submit from techniciandb where distcode='$distcode'"; 
+					(select distinct(techniciancode)  from situation_analysis_db where year='$year' and techniciandb.techniciancode=situation_analysis_db.techniciancode) as submit from techniciandb where uncode='$uncode'AND techniciandb.status = 'Active' "; 
 		$result = $this->db->query($query);
 		$result = $result->result();
+		return $result;
 		
+	}
+	function RedRec_HF_microplan_uc_compliance ($distcode,$year){
+		$procode=$this->session->Province;
+	     $query="Select unname(uncode) as unname,uncode, count(techniciancode) as due,
+		       (select count(distinct techniciancode) from situation_analysis_db where techniciandb.uncode=situation_analysis_db.uncode  and year='$year') as submit 
+			    from techniciandb  where distcode='$distcode'AND techniciandb.status = 'Active' group by uncode order by unname(uncode) ASC "; 
+		$result = $this->db->query($query);
+		$result = $result->result();
 		return $result;
 		
 	}
@@ -244,7 +253,7 @@ class Redrec_compliances_model extends CI_Model {
 					from supervisordb where distcode='$distcode' and status='Active' ";
 			$result = $this->db->query($query);
 			$result = $result->result();
-		return $result;
+		    return $result;
 	}
 	function RedRec_HF_supervisoryvisit_view($supervisorcode,$fmonth){
 		$query = "select * from supervisory_plan where supervisorcode='$supervisorcode' and fmonth='$fmonth'";

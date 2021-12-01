@@ -164,7 +164,8 @@ class CRUD extends CI_Controller {
 					$this->session->set_flashdata('message',"Report Updated Successfully of $facode and month $fmonth");
 					//testing for sending data to federal DB. comment it after test at local.
 					//*uncomment for live. 
-					//syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
+					syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
+					syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
 				}
 				else
 				{
@@ -254,10 +255,11 @@ class CRUD extends CI_Controller {
 			$this->db->trans_complete();
 			//testing for sending data to federal DB. comment it after test at local.
 			//*uncomment for live. 
-			//syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
+			syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
+			syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
 			redirect( base_url().'consumption');
 		}
-	}
+	}			
 	public function itemslist(){
 		$activity = ($this->input->post("activity"))?$this->input->post("activity"):"routine";
 		$fmonth = ($this->input->post("fmonth"))?$this->input->post("fmonth"):NULL;
@@ -303,7 +305,8 @@ class CRUD extends CI_Controller {
 			$this->session->set_flashdata('message',"Report Delete Successfully of $facode and month $fmonth");
 			//testing for data send to federal.uncomment it for local(epimis1).
 			//set it on live (CRES-KPK). 
-			//syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
+			syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
+			syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
 		}
 		else
 		{

@@ -17,6 +17,7 @@ class Ajax_hr_management extends CI_Controller {
 	public function hr_list_search(){
 		if (($_SESSION['UserLevel']=='3') && $_SESSION['utype']=='DEO')
 		{
+			//$wc = getWC();//helper function
 			$wc = " post_procode = '" . $this-> session -> Province . "' AND post_distcode = '" . $this-> session -> District . "' ";
 		}
 		elseif(($_SESSION['UserLevel']=='4') && $_SESSION['utype']=='DEO')
@@ -27,21 +28,33 @@ class Ajax_hr_management extends CI_Controller {
 		{
 			$wc = " post_procode = '" . $this-> session -> Province . "'";
 		}
+		//echo $wc; //exit;
+		//$query = "SELECT * FROM hr_db_history WHERE $wc";
+	  	//$total_codb = $this->db->query($query)->row();
+	  	//echo json_encode($total_dsodb);exit;
 	  	$draw = intval($this->input->get("draw"));
         $start = intval($this->input->get("start"));
         $length = intval($this->input->get("length"));
         $order = $this->input->get("order");
         $search = $this->input->get("search");
         $columns = $this->input->get("columns");
+		//print_r($columns); exit(); 
+		//print_r($columns); exit();
+      	//echo json_encode($_GET);exit;
 		$where = " where " ;
       	$multiple=" id > 0 ";
 		if(isset($columns) AND is_array($columns))
       	{
+			//print_r($columns); //exit();
       		foreach ($columns as $key => $value) 
       		{  
+				/* $pre_level=$columns[2]['data'];
+				$pre_hr_sub_type_id=$columns[4]['data'];
+				$pre_status=$columns[8]['data']; */
       			$search_value = $value['search']['value'];
       			$search_value = str_replace('_', ' ', $search_value);
       			$column = $value['data'];
+				//print_r($column); 
       			if( ! empty($search_value))
       			{
 					if($search_value=="Transferred" || $search_value=="Posted"){
@@ -58,16 +71,23 @@ class Ajax_hr_management extends CI_Controller {
 						{
 							$wc = " pre_procode = '" . $this-> session -> Province . "' ";
 						}
+							//print_r($column); exit();
+							/* $multiple .= " AND " ; 
+							$column = substr("$column",4);
+							$pre="pre";
+							$multiple .= "$pre$column='$search_value'"; */
 							
 							$multiple .= " AND " ; 
 							$multiple .= "$column='$search_value'" ;
 					}else{
+						//$where = " where " ;
 						$multiple .= " AND " ; 
 						$multiple .= "$column='$search_value'" ;
 					}
       			}
       		}
       	}
+        //echo $multiple;exit; 
       	if(isset($search))
       	{ 
   			$keyword = $search['value'];
@@ -130,9 +150,13 @@ class Ajax_hr_management extends CI_Controller {
         	$order = "order by code,id desc,".$columns_valid[$col].' '.$dir;
 			
         }
-		$query = "SELECT * from (select DISTINCT ON (code) code,id,name,pre_hr_sub_type_id,post_hr_sub_type_id,pre_level,post_level,nic,phone,pre_status,post_status,pre_procode,post_procode,pre_distcode,post_distcode,pre_tcode,post_tcode,pre_uncode,post_uncode,pre_facode,post_facode,status_date,is_deleted from hr_db_history where $search  $order) subquery $where $wc AND $multiple AND is_deleted='0' LIMIT {$length} OFFSET {$start}";   
+		//print_r($order); exit();
+		//$query = "select id,name,hr_sub_type_id,employee_type,level,nic,phone,status,created_date from hr_db where $wc $search $multiple_search $order LIMIT {$length} OFFSET {$start}  ";
+		$query = "SELECT * from (select DISTINCT ON (code) code,id,name,pre_hr_sub_type_id,post_hr_sub_type_id,pre_level,post_level,nic,phone,pre_status,post_status,pre_procode,post_procode,pre_distcode,post_distcode,pre_tcode,post_tcode,pre_uncode,post_uncode,pre_facode,post_facode,status_date,is_deleted from hr_db_history where $search  $order) subquery $where $wc AND $multiple AND is_deleted='0' LIMIT {$length} OFFSET {$start}";
+        //echo $query;exit;   
 		$operator = $this->db->query($query);
-		$data = array();
+		
+        $data = array();
         $i=$start+1;
         foreach($operator->result() as $r) 
         {
@@ -155,6 +179,7 @@ class Ajax_hr_management extends CI_Controller {
 					"post_tcode" => get_Tehsil_Name("$r->post_tcode"),
 	                "nic" => $r->nic,
 	                "phone" => $r->phone,
+	               /* "cellphone" => $r->cellphone,*/
 	                "pre_status" => $r->pre_status,
 	                "post_status" => $r->post_status,
 	                "status_date" => $r->status_date,
@@ -181,6 +206,7 @@ class Ajax_hr_management extends CI_Controller {
 					"post_tcode" => get_Tehsil_Name("$r->post_tcode"),
 	                "nic" => $r->nic,
 	                "phone" => $r->phone,
+	               /* "cellphone" => $r->cellphone,*/
 	                "pre_status" => $r->pre_status,
 	                "post_status" => $r->post_status,
 	                "status_date" => $r->status_date,
@@ -397,27 +423,24 @@ class Ajax_hr_management extends CI_Controller {
         $order = $this->input->get("order");
         $search = $this->input->get("search");
 		$columns = $this->input->get("columns");
-		//print_r($columns); exit();
-		//echo json_encode($_GET);exit;
 		$multiple_search = "";
-      	if(isset($columns) AND is_array($columns))
+		if(isset($columns) AND is_array($columns))
       	{
+			//print_r($columns); //exit();
       		foreach ($columns as $key => $value) 
-      		{
+      		{  
       			$search_value = $value['search']['value'];
       			$search_value = str_replace('_', ' ', $search_value);
       			$column = $value['data'];
-				//print_r($column); 
       			$column = str_replace('userlevel_description', 'level', $column);
       			$column = str_replace('usertype', 'type', $column);
-				if( ! empty($search_value))
+      			if( ! empty($search_value))
       			{
-      				$multiple_search .= " AND ";
-      				$multiple_search .= "$column='$search_value'";
+					$multiple_search .= " AND " ; 
+					$multiple_search .= "$column='$search_value'" ;
       			}
       		}
       	}
-		//echo $multiple_search;exit;
       	if(isset($search))
       	{
   			$keyword = $search['value'];
@@ -428,7 +451,7 @@ class Ajax_hr_management extends CI_Controller {
 						lower(usertype) LIKE '$keyword%') ";
 			$search_ = "(lower(menu.menu_item) LIKE '$keyword%' OR 
 						lower(userlevel_description) LIKE '$keyword%' OR
-					  lower(usertype) LIKE '$keyword%') ";
+						lower(usertype) LIKE '$keyword%') ";
       	}
       	else
       	{
@@ -510,14 +533,14 @@ class Ajax_hr_management extends CI_Controller {
 	     	$i++;
 		}
 		//print_r($data); exit();
-		$query = "SELECT COUNT(*) AS num
+		$query = "SELECT COUNT(*) AS num 
 		FROM menu a
 		INNER JOIN menu b on b.parent_id = a.id::text
 		INNER JOIN roles_menu ON roles_menu.menu_id=b.id
 		INNER JOIN user_roles ON roles_menu.role_id=user_roles.id 
 		INNER JOIN user_types_db ON user_roles.type=user_types_db.id
 		INNER JOIN user_level_db ON user_roles.level=user_level_db.userlevel
-		where $search $multiple_search ";
+		where $search $multiple_search";
 		//echo $query;exit;
 	  	$total_mfpdb = $this->db->query($query)->row();
 

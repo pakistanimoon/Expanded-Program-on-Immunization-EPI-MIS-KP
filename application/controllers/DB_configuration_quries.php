@@ -18,7 +18,7 @@ class DB_configuration_quries extends CI_Controller {
 		foreach($resultDistricts as $key => $district){
 			$distcode = $district -> distcode;
 			// Years loop
-			foreach(array('2016') as $yearkey => $year){
+			foreach(array('2020') as $yearkey => $year){
 				// Months loop
 				for($i=1;$i<=12;$i++){
 					$month = sprintf('%02d',$i);
@@ -59,7 +59,7 @@ class DB_configuration_quries extends CI_Controller {
 		foreach($resultDistricts as $key => $district){
 			$distcode = $district -> distcode;
 			// Years loop
-			foreach(array('2016') as $yearkey => $year){
+			foreach(array('2020') as $yearkey => $year){
 				// Months loop
 				$curr_year=date("Y");
 				$month=date("m",strtotime("-1 month"));
@@ -195,7 +195,7 @@ class DB_configuration_quries extends CI_Controller {
 						FROM 
 								case_investigation_db 
 						WHERE 
-							distcode='$distcode' and week='$wk' and ( approval_status='Approved' OR cross_notified=0)  and case_type='$case_type' and doses_received='$dosecount' and year='$year' and patient_gender='$gender'
+							distcode='$distcode' and (cross_notified <> 1 OR approval_status='Approved') and week='$wk'  and case_type='$case_type' and doses_received='$dosecount' and year='$year' and patient_gender='$gender'
 							group by case_investigation_db.patient_gender,case_type,year,week,distcode
 				"; 
 				$result = $this -> db -> query($query);
@@ -207,7 +207,8 @@ class DB_configuration_quries extends CI_Controller {
 				
 			}
 			if(!empty($insertionData)){
-				$this->db->insert_batch('caseepidcount_master',$insertionData);
+			//print_r($insertionData);
+			$this->db->insert_batch('caseepidcount_master',$insertionData);
 			}
 			$insertionData=array();
 			
@@ -262,7 +263,7 @@ class DB_configuration_quries extends CI_Controller {
 						FROM 
 								afp_case_investigation 
 						WHERE 
-							distcode='$distcode' and week='$wk' and (cross_notified is null OR approval_status='Approved' OR cross_notified=0)   and ". $wheredosesrecive ." and year='$year' and patient_gender='$gender'
+							distcode='$distcode' and week='$wk' and (cross_notified is null OR approval_status='Approved' OR cross_notified=0)and ". $wheredosesrecive ." and year='$year' and patient_gender='$gender'
 							group by afp_case_investigation.patient_gender,year,week,distcode
 				"; 
 				$result = $this -> db -> query($query);
@@ -429,13 +430,12 @@ class DB_configuration_quries extends CI_Controller {
 			}
 		}
 	}
-	
 	public function sendAllDistrictsCaseEpidCountMasterAggregatedData(){
 		$year = $this -> uri -> segment(3);
 		$this -> db -> select('distinct(case_type) case_type');
 		$this -> db -> from('caseepidcount_master');
 		$this -> db -> where('year',$year);
-		//$this -> db -> where('case_type','Nnt');
+		$this -> db -> where('case_type','Diph');
 		$caseTypes = $this -> db -> get() -> result();
 		$this -> db -> select('distinct(distcode) distcode');
 		$this -> db -> from('caseepidcount_master');
@@ -445,8 +445,6 @@ class DB_configuration_quries extends CI_Controller {
 		$query = "SELECT distinct(selected_week) week from caseepidcount_master where year='{$year}' order by selected_week";
 		$result = $this -> db -> query($query);
 		$data['epi_fweeks'] = $result-> result_array();
-		//print_r($data['epi_fweeks']);
-		//echo $this->db->last_query();
 		// All districts loop
 		$dosesnumbers = array(0,1,2,99);
 		foreach($dosesnumbers as $dosenumber){
@@ -455,16 +453,14 @@ class DB_configuration_quries extends CI_Controller {
 					foreach($resultDistricts as $key => $district){
 						$distcode = $district -> distcode;
 						foreach($data['epi_fweeks'] as $fweekkey => $fweek){
-							$week =$fweek['week'];
-							//print_r($week);
+							$week = $fweek['week'];
 							syncCaseEpidCountMasterDataWithFederalEPIMIS($year, $week, $case -> case_type,$distcode, $dosenumber, $gender);
 						}
 					}
 				}
 			}
-		}//exit;
+		}
 	}
-	
 	public function microplan_technician_config(){
 	 	
 		$Active = $this -> uri -> segment(3);

@@ -10,8 +10,8 @@
     <div class="header_profilewraper">
 		<div class="profile_dropdown">
 			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-user" aria-hidden="true"></i> <span class="fed-username"><?php echo $this -> session -> User_Name; ?></span> </button>
-				<ul class="dropdown-menu signout-ul">
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-user" aria-hidden="true"></i> <?php echo $this -> session -> User_Name; ?> </button>
+				<ul class="dropdown-menu">
 					<li><a href="<?php echo base_url();?>Logout"> <i class="fa fa-key" aria-hidden="true"></i> Sign out </a></li>
 				</ul>
 			</div>

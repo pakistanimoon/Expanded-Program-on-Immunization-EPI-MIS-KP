@@ -820,7 +820,7 @@ class Coldchain_model extends CI_Model {
 	}
 	public function getRrefVaccData($recordID)///for refrigerator and vaccine carrie
 	{
-		$this->db->select("ccm.ccm_model_id,ccm_user_asset_id as asset_id,source_id ,ccm.quantity,ccm.status,catalogue_id,makername(md.ccm_make_id) as make_name,md.model_name,assetname(md.ccm_sub_asset_type_id),md.asset_type_id,cfc_free,asset_dimension_length as length,asset_dimension_width as width,asset_dimension_height as height,gross_capacity_20,gross_capacity_4,net_capacity_20,net_capacity_4,serial_no,ccm.working_since::date ,warehouse_type_id,ccm.procode,distcode,tcode,facode,uncode,storecode",FALSE);
+		$this->db->select("ccm.ccm_model_id,storecode,ccm_user_asset_id as asset_id,source_id ,ccm.quantity,ccm.status,catalogue_id,makername(md.ccm_make_id) as make_name,md.asset_type_id,md.model_name,assetname(md.ccm_sub_asset_type_id),cfc_free,asset_dimension_length as length,asset_dimension_width as width,asset_dimension_height as height,gross_capacity_20,gross_capacity_4,net_capacity_20,net_capacity_4,serial_no,ccm.working_since::date ,warehouse_type_id,ccm.procode,distcode,tcode,facode,uncode",FALSE);
 		$this->db->from("epi_cc_coldchain_main ccm");
 		$this->db->join("epi_cc_models md","md.pk_id = ccm.ccm_model_id");
 		$this->db->where($recordID);	
@@ -855,7 +855,7 @@ class Coldchain_model extends CI_Model {
 	}
 	public function getVoltageRegulatorData($recordID)
 	{
-		$this->db->select("makername(md.ccm_make_id) as make_name,ccm.ccm_model_id,ccm.quantity,md.model_name,serial_no,md.input_voltage_range,md.output_voltage_range,md.frequency,product_price,ccm.working_since::date ,warehouse_type_id,ccm.procode,distcode,tcode,uncode,facode",FALSE);
+		$this->db->select("makername(md.ccm_make_id) as make_name,ccm.ccm_model_id,ccm.quantity,md.model_name,serial_no,md.input_voltage_range,md.output_voltage_range,ccm.working_since::date ,md.frequency,product_price,warehouse_type_id,ccm.procode,distcode,tcode,facode,uncode",FALSE);
 		$this->db->from("epi_cc_coldchain_main ccm");
 		$this->db->join("epi_cc_models md","md.pk_id = ccm.ccm_model_id");
 		$this->db->where($recordID);	
@@ -909,12 +909,14 @@ class Coldchain_model extends CI_Model {
 		//print_r($id);exit;
 		$assetsid= array('1');
 		$status = 'ccm.status';
+		//echo($status); exit;
 		$join ='';
 		if($id != null && in_array($id,$assetsid))
 		{
+			//echo($status); exit;
 			$status ='history.status';
 			$join = 'LEFT JOIN epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id ';
-		}//print_r($multiple_search);exit;
+		}
 		if($this->session->Tehsil){
 			$tehsil=$this->session->Tehsil;
 			$tcode="and ccm.tcode='$tehsil'";
@@ -922,8 +924,8 @@ class Coldchain_model extends CI_Model {
 			$tcode='';
 		}
 		$procode = $this->session->Province;
-		$query ="SELECT asset_id as id,warehousetypename(ccm.warehouse_type_id) as stroe_level,ccm.storecode,ccm.ccm_user_asset_id, 
-				get_store_name(ccm.warehouse_type_id,CAST(storecode AS VARCHAR(9))) as storename,ccm.source_id,
+		$query ="SELECT asset_id as id,warehousetypename(ccm.warehouse_type_id) as stroe_level,ccm.storecode,ccm.ccm_user_asset_id,
+				get_store_name(ccm.warehouse_type_id,CAST(storecode AS VARCHAR(9))) as storename,ccm.source_id, 
 				ccm.warehouse_type_id,ccm.procode,ccm.distcode,districtname(ccm.distcode) as district, 
 				ccm.tcode, ccm.facode, tehsilname(ccm.tcode),facilityname(ccm.facode), 
 				makername(md.ccm_make_id) as make_name,md.model_name, ccm.quantity,
@@ -955,15 +957,15 @@ class Coldchain_model extends CI_Model {
 			$tcode="and ccm.tcode='$tehsil'";
 		}else{
 			$tcode='';
-		}
-		$procode = $this->session->Province; 
+		}					 
+		$procode = $this->session->Province;
 		$query ="select count(*) as num FROM 
 			epi_cc_coldchain_main ccm 
 			JOIN epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
 			$join
 			JOIN epi_cc_asset_types assetTypes ON assetTypes.pk_id = ccm.ccm_sub_asset_type_id
 			WHERE ccm.procode = '{$procode}' {$multiple_search} and asset_status ='Active' $tcode";
-		//echo $query; exit;
+		//echo $query; exit; 
 		$query = $this->db->query($query);
 		$result = $query->row();
 		if(isset($result)) return $result->num;

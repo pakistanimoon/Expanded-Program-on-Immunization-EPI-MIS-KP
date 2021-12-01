@@ -3,13 +3,13 @@
 <div class="container bodycontainer">
 	<div class="row">
 		<?php if($this -> session -> flashdata('message')){  ?><div class="alert alert-success text-center" role="alert"><strong><?php echo $this -> session -> flashdata('message'); ?></strong></div> <?php } ?>
-  			<div class="panel panel-primary">
+  			<div class="panel panel-primary"> 
     			<ol class="breadcrumb">
           		<?php  echo $this->breadcrumbs->show();?>
        		</ol>
     			<div class="panel-heading">EPI-MIS | User Account Form</div>
   	   		<div class="panel-body">
-    	   		<form name="dataform" id="dataform" action="<?php echo base_url();?>User_management/user_add" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onSubmit="">
+    	   		<form name="dataform" id="dataform" action="<?php echo base_url();?>User_management/user_save" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onSubmit="">
 			    		<div class="row">
 			    		   <div class="form-group">
 								<label class="col-xs-2 control-label col-md-offset-1" for = "procode" > Province</label>
@@ -56,6 +56,7 @@
 							  	<div class="col-xs-3 unameFedPro">
 									<input name="username" id="unameFedPro" placeholder="User Name"  class="form-control " value="<?php echo isset($userInfo)?$userInfo[0]["username"]:""; ?>"/>
 									<input name="oldusername" id="oldusernameFedPro" value="<?php echo isset($userInfo)?$userInfo[0]["username"]:""; ?>" type="hidden" />
+									<?php echo form_error('username'); ?>
 							  	</div> 
 						   </div>
 						</div>
@@ -123,14 +124,16 @@
 							   <div class="col-xs-3">
 									<input type="password" name="password" id="password" placeholder="Password"  class="form-control " value=""/>
 									<?php echo isset($userInfo)?"<p>leave empty to keep old password.</p>":""; ?>
+									<?php echo form_error('password'); ?>
 							  	</div>
 							   <label class="col-xs-2 control-label" for = "uname" >Full Name</label>
 								<div class="col-xs-3">
 									<input required name="fullname" id="fullname" placeholder="Full Name"  class="form-control " value="<?php echo isset($userInfo)?$userInfo[0]["fullname"]:""; ?>"/>
+									<?php echo form_error('fullname'); ?>
 								</div>
 						   </div>
 						</div>
-                       <div class="row">
+                        <div class="row">
 						  	<div class="form-group">
 						  		<label class="col-xs-2 control-label col-md-offset-1" for = "facode" >Active</label>
 							   <div class="col-xs-3">
@@ -138,7 +141,7 @@
 									<input type="radio" name="active" value= '0'> NO
 							  	</div>
 						   </div>
-						</div>
+						</div>			
 						<hr>
 		            <div class="row">
 		               <div class="col-xs-7 cmargin22" >
@@ -330,7 +333,7 @@
 						type: 'POST',
 						data: '',
 						url: '<?php echo base_url();?>Ajax_control_panel/getDistricts_options',
-						success: function(data){		
+						success: function(data){						
 							$('#distcodeUM').html(data);
 						}
 					});

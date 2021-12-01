@@ -4,11 +4,12 @@
 <script src="<?php echo base_url(); ?>includes/plugins/fastclick/fastclick.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url(); ?>includes/dist/js/app.js"></script>
+
 <script src="<?php echo base_url(); ?>includes/js/moment.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>includes/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>includes/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 <script src="<?php echo base_url(); ?>includes/js/tableHeadFixer.js"></script>
-<script  src="<?php echo base_url(); ?>includes/js/dropzone.js"></script>
+<script src="<?php echo base_url(); ?>includes/js/dropzone.js"></script>
 <!--<script src="<?php echo base_url(); ?>includes/js/bootstrap-tooltip.js"></script>-->
 <script type="text/javascript">
 	/*      		--------- Code by Uzair Khalid ----------      */
@@ -17,12 +18,6 @@
 	}).bind("ajaxComplete", function() {
 		$('.loading').addClass('hide');
 	});
-	// $( document ).ajaxStart(function() {
-	// 	$('.loading').removeClass('hide'); 
-	// });
-	// $( document ).ajaxComplete(function() {
-	// 	$('.loading').addClass('hide');
-	// });
 	/*      		--------- Code by Uzair Khalid ----------      */
 	/* 
 					--------- Code by Uzair Khalid ---------- 
@@ -101,22 +96,15 @@
 		if($("#distcode").length == 0) {
 		  //it doesn't exist
 		}else{
-			<?php if($this -> session -> UserLevel != '4'){?>
-				$('#distcode').trigger("change");
-			<?php } else {?>
-			//$('#distcode').trigger("change");
-			<?php } ?>
+			$('#distcode').trigger("change");
 		}
 		if($("#tcode").length == 0) {
 		  //it doesn't exist
 		}else{
 			$('#tcode').trigger("change");
-			//$('#tcode').find('select').trigger('change');
-			//var asdd = $('#asdd').val(2).change();
-			//alert(asdd);
 		}
 		set_hfcode();
-		<?php } ?> 
+		<?php } ?>
 	});
 	function set_hfcode()
 	{
@@ -256,11 +244,10 @@
 					{
 						$('#uncode option[value="' + selecteduncode + '"]').prop('selected', true);
 					}
-						$('#uncode').trigger('change');
+					$('#uncode').trigger('change');
 				}
 			});
-		}
-		else{
+		}else{
 			$('#uncode').html('');
 			$('#facode').html('');
 			//it doesn't exist
@@ -331,14 +318,14 @@
 				}
 			});
 		<?php }else{?>
-			$.ajax({
-				type: "POST",
-				data: $data1,
-				url: "<?php echo base_url(); ?>Ajax_calls/<?php echo (isset($includeCurrentMonth))?"getMonthswithCurrent":"getMonths"; ?>",
-				success: function(result){
-					$('#month').html(result);
-				}
-			});
+		$.ajax({
+			type: "POST",
+			data: $data1,
+			url: "<?php echo base_url(); ?>Ajax_calls/<?php echo (isset($includeCurrentMonth))?"getMonthswithCurrent":"getMonths"; ?>",
+			success: function(result){
+				$('#month').html(result);
+			}
+		});
 		<?php }?>
 	});
 	$(function () {
@@ -351,12 +338,14 @@
 	   
 		$('#date_of_birth').datepicker(options);
 		var options = {
-		  	format : "dd-mm-yyyy",
+		  format : "dd-mm-yyyy",
 			color: "green"
 		};
 		$('.dp').datepicker(options);
 		
 	});
+
 </script>
-<?php //$this->load->view('template/dropmeanu'); ?>
+<!--
+<script data-jsd-embedded data-key="0715c6e8-19d4-4067-a43e-773616d48962" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>-->
 <!-- Javascript Ends -->

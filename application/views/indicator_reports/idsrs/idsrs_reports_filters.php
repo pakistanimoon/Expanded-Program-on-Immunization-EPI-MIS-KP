@@ -81,7 +81,7 @@
 			success: function(response){
 				var obj = JSON.parse(response);
 				//$('#week_from').val(obj.startDate);
-				$('#dateto').val(obj.EndDate);
+				$('#toweek').val(obj.EndDate);
 			}
 		});
 	}); 

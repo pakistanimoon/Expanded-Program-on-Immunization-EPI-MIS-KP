@@ -42,7 +42,7 @@ class Measles_investigation extends CI_Controller {
 		else
 			$wc=" procode = '".$_SESSION["Province"]."' and case_type='Msl'";
 			//$wc=" ";
-		$data = $this -> Measles_investigation_model -> measles_investigation_list($per_page,$startpoint,$wc);
+		$data = $this -> Measles_investigation_model -> measles_investigation_list($per_page,$startpoint);
 		$data['pagination'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?',$wc);
 		//print_r($data['pagination']);exit();
 		if($this -> session -> District){
@@ -64,6 +64,7 @@ class Measles_investigation extends CI_Controller {
 			$data['data']=$data;
 			$data['fileToLoad'] = 'investigation_forms/measles_investigation_list';
 			$data['pageTitle']='Measles Investigation Form | EPI-MIS';
+			//print_r($data);exit;
 			$this->load->view('template/epi_template',$data);
 		}
 		else{
@@ -532,6 +533,7 @@ class Measles_investigation extends CI_Controller {
 			redirect('Measles_investigation/measles_investigation_list');
 		}
 	}
+	
 	public function measlesInvestigation_Approve(){
 		//dataEntryValidator(0);
 		//print_r($_POST);
@@ -598,7 +600,8 @@ class Measles_investigation extends CI_Controller {
 			$this -> session -> set_flashdata('message','You must select Health Facility!');
 			redirect($this->session->flashdata('redirectToCurrent'));
 		}
-	}
+	}	
+	
 	public function measles_investigation_edit(){
 		//dataEntryValidator(0);
 		//$facode = $this -> uri -> segment(3);
@@ -648,7 +651,8 @@ class Measles_investigation extends CI_Controller {
 			$data['message'] ="You must have rights to access this page.";
 			$this -> load -> view ('message',$data);
 		}
-	}
+	}		
+	
 	public function measles_investigation_view(){
 		$id = $this -> uri -> segment(3);
 		$year = $this -> uri -> segment(4);
@@ -683,6 +687,7 @@ class Measles_investigation extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
+	
 	function measles_investigation_receive_and_save(){
 		//print_r($_POST);exit();
 		//echo "abc";exit();
@@ -1080,6 +1085,7 @@ class Measles_investigation extends CI_Controller {
 			redirect('Measles_investigation/measles_investigation_list');
 		}
 	}
+
 	public function measles_investigation_delete(){
 		dataEntryValidator(0);
 		$id = $this -> uri -> segment(3);
@@ -1188,7 +1194,7 @@ class Measles_investigation extends CI_Controller {
 		}
 	}
 	function getDataToSave($url=NULL,$filepath=NULL,$Array=NULL)
-	{
+	{		
 		//$data = array('procode' => $procode,'distcode' => $distcode,'tcode' => $tcode,);
 		$data = $Array;
 		//print_r($data);exit();
@@ -1229,23 +1235,22 @@ class Measles_investigation extends CI_Controller {
 	}
 	
 	function CrossProvince_DistrictName($distcode)
-    {
+   {      
 		$_query = "SELECT district from districts where distcode = '$distcode'";
 		$results = $this-> db-> query($_query);
 		$rows = $results->row_array();        
 		return $rows['district'];	    
-   	}
-
-   	public function DistOptions(){
+   }
+   public function DistOptions(){
 		$distcode = $this-> input-> post('distcode'); 
 		$Districtname = $this -> getCrossProvince_DistrictsOptions(false,$distcode);
 		echo $Districtname;
 	}
 	
 	function getCrossProvince_DistrictsOptions($isreturn=false,$distcode=NULL,$allDistricts=NULL)
-    {
+    { 
     	$procode = substr($distcode, 0,1);        
-      	$output = '<option value="" >-- Select District --</option>';
+      $output = '<option value="" >-- Select District --</option>';
 		$query="SELECT district,distcode from districts where province = '$procode' order by district asc";
 		$result = $this -> db ->query($query);
 		$result1 = $result->result_array();
@@ -1259,7 +1264,8 @@ class Measles_investigation extends CI_Controller {
 		}
 		if($isreturn)
 			return $output;
-		echo $output;	    
+		echo $output;
+	    
     }
     public function TehsilNames(){
 		$tcode = $this-> input-> post('tcode'); 

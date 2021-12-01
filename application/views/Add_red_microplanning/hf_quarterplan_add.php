@@ -89,8 +89,7 @@
 								<option value="03">Quarter 3</option>
 								<option value="04">Quarter 4</option>
 							</select>
-						</div>
-                        
+						</div>	
 						<div class="col-md-2 ">								
 							<label>Technician:</label>						
 						</div>
@@ -98,9 +97,7 @@
 								<select class="form-control" name="techniciancode" id="technician">								        
 									<option value="">-- Select --</option>									
 									</select>						
-							</div>
-
-						
+							</div>						
 					</div>
 					<div class="panel-body" style="padding-top:1px;">
 						<table id="hfTable" class="table table-bordered plan_table" >
@@ -316,8 +313,7 @@
 						}
 					});
 				}
-			});			
-			$(document).on('change','#facode', function(){
+			});			$(document).on('change','#facode', function(){
 				var facode = this.value;
 				var year = $('#year :selected').text();
 				//to get facilities of selected UC
@@ -339,8 +335,17 @@
 			$(document).on('change','#technician', function(){		
 				var techniciancode = this.value;
 				var year = $('#year :selected').text();
-				var quarter=$('#quarter :selected').val();
-				//alert(quarter);
+				var quarter = $('#quarter :selected').val();
+							
+				/* function quarter_of_the_year(date) 
+						{
+							var month = date.getMonth() + 1;
+							return (Math.ceil(month / 3));
+						}
+						var  qua = '0'+quarter_of_the_year(new Date());
+						//alert(qua);
+				$('#quarter').val(qua);
+				$('#quarter').trigger('change'); */
 				var table = $('#hfTable');
 				
 				table.find("tbody").html('');
@@ -365,11 +370,12 @@
 			
 			$(document).on('change','#quarter', function(){
 				var quarter = this.value;
-				//////////////////
-					var techniciancode =$("#technician option:selected").val();
+				//////////
+				var techniciancode =$("#technician option:selected").val();
 					var facode =$("#facode option:selected").val();
 					var year = $("#year option:selected").val();
-					$.ajax({
+					
+					 $.ajax({
 							type: 'post',
 							data: "techniciancode="+techniciancode+ "&quarter="+quarter+ "&facode="+facode+ "&year="+year,
 							//url: "<?php echo base_url(); ?>Ajax_red_rec/checkQuarter_avalible_list",
@@ -385,28 +391,27 @@
 											$("#quarter").css("background-color","#FFF");
 										}
 							}
-					}); 
-                /////////////////////////				
-				
-				
-				
+					});
+				//////////
 				//alert(quarter);
-				if(quarter == '01'){
+				
+					
+				if(quarter == 1){
 					$('#m1').text('January').attr('month','01');
 					$('#m2').text('February').attr('month','02');
 					$('#m3').text('March').attr('month','03');
 				}
-				else if(quarter == '02'){
+				else if(quarter == 2){
 					$('#m1').text('April').attr('month','04');
 					$('#m2').text('May').attr('month','05');
 					$('#m3').text('June').attr('month','06');
 				}
-				else if(quarter == '03'){
+				else if(quarter == 3){
 					$('#m1').text('July').attr('month','07');
 					$('#m2').text('August').attr('month','08');
 					$('#m3').text('September').attr('month','09');
 				}
-				else if(quarter == '04'){
+				else if(quarter == 4){
 					$('#m1').text('October').attr('month','10');
 					$('#m2').text('November').attr('month','11');
 					$('#m3').text('December').attr('month','12');
@@ -416,22 +421,22 @@
 					$('#m2').text('February').attr('month','02');
 					$('#m3').text('March').attr('month','03'); */
 					
-							if(qua == '01'){
+							if(qua == 1){
 							$('#m1').text('January').attr('month','01');
 							$('#m2').text('February').attr('month','02');
 							$('#m3').text('March').attr('month','03');
 						}
-						else if(qua == '02'){
+						else if(qua == 2){
 							$('#m1').text('April').attr('month','04');
 							$('#m2').text('May').attr('month','05');
 							$('#m3').text('June').attr('month','06');
 						}
-						else if(qua == '03'){
+						else if(qua == 3){
 							$('#m1').text('July').attr('month','07');
 							$('#m2').text('August').attr('month','08');
 							$('#m3').text('September').attr('month','09');
 						}
-						else if(qua == '04'){
+						else if(qua == 4){
 							$('#m1').text('October').attr('month','10');
 							$('#m2').text('November').attr('month','11');
 							$('#m3').text('December').attr('month','12');
@@ -450,7 +455,19 @@
 					var techniciancode = this.value;
 					var facode =$("#facode option:selected").val();
 					var year = $("#year option:selected").val();
-					var quarter = $("#quarter option:selected").val();				
+					var quarter = $("#quarter option:selected").val();
+					
+					/* function quarter_of_the_year(date) 
+					{
+						var month = date.getMonth() + 1;
+						return (Math.ceil(month / 3));
+					}
+						var  quarter = quarter_of_the_year(new Date()); */
+						//alert(quarter);
+						//alert(facode);
+						//alert(techniciancode);
+						//alert(year);
+					
 					 $.ajax({
 							type: 'post',
 							data: "techniciancode="+techniciancode+ "&quarter="+quarter+ "&facode="+facode+ "&year="+year,
@@ -470,8 +487,7 @@
 					}); 
 				}); 
 				//////////////////// END //////////////////////////////
-			
-				//////////////////// END //////////////////////////////
+				
 				
 				
  						

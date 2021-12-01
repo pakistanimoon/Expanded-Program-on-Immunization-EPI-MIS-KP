@@ -1,4 +1,4 @@
-<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http%3A%2F%2F<?php echo "epikp.pacemis.com//StockReceivefromStore/$vouchernum";?>%2F&choe=UTF-8" style="background: red;
+<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=http%3A%2F%2F<?php echo "epimis.cres.pk//StockReceivefromStore/$vouchernum";?>%2F&choe=UTF-8" style="background: red;
 position: absolute; right: 20px;"/>
 <center>
 	<label style="padding-left:15px">Date : </label>

@@ -1,13 +1,12 @@
 <?php
-//local
 class Reports extends CI_Controller {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
 		parent::__construct();
 		$this -> load -> model('Reports_model');
 		$this -> load -> model('Vaccine_coverage_model');
-		//$this -> load -> model ('Child_model',"child");
 		$this -> load -> helper('epi_functions_helper');
+
 		$code = md5(date("Y-n-d"));
 		if(isset($_REQUEST['code']) && $_REQUEST['code'] == $code){
 			$provinceCode = $_REQUEST['procode']; // procode during drilldown from Federal EPI
@@ -54,7 +53,6 @@ class Reports extends CI_Controller {
 	}
 	//======= Function to Create Filters for Sepecific Reports Starts Here ===========//
 	public function Reports_Filters($reportName){
-		//echo "i am here";exit;
 		$data['data'] = $this -> Reports_model -> Create_Reporting_Filters($reportName);
 		//$data['data']=$data;
 		if($data != 0){
@@ -72,10 +70,6 @@ class Reports extends CI_Controller {
 		if($this->input->post('distcode') OR null !== $this->uri->segment(3))
 		{
 			$data['distcode'] = (null !== $this->uri->segment(3)) ? $this->uri->segment(3) : $this->input->post('distcode');
-			$data['type_wise'] = (null !== $this->uri->segment(6)) ? $this->uri->segment(6) : $this->input->post('typeWise');
-		}
-		if($this -> session -> UserLevel==4){
-			$data['tcode'] = $this->input->post('tcode');
 			$data['type_wise'] = (null !== $this->uri->segment(6)) ? $this->uri->segment(6) : $this->input->post('typeWise');
 		}
 		$data['year'] = (null !== $this->uri->segment(4)) ? $this->uri->segment(4) : $this->input->post('year');
@@ -128,24 +122,20 @@ class Reports extends CI_Controller {
 			$data['distcode'] = (null !== $this->uri->segment(3)) ? $this->uri->segment(3) : $this->input->post('distcode');
 			$data['type_wise'] = (null !== $this->uri->segment(6)) ? $this->uri->segment(6) : $this->input->post('typeWise');
 		}
-        if($this -> session -> UserLevel==4){
-		$data['tcode'] = $this->input->post('tcode');
-		$data['type_wise'] = (null !== $this->uri->segment(6)) ? $this->uri->segment(6) : $this->input->post('typeWise');
-		}
-        $data['monthfrom'] = (null !== $this->uri->segment(4)) ? $this->uri->segment(4) : $this->input->post('monthfrom');
+		$data['monthfrom'] = (null !== $this->uri->segment(4)) ? $this->uri->segment(4) : $this->input->post('monthfrom');
 		$data['monthto']   = (null !== $this->uri->segment(5)) ? $this->uri->segment(5) : $this->input->post('monthto');
-		// if($this->input->post('monthfrom') AND $this->input->post('monthto'))
-		// {
-		// 	$data['monthfrom'] = substr($data['monthfrom'],3).'-'.substr($data['monthfrom'],0,2);
-		// 	$data['monthto'] = substr($data['monthto'],3).'-'.substr($data['monthto'],0,2);
-		// }
+		/* if($this->input->post('monthfrom') AND $this->input->post('monthto'))
+		{
+			$data['monthfrom'] = substr($data['monthfrom'],3).'-'.substr($data['monthfrom'],0,2);
+			$data['monthto'] = substr($data['monthto'],3).'-'.substr($data['monthto'],0,2);
+		} */
 		$data['data'] = $this->Reports_model->all_dropout($data);
 			
 		if($data != 0)
 		{
             $data['fileToLoad'] = 'reports/all_dropout';
 			$data['pageTitle']='Report Filters';
-			$this -> load -> view('template/reports_template',$data);
+			$this->load->view('template/reports_template',$data);
 		}
 		else
 		{
@@ -199,7 +189,7 @@ class Reports extends CI_Controller {
 			if ($this -> input -> post('export_excel')) {
 				//if request is from excel
 				header("Content-type: application/octet-stream");
-				header("Content-Disposition: attachment; filename=Measles_Coverage_Vs_Measles_Cases_".$year.".xls");
+				header("Content-Disposition: attachment; filename=Access_and_Utilization_Report.xls");
 				header("Pragma: no-cache");
 				header("Expires: 0");
 				//Excel Ending here
@@ -220,7 +210,7 @@ class Reports extends CI_Controller {
 	}
 	
 	public function vaccine_demand()
-	{
+	{   //print_r($_POST); exit();
 		$managerDrillDown = $this->uri->segment(7);
 		if($managerDrillDown=="drillDown")
 		{
@@ -234,32 +224,28 @@ class Reports extends CI_Controller {
 			if($this->input->post('distcode') OR null !== $this->uri->segment(3))
 			{
 				$data['distcode'] = (null !== $this->uri->segment(3)) ? $this->uri->segment(3) : $this->input->post('distcode');
-                //$data['tcode'] = (null !== $this->uri->segment(4)) ? $this->uri->segment(4) : $this->input->post('tcode');
-				$data['typewise'] = (null !== $this->uri->segment(8)) ? $this->uri->segment(8) : $this->input->post('typewise');
-				//	$data['type_wise'] = $this->input->post('typeWise');
+	            $data['typewise'] = (null !== $this->uri->segment(8)) ? $this->uri->segment(8) : $this->input->post('typewise');
 			}
-            if($this -> session -> UserLevel==4){
-				$data['tcode'] = $this->input->post('tcode');
-				$data['typewise'] = "facility";
-			}
-            //print_r($data['type_wise']);exit;
+			//print_r($data['type_wise']);exit;
 			$data['monthfrom'] = (null !== $this->uri->segment(6)) ? $this->uri->segment(6) : $this->input->post('monthfrom');
 			$data['monthto']   = (null !== $this->uri->segment(7)) ? $this->uri->segment(7) : $this->input->post('monthto');
 			$data['indicator'] = (null !== $this->uri->segment(5)) ? $this->uri->segment(5) : $this->input->post('indicator');
 			$data['product']   = (null !== $this->uri->segment(4)) ? $this->uri->segment(4) : $this->input->post('product');
+			//$data['typewise'] = $_POST['typewise']; 
 			/* if($this->input->post('monthfrom') AND $this->input->post('monthto'))
 			{
 				$data['monthfrom'] = substr($data['monthfrom'],3).'-'.substr($data['monthfrom'],0,2);
 				$data['monthto'] = substr($data['monthto'],3).'-'.substr($data['monthto'],0,2);
 			} */
 		}
-		//print_r($data);exit;
+		
 		$data['data'] = $this->Reports_model->vaccine_demand($data);
 			
 		if($data != 0)
 		{
             $data['fileToLoad'] = 'reports/vaccine_demand';
 			$data['pageTitle']='Report Filters';
+			//print_r($data);exit; 
 			$this -> load -> view('template/reports_template',$data);
 		}
 		else
@@ -318,6 +304,9 @@ class Reports extends CI_Controller {
 		$data['vaccination_type'] = $this->input->get('vaccination_type');
 		$data['monthfrom'] = substr($data['monthfrom'],3).'-'.substr($data['monthfrom'],0,2);
 		$data['monthto'] = substr($data['monthto'],3).'-'.substr($data['monthto'],0,2);		//echo "<pre>";print_r($data);exit;	
+		//echo $year;exit;
+		//echo $code;
+		//print_r($data);exit;
 		if($this -> input -> get('vaccination_type') != 'all'){
 			//echo "<pre>";print_r($data);exit;	
 			$data['data'] = $this -> Reports_model -> typeWiseVaccination($code,$year,$data);
@@ -326,15 +315,18 @@ class Reports extends CI_Controller {
 		}
 		$data['fileToLoad'] = 'reports/flcf_wise_vaccination_malefemale_coverage_report';
 		$data['pageTitle']='Facility wise Vaccination of Children and Women(Male Female wise)';
+		//print_r($data);exit();
 		$this -> load -> view('template/reports_template',$data);
 	}
 	
 	//======= (Male Female wise)FLCF wise Vaccination for Children and Women Report Function Starts Here =======//
 	public function flcf_wise_vaccination_malefemale_coverage($code=NULL,$year=NULL)
 	{
+		//print_r($_REQUEST); exit();	
 		if($this->input->get_post('distcode') && $this->input->get_post('monthfrom') && $this->input->get_post('monthto'))
 		{
-			$data['distcode'] = $this->input->get_post('distcode');
+			//print_r($_REQUEST); exit();	
+			$data['distcode'] = $this->input->get_post('distcode');		   
 			$data['typeWise'] = $this->input->get_post('typeWise');
 			$data['monthfrom'] = $this->input->get_post('monthfrom');
 			$data['monthto'] = $this->input->get_post('monthto');
@@ -350,7 +342,7 @@ class Reports extends CI_Controller {
 		}
 		else
 		{
-			$data['distcode'] = $this->input->get_post('distcode');
+			$data['distcode'] = $this->input->get_post('distcode');			
 			$data['age_wise'] = $this->input->get_post('age_wise');
 			$data['monthfrom'] = $this->input->get_post('monthfrom');
 			$data['monthto'] = $this->input->get_post('monthto');
@@ -367,7 +359,7 @@ class Reports extends CI_Controller {
 			$data['distdrilldown'] = $drilldown = $this->input->get_post('distdrilldown');
 		}
 		if($this -> input -> get_post('vaccination_type') != 'all' && $this -> input -> get_post('in_out_coverage') != 'total_districts')
-		{ 
+		{
 			$data['data'] = $this -> Reports_model -> typeWiseVaccination($code,$year,$data);
 		}
 		elseif($this -> input -> get_post('vaccination_type') == 'all' && $this -> input -> get_post('in_out_coverage') != 'total_districts')
@@ -391,22 +383,22 @@ class Reports extends CI_Controller {
 			if(strlen($code)==6)
 			{
 				$data["facode"] = $code;
-			}
+			}			
 		}
 		if($year)
 		{
 			$data["report_year"] = $year;
 		}
 		$vacc_to = $this->input->get_post('vacc_to');
-		$age_wise = $this->input->get_post('age_wise');
-		if($this -> input -> get_post('vaccination_type') != 'all' && $this -> input -> get_post('in_out_coverage') != 'total_districts')
-		{  
+		$age_wise = $this->input->get_post('age_wise'); 
+		if($this -> input -> get_post('vaccination_type') != 'all' && $this -> input -> get_post('in_out_coverage') != 'total_districts') 
+		{ 
 			if($vacc_to != 'total_children' AND $age_wise == 'all')
-			{  
+			{
 				$data['fileToLoad'] = 'reports/vaccination_type_report';
 			}
 			if($vacc_to == 'total_children' AND $age_wise == 'all')
-			{ 
+			{
 				$data['fileToLoad'] = 'reports/vaccination_type_report_total';
 			}
 			/* elseif($age_wise == '0to11' AND $vacc_to != 'total_children')
@@ -418,7 +410,7 @@ class Reports extends CI_Controller {
 				$data['fileToLoad'] = 'reports/vaccination_type_report_0to11_total';
 			} */
 			elseif($vacc_to == 'total_children' AND $age_wise != 'all')
-			{ 	
+			{
 				$data['fileToLoad'] = 'reports/vaccination_type_report_notall_total';
 			}
 			elseif($vacc_to != 'total_children' AND $age_wise != 'all')
@@ -427,10 +419,10 @@ class Reports extends CI_Controller {
 			}
 		}
 		else
-		{ 
-			if($this -> input -> get_post('in_out_coverage') == 'out_uc' || $this -> input -> get_post('in_out_coverage') == 'total_ucs' || $this -> input -> get_post('in_out_coverage') == 'out_district'){ 
+		{
+			if($this -> input -> get_post('in_out_coverage') == 'out_uc' || $this -> input -> get_post('in_out_coverage') == 'total_ucs' || $this -> input -> get_post('in_out_coverage') == 'out_district'){
 				if($vacc_to != 'total_children' AND $age_wise == 'all')
-				{ 
+				{
 					if($this -> input -> get_post('in_out_coverage') == 'out_district'){
 						$data['fileToLoad'] = 'reports/flcf_wise_vaccination_malefemale_coverage_report_out_district';
 					}
@@ -473,7 +465,7 @@ class Reports extends CI_Controller {
 					if($this -> input -> get_post('in_out_coverage') == 'out_district'){
 						$data['fileToLoad'] = 'reports/flcf_wise_vaccination_malefemale_coverage_report_notall_total_out_district';
 					}
-					else{ 
+					else{
 						$data['fileToLoad'] = 'reports/flcf_wise_vaccination_malefemale_coverage_report_notall_total_out';
 					}					
 				}
@@ -505,7 +497,7 @@ class Reports extends CI_Controller {
 					}
 				}
 			}
-			else{ 
+			else{
 				if($vacc_to != 'total_children' AND $age_wise == 'all')
 				{
 					if($drilldown == 'dist_to_uc'){
@@ -518,7 +510,7 @@ class Reports extends CI_Controller {
 				if($vacc_to == 'total_children' AND $age_wise == 'all')
 				{
 				
-					if($drilldown == 'dist_to_uc'){ 
+					if($drilldown == 'dist_to_uc'){
 						
 						$data['fileToLoad'] = 'reports/flcf_wise_vaccination_malefemale_coverage_report_total_out';
 					}
@@ -569,41 +561,36 @@ class Reports extends CI_Controller {
 		$data['pageTitle']='Vaccination Report of Children and Women (Male Female wise)';
 		$this -> load -> view('template/reports_template',$data);
 	}
-	
 	public function sessionInfoReport(){
-		$distcode=$this->input->get_post('distcode');
-		$dist = '';
-		$tcode= '';
-		$tco=$this->input->get_post('tcode');
-		if(isset($distcode) > 0){
+		if($this->input->get_post('distcode'))
 			$dist = $this->input->get_post('distcode');
-		}else if(isset($tco) > 0){
-			$tcode = $this->input->get_post('tcode');
-		}
-		else {
-
+		else 
 			$dist = '';
-		}
 		$year = $this->input->get_post('year');
 		$month = $this->input->get_post('month');
 		$reportType = $this->input->get_post('report_type');
 		$session_type = $this->input->get_post('session_type');
 		$quarter = $this->input->get_post('quarter');
 		$this -> load -> model('dashboard/dashboard_model','dashboard');
-	   if($dist == 0 && $tcode==0 ){
+		if($dist == 0)
 			$data['data'] = $this->dashboard->sessionInfo($year,$month,$reportType,$session_type,$quarter);
-		}else{
-			$data['data'] = $this->dashboard->sessionInfoFac($year,$dist,$month,$reportType,$session_type,$quarter,$tcode);
-		}
-        //print_r($data['data']); exit;
+		else
+			$data['data'] = $this->dashboard->sessionInfoFac($year,$dist,$month,$reportType,$session_type,$quarter);
 		$data['distcode'] = $dist;
-		$data['tcode'] = $tcode;
 		$data['year'] = $year;
 		$data['reportType'] = $reportType;
 		$data['session_type'] = $session_type; 
 		$data['quarter'] = $quarter;
 		$data['month'] = $month;
 		//$data['data']['TopInfo'] = tableTopInfo('', $dist, '', $year,$session_type,'',$month,'','','','','','','',$quarter);
+		if ($this -> input -> post('export_excel')) {
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=Session_Planned_Conducted_Report.xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
+		}
 		$data['data']['TopInfo'] = reportsTopInfo("Sessions Planned/Conducted", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'reports/session_info';
@@ -959,11 +946,7 @@ class Reports extends CI_Controller {
 		$reportPath = base_url()."Reports/Retired_HR_Report";
 		$reportTitle = "Retired HR Report";
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-		if($this->session->UserLevel==4){
-		$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,NULL,false,NULL,NULL,"No","No",NULL,NULL,"Yes");	
-		}else{
-		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,NULL,false,NULL,NULL,"No","No",NULL,NULL,"Yes");	
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,NULL,false,NULL,NULL,"No","No",NULL,NULL,"Yes");
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;
@@ -1039,208 +1022,6 @@ class Reports extends CI_Controller {
 		$this -> load -> view('template/reports_template',$data);
 	}
 	//-----------------------------------------------------------------------------------------------//
-	
-	
-	public function children_filter(){
-		//echo "zeeshan - 1 ";exit; 
-		$this -> load -> library('reportfilters');
-		$reportPeriod = array('month-from-to-previous');
-		$functionName = "vaccination_children_filter";
-		$reportPath = base_url()."Reports/".$functionName;
-		$reportTitle = "Search Of Vaccination Children";
-		$options = array(
-						array(
-							'type' => 'dropdown',
-							0 => 'Technician',
-							'class' => 'techniciancode',
-							'00' => '--Select Technician--'
-						),
-						array(
-							'type' => 'checkbox',
-							0 => 'Defaulters',
-							'class' => 'defaulter_childs'
-						)
-					);
-		$customDropDown = $options;
-		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-		//$dataHtml .= $this->reportfilters->createReportFilters(true,true,true,true,$reportPeriod);
-		$dataHtml .= $this->reportfilters->createReportFilters(true,true,true,true,false,false,NULL,NULL,NULL,NULL,NULL,$customDropDown);
-		
-		$dataHtml .= $this->reportfilters->filtersFooter();
-		$data['listing_filters'] = $dataHtml;
-		$data['data']=$data;
-		$data['edit'] = "Yes";
-		$data['fileToLoad'] = 'reports/reports_filters';
-		$data['pageTitle']='EPI-MIS Report Filters';
-		$this -> load -> view('template/epi_template',$data);
-	}
-	
-	public function search_vaccinated_children()
-	{
-		//echo "zeeshan";exit; 
-		if($this->input->get('distcode') && $this->input->get('monthfrom') && $this->input->get('monthto')){
-			$data['distcode'] = $this->input->get('distcode');
-			$data['tcode'] = $this->input->get('tcode');
-			$data['uncode'] = $this->input->get('uncode');
-			$data['facode'] = $this->input->get('facode');
-			$data['monthfrom'] = $this->input->get('monthfrom');
-			$data['monthto'] = $this->input->get('monthto');
-		}else{
-			$data = $this -> getPostedData();
-		}		
-		$data['data']=$this->Reports_model->list_vaccination_children($data);
-		
-		$data['fileToLoad'] = 'childs/search_vaccinated_children'; // old view for district and health facility wise// --hf_consumption_requisition_report
-		$data['pageTitle']='List Of Vaccination Children Report';
-		$this -> load -> view('template/reports_template',$data);
-		
-	}
-	
-	public function vaccination_children_filter(){
-		
-		$data['facode']=$this->input-> get_post('facode');
-		$data['uncode']=$this->input-> get_post('uncode');
-		$data['tcode']=$this->input-> get_post('tcode');
-		$data['distcode']=$this->input-> get_post('distcode');
-		$data['technician']=$this->input-> get_post('technician');
-		$data['defaulters']=$this->input-> get_post('defaulters');
-		//print_r($data['distcode']);exit;
-		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
-		if ($page <= 0){
-			$page = 1;
-		}
-		$per_page = 100;
-		// Set how many records do you want to display per page.
-		$startpoint = ($page * $per_page) - $per_page;
-		$statement = "cerv_child_registration";
-		$dataChild['pageTitle']='EPI-MIS | List Of Vaccination Children Reports';
-		$dataChild['data'] = $this -> Reports_model -> list_vaccination_children($dataChild['pageTitle'],$data,$per_page,$startpoint);
-		$url = '';
-		if (isset($_SESSION['Province'])) {
-			$wc = " procode = '" . $_SESSION['Province'] . "' AND ";
-			$url .= "?procode=".$_SESSION['Province'].'&';
-		}
-		if($data['distcode'] > 0)
-		{	
-			$wc = "distcode= '".$data['distcode']."' AND ";
-			$url .= "distcode=".$data['distcode'].'&';
-		}
-		if(isset($data['tcode']) AND $data['tcode'] > 0){
-			$wc = "tcode= '".$data['tcode']."' AND ";
-			$url .= "tcode=".$data['tcode'].'&';
-		}
-		if(isset($data['uncode']) AND $data['uncode'] > 0){
-			$wc = "uncode= '".$data['uncode']."' AND ";
-			$url .= "uncode=".$data['uncode'].'&';
-		}
-		if(isset($data['facode']) AND $data['facode'] > 0){
-			$wc = "reg_facode= '".$data['facode']."' AND ";
-			$url .= "facode=".$data['facode'].'&';
-		}
-		if(isset($data['technician']) AND $data['technician'] > 0){
-			$wc = "techniciancode= '".$data['technician']."' AND ";
-			$url .= "technician=".$data['technician'].'&';
-		}
-		if(isset($data['defaulters']) && $data['defaulters'] == 1){
-			$url .= "defaulters=".$data['defaulters'].'&';
-		}
-		$wc .= 'procode is not NULL AND deleted_at IS NULL';
-		if($data['defaulters'] == 1){
-			$date = date('Y-m-d');
-			$wc .= "
-								AND 
-								((opv1 IS NULL AND opv2 IS NULL AND opv3 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								(rota1 IS NULL AND rota2 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								(pcv1 IS NULL AND pcv2 IS NULL AND pcv3 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								(penta1 IS NULL AND penta2 IS NULL AND penta3 IS NULL AND '{$date}'::date >= dateofbirth + interval '44' day) OR
-								
-								(opv1 IS NOT NULL AND opv2 IS NULL AND opv3 IS NULL AND '{$date}'::date >= opv1 + interval '30' day) OR
-								(rota1 is NOT NULL AND rota2 IS NULL AND '{$date}'::date >= rota1 + interval '30' day) OR
-								(pcv1 IS NOT NULL AND pcv2 IS NULL AND pcv3 IS NULL AND '{$date}'::date >= pcv1 + interval '30' day) OR
-								(penta1 IS NOT NULL AND penta2 IS NULL AND penta3 is NULL AND '{$date}'::date >= penta1 + interval '30' day) OR
-								
-								(opv2 IS NOT NULL AND opv3 IS NULL AND '{$date}'::date >= opv2 + interval '30' day) OR
-								(ipv IS NULL AND '{$date}'::date >= dateofbirth + interval '101' day) OR
-								(pcv2 IS NOT NULL AND pcv3 IS NULL AND '{$date}'::date >= pcv2 + interval '30' day) OR
-								(penta2 IS NOT NULL AND penta3 IS NULL AND '{$date}'::date >= penta2 + interval '30' day) OR
-								
-								(measles1 IS NULL AND measles2 IS NULL AND '{$date}'::date >= dateofbirth + interval '1 month'*9 + interval '1' day) OR
-								(measles1 IS NOT NULL AND measles2 IS NULL AND '{$date}'::date >= measles1 + interval '30' day AND '{$date}'::date >= dateofbirth + interval '1 year' + interval '1 month'*3 + interval '1' day))
-			";
-		}
-		//echo '<pre>';print_r($data);exit;
-		$dataChild['pagination'] = $this -> Common_model -> pagination($statement, $per_page, $page, $url, $wc);
-		$dataChild['startpoint'] = ($page * $per_page) - $per_page;
-		$dataChild['fileToLoad'] = 'childs/search_vaccinated_children';
-		$this -> load -> view('template/reports_template',$dataChild);
-	
-	
-	
-		//echo "danish";exit; 
-		/* if($this->input->get('distcode') && $this->input->get('monthfrom') && $this->input->get('monthto')){
-			$data['distcode'] = $this->input->get('distcode');
-			$data['tcode'] = $this->input->get('tcode'); 
-			$data['uncode'] = $this->input->get('uncode');
-			$data['facode'] = $this->input->get('facode');
-			$data['monthfrom'] = $this->input->get('monthfrom');
-			$data['monthto'] = $this->input->get('monthto');
-		}else{
-			//echo "a";exit; 
-			$data = $this -> getPostedData();
-		}		
-		//echo "b";exit; 
-		$data['data']=$this->Reports_model->list_vaccination_children($data);
-		//echo "c";exit; 
-		$data['fileToLoad'] = 'childs/search_vaccinated_children'; // old view for district and health facility wise// --hf_consumption_requisition_report
-		$data['pageTitle']='List Of Vaccination Children Reports';
-		$this -> load -> view('template/reports_template',$data); */
-		
-		
-		/*
-		$data['facode']=$this->input-> get_post('facode');
-		$data['uncode']=$this->input-> get_post('uncode');
-		$data['tcode']=$this->input-> get_post('tcode');
-		$data['distcode']=$this->input-> get_post('distcode');
-		$data['technician']=$this->input-> get_post('technician');
-		$data['defaulters']=$this->input-> get_post('defaulters');
-		//print_r($data['distcode']);exit;
-		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
-		if ($page <= 0){
-			$page = 1;
-		}
-		$per_page = 100;
-		// Set how many records do you want to display per page.
-		$startpoint = ($page * $per_page) - $per_page;
-		$statement = "vaccination_children_filter";
-		$dataChild['pageTitle']='EPI-MIS | List Of Vaccination Children Reports';
-		$dataChild['data'] = $this -> child -> Child_Registration($dataChild['pageTitle'],$data,$per_page,$startpoint);
-		$url = '';
-		$wc = " ";
-		//echo "danish";exit; 
-		if($this->input->get('distcode') && $this->input->get('monthfrom') && $this->input->get('monthto')){
-			$data['distcode'] = $this->input->get('distcode');
-			$data['tcode'] = $this->input->get('tcode'); 
-			$data['uncode'] = $this->input->get('uncode');
-			$data['facode'] = $this->input->get('facode');
-			$data['monthfrom'] = $this->input->get('monthfrom');
-			$data['monthto'] = $this->input->get('monthto');
-		}else{ this
-			//echo "a";exit; 
-			$data = $this -> getPostedData();
-		}		
-		
-		
-		//echo "b";exit; 
-		$data['data']=$this->Reports_model->list_vaccination_children($data);
-		//echo "c";exit; 
-		
-		$data['pagination'] = $this -> Common_model -> pagination($statement, $per_page, $page, $url, $wc);
-		$data['startpoint'] = ($page * $per_page) - $per_page;
-		$data['fileToLoad'] = 'childs/search_vaccinated_children';
-		$data['pageTitle']='List Of Vaccination Children Reports';
-		$this -> load -> view('template/reports_template',$data);
-		*/
-	}
 	
 }
 ?>

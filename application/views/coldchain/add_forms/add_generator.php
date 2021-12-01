@@ -25,9 +25,9 @@
 										?>
 									</select>							
 									</div>
-									<div class="col-md-2">
-										<!--<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make" data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>-->
-									</div>
+									<!--<div class="col-md-2">
+										<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make" data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>
+									</div>-->
 									
 								</div>
 								 
@@ -44,9 +44,9 @@
 										<option>--select--</option>
 									</select>
 									</div>
-									<div class="col-md-2">
-										   <!--<button type="button" id='modalid1' class="btn btn-success btn-md" title="Add Model" style="position:relative"> <i class="fa fa-plus"></i></button>-->
-									</div>
+									<!--<div class="col-md-2">
+										   <button type="button" id='modalid1' class="btn btn-success btn-md" title="Add Model" style="position:relative"> <i class="fa fa-plus"></i></button>
+									</div>-->
 								</div>
 						</div>
 						

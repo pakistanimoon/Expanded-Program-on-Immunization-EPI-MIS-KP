@@ -214,7 +214,7 @@ $current_date = date('d-m-Y');?>
 														<thead class="trans">
 														              <tr>
                 <th rowspan="2">Vaccination by</th>
-                <th rowspan="2"><th rowspan="2">Vaccination<br>Given to<br>Women</th>
+                <th rowspan="2">Vaccination<br>Given to<br>Children</th>
                 <th colspan="18">Vaccines</th>
               </tr>
               <tr>
@@ -278,7 +278,7 @@ $current_date = date('d-m-Y');?>
 				),
 				"ipv"=>array(
 					"col"=>13,
-					"blocked_cols"=> Array(3,4,5,6,9,10,11,12,15,16,17,18,21,22,23,24)
+					"blocked_cols"=> Array(/* 3,4, */5,6,/* 9,10, */11,12,/* 15,16, */17,18,21,22,23,24)
 				),
                 "pcv10-1"=>array(
 					"col"=>10,
@@ -429,7 +429,7 @@ $current_date = date('d-m-Y');?>
 														<thead class="trans">
 														              <tr>
                 <th rowspan="2">Vaccination by</th>
-                <th rowspan="2"><th rowspan="2">Vaccination<br>Given to<br>Women</th>
+                <th rowspan="2">Vaccination<br>Given to<br>Children</th>
                 <th colspan="18">Vaccines</th>
               </tr>
               <tr>
@@ -564,7 +564,7 @@ $current_date = date('d-m-Y');?>
 				<thead class="trans">
 			<tr>
                 <th rowspan="2">Vaccination by</th>
-                <th rowspan="2"><th rowspan="2">Vaccination<br>Given to<br>Women</th>
+                <th rowspan="2">Vaccination<br>Given to<br>Children</th>
                 <th colspan="18">Vaccines</th>
 			</tr>
 			<tr>
@@ -748,7 +748,7 @@ $current_date = date('d-m-Y');?>
 												<thead class="trans">
 													    <tr>
                 <th rowspan="2">Vaccination by</th>
-                <th rowspan="2" style="min-width: 230px;">Vaccination Given to Women</th>
+                <th rowspan="2" style="min-width: 230px;">Vaccination Given to Children</th>
                 <th colspan="6">Vaccines</th>
               </tr>
               <tr>
@@ -818,7 +818,7 @@ $current_date = date('d-m-Y');?>
 												<thead class="trans">
 													    <tr>
                 <th rowspan="2">Vaccination by</th>
-                <th rowspan="2" style="min-width: 230px;">Vaccination Given to Women</th>
+                <th rowspan="2" style="min-width: 230px;">Vaccination Given to Children</th>
                 <th colspan="6">Vaccines</th>
               </tr>
               <tr>
@@ -888,7 +888,7 @@ $current_date = date('d-m-Y');?>
 												<thead class="trans">
 													    <tr>
                 <th rowspan="2">Vaccination by</th>
-                <th rowspan="2" style="min-width: 230px;">Vaccination Given to Women</th>
+                <th rowspan="2" style="min-width: 230px;">Vaccination Given to Children</th>
                 <th colspan="6">Vaccines</th>
               </tr>
               <tr>

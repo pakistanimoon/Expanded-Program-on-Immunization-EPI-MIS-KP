@@ -2,7 +2,9 @@
 class Population extends CI_Controller {
 
 	public function __construct() {
+
 		parent::__construct();
+
 		$this->load->helper('epi_functions_helper'); 
 		authentication();
 
@@ -13,9 +15,9 @@ class Population extends CI_Controller {
 
 	}
 	public function Villages()
-	{	
+	{
 		$data['fileToLoad'] = 'Population-village';
-		$this->load->model('Population_model');
+		//$this->load->model('Population_model');
 		$data['data']=$this->Population_model->getVillages();
 		//print_r($data);exit;
 		$data['pageTitle']='EPI-MIS | Village Population';
@@ -34,36 +36,42 @@ class Population extends CI_Controller {
 	public function Districts()
 	{
 		$data['fileToLoad'] = 'Population-dist';
+
 		//$this->load->model('Population_model');
 		$data['data']=$this->Population_model->getDistricts();
 		$data['pageTitle']='EPI-MIS | Training';
+
 		$this->load->view('template/epi_template',$data);
 	}
 	public function Tehsil()
 	{
 		$data['fileToLoad'] = 'Population-tehsil';
+
 		//$this->load->model('Population_model');
 		$data['data']=$this->Population_model->getTehsil();
 		$data['pageTitle']='EPI-MIS | Training';
+
 		$this->load->view('template/epi_template',$data);
 	}
 	public function UC()
 	{
 		$data['fileToLoad'] = 'Population-uc';
+
 		//$this->load->model('Population_model');
 		$data['data']=$this->Population_model->getUC();
 		$data['pageTitle']='EPI-MIS | UC Population';
+
 		$this->load->view('template/epi_template',$data);
 	}
+
 	
 	public function addFacilities()
-	{
-		$distcode = $this->session->District;
-		//$this->load->model('Population_model');
-		$this->Population_model->setFacilities($_POST,$distcode);
-		redirect('Population/Facilities');
+	{ 
+		 $distcode = $this->session->District;
+		 //$this->load->model('Population_model');
+		 $this->Population_model->setFacilities($_POST,$distcode);
+		 redirect('Population/Facilities');
 	}
-	
 	public function addvillages()
 	{	//echo '<pre>'; print_r($_POST);
 		$tcodes = $this -> input-> post('tcodes');

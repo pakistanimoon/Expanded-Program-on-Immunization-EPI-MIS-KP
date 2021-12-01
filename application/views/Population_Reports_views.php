@@ -1,4 +1,3 @@
-
 <div class="container bodycontainer">
 	<?php
 		echo $TopInfo;

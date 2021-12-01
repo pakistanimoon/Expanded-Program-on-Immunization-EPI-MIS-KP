@@ -161,6 +161,5 @@ class Ajax_control_panel extends CI_Controller {
 		echo $data;
 	}
 	
-	
 }
 ?>

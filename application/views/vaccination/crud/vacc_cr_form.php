@@ -86,8 +86,8 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 							</td>
 						</tr>
 						<tr>
-							<!--<td><label>Health Facility Code</label></td>
-							<td><input type="text" id="hfcode" name="hfcode" readonly="readonly" value="" class="form-control"></td>-->
+													   
+																																																																																	 
 							<td colspan="2"><label>Monthly Target For Children 0-11</label></td>
 							<td><label>Male</label></td>
 							<td><input class="form-control numberclass" name="tc_male" id="tc_male" value="<?php echo isset($vacc_Result)?$vacc_Result->tc_male:0; ?>" placeholder="Number" type="text"></td>
@@ -145,7 +145,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 							<thead>
 								<tr>
 									<th colspan="5"><label>OUT UC DATA</label></th>
-									<th><a id="datasharigbtn" href="#" class="submit btn-default btn-sm datasharigbtn" data-toggle="modal" data-target="#DataSharingModal" style="padding:3px 10px;"><i class="fa fa-plus"></i>Add New</a></th>
+									<th><a href="#" id="datasharigbtn" class="submit btn-default btn-sm datasharigbtn" data-toggle="modal" data-target="#DataSharingModal" style="padding:3px 10px;"><i class="fa fa-plus"></i>Add New</a></th>
 								</tr>
 								<tr>
 									<th><label>Country</label></th>
@@ -167,7 +167,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 						<div class="col-md-12">
 							<div class="pull-right">
 								<input type="checkbox" id="outchkbox">Show Outside Columns
-																																													  
+																																														   
 							</div>
 						</div>
 					</div>
@@ -184,7 +184,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 									<th rowspan="5"><label>Received Stock</label></th>
 									<th colspan="2" rowspan="5"><label>Used Stock</label></th>
 									<th colspan="2" rowspan="5"><label>Unusable Stock</label></th>
-																																																										
+																																																												   
 									<th colspan="2" rowspan="5"><label>Closing Balance</label></th>
 								</tr>
 								<tr>
@@ -305,56 +305,56 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 									<th>F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
-													   
-													   
+																				 
+																				 
 									<th>M</th>
-													   
-													   
+																				 
+																				 
 									<th>F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
-													   
-													   
-													   
+																				 
+																				 
+																				 
 									<th>M</th>
-													   
+																				 
 									<th>F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
-													   
-													   
-																												  
+																				 
+																				 
+																											 
 									<th>M</th>
-																												  
+																											 
 									<th>F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
 									<th class="outsidecol">M</th>
 									<th class="outsidecol">F</th>
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
-																												  
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
+																											 
 								</tr>
 								<tr>
-					   
-					   
+		
+		
 									<th>Nos.</th>
 									<th>Nos.</th>
 									<th>Nos.</th>
@@ -409,59 +409,59 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 									<th>Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>
-																													 
+																											 
 									<th>Nos.</th>
-																													 
-									<th>Nos.</th>
-									<th class="outsidecol">Nos.</th>
-									<th class="outsidecol">Nos.</th>
-									<th class="outsidecol">Nos.</th>
-									<th class="outsidecol">Nos.</th>
-																													 
-									<th>Nos.</th>
-																													 
+																											 
 									<th>Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>
-																													 
+																											 
 									<th>Nos.</th>
-																													 
+																											 
+									<th>Nos.</th>
+									<th class="outsidecol">Nos.</th>
+									<th class="outsidecol">Nos.</th>
+									<th class="outsidecol">Nos.</th>
+									<th class="outsidecol">Nos.</th>
+																											 
+									<th>Nos.</th>
+																											 
 									<th>Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>
 									<th class="outsidecol">Nos.</th>									
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
-																															
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
+																												 
 									<th>Doses</th>
 									<th>Doses</th>
 									<th>Vials</th>
 									<th>Doses</th>
 									<th>Vials</th>
 									<th>Doses</th>
-																																	 
+																																  
 									<th>Vials</th>
 									<th>Doses</th>
 								</tr>
@@ -473,13 +473,13 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 									<th style="color: White;">A</th>
 									<th style="color: White;">B</th>
 									<th style="color: White;">C</th>
-				  
-																																																																						
+	  
+																																																																		
 									<th colspan="2"  style="color: White;">E</th>
 									<th colspan="2"  style="color: White;">F</th>
-					  
-				  
-					 
+	   
+	  
+	  
 									<th colspan="2"  style="color: White;">G</th>
 								</tr>
 							</thead>
@@ -824,7 +824,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true,array("na
 						<div class="col-md-6" style="margin-left: 65%;">
 							<button id="submitDataSharing" class="btn-background box1" type="button" data-dismiss="modal"> <span class="save-1" style="border:none;top:0px; padding:4px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</span></button>
 							<button class="btn-background box1" type="button" data-dismiss="modal"><span class="save-1" style="border:none;top:0px; padding:4px;"><i class="fa fa-times" aria-hidden="true"></i> Cancel</span></button>
-																												  
+																											 
 						</div>
 					</div>
 				</div>
@@ -842,7 +842,7 @@ var selectedmodalprocode = '';
 var selectedmodaldistcode = '';
 var selectedmodaltcode = '';
 var selectedmodaluncode = '';
-
+var modalhtmlobj = {};
 $(document).ready(function(){
 	/* Function to get selected facility incharge */
 	function getIncharge(){
@@ -1147,7 +1147,7 @@ $(document).ready(function(){
 		//vaccinated
 		$('.consumptionitems').find('input[name^="product[vaccinated]['+prodid+']"]').each(function()
 		{
-			if(!isNaN(this.value) && this.value.length!=0 && parseFloat(this.value)>0 && this.className!='form-control numberclass dotcounttd' && this.className!='form-control numberclass dotcountdc')  
+			if(!isNaN(this.value) && this.value.length!=0 && parseFloat(this.value)>0 && this.className!='form-control numberclass dotcounttd' && this.className!='form-control numberclass dotcountdc')
 			{
 				vaccinated += parseFloat(this.value);            
 			}
@@ -1442,7 +1442,7 @@ $(document).ready(function(){
 		$('.edit_outucdata').removeAttr('style');
 		$('.delete_outucdata').removeAttr('style');
 		$('.datasharigbtn').removeAttr('style');
-		
+  
 	}
 	$(document).on('change','#accepted',function(){
 		if(this.checked) {
@@ -1928,7 +1928,7 @@ $(document).on('click','#submitDataSharing', function(){
 	}else{
 		$("#datasharigbody").find('[data-uncode='+uncode+']').remove();
 	}
-	var dstblrow = '<tr data-countrycode="'+countrycode+'" data-uncode="'+uncode+'"><td>'+country+'</td><td>'+province+'</td><td>'+district+'</td><td>'+tehsil+'</td><td>'+uc+'</td><td><a id="edit_outucdata" href="#" data-toggle="modal" data-target="#DataSharingModal" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default edit_outucdata" data-original-title="Edit"><i class="fa fa-pencil"></i></a><a data-toggle="tooltip" title="Delete" onclick="return confirm(\'Are you sureyou want to delete?\')" class="btn btn-xs btn-default delete_outucdata" data-original-title="Delete"><i class="fa fa-close"></i></a></td></tr>';
+	var dstblrow = '<tr data-countrycode="'+countrycode+'" data-uncode="'+uncode+'"><td>'+country+'</td><td>'+province+'</td><td>'+district+'</td><td>'+tehsil+'</td><td>'+uc+'</td><td><a id="edit_outucdata" href="#" data-toggle="modal" data-target="#DataSharingModal" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default edit_outucdata" data-original-title="Edit"><i class="fa fa-pencil"></i></a></td></tr>';
 	$("#datasharigbody").append(dstblrow);
 });
 $(document).on("change","#DataSharingModal .childvacc",function(){
@@ -2005,7 +2005,7 @@ $(document).on('click','.edit_outucdata',function(){
 					var fmcells = ["fm1","ff1","om1","of1","mm1","mf1","hm1","hf1","fm2","ff2","om2","of2","mm2","mf2","hm2","hf2","fm3","ff3","om3","of3","mm3","mf3","hm3","hf3"];
 				}
 				var item_id=resultarray[iter]["item_id"];
-				if(item_id==2 || item_id==29 || item_id==9999){
+				if(item_id==2 || item_id==36  || item_id==9999){
 					var antigen='';
 				}else{
 					var antigen=resultarray[iter]["antigen"];
@@ -2032,7 +2032,7 @@ $(document).on('click','.edit_outucdata',function(){
 	});
 });
 //delete monthly_outuc_coverage 
-$(document).on('click','.delete_outucdata',function(){
+/* $(document).on('click','.delete_outucdata',function(){
 	var facode = $("#facode").val();
 	var month = $("#month").val();
 	var year = $("#year").val();
@@ -2054,7 +2054,7 @@ $(document).on('click','.delete_outucdata',function(){
 			}
   		}
 	});	
-});	
+});	 */
 //for fully immunized
 function sumfully() {
     var result=0;

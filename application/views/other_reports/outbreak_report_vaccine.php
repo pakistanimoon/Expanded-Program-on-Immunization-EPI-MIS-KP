@@ -1,7 +1,7 @@
-<head>                                          
+<head>
 		<title>Outbreak Response List Report | EPI-MIS</title>
 		<!--****************************************Meta Tags Start Here***********************************-->
-
+ 
 		<meta charset="utf-8">
     	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">	
@@ -29,7 +29,7 @@
 	</head>
 	<div class="row">
 				<div class="col-xs-1">
-					<a href="http://epikp.pacemis.com/"><img src="http://epikp.pacemis.com/includes/images/epi.png" style="height: 60px;margin-top: 14px;" alt="img-excel" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Home"></a>
+					<a href="<?php echo base_url(); ?>"><img src="<?php echo base_url(); ?>includes/images/epi.png" style="height: 60px;margin-top: 14px;" alt="img-excel" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Home"></a>
 				</div>
 				
 				<div class="col-xs-9">
@@ -58,7 +58,7 @@
 			<label>District: </label>
 		</div>
 		<div class="col-xs-6 text-left">
-			<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo get_District_Name($argu['0']);?> </td>
+		<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo get_District_Name($argu['0']);?> </td>
 		</div>
   	 </div>
 	<?php } //if($argu['1']!='' && $argu['1']!=0) //{ ?>  	 
@@ -95,7 +95,7 @@ if($argu['1']!='') { ?>
 		<div class="col-xs-6 text-right">
 			<label>Date of Activity From: </label>
 		</div>
-		<div class="col-xs-6 text-left">
+	<div class="col-xs-6 text-left">
 			<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $argu['1']?> </td>
 		</div>
   	 </div>
@@ -153,7 +153,7 @@ if($argu['1']!='') { ?>
 								<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">M</th>
 								<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">F</th>
 								<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">M-F</th>
-							</tr>							
+							</tr>											
 						</thead>
 						<tbody id="trRow">
 							<?php
@@ -168,7 +168,7 @@ if($argu['1']!='') { ?>
 							$total_m_f=0;							
 							 	foreach ($outbreak_report as $view){?>
 							<tr>
-								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $view['vaccines']?></td>
+									<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $view['vaccines']?></td>
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php $m_m=$m_m+$view['0_11_m_m']; echo $view['0_11_m_m']?></td>
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php $m_f=$m_f+$view['0_11_m_f']; echo $view['0_11_m_f']?></td>
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php $m_m1=$m_m1+$view['12_23_m_m']; echo $view['12_23_m_m']?></td>

@@ -42,69 +42,133 @@
 					<thead>
 						<tr>
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Product</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Activity</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Jan - <?php echo $label = date("y",strtotime($year."-01-01")); ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Feb - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Mar - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Apr - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">May - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Jun - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Jul - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Aug - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Sep - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Oct - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Nov - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Dec - <?php echo $label; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total</th>
+
 						</tr>
+
 					</thead>
+
 					<tbody>
+
 						<?php 
+
 						//$titlerow = $receiverow = $issuerow = $balancerow = '';
+
 						foreach($reportdata as $key=>$row){
+
 							$totalrow = 0;
+
 							/* $titlerow 	.= '<th>'.$row['name'].'</th>';
+
 							$receiverow .= '<td>'.$row['receivebalance'].'</td>';
+
 							$issuerow .= '<td>'.$row['issuebalance'].'</td>';
+
 							$balancerow .= '<td>'.($row['prevbalance']+$row['receivebalance']-$row['issuebalance']).'</td>';
+
 							*/?>
+
 							<tr>
+
 								<th style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["item_name"]; ?> </th>
+
 								<th style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["activity"]; ?> </th>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm1"];$totalrow += $row["totalm1"];@$totalm1 += $row["totalm1"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm2"];$totalrow += $row["totalm2"];@$totalm2 += $row["totalm2"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm3"];$totalrow += $row["totalm3"];@$totalm3 += $row["totalm3"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm4"];$totalrow += $row["totalm4"];@$totalm4 += $row["totalm4"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm5"];$totalrow += $row["totalm5"];@$totalm5 += $row["totalm5"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm6"];$totalrow += $row["totalm6"];@$totalm6 += $row["totalm6"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm7"];$totalrow += $row["totalm7"];@$totalm7 += $row["totalm7"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm8"];$totalrow += $row["totalm8"];@$totalm8 += $row["totalm8"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm9"];$totalrow += $row["totalm9"];@$totalm9 += $row["totalm9"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm10"];$totalrow += $row["totalm10"];@$totalm10 += $row["totalm10"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm11"];$totalrow += $row["totalm11"];@$totalm11 += $row["totalm11"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $row["totalm12"];$totalrow += $row["totalm12"];@$totalm12 += $row["totalm12"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalrow;@$totalm13 += $totalrow; ?></td>
+
 								<!--<td <?php //echo ($row["receive"])?'class="drilldownCell" data-class="receive" data-month="'.$row["repmonth"].'"':''; ?>><?php //echo $row["receive"]; ?></td>
+
 								<td <?php //echo ($row["issue"])?'class="drilldownCell" data-class="issue" data-month="'.$row["repmonth"].'"':''; ?>><?php //echo $row["issue"]; ?></td>
+
 								<td <?php //echo ($row["pending"])?'class="drilldownCell" data-class="pending" data-month="'.$row["repmonth"].'"':''; ?>><?php //echo $row["pending"]; ?></td>-->
+
 							</tr><?php
+
 						}
+
 						if(!empty($reportdata)){?>
+
 							<tr>
+
 								<th style="text-align:center; border: 1px solid black;" class="text-center" colspan="2">Total</th>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm1; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm2; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm3; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm4; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm5; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm6; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm7; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm8; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm9; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm10; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm11; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm12; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $totalm13; ?></td>
+
 							</tr><?php
 						}?>
 					</tbody>

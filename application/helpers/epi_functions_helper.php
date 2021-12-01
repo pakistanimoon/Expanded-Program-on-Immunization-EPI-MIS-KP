@@ -1,5 +1,4 @@
 <?php
-//KP local
 function dataEntryValidator($param){
 	$CI = & get_instance();
 	if($CI -> session -> utype=='Manager'){
@@ -205,6 +204,7 @@ if(!function_exists('getWC_Array')){
 	function getWC_Array($procode=0,$distcode=0,$tcode=0,$alias=NULL){
 		$CI = & get_instance();
 		$wc = array();
+		$level = "district";
 		switch ($CI -> session -> UserLevel) {
 			case '1' :
 				# code...
@@ -222,17 +222,15 @@ if(!function_exists('getWC_Array')){
 					$wc[] = "{$alias}procode = '" . $procode . "'";
 					$wc[] = "{$alias}distcode = '" . $distcode . "'";
 				}
+				$level = "facility";
 				break;
 			case '4' :
-				if (($procode > 0) && ($distcode > 0) && ($tcode > 0)) {
+				if (($procode > 0) && ($distcode > 0) && ($facode > 0)) {
 					$wc[] = "{$alias}procode = '" . $procode . "'";
 					$wc[] = "{$alias}distcode = '" . $distcode . "'";
-					$wc[] = "{$alias}tcode = '" . $tcode . "'";
-				}else{
-					$wc[] = "{$alias}procode = '" . $CI -> session -> Province . "'";
-					$wc[] = "{$alias}distcode = '" . $CI -> session -> distcode . "'";
-					$wc[] = "{$alias}tcode = '" . $CI -> session -> tcode . "'";
+					$wc[] = "{$alias}facode = '" . $facode . "'";
 				}
+				$level = "facility";
 				break;
 		}
 		return $wc;
@@ -502,6 +500,7 @@ if(!function_exists('getEpiWeekYearsOptions')){
 		echo $output;
 	}
 }
+
 if(!function_exists('getWeekYearAccordingToCurrentDate')){
 	function getWeekYearAccordingToCurrentDate($currentDate){
 		//$currentDate = ($currentDate)?$currentDate:;
@@ -512,6 +511,7 @@ if(!function_exists('getWeekYearAccordingToCurrentDate')){
 		return $result -> year;
 	}
 }
+
 if(!function_exists('getAllMonthsOptions')){
 	function getAllMonthsOptions($isreturn=false){		
 		$output = "";
@@ -519,7 +519,7 @@ if(!function_exists('getAllMonthsOptions')){
 		
 		$months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
 		$mnth = isset($_REQUEST["month"])?$_REQUEST["month"]:date('m',strtotime("first day of previous months"));//date('m') 
-		$currMon = ($mnth=="13")?12:date('m',strtotime("first day of previous months"));
+		$currMon = ($mnth=="13")?12:((isset($_REQUEST['year']) && $_REQUEST['year']!=date('Y'))?12:date('m',strtotime("first day of previous months")));
 		$output .= '<option value="" selected="selected">--Select Month--</option>';
 		if(validation_errors() != false) {
 			foreach($months as $num => $monthitem){
@@ -536,8 +536,7 @@ if(!function_exists('getAllMonthsOptions')){
 				{}else{
 					$isSelected = ($mnth==$num)?'selected="selected"':'';//($mnth-1)
 					$month = sprintf("%02d", $num);
-					$output .= '<option value="'.$month.'"  '.$errorShow.'>'.$monthitem.'</option>';								
-				//	$output .= '<option value="'.$month.'" '.$isSelected.' '.$errorShow.'>'.$monthitem.'</option>';								
+					$output .= '<option value="'.$month.'" '.$isSelected.' '.$errorShow.'>'.$monthitem.'</option>';
 				}
 			}
 		}
@@ -625,7 +624,7 @@ if(!function_exists('getAllMonthsOptionsIncludingCurrent')){
 		$mnth = isset($_REQUEST["month"])?$_REQUEST["month"]:date('m');
 		$currMon = ($mnth=="13")?12:date('m');
 		/* $currMon = date('m'); */
-		//$output .= '<option value="" selected="selected">Select</option>';
+		//$output .= '<option value="" selected="selected">Select</option>';	
 		if(validation_errors() != false) {
 			foreach($months as $num => $monthitem){
 				$month = sprintf("%02d", $num);
@@ -690,7 +689,7 @@ if(!function_exists('getTehsils_options')){
 			$wc = getWC();
 		}		
 		$output = '<option value="0" >-- Select Tehsil--</option>';
-		$query="SELECT tehsil,tcode from tehsil where $wc order by tcode";
+		$query="SELECT tehsil, tcode from tehsil where $wc order by tehsil";
 		$result = $CI -> db ->query($query);
 		$result1 = $result->result_array();
 		foreach ($result1 as $oneteh) { 
@@ -732,9 +731,16 @@ if(!function_exists('getVillage_options')){
 	}
 }
 if(!function_exists('getFacilities_options')){
-	function getFacilities_options($isreturn=false,$facode=NULL,$uncode=NULL,$module=NULL,$resultset = array()){
+	function getFacilities_options($isreturn=false,$facode=NULL,$uncode=NULL,$module=NULL,$resultset = array(),$setSelect='Yes'){
+		
 		$CI = & get_instance();
-		$output = '<option value="" >--Select Facility--</option>';
+		//print_r($setSelect);exit;
+		if($setSelect == 'No'){
+			$output = '';
+		}else{
+			$output = '<option value="" >--Select Facility--</option>';
+		}
+		
 		if(empty($resultset)){
 			$wc = getWC();
 			switch ($module) {
@@ -791,28 +797,6 @@ if(!function_exists('getEpid_no')){
 		echo $output;		
 	}
 }
-if(!function_exists('getEpid_no_coronavirusInvestigation')){
-	function getEpid_no_coronavirusInvestigation($isreturn=false,$year,$case_type,$mNumber=NULL){
-		$CI = & get_instance();
-		$distcode = $CI -> session -> District;
-		$query = "SELECT epid_code from districts where distcode='$distcode'";
-		$result = $CI -> db -> query($query);
-		$result = $result -> row_array();
-		$dcode=$result['epid_code'];
-		$query = "SELECT max(case_number) as case_number from corona_case_investigation_form_db where year='$year' AND dcode='$dcode' AND case_type='$case_type'";
-		$result = $CI -> db -> query($query);        
-		$result = $result -> row_array();
-		// $measleNumber = str_split(sprintf('%04u', ($result['case_number'] + 1)));
-		// $output = "PAK/".$_SESSION["shortname"]."/".$dcode."/".$year."/".$case_type."/".implode("",$measleNumber);
-		$caseNumber = sprintf('%06u', ($result['case_number'] + 1));
-		$output = "PAK/".$_SESSION["shortname"]."/".$dcode."/".$year."/".$case_type."/".$caseNumber;
-		if($mNumber != NULL)
-			$output = $caseNumber;		
-		if($isreturn)
-			return $output;
-		echo $output;		
-	}
-}
 if(!function_exists('getEpid_no_casesInvestigation')){
 	function getEpid_no_casesInvestigation($isreturn=false,$year,$case_type,$mNumber=NULL){
 		$CI = & get_instance();
@@ -856,38 +840,11 @@ if(!function_exists('getEpid_no_afp')){
 		echo $output;		
 	}
 }
-if(!function_exists('getFLCF_options')){
-	function getFLCF_options($isreturn=false,$facode=NULL){
+if(!function_exists('getUCs_options')){
+	function getUCs_options($isreturn=false,$uncode=NULL){
 		
 		$CI = & get_instance();
 		$wc = getWC();
-		$output = '<option value="" >-- Select Health Facility--</option>';
-		$query="SELECT fac_name, facode from facilities where $wc order by fac_name";
-		$result = $CI -> db ->query($query);
-		$result1 = $result->result_array();
-		foreach ($result1 as $oneflcf) { 
-			$selected = '';
-			if(($facode > 0)&&($facode == $oneflcf["facode"]))
-			{
-				$selected = 'selected="selected"';
-			}
-			$output .= '<option value="'.$oneflcf["facode"].'" '.$selected.' >'.$oneflcf["fac_name"].'</option>';
-		}
-		if($isreturn)
-			return $output;
-		echo $output;
-	}
-}
-if(!function_exists('getUCs_options')){
-	function getUCs_options($isreturn=false,$uncode=NULL, $tcode=NULL){
-		
-		$CI = & get_instance();
-		if($tcode){
-			$wc = "tcode = '$tcode'";
-		}else{
-			$wc = getWC();
-		}
-		//$wc = getWC();
 		$output = '<option value="" >-- Select Unioncouncil--</option>';
 		$query="SELECT un_name,uncode from unioncouncil where $wc order by uncode";
 		$result = $CI -> db ->query($query);
@@ -962,7 +919,7 @@ if(!function_exists('getTehsils')){
 		$CI = & get_instance();
 		$wc = getWC();
 		$output = "";
-		$query="SELECT tehsil,tcode from tehsil where $wc order by tcode";
+		$query="SELECT tehsil, tcode from tehsil where $wc order by tehsil";
 		$result = $CI -> db ->query($query);
 		$result1 = $result->result_array();
 		foreach ($result1 as $oneteh ) {
@@ -1008,6 +965,29 @@ if(!function_exists('getUCs')){
 		}
 		if($isreturn)
 			return $output;
+		echo $output;
+	}
+}
+if(!function_exists('getTech_options')){
+	function getTech_options($facode=NULL,$techniciancode=NULL){
+		//echo $techniciancode;exit;
+		$CI = & get_instance();
+		//$wc = getWC();
+		//$output = '<option value="" >-- Select Technician--</option>';
+		$output = '';
+		$query="select techniciancode,technicianname from techniciandb where facode='$facode' and status='Active' order by technicianname";
+		$result = $CI -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $oneteh) { 
+			$selected = '';
+			if(($techniciancode > 0)&&($techniciancode == $oneteh["techniciancode"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$oneteh["techniciancode"].'" '.$selected.' >'.$oneteh["technicianname"].'</option>';
+		}
+		/* if($isreturn)
+			return $output; */
 		echo $output;
 	}
 }
@@ -1079,12 +1059,7 @@ if(!function_exists('getProvinces_options')){
 		$result = $CI -> db ->query($query);
 		$result1 = $result->result_array();
 		foreach ($result1 as $onepro) { 
-			if($procode == $onepro["procode"]){
-					$selected = 'selected';
-			}else{
-					$selected = 'yo';
-			}
-			
+			$selected = '';
 			$output .= '<option value="'.$onepro["procode"].'" '.$selected.' >'.$onepro["province"].'</option>';
 		}
 		if($isreturn)
@@ -1095,16 +1070,23 @@ if(!function_exists('getProvinces_options')){
 if(!function_exists('get_Indicator_Name')){
 	function get_Indicator_Name($ind_id){
 		$CI = & get_instance();
-		//$query 		= "SELECT ind_name from indicator_main where indmain = '$ind_id' " ;
-		$query 	   = "SELECT ind_name from indcat where indid = '$ind_id' ";
-		$resultInd = $CI -> db -> query($query) -> row();
+		$query 		= "SELECT ind_name from indicator_main where indmain = '$ind_id' " ;
+		$resultInd = $CI -> db -> query($query) -> row(); 
+		return isset($resultInd->ind_name)?$resultInd->ind_name:'';	
+	}
+}
+if(!function_exists('get_SurveillanceIndicator_Name')){
+	function get_SurveillanceIndicator_Name($ind_id){
+		$CI = & get_instance();
+		$query 		= "SELECT ind_name from indcat where indid = '$ind_id' " ;
+		$resultInd = $CI -> db -> query($query) -> row(); 
 		return isset($resultInd->ind_name)?$resultInd->ind_name:'';	
 	}
 }
 if(!function_exists('get_Province_Name')){
 	function get_Province_Name($procode){
 		$CI = & get_instance();
-		$query 	   = "SELECT province from provinces where procode = '$procode' " ;
+		$query 		= "SELECT province from provinces where procode = '$procode' " ;
 		$resultPro = $CI -> db -> query($query);
 		return $resultPro -> row()->province;	
 	}
@@ -1112,7 +1094,7 @@ if(!function_exists('get_Province_Name')){
 if(!function_exists('get_Province_ShortName')){
 	function get_Province_ShortName($procode){
 		$CI = & get_instance();
-		$query 	   = "SELECT shortname from provinces where procode = '$procode' " ;
+		$query 		= "SELECT shortname from provinces where procode = '$procode' " ;
 		$resultPro = $CI -> db -> query($query);
 		return $resultPro -> row()->shortname;	
 	}
@@ -1120,7 +1102,7 @@ if(!function_exists('get_Province_ShortName')){
 if(!function_exists('get_CaseType_Name')){
 	function get_CaseType_Name($caseCode){
 		$CI = & get_instance();
-		$query 	= "SELECT type_case_name from surveillance_cases_types where short_name = '$caseCode' ";
+		$query 		= "SELECT type_case_name from surveillance_cases_types where short_name = '$caseCode' " ;
 		$resultCase = $CI -> db -> query($query);
 		return $resultCase -> row()->type_case_name;	
 	}
@@ -1130,12 +1112,12 @@ if(!function_exists('get_District_Name')){
 		$CI = & get_instance();
 		$query 		= "SELECT district from districts where distcode = '$distcode' " ;
 		$resultDist = $CI -> db -> query($query);	
-		if($resultDist -> num_rows() >0)
+	if($resultDist -> num_rows() >0)
 		{
 			return $resultDist -> row()->district;	
 		}
 		return "";	
-	}
+		}
 }
 if(!function_exists('get_Tehsil_Name')){
 	function get_Tehsil_Name($tcode){
@@ -1261,8 +1243,10 @@ if(!function_exists('WC_replacement')){
 		$newWC = $wc;
 		$newWC1= $wc;
 		$replacements = array(0 => "province");
-		$newWC[0]  = str_replace("procode", "province", $newWC[0]);
-		$newWC1[0] = str_replace("procode", "province", $newWC1[0]);
+		if(isset($newWC[0]))
+			$newWC[0]  = str_replace("procode", "province", $newWC[0]);
+		if(isset($newWC1[0]))
+			$newWC1[0] = str_replace("procode", "province", $newWC1[0]);
 		if ($CI -> input -> post('distcode')) {
 			//unset($newWC1[1]);
 		}
@@ -1412,7 +1396,28 @@ if(!function_exists('getMeaslesCaseTypes')){
 		echo $output;
 	}
 }
-
+if(!function_exists('getEpid_no_coronavirusInvestigation')){
+	function getEpid_no_coronavirusInvestigation($isreturn=false,$year,$case_type,$mNumber=NULL){
+		$CI = & get_instance();
+		$distcode = $CI -> session -> District;
+		$query = "SELECT epid_code from districts where distcode='$distcode'";
+		$result = $CI -> db -> query($query);
+		$result = $result -> row_array();
+		$dcode=$result['epid_code'];
+		$query = "SELECT max(case_number) as case_number from corona_case_investigation_form_db where year='$year' AND dcode='$dcode' AND case_type='$case_type'";
+		$result = $CI -> db -> query($query);        
+		$result = $result -> row_array();
+		// $measleNumber = str_split(sprintf('%04u', ($result['case_number'] + 1)));
+		// $output = "PAK/".$_SESSION["shortname"]."/".$dcode."/".$year."/".$case_type."/".implode("",$measleNumber);
+		$caseNumber = sprintf('%06u', ($result['case_number'] + 1));
+		$output = "PAK/".$_SESSION["shortname"]."/".$dcode."/".$year."/".$case_type."/".$caseNumber;
+		if($mNumber != NULL)
+			$output = $caseNumber;		
+		if($isreturn)
+			return $output;
+		echo $output;		
+	}
+}
 if(!function_exists('getCoronaCaseTypes')){
 	function getCoronaCaseTypes($isreturn=false,$caseType=NULL){
 		$CI = & get_instance();
@@ -1437,7 +1442,7 @@ if(!function_exists('getCoronaCaseTypes')){
 			return $output;
 		echo $output;
 	}
-} 
+}
 if(!function_exists('get_CaseRepresentation_Value')){
 	function get_CaseRepresentation_Value($representationId=NULL){
 		$CI = & get_instance();
@@ -1458,6 +1463,33 @@ if(!function_exists('getEpiWeeks')){
 		$query = $CI -> db -> query($query);
 		$result = $query -> row();
 		return $result->num;
+	}
+}
+if(!function_exists('get_items_options')){
+	function get_items_options($isreturn=false,$returndata = FALSE,$catin=array(),$selected=NULL){
+		$CI = & get_instance();
+		$output = "";
+		$CI -> db -> distinct('epi_items.pk_id as itemid');
+		$CI -> db -> select("epi_items.pk_id as itemid,epi_items.list_order as rank,epi_items.description as item_name");
+		$whereCondition['eips.status'] = 1;
+		$CI -> db -> where($whereCondition);
+		if(is_array($catin) && count($catin)>0){
+			$CI->db->where_in('epi_items.item_category_id', $catin);
+		}
+		$CI -> db -> from("epi_items");
+		$CI -> db -> join("epi_item_pack_sizes eips","eips.item_id = epi_items.pk_id","LEFT OUTER");
+        $CI -> db -> order_by('epi_items.list_order');
+		$result1 = $CI -> db -> get() -> result_array();
+		if($returndata)
+			return $result1;
+		foreach ($result1 as $vaccines) { 
+			$isSelected = (isset($selected) && $selected==$vaccines["itemid"])?'selected="selected"':'';
+			$vaccname = trim($vaccines["item_name"]);
+			$output .= '<option value="'.$vaccines["itemid"].'" '.$isSelected.' >'.$vaccname.'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
 	}
 }
 if(!function_exists('getVaccines_options')){
@@ -1486,6 +1518,15 @@ if(!function_exists('getVaccines_options')){
 		if($isreturn)
 			return $output;
 		echo $output;
+	}
+}
+if(!function_exists('get_item_name')){
+	function get_item_name($itemid){
+		$CI = & get_instance();
+		$query 		= "SELECT description as name from epi_items where pk_id = '$itemid'";
+		$result = $CI -> db -> query($query);
+		$output = $result -> row();
+		return isset($output->name)?$output->name:'';
 	}
 }
 if(!function_exists('getVaccines_name')){
@@ -1874,38 +1915,39 @@ if(!function_exists('getDenominatorFromTo')){
 }
 
 if(!function_exists('getDenominator')){
-	function getDenominator($den,$year=NULL,$month=NULL,$uncodeForUCsMaps=NULL,$monthto=NULL){
+	function getDenominator($den,$year=NULL,$month=NULL,$uncodeForUCsMaps=NULL,$monthto=NULL,$toYear=NULL){
 		//print_r($_POST);exit();
 		$CI = & get_instance();
 		$m1 = (isset($m1))?$m1 :"1";
-		$monthto = ($monthto !=NULL)?$monthto :$month; 
+		$monthto = ($monthto !=NULL)?$monthto :$month;
+		$yearto = ($toYear !=NULL)?$toYear :$year;
 		$childhoodRoutineImmunizationArray = array('opv0','bcg','hepb');
 		$survivingInfantsArray = array('opv1','opv2','opv3','penta1','penta2','penta3','pcv101','pcv102','pcv103','ipv','rota1','rota2','measle1','measle2','fullyImmunized');
 		$TTRoutineImmunizationArray = array('tt1','tt2','tt3','tt4','tt5','live-birth');
 		//print_r($den);exit;
 		if(in_array($den,$childhoodRoutineImmunizationArray)){
-			if ($CI -> session -> District || $CI->input->post("distcode")) {
+			if ($CI -> session -> District || $CI->input->post("distcode") ) {
 				if($uncodeForUCsMaps == "Yes")
-					return $den = ($month)?"getmonthlytarget_specificyearr(uncode::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthlytarget_specificyearr(uncode::text,{$year},01,{$year},{$monthto})::numeric";
-				return $den = ($month)?"getmonthlytarget_specificyearr(facode::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthlytarget_specificyearr(facode::text,{$year},01,{$year},{$monthto})::numeric";
+					return $den = ($month)?"getmonthlytarget_specificyearr(uncode::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthlytarget_specificyearr(uncode::text,{$year},01,{$yearto},{$monthto})::numeric";
+				return $den = ($month)?"getmonthlytarget_specificyearr(facode::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthlytarget_specificyearr(facode::text,{$year},01,{$yearto},{$monthto})::numeric";
 			}else{
 				if($CI -> input -> post("id")){
 					//return $den = ($month)?"getmonthlynewborn_targetpopulation(uncode,'')::numeric":"getmonthlynewborn_targetpopulation(uncode,'')::numeric*$m1";
 					//return $den = ($month)?"getmonthlynewborn_targetpopulation(distcode,'')::numeric":"getmonthlynewborn_targetpopulation(distcode,'')::numeric*$m1";
 					if($month){
-						$den = "getmonthlytarget_specificyearr(uncode::text,{$year},{$month},{$year},{$monthto})::numeric";
+						$den = "getmonthlytarget_specificyearr(uncode::text,{$year},{$month},{$yearto},{$monthto})::numeric";
 					}
 					else{
 						//$den="getmonthlynewborn_targetpopulation(uncode,'')::numeric*$m1";
-						$den = "getmonthlytarget_specificyearr(uncode::text,{$year},01,{$year},{$monthto})::numeric";
+						$den = "getmonthlytarget_specificyearr(uncode::text,{$year},01,{$yearto},{$monthto})::numeric";
 					}
 				}
 				if($month){
-					$den = "getmonthlytarget_specificyearr(distcode::text,{$year},{$month},{$year},{$monthto})::numeric";
+					$den = "getmonthlytarget_specificyearr(distcode::text,{$year},{$month},{$yearto},{$monthto})::numeric";
 				}
 				else{
 					/// for full year
-					$den = "getmonthlytarget_specificyearr(distcode::text,{$year},01,{$year},{$monthto})::numeric";
+					$den = "getmonthlytarget_specificyearr(distcode::text,{$year},01,{$yearto},{$monthto})::numeric";
 				}
 			}
 		}
@@ -1914,23 +1956,23 @@ if(!function_exists('getDenominator')){
 			if ($CI -> session -> District || $CI->input->post("distcode")) {
 				if($uncodeForUCsMaps == "Yes")
 				{
-					return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},01,{$year},{$monthto})::numeric";
+					return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},01,{$yearto},{$monthto})::numeric";
 				}
-				return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(facode::text,'facility'::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(facode::text,'facility'::text,{$year},01,{$year},{$monthto})::numeric";
+				return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(facode::text,'facility'::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(facode::text,'facility'::text,{$year},01,{$yearto},{$monthto})::numeric";
 			}else{
 				if($CI -> input -> post("id")) //&& strlen($CI -> input -> post("id")) >3 will set this for fullyImmunized at uc level
 				{
-					return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},01,{$year},{$monthto})::numeric";
+					return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(uncode::text,'unioncouncil'::text,{$year},01,{$yearto},{$monthto})::numeric";
 				}
-				return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(distcode::text,'district'::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(distcode::text,'district'::text,{$year},01,{$year},{$monthto})::numeric";
+				return $den = ($month)?"getmonthlytarget_specificyearrsurvivinginfants(distcode::text,'district'::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthlytarget_specificyearrsurvivinginfants(distcode::text,'district'::text,{$year},01,{$yearto},{$monthto})::numeric";
 			}
 		}
 		if(in_array($den,$TTRoutineImmunizationArray)){
 			if ($CI -> session -> District || $CI->input->post("distcode")) {
 				//return $den = ($month)?"getmonthly_plwomen_target(facode,'')::numeric":"getyearly_plwomen_target(facode,'')::numeric";
-				return $den = ($month)?"getmonthly_plwomen_target_specificyears(facode::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthly_plwomen_target_specificyears(facode::text,{$year},01,{$year},{$monthto})::numeric";
+				return $den = ($month)?"getmonthly_plwomen_target_specificyears(facode::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthly_plwomen_target_specificyears(facode::text,{$year},01,{$yearto},{$monthto})::numeric";
 			}else{
-				return $den = ($month)?"getmonthly_plwomen_target_specificyears(distcode::text,{$year},{$month},{$year},{$monthto})::numeric":"getmonthly_plwomen_target_specificyears(distcode::text,{$year},01,{$year},{$monthto})::numeric";
+				return $den = ($month)?"getmonthly_plwomen_target_specificyears(distcode::text,{$year},{$month},{$yearto},{$monthto})::numeric":"getmonthly_plwomen_target_specificyears(distcode::text,{$year},01,{$yearto},{$monthto})::numeric";
 			}
 		}
 		if(in_array($den,array('num_hf'))){
@@ -2226,7 +2268,6 @@ if(!function_exists('getClosedVialsWastageRate')){
 		return $formula;
 	}
 }
-
 if(!function_exists('getOpenedVialsWastageRate')){
 	function getOpenedVialsWastageRate($formula){
 		
@@ -2403,7 +2444,7 @@ if(!function_exists('freezeReport')){
 		}
 	}
 }
-/* if(!function_exists('validateExistReport')){
+if(!function_exists('validateExistReport')){
 	function validateExistReport($table,$facode,$fmonth) { 
 		//echo $facode;exit;
 		$CI = & get_instance();
@@ -2448,7 +2489,7 @@ if(!function_exists('freezeReport')){
 			exit();
 		}
 	}
-} */
+}
 if(!function_exists('getSourceSupply')){
 	function getSourceSupply($id=null,$text=FALSE){
 		$return='
@@ -2842,8 +2883,6 @@ if(!function_exists('getQuater'))
 {
 	function getQuater($current_month = NULL)
 	{
-		//$current_month = date('m');
-       
         if($current_month>=1 && $current_month<=3)
         {
           $quarter='1';
@@ -2890,8 +2929,8 @@ if(!function_exists('getMonthQuater'))
 }
 if(!function_exists('getMonth'))
 {
-	function getMonth()
-	{
+	 function getMonth()
+	 {
 		$subtract = "";
 		if(date('m')=='03'){
 			$subtract = " -3 Day";
@@ -2926,12 +2965,12 @@ if(!function_exists('getSurveillanceReportsCountofFacility'))
 		echo $output;
 	}
 }
-if(!function_exists('get_Village_Name')){
-	function get_Village_Name($vcode){
+if(!function_exists('get_Village_Name')){ 
+	function get_Village_Name($vcode){ 
 		$CI = & get_instance();
 		$query 		= "SELECT village from villages where vcode = '$vcode'";
 		$resultVLG = $CI -> db -> query($query);
-		if($resultVLG -> num_rows() >0)
+		if($resultVLG -> num_rows() >0) 
 		{
 			return $resultVLG -> row()->village;	
 		}
@@ -2946,34 +2985,12 @@ if(!function_exists('get_Technician_Name')){
 		return $resultTeh['technicianname'];
 	}
 }
-if(!function_exists('get_Technician_options')){
-	function get_Technician_options($isreturn=false, $techniciancode=NULL, $facode=NULL){
-		$CI = & get_instance();	
-		$output = '<option value="0" >-- Select technician--</option>';
-		echo $query="SELECT techniciancode, technicianname from techniciandb where facode= '$facode' ";
-		$result = $CI -> db ->query($query);
-		$result1 = $result->result_array();
-		//print_r($result);exit;
-		foreach ($result1 as $oneteh) {
-			if($oneteh["techniciancode"] !='')
-			{
-				$selected = '';
-				if(($techniciancode > 0)&&($techniciancode == $oneteh["techniciancode"]))
-				{
-					$selected = 'selected="selected"';
-				}
-				$output .= '<option value="'.$oneteh["techniciancode"].'" '.$selected.' >'.$oneteh["technicianname"].'</option>';
-			}
-		}
-		echo $output;
-	}
-}
 if(!function_exists('get_Technician_status')){
 	function get_Technician_status($techniciancode){
 		$CI = & get_instance();
-		$code= substr($techniciancode, 0, 3); 
-		$pcode = $CI -> session -> District;
-		if($code!=$pcode){
+		$code=substr($techniciancode,0,3);
+		$pcode= $CI -> session -> District;
+		if($code=$pcode){
 			$resultTeh['status']='Active';
 			return $resultTeh['status'];
 		}else{
@@ -3183,7 +3200,7 @@ if( ! function_exists('get_surviving_infants')){
 		$survivingInfantspop= ceil(0.942*$population1);
 		return $survivingInfantspop;
 	}
-} 
+}
 if(!function_exists('get_UserLevel_Description')){
 	function get_UserLevel_Description($level){
 		$CI = & get_instance();
@@ -3221,8 +3238,8 @@ if(!function_exists('getMicroplan_Technician_options')){
 }
 if(!function_exists('where_between')){
 	function where_between($field, $min, $max){
-		$CI = get_instance();
-		return $CI->db->where("$field BETWEEN $min AND $max");
+		 $CI = get_instance();
+		 return $CI->db->where("$field BETWEEN $min AND $max");
 	}
 }
 if(!function_exists('get_nextyearweek')){
@@ -3232,7 +3249,6 @@ if(!function_exists('get_nextyearweek')){
         from epi_weeks) x', FALSE);
 		$CI -> db -> where("'$year-$week' IN (curr_fmonth)",NULL,FALSE);
         $result = $CI -> db -> get() -> result_array();
-		//print_r($result);exit;
 		return $result[0][$getdata]; 
 		/* $query="select * from (
         select fweek as curr_fmonth,lag(fweek) over (order by year asc, epi_week_numb asc) as prev_fmonth,lead(fweek) over (order by year asc, epi_week_numb asc) as next_fmonth
@@ -3322,47 +3338,12 @@ if(!function_exists('get_nextyearweek')){
 			echo $output;
 		}
 	}
-	if(!function_exists('currentYearHalf')){
-		function currentYearHalf($month=NULL){
-			return ($month <= 6)?1:(($month > 6)?2:1);
-		}
-	}
-	if(!function_exists('get_indicator_periodic_multiplier')){
-		function get_indicator_periodic_multiplier($indicator,$year){
-			$CI = &get_instance();
-			$query=" SELECT formula_multiplier as multiplier from indicator_periodic_multiplier where indicator='$indicator' and  '$year' >= start_year and ( '$year' <=end_year or end_year='')";	
-			$result = $CI -> db ->query($query);
-			$result1 = $result->row();
-			if(isset($result1 -> multiplier))
-			{
-				 $val=$result1 -> multiplier;
-			}else{
-				 $val=0;
-			}
-			return $val;
-		}
-	}
-	if(!function_exists('get_indicator_periodic_multiplier_dist_target')){
-		function get_indicator_periodic_multiplier_dist_target($indicator,$year,$code){
-			//getMainIndicatorsData
-			$CI = &get_instance();
-			if(strlen($code)>=3)
-			{
-				$query=" SELECT formula_multiplier as multiplier from indicator_periodic_multiplier where code= substring('$code', 1, 3) and indicator='$indicator' and '$year' >= start_year and ('$year' <=end_year or end_year='')";	
-			}
-			else{
-				$query=" SELECT formula_multiplier as multiplier from indicator_periodic_multiplier where code= substring('$code', 1, 1) and indicator='$indicator' and '$year' >= start_year and ('$year' <=end_year or end_year='')";	
-			}
-			//echo $query;
-			$result = $CI -> db ->query($query);
-			$result1 = $result->row();
-			if(isset($result1 -> multiplier))
-			{
-				 $val=$result1 -> multiplier;
-			}else{
-				 $val=0;
-			}
-			return $val;
+	if(!function_exists('getVaccines_id')){
+		function getVaccines_id($vaccine){
+			$CI = & get_instance();
+			$query 		= "SELECT cr_table_row_numb as itemid from epi_item_pack_sizes where pk_id='$vaccine'";
+			$resultVaccine = $CI -> db -> query($query);
+			return $resultVaccine -> row()->itemid;	
 		}
 	}
 	//Get Level's Name(hr_levels)
@@ -3401,14 +3382,18 @@ if(!function_exists('get_nextyearweek')){
 			return $result_array['title'];
 		}
 	}
-	if(!function_exists('getVaccines_id')){
-	function getVaccines_id($vaccine){
-		$CI = & get_instance();
-		$query 		= "SELECT cr_table_row_numb as itemid from epi_item_pack_sizes where pk_id='$vaccine'";
-		$resultVaccine = $CI -> db -> query($query);
-		return $resultVaccine -> row()->itemid;	
+	//Get Traning's Name(hr_sub_types)
+	if(!function_exists('get_training_name')){
+		function get_training_name($id="")
+		{  
+			$CI=& get_instance();
+			$CI->db->select('name');
+			$CI->db->from('training_types');
+			$CI->db->where('id',$id);
+			$result_array = $CI->db->get()->row_array();
+			return $result_array['name'];
+		}
 	}
-}
 	if(!function_exists('getDistrict_Coordinates')){
 		function getDistrict_Coordinates($distcode){
 			$CI = & get_instance();
@@ -3417,20 +3402,21 @@ if(!function_exists('get_nextyearweek')){
 			return $resultTeh['highchart_coordinates'];
 		}
 	}
+
 	if(!function_exists('getMonthsEpiWeeks')){
-	function getMonthsEpiWeeks($year=NULL,$month=NULL){
-		//echo 'test';exit;
-		$CI = & get_instance();
-		$year = ($year > 0)?$year:$this -> input -> post('year');
-		$month = ($month > 0)?$month:$this -> input -> post('month');
-		//print_r($month );exit;
-		$query = "SELECT max(epi_week_numb) as num from epi_weeks where year='$year' and month='$month'";
-		$query = $CI -> db -> query($query);
-		$result = $query -> row();
-		return $result->num;
+		function getMonthsEpiWeeks($year=NULL,$month=NULL){
+			//echo 'test';exit;
+			$CI = & get_instance();
+			$year = ($year > 0)?$year: $CI -> input -> post('year');
+			$month = ($month > 0)?$month: '1';
+			//update later now just use as static in else by usama
+			$query = "SELECT max(epi_week_numb) as num from epi_weeks where year='$year' and month='$month'";
+			$query = $CI -> db -> query($query);
+			$result = $query -> row();
+			return $result->num;
+		}
 	}
-}
-//form_bc_r form fields items 
+	//form_bc_r form fields items 
 if(!function_exists('getRegVaccines_options')){
 	function getRegVaccines_options($isreturn=false,$activity=1,$returndata = FALSE,$catin=array(),$selected=NULL){
 		/* $output='<option value="cr_r1_f6">BCG</option><option value="cr_r2_f6">DIL BCG</option><option value="cr_r3_f6">bOPV</option><option value="cr_r4_f6">Pentavalent-1</option><option value="cr_r5_f6">Pneumococcal-2(PCV10)</option><option value="cr_r25_f6">Pneumococcal-4(PCV10)</option><option value="cr_r6_f6">Measles-10</option><option value="cr_r8_f6">TT 10</option><option value="cr_r9_f6">TT 20</option><option value="cr_r7_f6">DIL-Measles-10</option><option value="cr_r24_f6">HBV</option><option value="cr_r10_f6">HBV-10</option><option value="cr_r20_f6">HBV-02</option><option value="cr_r11_f6">IPV-10</option><option value="cr_r19_f6">IPV-5</option><option value="cr_r18_f6">Rotarix</option><option value="cr_r23_f6">Dropper</option><option value="cr_r12_f6">AD Syringes 0.5 ml</option><option value="cr_r13_f6">AD Syringes 0.05 ml</option><option value="cr_r14_f6">Recon.Syringes (2 ml)</option><option value="cr_r15_f6">Recon. Syringes (5 ml)</option><option value="cr_r21_f6">Vitamin A Red Capsule</option><option value="cr_r22_f6">Vitamin A Blue Capsule</option><option value="cr_r16_f6">Safety Boxes</option><option value="cr_r17_f6">Other</option>';
@@ -3470,14 +3456,6 @@ if(!function_exists('get_Hr_Name')){
 		return $resultTeh['name'];
 	}
 }
-if(!function_exists('hr_name')){
-	function hr_name($code){
-		$CI = & get_instance();
-		$query 		= "SELECT name from hr_db where code = '$code'";
-		$resultTeh = $CI -> db -> query($query) -> row_array();
-		return $resultTeh['name'];
-	}
-}
 if(!function_exists('get_Hr_Sub_type')){
 	function get_Hr_Sub_type($isreturn=false, $hr_type_id=NULL){
 		$CI = & get_instance();		
@@ -3493,7 +3471,6 @@ if(!function_exists('get_Hr_Sub_type')){
 			}else{
 					$selected = '';
 			}
-			
 			$output .= '<option value="'.$type_id["type_id"].'" '.$selected.' >'.$type_id["title"].'</option>';
 		}
 		if($isreturn)
@@ -3581,38 +3558,6 @@ if(!function_exists('getAbroadTravelHistory')){
 		echo $output;
 	}
 }
-if(!function_exists('getMonthsOptionsTillPrevious')){
-	function getMonthsOptionsTillPrevious($isreturn=false,$listing=false){		
-		$output = "";
-		$months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
-		$mnth = isset($_REQUEST["month"])?$_REQUEST["month"]:date('m')-1;
-		$currMon = ($mnth=="13")?12:date('m')-1;
-		/* $currMon = date('m'); */
-		//$output .= '<option value="" selected="selected">Select</option>';	
-		if(validation_errors() != false) {
-			foreach($months as $num => $monthitem){
-				$month = sprintf("%02d", $num);
-				$errorShow = set_select('month',$month);
-				$output .= '<option value="'.$month.'" '.$errorShow.'>'.$monthitem.'</option>';
-			}
-		}
-		else {
-			$errorShow = '';
-			foreach ($months as $num => $monthitem) { 
-				if($num > ($currMon))
-				{}else{
-					$isSelected = (($mnth)==$num && $listing==false)?'selected="selected"':'';
-					$month = sprintf("%02d", $num);
-					$output .= '<option value="'.$month.'" '.$isSelected.' '.$errorShow.'>'.$monthitem.'</option>';								
-				}
-			}
-		}
-		
-		if($isreturn)
-			return $output;
-		echo $output;
-	}
-}
 if(!function_exists('getCategory')){
 	function getCategory($access,$utilization){
 		$return = "No data ";
@@ -3645,7 +3590,7 @@ if(!function_exists('get_vaccineslist')){
 		$query="SELECT pk_id, description from epi_items where item_category_id='1' and is_active='1' $wc order by description";
 		$result = $CI -> db ->query($query);
 		$result1 = $result->result_array();
-		foreach ($result1 as $vaccine) {
+		foreach ($result1 as $vaccine) { 
 			$selected = '';
 			if(($vacc_id > 0) && ($vacc_id == $vaccine["pk_id"]))
 			{

@@ -1,11 +1,11 @@
 <?php
-// kp local
+//live
 class Ajax_calls_model extends CI_Model {
 	public function __construct() {
 		parent::__construct();
 		$this -> load -> model('Common_model');
 	}
-	public function validateAefiNumber($aefiNumber){
+	public function validateAefiNumber($aefiNumber) {
 		$query = "select case_epi_no from aefi_case_investigation_form where case_epi_no='$aefiNumber'";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
@@ -16,7 +16,7 @@ class Ajax_calls_model extends CI_Model {
 			return "Correct";
 		}
 	}
-	public function getAefiNumber($year, $epid_code){
+	public function getAefiNumber($year, $epid_code) {
 		$query = "select max(aefi_number) as aefi_number from aefi_case_investigation_form where year='$year' AND dcode='$epid_code'";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
@@ -282,15 +282,6 @@ class Ajax_calls_model extends CI_Model {
 				$data .= '<option value="' . $b_data['branchcode'] . '">' . $b_data['branchcode'] ."-". $b_data['bankname'] ."-".$b_data['branchname'] . '</option>';
 			}
 			return $data;
-	}
-	
-	public function getFacilityTechnicians($facode){
-		/* $this -> db -> select('techniciancode,technicianname');
-		$this -> db -> where(array('facode'=>$facode,'status'=>'Active'));
-		return $this -> db -> get('techniciandb') -> result_array(); */
-        $query = "SELECT new as techniciancode,name as technicianname from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_facode = '$facode' and  post_status='Active' and post_hr_sub_type_id='01'";
-		$result = $this-> db-> query($query);
-		return $result-> result_array();
 	}
 	public function technician_filter($page, $distcode, $tcode, $uncode, $facode, $supervisorcode, $fatype,$status) {
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
@@ -896,7 +887,7 @@ class Ajax_calls_model extends CI_Model {
 	}
 	public function getIncharge() {
 		$facode = $_REQUEST['facode'];
-		$query = "select technicianname as incharge,catch_area_name as designation from med_techniciandb where facode='$facode' And status='Active'  ";
+		$query = "select id,technicianname as incharge,catch_area_name as designation from med_techniciandb where facode='$facode' And status='Active'  ";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
 		return json_encode($result);
@@ -925,18 +916,13 @@ class Ajax_calls_model extends CI_Model {
 	public function getTargetChildern() {
 		$year = $_REQUEST['year'];
 		$facode = $_REQUEST['facode'];
-		//$query = "select population from facilities_population where  facode='$facode' AND year='$year' ";
-		$query = "select population ,get_indicator_periodic_multiplier('newborn','$year') as newborn, get_indicator_periodic_multiplier('plwomen','$year') as plwomen from facilities_population where  facode='$facode' AND year='$year' ";
+		$query = "select population from facilities_population where  facode='$facode' AND year='$year' ";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
 		$total_population = $result['population'];
-		$newborn = $result['newborn'];
-		$plwomen = $result['plwomen'];
-		//$Yearly_new_Born = ($total_population * 3.533 )/100;
-		$Yearly_new_Born = ($total_population * $newborn )/100;
+		$Yearly_new_Born = ($total_population * 3.533 )/100;
 		$Monthly_new_Born = ($Yearly_new_Born)/12;
-		//$Yearly_PregnantW = ($Yearly_new_Born * 1.02);
-		$Yearly_PregnantW = ($Yearly_new_Born * $plwomen);
+		$Yearly_PregnantW = ($Yearly_new_Born * 1.02);
 		$monthly_PregnantW = round($Yearly_PregnantW/12);
 		$result['monthly_PregnantW'] = $monthly_PregnantW; 
 		$Monthly_new_Born = round($Monthly_new_Born);
@@ -944,12 +930,8 @@ class Ajax_calls_model extends CI_Model {
 		$result['female'] = round(($Monthly_new_Born/100)*49);//as decided by epi team female ratio is 49%
 		return json_encode($result);
 	}
-
 	public function getTehsils() {
-       if($this -> session -> UserLevel==4){
-			$wc[] = "tcode ='".$this->session->Tehsil ."' ";
-		}
-       $distcode = $this -> input -> post('distcode');
+		$distcode = $this -> input -> post('distcode');
 		$facode = $this -> input -> post('facode');
 		if ($facode != '') {
 			$query = "select * from facilities where facode = '$facode' order by fac_name asc";
@@ -962,7 +944,7 @@ class Ajax_calls_model extends CI_Model {
 			return json_encode($resultJson);
 			exit();
 		} else {
-			$query = "select * from tehsil where distcode = '$distcode'   ".((!empty($wc)) ? ' AND ' . implode(' AND ', $wc) : '' )."  order by tehsil asc ";
+			$query = "select * from tehsil where distcode = '$distcode' order by tehsil asc ";
 			////echo $query;exit();
 			$result = $this -> db -> query($query);
 			$result = $result -> result_array();
@@ -1203,7 +1185,7 @@ class Ajax_calls_model extends CI_Model {
 		//enddistrictcode
 		//startdistrictcode
 			if ($cocode > 0) {
-			$query = "Select max(cocode) as cocode from codb WHERE cocode like '$cocode%' HAVING max(cocode) is not null ";
+			$query = "Select max(cocode) as cocode from codb WHERE cocode like '$cocode%'  HAVING max(cocode) is not null ";
 			//echo $query;
 			$result = $this -> db -> query($query);
 			//var_dump($result);  exit;
@@ -1673,9 +1655,9 @@ if ($distcodeccm > 0) {
 			} else {
 				echo "001";
 			}
-			# code...
 		}
-		if ($mfpcode > 0) {
+			# code...
+			if ($mfpcode > 0) {
 			$query = "Select max(mfpcode) as mfpcode from mfpdb WHERE mfpcode like '$mfpcode%'  HAVING max(mfpcode) is not null ";
 			//echo $query; 
 			$result = $this -> db -> query($query);
@@ -1695,7 +1677,6 @@ if ($distcodeccm > 0) {
 			}
 			# code...
 		}
-		//enddistrictcode
 	}
 	
 	public function checkdeoNIC($nic,$code){
@@ -2559,7 +2540,7 @@ if ($distcodeccm > 0) {
 		$startpoint = ($page * $per_page) - $per_page;
 		$statement = "fac_mvrf_db,facilities ";
 		// Change `records` according to your table name.
-		$query="select fac_mvrf_db.vacc_name, fac_mvrf_db.uncode, facilities.fatype as facilitytype, fac_mvrf_db.facode, facilityname(fac_mvrf_db.facode) as facilityname, fmonth from fac_mvrf_db,facilities ".(empty($wc) ? ' WHERE ' : ' WHERE '. implode(" AND ", $wc)." AND ")."   facilities.facode = fac_mvrf_db.facode order by fmonth, facode desc LIMIT {$per_page} OFFSET {$startpoint} ";
+		$query="select fac_mvrf_db.vacc_name, fac_mvrf_db.uncode, facilities.fatype as facilitytype, fac_mvrf_db.facode, facilityname(fac_mvrf_db.facode) as facilityname, fmonth from fac_mvrf_db,facilities ".(empty($wc) ? ' WHERE ' : ' WHERE '. implode(" AND ", $wc)." AND ")."   facilities.facode = fac_mvrf_db.facode order by fmonth desc, facode asc LIMIT {$per_page} OFFSET {$startpoint} ";
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
 		if($result!=NULL)
@@ -3278,6 +3259,8 @@ public function codb_filter($page,$status,$distcode){
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement, $per_page, $page, $url = "?", implode(" AND ", $wc));
 		return json_encode($resultJson);
 		}
+		
+		
 	public function mfpdb_filter_cnic($cnic){
 		$cnic= ltrim($cnic);
 		$nic=str_ireplace("%20"," ",$cnic); 
@@ -3360,8 +3343,9 @@ public function codb_filter($page,$status,$distcode){
 		return json_encode($resultJson);
 		}
 		
-		
 	public function checkNICNumber($nic,$code){
+
+
 		if($code!=''){
 			$query = "SELECT nic FROM supervisordb WHERE nic='".$nic."' AND supervisorcode!='".$code."'"; 
 		}else{
@@ -3369,15 +3353,17 @@ public function codb_filter($page,$status,$distcode){
 		}
 		$query= $this->db->query($query);
 		$result = $query->row_array();
-		if ($result==true)
-		{
-			$return = 'yes';
-		}
-		else
-		{
-			$return = 'no';
-		}		 
-		return $return;
+			if ($result==true)
+				 {
+					 $return = 'yes';
+				}
+				else
+				{
+					 $return = 'no';
+				}
+		 
+			return $return;
+
 	}
 	public function checktechNIC($nic,$code){
 		if($code!=''){
@@ -3444,7 +3430,7 @@ public function codb_filter($page,$status,$distcode){
 			return $return;
 
 	}
-		public function checkMfpNIC($nic,$code){
+	public function checkMfpNIC($nic,$code){
 
 
 		if($code!=''){
@@ -3466,6 +3452,8 @@ public function codb_filter($page,$status,$distcode){
 			return $return;
 
 	}
+	
+	
 	public function checkccoNIC($nic,$code){
 
 
@@ -3488,25 +3476,6 @@ public function codb_filter($page,$status,$distcode){
 			return $return;
 
 	}
-	// public function checkccoNIC($nic,$code){
-	// 	if($code!=''){
-	// 		$query = "SELECT nic FROM cco_db WHERE nic='".$nic."' AND cco_code!='".$code."'"; 
-	// 	}else{
-	// 		$query = "SELECT nic FROM cco_db WHERE nic='".$nic."'"; 
-	// 	}
-	// 	$query= $this->db->query($query);
-	// 	$result = $query->row_array();
-	// 	if ($result==true)
-	// 	{
-	// 		$return = 'yes';
-	// 	}
-	// 	else
-	// 	{
-	// 		$return = 'no';
-	// 	}	 
-	// 	return $return;
-	// }
-
 	public function checkCc_mechanic_NIC($nic,$code){
 
 
@@ -3753,8 +3722,8 @@ public function codb_filter($page,$status,$distcode){
 		if ($month != "0" && $month != '' ) {
 			$wc[] = "fmonth like '%$month'  ";
 		}
-		$wc[] = "is_compiled = '1'";
-		$query="select pk_id as id, facode, facilityname(facode) as fac_name,unname(uncode) as uc,tehsilname(tcode) as tehsil, fmonth,prepared_by,created_date,data_source  from epi_consumption_master ".(empty($wc) ? ' WHERE ' : ' WHERE '. implode(" AND ", $wc))."   order by fmonth desc,facilityname(facode) asc LIMIT {$per_page} OFFSET {$startpoint}  ";
+		$wc[] = " is_compiled = '1' ";
+		$query="select pk_id as id, facode, facilityname(facode) as fac_name,unname(uncode) as uc,tehsilname(tcode) as tehsil, fmonth,prepared_by,created_date,data_source from epi_consumption_master ".(empty($wc) ? ' WHERE ' : ' WHERE '. implode(" AND ", $wc))."   order by fmonth desc,facilityname(facode) asc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
 		$i = $startpoint;
@@ -3766,7 +3735,7 @@ public function codb_filter($page,$status,$distcode){
 			//removing check of freeze for district swat, they want to reset their data...... work by moon 2019-02-17
 			if($row['data_source']=='web'){
 				$edit_del='<a href="'.base_url().'consumption/edit/'.$row['fmonth'].'/'.$row['facode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a><a  data-toggle="tooltip" title="Delete" onclick ="consumptiondelcst(this)" class="btn btn-xs btn-default"><i class="fa fa-close"></i></a>';
-			}
+			}	
 			if($this -> session -> District==="346"){
 				$res = false;
 			}else{
@@ -3913,7 +3882,7 @@ public function codb_filter($page,$status,$distcode){
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
 		return json_encode($resultJson);
 	}
-			//---------------------------------------- consumption_vaccination_filter FILTER--------------------------------------------------//
+	//---------------------------------------- consumption_vaccination_filter FILTER--------------------------------------------------//
 	public function consumption_vaccination_filter($facode,$year, $month) {
 		//Code for Pagination Updated by Nouman
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
@@ -3937,10 +3906,6 @@ public function codb_filter($page,$status,$distcode){
 		if ($month != "0" && $month != '' ) {
 			$wc[] = "fmonth like '%$month'  ";
 		}
-		if($this -> session -> UserLevel==4){
-			$tcode =$this -> session -> Tehsil;
-			$wc[] = " tcode = '$tcode' ";
-		}
 		$wc[] = " is_compiled = '1' ";
 		$query="select pk_id as id, facode, facilityname(facode) as fac_name,unname(uncode) as uc,tehsilname(tcode) as tehsil, fmonth,prepared_by,created_date,data_source from epi_consumption_master ".(empty($wc) ? ' WHERE ' : ' WHERE '. implode(" AND ", $wc))."   order by fmonth desc,facilityname(facode) asc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		$result = $this -> db -> query($query);
@@ -3951,17 +3916,13 @@ public function codb_filter($page,$status,$distcode){
 		$edit_del='';
 		foreach ($result as $row) {
 			$i++;
-			
-			
-		$res=freezeReport('epi_consumption_master',$row['facode'],$row['fmonth'],Null,TRUE);
-		if($res==1)
-			$edit_del='';
-		else
-		{
 			if($row['data_source']=='web'){
-				$edit_del='<a href="'.base_url().'vaccination/edit/'.$row['fmonth'].'/'.$row['facode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a><a onclick ="consumptiondelcst(this)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i title="Delete" class="fa fa-close"></i></a>' ;
+				$edit_del='<a href="'.base_url().'vaccination/edit/'.$row['fmonth'].'/'.$row['facode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a><a onclick ="consumptiondelcst(this)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i title="Delete" class="fa fa-close"></i></a>';
 			}
-		}
+			$res=freezeReport('epi_consumption_master',$row['facode'],$row['fmonth'],Null,TRUE);
+			if($res==1){
+				$edit_del='';
+			}
 			$tbody .= '<tr>
 		<td class="text-center">'.$i.'</td>
 		<td class="text-center facode">'.$row['facode'].'</td>
@@ -4617,7 +4578,7 @@ public function codb_filter($page,$status,$distcode){
 		else{
 			$wc = getWC_Array($_SESSION["Province"]);
 		}
-		
+
 		$query = "SELECT max(group_id) as max_group_id from zero_report " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " ";
 		$result = $this -> db -> query($query);
 		$max_group_id = $result ->row()->max_group_id;
@@ -4636,7 +4597,7 @@ public function codb_filter($page,$status,$distcode){
 			$wc[] = " week = '$week' ";
 		}
 		// Change `records` according to your table name. 
-		$query="SELECT group_id, year, week , datefrom , dateto , fweek ,distcode, districtname(distcode) as districtname from zero_report" . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " GROUP BY group_id, year, week, datefrom, dateto, fweek, distcode, districtname(distcode) order by group_id desc LIMIT {$per_page} OFFSET {$startpoint}  ";
+		$query="SELECT group_id, year, week, datefrom, dateto, fweek, distcode, districtname(distcode) as districtname from zero_report" . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " GROUP BY group_id, year, week, datefrom, dateto, fweek, distcode, districtname(distcode) order by group_id desc LIMIT {$per_page} OFFSET {$startpoint}  ";
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
 		$i = $startpoint;
@@ -4646,18 +4607,18 @@ public function codb_filter($page,$status,$distcode){
 			$i++;
 			$tbody .= '<tr>
 		    <td class="text-center">
-				<input type="hidden" class="group_id" name="group_id" value="'.$row['group_id'].'">'.$i.'</td>	
+		    	<input type="hidden" class="group_id" name="group_id" value="'.$row['group_id'].'">' . $i . '</td>	
 			<td class="text-left">'.$row['districtname'].'</td>			
 		    <td class="text-left year">'.$row['year'].'</td>
 		    <td class="text-left week">'.$row['week'].'</td>
 		    <td class="text-left">'.date("d-M-Y",strtotime($row['datefrom'])).'</td>
 			<td class="text-left">'.date("d-M-Y",strtotime($row['dateto'])).'</td>
 		    <td class="text-center">
-				<a href="'.base_url().'Zero-Reporting/View/'.$row['fweek'].'/'.$row['group_id'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-				<a href="'.base_url().'Zero-Reporting/Edit/'.$row['fweek'].'/'.$row['group_id'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
-				if($max_group_id == $row['group_id']){
+		    	<a href="'.base_url().'Zero-Reporting/View/'.$row['fweek'].'/'.$row['group_id'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+		    	<a href="'.base_url().'Zero-Reporting/Edit/'.$row['fweek'].'/'.$row['group_id'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
+		      	if($max_group_id == $row['group_id']){
 					$tbody.= '<a onclick="delete_report(this)" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-default"><i class="fa fa-times"></i></a>';
-				}			
+				}
 		  	$tbody .= '</td>
 		    </tr>';
 		}
@@ -4674,8 +4635,6 @@ public function codb_filter($page,$status,$distcode){
 	//---------------------------------------------------------------------------------------------------------//
 	
 	public function checkDsoNic($nic,$code){
-
-
 		if($code!=''){
 			$query = "SELECT nic FROM dsodb WHERE nic='".$nic."' AND dsocode!='".$code."'"; 
 		}else{
@@ -4683,22 +4642,18 @@ public function codb_filter($page,$status,$distcode){
 		}
 		$query= $this->db->query($query);
 		$result = $query->row_array();
-			if ($result==true)
-				 {
-					 $return = 'yes';
-				}
-				else
-				{
-					 $return = 'no';
-				}
-		 
-			return $return;
-
+		if ($result==true)
+		{
+			$return = 'yes';
+		}
+		else
+		{
+			$return = 'no';
+		}	 
+		return $return;
 	}
 	//AddHR
 	public function checkHrNic($nic,$code){
-
-
 		if($code!=''){
 			$query = "SELECT nic FROM hrdb WHERE nic='".$nic."' AND hrcode!='".$code."'"; 
 		}else{
@@ -4706,21 +4661,17 @@ public function codb_filter($page,$status,$distcode){
 		}
 		$query= $this->db->query($query);
 		$result = $query->row_array();
-			if ($result==true)
-				 {
-					 $return = 'yes';
-				}
-				else
-				{
-					 $return = 'no';
-				}
-		 
-			return $return;
-
+		if ($result==true)
+		{
+			$return = 'yes';
+		}
+		else
+		{
+			$return = 'no';
+		}
+		return $return;
 	}
 	public function checkCCTNic($nic,$code){
-
-
 		if($code!=''){
 			$query = "SELECT nic FROM cctdb WHERE nic='".$nic."' AND cctcode!='".$code."'"; 
 		}else{
@@ -4728,21 +4679,17 @@ public function codb_filter($page,$status,$distcode){
 		}
 		$query= $this->db->query($query);
 		$result = $query->row_array();
-			if ($result==true)
-				 {
-					 $return = 'yes';
-				}
-				else
-				{
-					 $return = 'no';
-				}
-		 
-			return $return;
-
+		if ($result==true)
+		{
+			$return = 'yes';
+		}
+		else
+		{
+			$return = 'no';
+		}
+		return $return;
 	}
 	public function checkCCMNic($nic,$code){
-
-
 		if($code!=''){
 			$query = "SELECT nic FROM ccmdb WHERE nic='".$nic."' AND ccmcode!='".$code."'"; 
 		}else{
@@ -4750,42 +4697,35 @@ public function codb_filter($page,$status,$distcode){
 		}
 		$query= $this->db->query($query);
 		$result = $query->row_array();
-			if ($result==true)
-				 {
-					 $return = 'yes';
-				}
-				else
-				{
-					 $return = 'no';
-				}
-		 
-			return $return;
-
+		if ($result==true)
+		{
+			$return = 'yes';
+		}
+		else
+		{
+			$return = 'no';
+		}
+		return $return;
 	}
 	public function checkCCGNic($nic,$code){
-
-
 		if($code!=''){
 			$query = "SELECT nic FROM ccgdb WHERE nic='".$nic."' AND ccgcode!='".$code."'"; 
 		}else{
 			$query = "SELECT nic FROM ccgdb WHERE nic='".$nic."'"; 
 		}
-		$query= $this->db->query($query);
+		$query = $this->db->query($query);
 		$result = $query->row_array();
-			if ($result==true)
-				 {
-					 $return = 'yes';
-				}
-				else
-				{
-					 $return = 'no';
-				}
-		 
-			return $return;
-
+		if ($result==true)
+		{
+			$return = 'yes';
+		}
+		else
+		{
+			$return = 'no';
+		}
+		return $return;
 	}
 	public function checkCCDNic($nic,$code){
-
 		if($code!=''){
 			$query = "SELECT nic FROM ccddb WHERE nic='".$nic."' AND ccdcode!='".$code."'"; 
 		}else{
@@ -4793,17 +4733,15 @@ public function codb_filter($page,$status,$distcode){
 		}
 		$query= $this->db->query($query);
 		$result = $query->row_array();
-			if ($result==true)
-				 {
-					 $return = 'yes';
-				}
-				else
-				{
-					 $return = 'no';
-				}
-		 
-			return $return;
-
+		if ($result==true)
+		{
+			$return = 'yes';
+		}
+		else
+		{
+			$return = 'no';
+		}
+		return $return;
 	}
 	
 	public function dso_filter($page, $employee_type, $status, $facode,$fatype,$distcode) {
@@ -7147,6 +7085,7 @@ public function codb_filter($page,$status,$distcode){
 		}else{
 			$wc='';
 		}
+
 		$checkquery = "select count(*) as cnt from $table where facode='$facode' and fmonth = '$fmonthSelected' and distcode ='$distcode' $wc";
 		/* } */
 		$checkresult = $this -> db -> query($checkquery);
@@ -7331,14 +7270,14 @@ public function codb_filter($page,$status,$distcode){
 		
 	}
 	public function moonzerorepcomp($year,$distcode){
-				$monthlyPortion = "";
+		$monthlyPortion = "";
 		$outerPortion = "";
 		$allouterPortion = "";
 		$weeks = lastWeek($year,true);
 		for ($ind = 1; $ind <= $weeks; $ind++) {
 			$ind = sprintf("%02d", $ind);
 			$fweekk = $year."-".$ind;
-			$monthlyPortion .= "zeroreport_due('{$fweekk}',districts.distcode)::numeric  AS  \"Due$ind\",zeroreport_sub('{$fweekk}',districts.distcode)::numeric  AS  \"Sub$ind\",zeroreport_tsub('{$fweekk}',districts.distcode)::numeric  AS  \"Tsub$ind\",(select CASE WHEN round(zero_report_timely_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) > 100 THEN 100 ELSE round(zero_report_timely_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) END) AS  \"Timeliness$ind\",
+			$monthlyPortion .= "(select CASE WHEN round(zero_report_timely_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) > 100 THEN 100 ELSE round(zero_report_timely_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) END) AS  \"Timeliness$ind\",
 								(select CASE WHEN round(zero_report_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) > 100 THEN 100 ELSE round(zero_report_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) END) AS \"Completeness$ind\",
 								(select CASE WHEN round((100-zero_report_submitted_rate('{$fweekk}',districts.distcode))::numeric ,1) < 0 THEN 0 ELSE round((100-zero_report_submitted_rate('{$fweekk}',districts.distcode))::numeric ,1) END)  AS  \"Not Submitted$ind\",";
 		}
@@ -7351,7 +7290,7 @@ public function codb_filter($page,$status,$distcode){
 				$ttsub = $this->db->query($q)->row_array();
 				$ttsub = $ttsub['cnt'];
 				//this is for district wise total commulative sub & tsub 
-				$monthlyPortion .= "(select inntable.due01::numeric) As \"Due$ind\",(select  (select get_commulative_sub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric ) AS \"Sub$ind\",(select  (select get_commulative_tsub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric ) AS \"Tsub$ind\",(select  round((select get_commulative_tsub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1) ) AS \"Total Timeliness$ind\",
+				$monthlyPortion .= "(select  round((select get_commulative_tsub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1) ) AS \"Total Timeliness$ind\",
 									(select round((select get_commulative_sub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1)  ) AS  \"Total Completeness$ind\",
 									(select 100 - round((select get_commulative_sub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1) ) AS  \"Total Not Submitted$ind\"";
 		$query = "select $monthlyPortion from districts join (select distcode,get_commulative_fstatus_ds({$year},{$weeks},d1.distcode) as due01 from districts d1) as inntable ON inntable.distcode=districts.distcode where districts.distcode = '".$distcode."' ORDER BY districts.district";
@@ -7379,16 +7318,6 @@ public function codb_filter($page,$status,$distcode){
 		return $data['allData'] = $result -> row_array();
 		
 	}
-	public function getfacilitiesby_uncode($uncode) {
-		$query = "SELECT fac_name,facode from facilities where uncode = '$uncode' order by facode ASC ";
-		$result = $this -> db -> query($query);
-		$result = $result -> result_array();
-		$data = '<option value="">--Select--</option>';
-		foreach ($result as $fac_data) {
-			$data .= '<option value="' . $fac_data['facode'] . '">' . $fac_data['fac_name'] . '</option>';
-		}
-		return $data;
-	}
 	
 	public function getVillages($uncode) {
 		$query = "SELECT village,vcode from villages where uncode = '$uncode' order by village ASC ";
@@ -7400,8 +7329,7 @@ public function codb_filter($page,$status,$distcode){
 		}
 		return $data;
 	}
-	
-	public function getcerv_villages($facode) {
+		public function getcerv_villages($facode) {
 		$query = "SELECT village,vcode from cerv_villages where facode = '$facode' order by village ASC ";
 		//print_r($query);exit;
 		$result = $this -> db -> query($query);
@@ -7413,6 +7341,17 @@ public function codb_filter($page,$status,$distcode){
 		return $data;
 	}
 	
+	/* 
+	public function getVillages($uncode) {
+		$query = "SELECT village,vcode from villages where uncode = '$uncode' order by village ASC ";
+		$result = $this -> db -> query($query);
+		$result = $result -> result_array();
+		$data = '<option value="">--Select--</option>';
+		foreach ($result as $fac_data) {
+			$data .= '<option value="' . $fac_data['vcode'] . '">' . $fac_data['village'] . '</option>';
+		}
+		return $data;
+	} */
 	public function getred_rec_village($sessiontype,$uncode) {
 		$distcode = $this -> session -> District;
 		//print_r($uncode); exit;
@@ -7431,12 +7370,18 @@ public function codb_filter($page,$status,$distcode){
 		return $data;
 	}
 	public function getTargetPopulation($vcode,$year) {
-		$query = "SELECT population,get_indicator_periodic_multiplier('survivinginfants','$year') as survivinginfants, get_indicator_periodic_multiplier('newborn','$year') as newborn from villages_population where vcode = '$vcode' and year='$year'";
-		//$query = "SELECT population from villages_population where vcode = '$vcode' and year='$year'";
+		$query = "SELECT population from villages_population where vcode = '$vcode' and year='$year'";
 		$result = $this -> db -> query($query);
 		$result= $result -> row();
-		//print_r($result);exit;
 		return json_encode($result);
+	}
+	public function getFacilityTechnicians($facode){
+		/* $this -> db -> select('techniciancode,technicianname');
+		$this -> db -> where(array('facode'=>$facode,'status'=>'Active'));
+		return $this -> db -> get('techniciandb') -> result_array(); */
+        $query = "SELECT new as techniciancode,name as technicianname from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_facode = '$facode' and  post_status='Active' and post_hr_sub_type_id='01'";
+		$result = $this-> db-> query($query);
+		return $result-> result_array();
 	}
 	public function tehsil_uc_wise_villages($tcode,$uncode) {
 		$wc='';
@@ -7458,7 +7403,7 @@ public function codb_filter($page,$status,$distcode){
 	public function checkfatherNIC($nic){
 		$query = "SELECT fathercnic from cerv_child_registration where fathercnic='".$nic."'";
 		$query= $this->db->query($query);
-		$result = $query->row_array();
+		$result = $query->row_array();              
 		return $result;
 
 	}
@@ -7469,66 +7414,33 @@ public function codb_filter($page,$status,$distcode){
 		return $result;
 
 	}
-	/* public function CheckChlidRegistrationNo($child_registration_no){
-		$query = "SELECT * from cerv_child_registration where child_registration_no='".$child_registration_no."'";
-		$query= $this->db->query($query);
-		$data['data'] = $query->row_array(); 
-		if($data['data']['child_registration_no'] != ''){
-			
-			$var =  $this-> load-> view('childs/Child_migrate_record',$data);
-		}else{
-			echo"<h5>Child Not fount <h5>";
-		}
-		//$data='';
-		//$var =  $this-> load-> view('childs/Child_migrate_record',$data);
-		//return $result;
-	} */
-	
 	public function CheckChlidRegistrationNo($child_registration_no){
 		$query = "SELECT recno,child_registration_no from cerv_child_registration where child_registration_no='".$child_registration_no."'";
 		$query= $this->db->query($query);
 		$result = $query->row_array();
 		return $result;
 	}  
-	
 	public function CheckMotherRegistrationNo($mother_registration_no){
 		$query = "SELECT recno,mother_registration_no from cerv_mother_registration where mother_registration_no='".$mother_registration_no."'";
 		
-		
 		//print_r($query);exit;
-		
 		$query= $this->db->query($query);
 		$result = $query->row_array();
 		return $result;
 	}
-	
 	public function checkmotherNIC($nic){
 		$query = "SELECT mother_cnic from cerv_mother_registration where mother_cnic='".$nic."'";
 		$query= $this->db->query($query);
 		$result = $query->row_array();
 		return $result;
 	}
-	/* public function CheckmotherRegistrationNo($child_registration_no){
+/* 	public function CheckmotherRegistrationNo($child_registration_no){
 		$query = "SELECT mother_registration_no from cerv_mother_registration where mother_registration_no='".$child_registration_no."'";
 		$query= $this->db->query($query);
 		$result = $query->row_array();
 		return $result;
 	} */
-	public function get_Hr_sub_type_option($hr_sub_type_id) {
-		//$supervisor_type = $_REQUEST['supervisor_type'];
-		$distcode = $this->session->District;
-		//$query = "select code as supervisorcode, name as supervisor  from hr_db where  distcode='$distcode' And hr_sub_type_id='$hr_sub_type_id'";
-		$query = "SELECT new as supervisorcode,name as supervisor from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_status='Active' and  post_distcode='$distcode' And post_hr_sub_type_id='$hr_sub_type_id' ";
-		$result = $this -> db -> query($query);
-		$result = $result -> result_array();	
-	    $data = '<option value="">--Select--</option>';
-		foreach ($result as $sup_data) {
-			$data .= '<option value="' . $sup_data['supervisorcode'] . '">' . $sup_data['supervisor'] . '</option>';
-		}
-		return $data;
-	}
-	//-----------------------------------------------------------------------------------------------//
-	//--------------------- Situation Analysis Filter -----------------------------------------------//
+	
 	public function child_list_filter($tcode,$uncode,$facode,$village,$techniciancode){
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
 		if($this -> session -> District){
@@ -7541,7 +7453,7 @@ public function codb_filter($page,$status,$distcode){
 		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
 		if ($page <= 0)
 			$page = 1;
-		$per_page = 200;
+		$per_page = 15;
 		// Set how many records do you want to display per page.
 		$startpoint = ($page * $per_page) - $per_page;
 		$statement = "situation_analysis_db";
@@ -7601,80 +7513,19 @@ public function codb_filter($page,$status,$distcode){
 		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
 		return json_encode($resultJson);
 	}
-	// start 
 	
-	
-	 public function child_card_number($cardno) {
-		$query = "SELECT cardno from cerv_child_registration where cardno = '$cardno'";
+	public function get_Hr_sub_type_option($hr_sub_type_id) {
+		//$supervisor_type = $_REQUEST['supervisor_type'];
+		$distcode = $this->session->District;
+		//$query = "select code as supervisorcode, name as supervisor  from hr_db where  distcode='$distcode' And hr_sub_type_id='$hr_sub_type_id'";
+		$query = "SELECT new as supervisorcode,name as supervisor from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_status='Active' and  post_distcode='$distcode' And post_hr_sub_type_id='$hr_sub_type_id' ";
 		$result = $this -> db -> query($query);
-		$result = $result -> result_array();
-		$data = '<option value="">--Select--</option>';
-		foreach ($result as $fac_data) {
-			$data .= '<option value="' . $fac_data['cardno'] . '">' . $fac_data['cardno'] . '</option>';
-		}  
+		$result = $result -> result_array();	
+	    $data = '<option value="">--Select--</option>';
+		foreach ($result as $sup_data) {
+			$data .= '<option value="' . $sup_data['supervisorcode'] . '">' . $sup_data['supervisor'] . '</option>';
+		}
 		return $data;
-	} 
-	
-	/* public function child_list_filter($recno){
-		 $procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
-		if($this -> session -> District){
-			$distcode = $this -> session -> District;
-			$wc = getWC_Array($_SESSION["Province"],$distcode);
-		}else{
-			$wc = getWC_Array($_SESSION["Province"]);
-		} 
-		print_r($_GET["page"]);exit;
-		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
-		if ($page <= 0)
-			$page = 1;
-		$per_page = 15;
-		// Set how many records do you want to display per page.
-		$startpoint = ($page * $per_page) - $per_page;
-		$statement = "situation_analysis_db";
-		 if($recno != ''){
-			$wc[] = " recno = '$recno' ";
-		} 
-		if($tcode != ''){
-			$wc[] = " tcode = '$tcode' ";
-		}
-		if($uncode != ''){
-			$wc[] = " uncode = '$uncode' ";
-		}
-		if($village > 0){
-			$wc[] = " villagemohallah = '$village' ";
-		}
-
-		$query="SELECT recno,cardno,nameofchild,dateofbirth,fathername,tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil,villagemohallah from cerv_child_registration " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " group by recno,cardno,nameofchild,fathername,dateofbirth,tcode,uncode,villagemohallah,year order by year DESC, villagemohallah ASC LIMIT {$per_page} OFFSET {$startpoint}";
-		$result = $this -> db -> query($query);		
-		$result = $result -> result_array();
-		$i = $startpoint;
-		$resultJson = array();
-		$tbody = "";
-		foreach ($result as $row) {
-			$i++;	
-		
-			$tbody .= '<tr>
-							<td class="text-center">' . $i . '</td>	
-							<td class="text-left">' . $row['cardno'] . '</td>			
-							<td class="text-center">' . $row['nameofchild'] . '</td>
-							<td class="text-center">' . $row['dateofbirth'] . '</td>
-							<td class="text-center">' . $row['fathername'] . '</td>
-							<td class="text-center">' . $row['tehsil'] . '</td>
-							<td class="text-left">' . $row['unioncouncil'] . '</td>
-							<td class="text-left">' . get_Village_Name($row['villagemohallah']) . '</td>
-							<td class="text-center">
-								<a href="' . base_url() . 'Reports/ChildRegistrationEdit/'. $row['recno'] .' " data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-							</td>
-						</tr>';
-		}
-		$resultJson["tbody"] = $tbody;
-		$wc = implode(" AND ", $wc);
-		$wc = getWC();
-		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
-		return json_encode($resultJson);
-	} */
-	
-	
-	//End
+	}
 }
 ?>

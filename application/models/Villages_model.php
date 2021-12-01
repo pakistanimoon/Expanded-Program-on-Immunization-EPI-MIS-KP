@@ -64,16 +64,10 @@ class Villages_model extends CI_Model {
 				$script .= '</script>';
 				echo $script;
 				exit();
-				}
+			}
+			
 		}
 	}
-		//Print_r($checkresult);exit;
-		/* $query = "delete *, tehsilname(tcode) as tehsil, unname(uncode)as unioncouncil from villages where vcode='$vcode'";
-		$result = $this-> db-> query($query);	
-		$data['data'] = $result-> result_array();
-		print_r($data);exit;
-		return $data['data'];	 */
-	//}
 	public function VillageExistinMicroplan($vcode){
 		$this -> db -> select('count(*) as cnt');
 		$this -> db -> where('area_name',$vcode);
@@ -162,6 +156,7 @@ class Villages_model extends CI_Model {
 		$data['data'] = $result-> result_array();
 		return $data['data'];	
 	}
+	
 	public function hf_quarterplan_view($facode,$year,$quarter){	
 		$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from hf_quarterplan_db where facode='$facode' and year='$year' and quarter='$quarter'";
 		$result = $this-> db-> query($query);	
@@ -181,6 +176,7 @@ class Villages_model extends CI_Model {
 		$this->db-> where('year',$year);
 		//$this->db-> where('vcode',$vcode);
 		$result = $this-> db-> get()-> result_array();
+
 		$data = '<option value="">Select</option>';
 		foreach ($result as $value) {
 			$data .= '<option value="' . $value['vcode'] . '">' . $value['village'] . '</option>';
@@ -196,5 +192,6 @@ class Villages_model extends CI_Model {
 		$result = $result -> result_array();
 		return json_encode($result);
 	}
+		
 }
 ?>

@@ -1,4 +1,4 @@
-<?php //print_r($paginationss); ?> <style>
+<style>
 .sorting_1 {
     text-align: center;
 }
@@ -37,10 +37,10 @@ div.dataTables_paginate {
 		<div class="col-lg-12">
 			<div class="panel-heading"> List of Vaccinated Child </div><br>
 				<div class="row" style="width:100%; padding:4px 17px">
-					<form method="get" id="filter-form" multiple action="<?php echo base_url('childs/Reports_list/child_search_by_form'); ?>">
+					<form method="post" id="filter-form">
 						<!---<div class="col-md-2 col-md-offset-1">
 								<label>Province:</label>
-						</div> 
+						</div>
 						<div class="col-md-3">
 							<select class="form-control" name="province" id="province">
 								<option><?php //echo get_Province_Name($this->session->Province); ?></option>
@@ -54,12 +54,10 @@ div.dataTables_paginate {
 								<?php //echo getDistricts_options($this->session->district); ?>
 							</select>
 						</div> ----->
-						
 						<div class="col-md-2">
 							<label>Tehsil:</label>
 						</div>
 						<div class="col-md-2">
-					<!---	tcode get karky bajo return data --->
 							<select class="form-control filter-status" name="tcode" id="tcode">
 								<?php echo getTehsils_options(false,NULL,$this->session->District); ?>
 							</select>
@@ -68,7 +66,7 @@ div.dataTables_paginate {
 							<label>Union Council:</label>
 						</div>
 						<div class="col-md-2">
-						<select class="form-control filter-status" name="uncode" id="uncode">
+							<select class="form-control filter-status" name="uncode" id="uncode">
 							<>
 							</select>
 						</div>	
@@ -76,7 +74,7 @@ div.dataTables_paginate {
 							<label>Facilities</label>
 						</div>
 						<div class="col-md-2">
-							<select class="form-control filter-status" name="abc_facode" id="facode">
+							<select class="form-control filter-status" name="facode" id="facode">
 							<>
 							</select>
 						</div>					
@@ -84,7 +82,7 @@ div.dataTables_paginate {
 							<label>Village/Mohallah:</label>
 						</div>
 						<div class="col-md-2">
-							<select class="form-control filter-status" name="villagemohallah" id="village">
+							<select class="form-control filter-status" name="village" id="village">
 							</select>
 						</div>					
 						<div class="col-md-2">
@@ -93,7 +91,8 @@ div.dataTables_paginate {
 						<div class="col-md-2">
 							<select class="form-control filter-status" name="techniciancode" id="techniciancode">
 							</select>
-						</div>
+						</div>	
+					</form>
 					
 				<div class="col-md-2">
 					<label>Child Name</label>
@@ -105,7 +104,7 @@ div.dataTables_paginate {
 					<label>Child Card Number</label>
 				</div>
 				<div class="col-md-2">
-					<input type="number" class="form-control" placeholder = "Child Card Number" name="childcardnbr" id="childcardnbr">
+					<input class="form-control" placeholder = "Child Card Number" name="childcardnbr" id="childcardnbr">
 				</div>
 				<div class="col-md-2">
 					<label>Father Name</label>
@@ -114,22 +113,16 @@ div.dataTables_paginate {
 					<input class="form-control" placeholder = "Father Name" name="fathername" id="fathername">
 				</div>
 				<div class="col-md-2">
-					<label>Date Of Birth From</label>
+					<label>Date Of Birth</label>
 				</div>
 				<div class="col-md-2">
-					<input class="form-control"placeholder="yyyy-mm-dd" class="month_year form-control " type="text" value="" data-date-format="yyy-mm-dd" name="dateofbirth" id="dateofbirth" >
-				</div>
-				<div class="col-md-2">
-					<label>Date Of Birth To</label>
-				</div>
-				<div class="col-md-2">
-					<input class="form-control"placeholder="yyyy-mm-dd" class="month_year form-control " type="text" value="" data-date-format="yyy-mm-dd" name="dateofbirthto" id="dateofbirthto">
+					<input class="form-control"placeholder="yyyy-mm-dd" class="month_year form-control " type="text" value="" data-date-format="yyy-mm-dd" name="dateofbirth" id="dateofbirth">
 				</div>
 				<div class="col-md-2">
 					<label>Mobile Number</label>
 				</div>
 				<div class="col-md-2">
-					<input class="form-control" placeholder = "Mobile Number" name="contactno" id="contactno">
+					<input class="form-control" placeholder = "Mobile Number" name="mobilenbr" id="mobilenbr">
 				</div>
 				<!--<div class="col-md-2">
 					<label>Vaccination</label>
@@ -141,7 +134,7 @@ div.dataTables_paginate {
 					<label>CNIC</label>
 				</div>
 				<div class="col-md-2">
-					<input class="form-control" placeholder = "CNIC Number" name="fathercnic" id="fathercnic">
+					<input class="form-control" placeholder = "CNIC Number" name="cnicnbr" id="cnicnbr">
 				</div>
 				<div class="col-md-2">
 					<label>Gender</label>
@@ -152,47 +145,18 @@ div.dataTables_paginate {
 						<option value="m"> Male </option>
 						<option value="f"> Female </option>
 					</select>
-				</div>
-				<div class="col-md-2">
-					<label>Select Vaccine</label>
-				</div>
-				<div class="col-md-2">
-					<select class="form-control" name="givename[]" id="givename" multiple required>
-						<option value="" selected> -- Select  -- </option>
-						<option value="bcg"> bcg</option>
-						<option value="hepb"> hepb </option>
-						<option value="opv0"> opv0 </option>
-						<option value="opv1"> opv1 </option>
-						<option value="opv2"> opv2 </option>
-						<option value="opv3"> opv3 </option>
-						<option value="penta1"> penta1 </option>
-						<option value="penta2"> penta2 </option>
-						<option value="penta3"> penta3 </option>
-						<option value="pcv1"> pcv1 </option>
-						<option value="pcv2"> pcv2 </option>
-						<option value="pcv3"> pcv3 </option>
-						<option value="ipv"> ipv </option>
-						<option value="rota1"> rota1 </option>
-						<option value="rota2"> rota2 </option>
-						<option value="measles1"> measles1 </option>
-						<option value="measles2"> measles2 </option>
-					</select>
-				</div>
-				<div class="col-md-2" style="float: right;margin-top: 23px;">
-					<label><button class="btn btn-success px-4 py-3 mt-3">Search</button></label>
-				</div>
+			</div>
 		</div>
 	</div> 
-</form>
-		<div class="row" style="margin-top:5px;">   
+		<!---<div class="row" style="margin-top:5px;">   
 			<div class="form-group">
 				<div class="col-xs-5" style="margin-left: 72% !important;">
-					<a href="<?php echo base_url(); ?>childs/Reports_list/child_migrate">
+					<a href="<?php //echo base_url(); ?>childs/Reports_list/child_migrate">
 						<button class="submit btn-success btn-sm"><i class="fa fa-share"></i> Child Migrate In</button>
 					</a>
 				</div>
 			</div>
-		</div>
+		</div> --->
 		<div class="col-lg-12 listing-table">
 			<?php 
 			if($this -> session -> msg){ ?>
@@ -202,7 +166,7 @@ div.dataTables_paginate {
 				<thead>
 					<tr>
 						<th class="text-center Heading">S#</th>                
-						<th class="text-center Heading">Card No</th>
+						<th class="text-center Heading">Card NO</th>
 						<th class="text-center Heading">Child Name</th>  
 						<th class="text-center Heading">Date of Birth</th>
 						<th class="text-center Heading">Father Name</th>   
@@ -230,21 +194,7 @@ div.dataTables_paginate {
 
 $(document).ready(function() { 
 	$.fn.dataTable.ext.errMode = 'none';
-	document.getElementById("dateofbirthto").disabled = true;
 	$('#dateofbirth').datepicker({
-	"format": "yyyy-mm-dd",
-	'startView': 2,
-	'autoclose': true,
-	'endDate' : Date(),
-	}).on('changeDate', function(e) {
-		var dp = $(e.currentTarget).data('datepicker');
-		var minDate = new Date(e.date.valueOf());
-		$('#dateofbirthto').datepicker('setStartDate', minDate);
-		document.getElementById("dateofbirthto").disabled = false;
-		$("#dateofbirthto").val('');
-	})
-	
-	$('#dateofbirthto').datepicker({
 	"format": "yyyy-mm-dd",
 	'startView': 2,
 	'autoclose': true,
@@ -259,9 +209,10 @@ $(document).ready(function() {
 	})
 	
 	
+	
 	////
 	
-	/* function isreply(letterid){
+	function isreply(letterid){
 			var req_res = false;
 			$.ajax({
 				type: "GET",
@@ -289,7 +240,7 @@ $(document).ready(function() {
 			});
 			return req_response;
 		}
-		 */
+		
 	////
 		var childsearchtable = [
 			{ data: "serial" ,"sClass":"center",
@@ -306,14 +257,33 @@ $(document).ready(function() {
 				orderable: false,
 				render : function(data, type, row) 
 					{
+						/* if(isreply(data) == true){
+								return '<a id="edit_button" data-original-title="Edit" href="<?php echo base_url(); ?>Reports/ChildRegistrationEdit/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData edit" ><i class="fas fa-edit text-white"></i></a><a  data-original-title="View" href="<?php echo base_url(); ?>Reports/ChildRegistrationView/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default view"><i class="fa fa-eye text-white"></i></a>'
+							}else{
+								//console.log(hasreply(data));
+								if(hasreply(data) == true){
+									return '<a id="edit_button" data-original-title="Edit" href="<?php echo base_url(); ?>Reports/ChildRegistrationEdit/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData edit" ><i class="fas fa-edit text-white"></i></a><a  data-original-title="View" href="<?php echo base_url(); ?>Reports/ChildRegistrationView/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default view"><i class="fa fa-eye text-white"></i></a>'
+								}else{
+									return '<a id="edit_button" data-original-title="Edit" href="<?php echo base_url(); ?>Reports/ChildRegistrationEdit/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData edit" ><i class="fas fa-edit text-white"></i></a><a  data-original-title="View" href="<?php echo base_url(); ?>Reports/ChildRegistrationView/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default view"><i class="fa fa-eye text-white"></i></a>'
+								}
+							} */
+						
 						return '<a id="edit_button" data-original-title="Edit" href="<?php echo base_url(); ?>Reports/ChildRegistrationEdit/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData edit" ><i class="fas fa-edit text-white"></i></a><a  data-original-title="View" href="<?php echo base_url(); ?>Reports/ChildRegistrationView/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default view"><i class="fa fa-eye text-white"></i></a>'
 
 					}
 			},
 		]; 
+		
+		//$('#tcode').on('change' , function (){
+			/* var tcode    = $("#tcode").val();
+			//var tcode = this.value;
+			alert(tcode);
+		if(tcode < 1){
+			alert('if'); */
+			
 		var table = $('#cerv_child_registration').DataTable(
 		{	
-			"pageLength" : 30,
+			"pageLength" : 10,
 			"serverSide": true,
 			"lengthChange": false,
 			"order": [
@@ -331,18 +301,15 @@ $(document).ready(function() {
 					}
 				}
 		});
-		/* $('#child_name,#fathername').on('keyup change', function () {
-
-			table.search( this.value ).draw();  
-
-		});*/
-		$("#fathercnic").inputmask({"mask": "99999-9999999-9"});
-		$("#contactno").inputmask({"mask": "9999-9999999"});
-		//$("#childcardnbr").inputmask({"mask": "99999999999"});
+		
+			//}
+		//});
+		
+		$("#cnicnbr").inputmask({"mask": "99999-9999999-9"});
+		$("#mobilenbr").inputmask({"mask": "9999-9999999"});
 	}); 
 	
-	/* $('#child_name,#childcardnbr,#fathername,#mobilenbr,#cnicnbr,#bcg,#dateofbirth,#gender').on('change', function () {
-		
+	$('#child_name,#childcardnbr,#fathername,#mobilenbr,#cnicnbr,#bcg,#dateofbirth,#gender').on('change', function () {
 		var childname    = $("#child_name").val();
 		var childcardnbr = $("#childcardnbr").val();
 		var fathername   = $("#fathername").val();
@@ -362,7 +329,6 @@ $(document).ready(function() {
 			//data: "nameofchild="+childname,
 			url: "<?php echo base_url(); ?>childs/Reports_list/child_search",
 			success: function(result){
-				//console.log(result);
 				var result = JSON.parse(result);
 				var number = 1;
 			row = "";
@@ -372,29 +338,26 @@ $(document).ready(function() {
 				row +="<td><span>"+obj.nameofchild+"</span></td>";
 				row +="<td><span>"+obj.dateofbirth+"</span></td>";
 				row +="<td><span>"+obj.fathername+"</span></td>";
-				row +="<td><span>"+obj.tcode+"</span></td>";
-				row +="<td><span>"+obj.uncode+"</span></td>";
+				row +="<td><span>"+obj.tehsilname+"</span></td>";
+				row +="<td><span>"+obj.unname+"</span></td>";
 				row +="<td><span>"+obj.address+"</span></td>";
 				row +="<td><span><a id='edit_button' data-original-title='Edit'  data-toggle='tooltip' class='btn btn-xs btn-default editData edit' href=<?php echo base_url(); ?>Reports/ChildRegistrationEdit/"+obj.recno+"><i class='fas fa-edit text-white'></i></span></a><span><a  id='edit_button' data-original-title='View'  data-toggle='tooltip' class='btn btn-xs btn-default view' href=<?php echo base_url(); ?>Reports/ChildRegistrationView/"+obj.recno+"><i class='fa fa-eye text-white'></i></span></a></td></tr>";
 				number++;
 				
-				//row +="<td><span>"+obj.address+"</span></td>";
-				
-				
-				//console.log(number);
+				console.log(number);
 				$('#tbody').html(row);
 			});
 		}
 	});
-}); */
+});
 
-/* 		$(function () {
+		$(function () {
 			$('.footable').DataTable({
 			"paging":   false
 		});
-	}); */
+	});
 		 
-	/* $('.filter-status').on('change' , function (){
+	$('.filter-status').on('change' , function (){
 		$('#tbody').html('');
 		$('#tbody').html('<h1><td colspan="10" class="text-center" ><img src="<?php echo base_url(); ?>includes/images/ajax-loader_blue.gif"> loading...</td></h1>');
 		var page = $(this).attr("id"); //get page number from link
@@ -402,7 +365,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: "GET",
 			data: $('#filter-form').serialize(),
-			dataType: "json",
+			dataType: "json",					
 			url: "<?php echo base_url(); ?>Ajax_calls/child_list_filter",
 			success: function(result){
 				console.log(result);
@@ -414,25 +377,9 @@ $(document).ready(function() {
 				}
 			}
 		});
-	}); */
+	});
 	
-	/* $('#tcode').on('click' , function (){
-			var tcode = this.value;
-			alert(tcode);
-		if(tcode !=""){
-			$.ajax({
-				type: "POST",
-				data: "tcode="+tcode,
-				url: "<?php echo base_url(); ?>Ajax_calls/getUnC_options",
-				success: function(result){
-					console.log(result)
-				$('#tcode').html(result);
-				}
-			});
-		}
-	});  */
-	
-	 $('#facode').on('change' , function (){
+	$('#facode').on('change' , function (){
 			var facode = this.value;
 		if(facode !=""){
 			$.ajax({
@@ -461,5 +408,5 @@ $(document).ready(function() {
 			});
 		}
 	});
-	 
+	
 </script>

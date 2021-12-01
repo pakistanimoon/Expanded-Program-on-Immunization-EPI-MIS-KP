@@ -28,11 +28,7 @@ class RedRec_compliances extends CI_Controller {
 		$reportTitle = $this->reportTitle($functionName);
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
 		//$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod);
-		if($this -> session -> UserLevel==4){
-			$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,NULL,false,NULL,NULL,'No','No',NULL,$customDropDown);
-		}else{
-			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,NULL,false,NULL,NULL,'No','No',NULL,$customDropDown);
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,true,NULL,false,NULL,NULL,'No','No',NULL,$customDropDown);
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		//var_Dump($dataHtml);exit;
 		$data['listing_filters'] = $dataHtml;
@@ -75,15 +71,9 @@ class RedRec_compliances extends CI_Controller {
 			$dist = $this->input->get_post('distcode');
 		else 
 			$dist = '';
-		if($this->input->get_post('tcode')){
-			$tcode = $this->input->get_post('tcode');
-		}
 		$year = $this->input->get_post('year');
 		$data['distcode'] = $dist;
 		$data['year'] = $year;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$data['data']['TopInfo'] = reportsTopInfo("HF Quarterly Due/Submit", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'Add_red_microplanning/compliances/Hf_quarter_compliance_view';
@@ -101,13 +91,10 @@ class RedRec_compliances extends CI_Controller {
 		}
 		//Excel file code ENDS*******************
 		$distcode = $this->input->get('distcode');
-		$tcode = $this->input->get('tcode');
 		$year = $this->input->get('year');
-		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_quarter_tech_compliance($distcode,$year,$tcode);
+		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_quarter_tech_compliance($distcode,$year);
 		$data['distcode'] = $distcode;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
+		$data['year'] = $year;
 		$data['data']['TopInfo'] = reportsTopInfo("HF Quarterly Technician Record", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'Add_red_microplanning/compliances/HF_quarter_tech_compliance_view';
@@ -140,13 +127,9 @@ class RedRec_compliances extends CI_Controller {
 		}
 		//Excel file code ENDS*******************
 		$distcode = $this->input->get('distcode');
-		$tcode = $this->input->get('tcode');
 		$year = $this->input->get('year');
-		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_microplan_uc_compliance($distcode,$year,$tcode);
+		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_microplan_uc_compliance($distcode,$year);
 		$data['distcode'] = $distcode;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$data['year'] = $year;
 		$data['data']['TopInfo'] = reportsTopInfo("HF Micro-Plan Union Council Record", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
@@ -170,14 +153,8 @@ class RedRec_compliances extends CI_Controller {
 			$dist = $this->input->get_post('distcode');
 		else 
 			$dist = '';
-		if($this->input->get_post('tcode')){
-			$tcode = $this->input->get_post('tcode');
-		}	
 		$year = $this->input->get_post('year');
 		$data['distcode'] = $dist;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$data['year'] = $year;
 		$data['data']['TopInfo'] = reportsTopInfo("HF Micro-Plan Due/Submit", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
@@ -222,15 +199,9 @@ class RedRec_compliances extends CI_Controller {
 			$dist = $this->input->get_post('distcode');
 		else 
 			$dist = '';
-		if($this->input->get_post('tcode')){
-			$tcode = $this->input->get_post('tcode');
-		}
 		$year = $this->input->get_post('year');
 		$data['distcode'] = $dist;
 		$data['year'] = $year;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$data['data']['TopInfo'] = reportsTopInfo("HF Supervisory Planned", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'Add_red_microplanning/compliances/HF_Supervisoryplan_view';
@@ -248,14 +219,10 @@ class RedRec_compliances extends CI_Controller {
 		}
 		//Excel file code ENDS*******************
 		$distcode = $this->input->get('distcode');
-		$tcode = $this->input->get('tcode');
 		$year = $this->input->get('year');
-		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_supervisoryplan_tech_compliance($distcode,$year,$tcode);
+		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_supervisoryplan_tech_compliance($distcode,$year);
 		$data['distcode'] = $distcode;
 		$data['year'] = $year;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$data['data']['TopInfo'] = reportsTopInfo("HF Supervisory Planned", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'Add_red_microplanning/compliances/HF_Supervisoryplan_tech_compliance_view';
@@ -286,12 +253,6 @@ class RedRec_compliances extends CI_Controller {
 			$dist = $this->input->get_post('distcode');
 		else 
 			$dist = '';
-		if($this->input->get_post('tcode')){
-			$tcode = $this->input->get_post('tcode');
-		}	
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$year = $this->input->get_post('year');
 		$data['distcode'] = $dist;
 		$data['year'] = $year;
@@ -312,14 +273,10 @@ class RedRec_compliances extends CI_Controller {
 		}
 		//Excel file code ENDS*******************
 		$distcode = $this->input->get('distcode');
-		$tcode = $this->input->get('tcode');
 		$year = $this->input->get('year');
-		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_supervisoryvisit_tech_compliance($distcode,$year,$tcode);
+		$data['data'] = $this -> Redrec_compliances_model -> RedRec_HF_supervisoryvisit_tech_compliance($distcode,$year);
 		$data['distcode'] = $distcode;
 		$data['year']= $year;
-		if($this->session->Tehsil){
-			$data['tcode'] = $tcode;
-		}
 		$data['data']['TopInfo'] = reportsTopInfo("HF Supervisory Planned/Conduct visit ", $data);
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'Add_red_microplanning/compliances/HF_Supervisoryvisit_tech_compliance_view';

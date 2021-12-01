@@ -34,7 +34,6 @@ class User_management_model extends CI_Model {
 		$query=$this->db->query($query);
 		$data['resultLevel']=$query->result_array();
 		//print_r($data['resultLevel']);exit();
-		
 		if($UserLevel == 99){
 			$query = "SELECT username, utype, districtname(distcode) AS District, fullname, level, addeddate FROM epiusers ORDER BY addeddate DESC LIMIT {$per_page} OFFSET {$startpoint} ";
 		}
@@ -46,7 +45,7 @@ class User_management_model extends CI_Model {
 	//================ User Listing Function Ends Here =============================//
 	//--------------------------------------------------------------------//
 	//================ User Listing Function Starts ================//
-	public function user_add() {
+	public function user_add($data=null) {
 		$procode  	= isset($_REQUEST['procode'])?$_REQUEST['procode']:$_SESSION['Province'];
 		$distcode  	= isset($_REQUEST['distcode'])?$_REQUEST['distcode']:'';
 		// $district	= $this -> session -> District;
@@ -72,142 +71,6 @@ class User_management_model extends CI_Model {
 		$query="SELECT tcode, tehsil from tehsil ORDER BY tcode";
 		$query=$this->db->query($query);
 		$data['resultTeh']=$query->result_array();
-
-		if(isset($_REQUEST['AddUser'])){
-			//echo "abc"; exit();
-			$procode = $_REQUEST['procode'];
-			$distcode = (isset($_REQUEST['distcode']) && $_REQUEST['distcode']> 0)?$_REQUEST['distcode']:'';
-			$tcode = (isset($_REQUEST['tcode']) && $_REQUEST['tcode']> 0)?$_REQUEST['tcode']:'';
-			$uncode = (isset($_REQUEST['uncode']) && $_REQUEST['uncode']> 0)?$_REQUEST['uncode']:'';
-			$facode = (isset($_REQUEST['facode']) && $_REQUEST['facode']> 0)?$_REQUEST['facode']:'';
-			//$facode = $_REQUEST['facode'];
-			$utype = $_REQUEST['utype'];
-			$level = $_REQUEST['level'];
-			$username = $_REQUEST['username'];
-			$password = md5($_REQUEST['password']);
-			$fullname = $_REQUEST['fullname'];
-            $active = $_REQUEST['active'];
-			$addeddate = date('Y-m-d');			
-			if($level == 1){
-				$procode = '';
-			}
-			else{
-				$procode = $_SESSION['Province'];
-			}
-			$error = 0;
-			if(($utype == 'Admin' && $distcode > 0) || ($utype == 'Manager' && $distcode > 0)){				
-				$error = 1;
-				$location = base_url(). "User_management/user_add";
-				$message="District user cannot be Admin OR Manager";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);
-				exit;
-			}
-			/* if(($utype == 'DEO' && $distcode == 0) || ($utype == 'Manager' && $distcode > 0) ){
-				
-				$error = 1;
-				$location = base_url(). "User_management/user_add";
-				$message="Please Select a district for DEO";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);
-				exit;
-
-			} */
-			if($error == 0){				
-				$query = "SELECT * FROM epiusers WHERE username = '$username' ";
-				$result = $this->db->query($query);
-				if($result->num_rows() > 0){
-					$error = 1;
-					$location = base_url(). "User_management/user_add";
-					$message="User Already Exist ";
-					$this -> session -> set_flashdata('message',$message);
-					redirect($location);
-					exit;
-				}
-				else{
-					$query = "INSERT INTO epiusers (username, password, level, procode, distcode, tcode, uncode, facode, utype, fullname, addeddate,active)
-							  VALUES ('$username', '$password', '$level', '$procode', '$distcode', '$tcode', '$uncode',' $facode', '$utype', '$fullname', '$addeddate','$active')";
-					//echo $query; exit;  
-                    $resultTeh=$this->db->query($query);
-					createTransactionLog("Users-DB", "User Added ".$username);
-					$location = base_url(). "User_management/user_list";
-					$message="New User Added";
-					$this -> session -> set_flashdata('message',$message);
-					redirect($location);
-					exit;
-				}				
-			}
-			else{
-				$location = base_url(). "User_management/user_add";
-				$message="Problem with adding user try again";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);				
-				exit();
-			}
-		}
-
-		if(isset($_REQUEST['UpdateUser'])){
-			//echo "xyz"; exit();
-			$procode = $_REQUEST['procode'];
-			$distcode = (isset($_REQUEST['distcode']) && $_REQUEST['distcode']> 0)?$_REQUEST['distcode']:'';
-			$tcode = (isset($_REQUEST['tcode']) && $_REQUEST['tcode']> 0)?$_REQUEST['tcode']:'';
-			$uncode = (isset($_REQUEST['uncode']) && $_REQUEST['uncode']> 0)?$_REQUEST['uncode']:'';
-			$facode = (isset($_REQUEST['facode']) && $_REQUEST['facode']> 0)?$_REQUEST['facode']:'';
-			//$facode = $_REQUEST['facode'];
-			$utype = $_REQUEST['utype'];
-			$level = $_REQUEST['level'];
-			$username = $_REQUEST['username'];
-			$oldusername = $_REQUEST['oldusername'];
-			$password = md5($_REQUEST['password']);
-			$fullname = $_REQUEST['fullname'];
-			$active = $_REQUEST['active'];
-			if($level == 1){
-				$procode = '';
-			}
-			else{
-				$procode = $_SESSION['Province'];
-			}
-			$error = 0;
-
-			if(($utype == 'Admin' && $distcode > 0) || ($utype == 'Manager' && $distcode > 0) ){				
-				$error = 1;
-				$location = base_url(). "User_management/user_add?user=".$oldusername;
-				$message="District user cannot be Admin OR Manager";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);
-				exit;
-
-			}
-			/* if(($utype == 'DEO' && $distcode == 0) || ($utype == 'Manager' && $distcode > 0) ){
-				
-				$error = 1;
-				$location = base_url(). "User_management/user_add?user=".$oldusername;
-				$message="Please Select a district for DEO";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);
-				exit;
-
-			} */
-
-			if($error == 0){				
-				if($_REQUEST['password']!=""){$pswd = "password='".$password."',";}
-				$query = "UPDATE epiusers set username = '$username',level = '$level', procode = '$procode',$pswd distcode = '$distcode', tcode = '$tcode', uncode = '$uncode', facode = '$facode', utype = '$utype', fullname = '$fullname', active='$active' where username = '$oldusername'";
-                $resultTeh=$this->db->query($query);
-				createTransactionLog("Users-DB", "User Updated ".$username);
-				$location = base_url(). "User_management/user_list";
-				$message="User Record Updated";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);
-				exit;					
-			}
-			else{				
-				$location = base_url(). "User_management/user_list";
-				$message="Problem With Updating Record";
-				$this -> session -> set_flashdata('message',$message);
-				redirect($location);
-				exit;
-			}
-		}
 		if(isset($_REQUEST['user'])){			
 			$username = $_REQUEST['user'];
 			$query = "SELECT * FROM epiusers WHERE username = '$username' ";
@@ -215,7 +78,15 @@ class User_management_model extends CI_Model {
 			$data['userInfo'] = $resource->result_array();
 		}
 		return $data;
-	}  
+	} 
+	public function user_save($data){
+		$this->db->insert('epiusers', $data);
+	}
+	public function user_update($data,$oldusername)
+	{
+		$this->db->where('username', $oldusername);
+		$this->db->update('epiusers',$data);
+	}
 	//================ User Add Function End ================//
 	//--------------------------------------------------------------------//
 	//================ User Delete Function Starts ================//

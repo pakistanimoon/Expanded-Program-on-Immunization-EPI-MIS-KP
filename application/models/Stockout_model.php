@@ -21,9 +21,10 @@ class Stockout_model extends CI_Model {
 				$subcode = " and distcode = tbl.distcode";
 				$stockout = "get_pro_level_all_fac_stock_out_new('$itemsidarr','$fmonth','distcode',tbl.distcode)";
 				if($distcode){
+					$wc = "fac.uncode = tbl.uncode and tbl.distcode = '{$distcode}'";
 					$selectcolumns = "uncode as code,ucname as name";
 					$table = "uc_wise_maps_paths tbl where tbl.distcode='$distcode'";
-					$duepart = "getfacility_count(tbl.uncode,'unioncouncil')";
+					$duepart = "(SELECT SUM(case when getfstatus_vacc('{$fmonth}', fac.facode)='F' then 1 else 0 end) as cnt from facilities fac where {$wc} AND fac.is_vacc_fac='1' and fac.hf_type='e')";
 					$subcode = " and uncode = tbl.uncode";
 					$stockout = "get_pro_level_all_fac_stock_out_new('$itemsidarr','$fmonth','uncode',tbl.uncode)";
 				}

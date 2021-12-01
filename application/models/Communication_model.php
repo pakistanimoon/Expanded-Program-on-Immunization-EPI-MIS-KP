@@ -1,18 +1,20 @@
 <?php
 class Communication_model extends CI_Model
 {
-	public function getConsumption($fmonth,$distcode,$productId,$item_pack_size_id=NULL){
+	public function getConsumption(/* $fmonth */ $date,$distcode,$productId,$item_pack_size_id=NULL){
 		$this -> load -> helper('dashboard_functions_helper');
 		$this -> db -> select("
-			facode as hf_code,{$productId} as item_code,sum(opening_doses) as opening,sum(received_doses) as received,
-			0 as issue,sum(closing_doses) as closing,fmonth as data_entry_month,created_date as last_update")
+			fmonth as reporting_month_year,facode as hf_code,{$productId} as item_code,sum(opening_doses) as opening,sum(received_doses) as received,
+			0 as issue,sum(closing_doses) as closing,created_date,updated_date as last_update")
 			-> from('epi_consumption_master')
 			-> join('epi_consumption_detail',"epi_consumption_detail.main_id = epi_consumption_master.pk_id")
-			-> where(array('distcode' => $distcode,'fmonth' => $fmonth,'item_id' => $item_pack_size_id))
-			-> group_by("distcode,facode,fmonth,created_date");
+			-> where(array('distcode' => $distcode,/* 'fmonth' => $fmonth, */'item_id' => $item_pack_size_id))
+			-> where ("(Date(created_date)='{$date}' OR Date(updated_date)='{$date}')")
+			-> group_by("distcode,facode,fmonth,created_date,updated_date");
 		$consumptionResult = $this -> db -> get() -> result_array();
 		foreach($consumptionResult as $key => $value){
 			$facode = $value['hf_code'];
+			$fmonth = $value['reporting_month_year'];
 			$this -> db -> select('vacc_dose_id');
 			$this -> db -> where('cr_product_id',$productId);
 			/* Get all doses for a product that are mapped in products_doses_details table */
@@ -245,7 +247,7 @@ class Communication_model extends CI_Model
 			'null' as warehouse_type_name,
 			fac.facode as dhis_code, 
 			facilities_population.population as population,
-			getfstatus_vacc('".date('Y-m')."', fac.facode) as status,
+			getfstatus_vacc('".date('Y-m',strtotime("first day of previous month"))."', fac.facode) as status,
 			'null' as target
 		");
 		$this -> db -> from('facilities fac');

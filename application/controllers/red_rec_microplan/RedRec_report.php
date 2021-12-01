@@ -29,11 +29,7 @@
 					)
 				);
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-		if($this -> session -> UserLevel==4){
-			$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,$reportsperiod=array("yearly"),false,NULL,NULL,'No','No',NULL,$array);
-		}else{
-			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportsperiod=array("yearly"),false,NULL,NULL,'No','No',NULL,$array);
-		}
+		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportsperiod=array("yearly"),false,NULL,NULL,'No','No',NULL,$array);
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;

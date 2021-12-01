@@ -22,7 +22,7 @@
 				</div>
 	   		<?php } ?>
    		</div>   		
-     	<div class="panel-body">
+     		<div class="panel-body">
       		<form class="form-horizontal" id="measles" onsubmit="return confirm('Are you sure you want to save/submit this form?')" action="<?php echo base_url(); ?>Case_investigation/case_investigation_save" method="post">
 	   			<?php if(isset($measles_Result)){ ?>
           			<input type="hidden" name="edit" id="edit" value="edit" />
@@ -204,7 +204,7 @@
 										<?php echo $years; } ?>
 									</select>
 								</td>
-								<td><p>EPI Week No <span style="color:red;">*</span></p></td>
+								<td><p>Epid Week No <span style="color:red;">*</span></p></td>
 								<td>
 									<select class="form-control" required="required"  name="week" id="week">
 										<?php if(isset($measles_Result)){ ?>
@@ -428,7 +428,7 @@
 								<td><input class="dp form-control"  name="date_rash_onset" id="date_rash_onset" value="<?php if(isset($measles_Result) && $measles_Result->date_rash_onset != NULL){ if($measles_Result->date_rash_onset!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->date_rash_onset)); }else{ echo ''; } } ?>" type="text" required="required"></td>
 								<td><p>Date of Notification</p></td>
 								<td class="disabledclass"><input class="dp form-control" required="required" name="notification_date" id="notification_date" readonly="readonly" value="<?php if(isset($measles_Result)){ if($measles_Result->notification_date!= '1969-12-31' && $measles_Result->notification_date!= NULL){ echo date('d-m-Y',strtotime($measles_Result->notification_date)); }else{ echo ''; } } ?>"  type="text"></td>
-				         	</tr>
+				         </tr>
 							<tr>
 								<td><p>Date of Investigation</p></td>
 								<td><input class="dp form-control" name="date_investigation" id="date_investigation" readonly="readonly" value="<?php if(isset($measles_Result) && $measles_Result->date_investigation != NULL){ if($measles_Result->date_investigation!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->date_investigation)); }else{ echo ''; } } ?>" type="text"></td>
@@ -509,14 +509,14 @@
 								<td>
 									<select name="type_specimen" id="type_specimen" class="form-control" required="required">
 										<option value="">--Select--</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Blood"){ echo 'selected="selected"'; } } ?> value="Blood">Blood</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Oral Swab"){ echo 'selected="selected"'; } } ?> value="Oral Swab">Oral Swab</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Throat Swab"){ echo 'selected="selected"'; } } ?> value="Throat Swab">Throat Swab</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Serum"){ echo 'selected="selected"'; } } ?> value="Serum">Serum</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Urine"){ echo 'selected="selected"'; } } ?> value="Urine">Urine</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Oral Fluid"){ echo 'selected="selected"'; } } ?> value="Oral Fluid">Oral Fluid</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Other"){ echo 'selected="selected"'; } } ?> value="Other">Other</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "None"){ echo 'selected="selected"'; } } ?> value="None">Not Collected</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Blood"){ echo 'selected="selected"'; } } ?> value="Blood">Blood</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Oral Swab"){ echo 'selected="selected"'; } } ?> value="Oral Swab">Oral Swab</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Throat Swab"){ echo 'selected="selected"'; } } ?> value="Throat Swab">Throat Swab</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Serum"){ echo 'selected="selected"'; } } ?> value="Serum">Serum</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Urine"){ echo 'selected="selected"'; } } ?> value="Urine">Urine</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Oral Fluid"){ echo 'selected="selected"'; } } ?> value="Oral Fluid">Oral Fluid</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Other"){ echo 'selected="selected"'; } } ?> value="Other">Other</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "None"){ echo 'selected="selected"'; } } ?> value="None">Not Collected</option>
 									</select>
 								</td>
 								<td><p>Other Specimen Type</p></td>
@@ -524,17 +524,17 @@
 							</tr>
 							<tr>								
 								<td><p>Date of Specimen Collection</p></td>
-								<td><input class="dp form-control noSpecimen" name="date_collection" id="date_collection" readonly="readonly" value="<?php if(isset($measles_Result)){ if($measles_Result->date_collection!= '1969-12-31' && $measles_Result->date_collection != NULL){ echo date('d-m-Y',strtotime($measles_Result->date_collection)); }else{ echo ''; } } ?>" type="text"></td>
+								<td><input class="dp form-control" name="date_collection" id="date_collection" readonly="readonly" value="<?php if(isset($measles_Result)){ if($measles_Result->date_collection!= '1969-12-31' && $measles_Result->date_collection != NULL){ echo date('d-m-Y',strtotime($measles_Result->date_collection)); }else{ echo ''; } } ?>" type="text"></td>
 							</tr>
 							<tr>
 								<td><p>Date of Specimen Sent to Lab</p></td>
-								<td><input class="dp form-control noSpecimen" name="date_sent_lab" id="date_sent_lab" readonly="readonly" value="<?php if(isset($measles_Result) && $measles_Result->date_sent_lab != NULL){ if($measles_Result->date_sent_lab!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->date_sent_lab)); }else{ echo ''; } } ?>" type="text"></td>
+								<td><input class="dp form-control" name="date_sent_lab" id="date_sent_lab" readonly="readonly" value="<?php if(isset($measles_Result) && $measles_Result->date_sent_lab != NULL){ if($measles_Result->date_sent_lab!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->date_sent_lab)); }else{ echo ''; } } ?>" type="text"></td>
 								<td><p>Lab result to be sent to <span style="color:red;">*</span></p></td>
 								<td>District Health Officer
-									<select name="labresult_tobesentto_district" id="labresult_tobesentto_district" class="form-control hide noSpecimen">
+									<select name="labresult_tobesentto_district" id="labresult_tobesentto_district" class="form-control hide">
 										
 									</select>
-									<select name="labresult_tobesentto" id="labresult_tobesentto" class="form-control hide noSpecimen" required="required">
+									<select name="labresult_tobesentto" id="labresult_tobesentto" class="form-control hide" required="required">
 										<option value="">--Select District--</option>
 										<?php if(isset($measles_Result) && $measles_Result->labresult_tobesentto  != ""){ ?>
 											<?php getDistricts_options(false,$measles_Result->labresult_tobesentto,'Yes'); ?> 
@@ -556,62 +556,61 @@
 							</tr>
 						</tbody>
      				</table>
-
-      				<table class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass" id="hideLabPart">
+     				
+      			<table class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass">
 						<thead>
 							<tr>
 								<th colspan="4" style="text-align: center; padding-top: 10px; padding-bottom: 10px;">Part II: For use by receiving laboratory</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr></tr>
 							<tr>
 								<td><p>Date Specimen Received at lab</p></td>
-								<td><input class="dp form-control noSpecimen" name="specimen_received_date" id="specimen_received_date" readonly="readonly" type="text"></td>
+								<td><input class="dp form-control" name="specimen_received_date" id="specimen_received_date" readonly="readonly" type="text"></td>
 								<!-- <td><p></p></td> -->
 								<!-- <td><p>Condition of Specimen</p></td>
 								<td><p></p></td> -->
 							</tr>
 							<tr>
-					            <td><p style="display: inline-block;">Condition of Specimen</p><span style="float: right;">Quantity Adequate:</span></td>
-					            <td style="padding-left: 50px;"><input class="noSpecimen" type="radio" id="qyes" name="quantity_adequate" value="1"  checked="checked">Yes</td>
-					            <td><input class="noSpecimen" type="radio" name="quantity_adequate" id="qno" value="2">No</td>
-				         	</tr>
-					         <tr>
-					            <td><span style="float: right;">Cold Chain OK:</span></td>
-					            <td style="padding-left: 50px;"><input type="radio" name="cold_chain_ok" id="ccyes" class="testpossible noSpecimen" value="1" checked="checked">Yes</td>
-					            <td><input type="radio" name="cold_chain_ok" id="ccno" class="testpossible noSpecimen" value="2">No</td>
-					         </tr>
-					         <tr id="lb">
-					            <td><span style="float: right;">Leakage/Broken Container:</span></td>
-					            <td style="padding-left: 50px;"><input class="noSpecimen" type="radio" name="leakage_broken" id="leekyes" value="1" checked="checked">Yes</td>
-					            <td><input class="noSpecimen" type="radio" name="leakage_broken" id="leekno" value="2">No</td>
-					         </tr>
-					         <tr id="itp">
-					            <td><span style="float: right;">Test Possible:</span></td>
-					            <td style="padding-left: 50px;"><input class="noSpecimen" type="radio" id="testyes" name="test_possible" value="1" checked="checked">Yes</td>
-					            <td><input class="noSpecimen" type="radio" id="testno" name="test_possible" value="2">No</td>
-					         </tr>				         
+				            <td><p style="display: inline-block;">Condition of Specimen</p><span style="float: right;">Quantity Adequate:</span></td>
+				            <td style="padding-left: 50px;"><input type="radio" id="qyes" name="quantity_adequate" value="1"  checked="checked">Yes</td>
+				            <td><input type="radio" name="quantity_adequate" id="qno" value="2">No</td>
+				         </tr>
+				         <tr>
+				            <td><span style="float: right;">Cold Chain OK:</span></td>
+				            <td style="padding-left: 50px;"><input type="radio" name="cold_chain_ok" id="ccyes" class="testpossible" value="1" checked="checked">Yes</td>
+				            <td><input type="radio" name="cold_chain_ok" id="ccno" class="testpossible" value="2">No</td>
+				         </tr>
+				         <tr id="lb">
+				            <td><span style="float: right;">Leakage/Broken Container:</span></td>
+				            <td style="padding-left: 50px;"><input type="radio" name="leakage_broken" id="leekyes" value="1" checked="checked">Yes</td>
+				            <td><input type="radio" name="leakage_broken" id="leekno" value="2">No</td>
+				         </tr>
+				         <tr id="itp">
+				            <td><span style="float: right;">Test Possible:</span></td>
+				            <td style="padding-left: 50px;"><input type="radio" id="testyes" name="test_possible" value="1" checked="checked">Yes</td>
+				            <td><input type="radio" id="testno" name="test_possible" value="2">No</td>
+				         </tr>				         
 							<tr>
 								<td><p>Specimen Received by: Name</p></td>
-								<td><input type="text" name="specimen_received_by" class="form-control testpossibleno noSpecimen" maxlength="30"></td>
+								<td><input type="text" name="specimen_received_by" class="form-control testpossibleno" maxlength="30"></td>
 								<!-- <td><p></p></td> -->
 								<td><p>Designation</p></td>
-								<td><input type="text" name="received_by_designation" class="form-control testpossibleno noSpecimen" maxlength="20"></td>
+								<td><input type="text" name="received_by_designation" class="form-control testpossibleno" maxlength="20"></td>
 								<!-- <td><p></p></td> -->
 							</tr>
 							<tr>
 								<td><p>Lab ID Number</p></td>
-								<td><input type="text" name="lab_id_number" class="form-control testpossibleno noSpecimen" maxlength="25"></td>
+								<td><input type="text" name="lab_id_number" class="form-control testpossibleno" maxlength="25"></td>
 								<!-- <td><p></p></td> -->
 								<td><p>Date of Lab Test Done</p></td>
-								<td><input type="text" name="lab_testdone_date" class="form-control dp testpossibleno noSpecimen" readonly="readonly"></td>
+								<td><input type="text" name="lab_testdone_date" class="form-control dp testpossibleno" readonly="readonly"></td>
 								<!-- <td><p></p></td> -->
 							</tr>
 							<tr>
 								<td><p>Type of Specimen</p></td>
 								<td>
-									<select colspan="3" name="type_of_test" class="form-control testpossibleno othertype noSpecimen" id="other">
+									<select colspan="3" name="type_of_test" class="form-control testpossibleno othertype" id="other">
 										<option value="">--Select--</option>
 										<option value="Blood">Blood</option>
 										<option value="Serum">Serum</option>
@@ -622,13 +621,13 @@
 								</td>
 								<td><label>Other Specimen: </label></td>
 								<td colspan="3" >
-									<input type="text" id="other_specimen" class="form-control testpossibleno otherspecimen noSpecimen" name="other_specimen_lab" maxlength="30"> 
+									<input type="text" id="other_specimen" class="form-control testpossibleno otherspecimen" name="other_specimen_lab" maxlength="30"> 
 								</td>
 							</tr>
 							<tr>
 								<td><p>Test Result</p></td>
 								<td id="mslmsl" class="hide">
-									<select colspan="3" name="specimen_result" class="form-control testpossibleno othertest measles noSpecimen" id="other">
+									<select colspan="3" name="specimen_result" class="form-control testpossibleno othertest measles" id="other">
 										<option value="">--Select--</option>
 										<option value="Positive Measles">Positive Measles</option>
 										<option value="Negative Measles">Negative Measles</option>
@@ -637,8 +636,8 @@
 									</select>									
 								</td>
 								<td id="otherddd" class="hide">
-									<select colspan="3" name="specimen_result" class="form-control testpossibleno othertest otherdiseases noSpecimen" id="other">
-										<option value="">--Select--</option>
+									<select colspan="3" name="specimen_result" class="form-control testpossibleno othertest otherdiseases" id="other">
+										<option value="">--Select--</option>										
 										<option value="Positive">Positive</option>
 										<option value="Negative">Negative</option>
 										<option value="Other">Other</option>
@@ -646,50 +645,65 @@
 								</td>
 								<td><label>Other Result: </label></td>
 								<td colspan="3" >
-									<input type="text" id="other_result" class="form-control testpossibleno otherresult noSpecimen" name="other_specimen_result" maxlength="30"> 
+									<input type="text" id="other_result" class="form-control testpossibleno otherresult" name="other_specimen_result" maxlength="30"> 
 								</td>
 							</tr>
 							<tr>
 								<td><p>Comment</p></td>
-								<td><input type="text" class="form-control testpossibleno noSpecimen" name="comments" maxlength="100"></td>
+								<td><input type="text" class="form-control testpossibleno" name="comments" maxlength="100"></td>
 								<!-- <td><p></p></td> -->
 								<td><p>Date of lab report sent/submitted</p></td>
-								<td><input class="form-control dp testpossibleno noSpecimen" name="lab_report_sent_date" readonly="readonly"></td>
+								<td><input class="form-control dp testpossibleno" name="lab_report_sent_date" readonly="readonly"></td>
 								<!-- <td><p></p></td> -->
 							</tr>
 							<tr>
 								<td><p>Report Submitted by: Name</p></td>
-								<td><input type="text" class="form-control noSpecimen" name="report_sent_by" maxlength="30"></td>
+								<td><input type="text" class="form-control" name="report_sent_by" maxlength="30"></td>
 								<!-- <td><p></p></td> -->
 								<td><p>Designation</p></td>
-								<td colspan="3"><input type="text" name="sent_by_designation" class="form-control noSpecimen" maxlength="20"></td>
+								<td colspan="3"><input type="text" name=" sent_by_designation" class="form-control" maxlength="20"></td>
 								<!-- <td><p></p></td> -->
-							</tr>						
-	      				</tbody>
-	  				</table>      
-	      			<table class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass">
+							</tr>
+							<!-- <tr>
+								<td><p>Date</p></td>
+								<td><p></p></td>
+							</tr> -->
+							<!--<tr>
+								<td><p>Specimen Result</p></td>
+								<td>
+									<select id="specimen_result" name="specimen_result" class="form-control text-center">
+										<option value="0" class="text-center">--Select Result--</option>                   
+										<option <?php //if(isset($measles_Result)){ if($measles_Result->specimen_result  == "Positive Measles"){ echo 'selected="selected"';} } ?> value="Positive Measles" class="text-center">Positive Measles</option>
+										<option <?php //if(isset($measles_Result)){ if($measles_Result->specimen_result  == "Positive Rubella"){ echo 'selected="selected"';} } ?> value="Positive Rubella" class="text-center">Positive Rubella</option>
+										<option <?php //if(isset($measles_Result)){ if($measles_Result->specimen_result  == "Negative"){ echo 'selected="selected"';} } ?> value="Negative" class="text-center">Negative</option>                    
+									</select>
+								</td>
+				         </tr>-->
+          			</tbody>
+      			</table>      
+      			<table class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass">
 						<thead>
 							<tr>
 								<th colspan="4" style="text-align:center; padding-top: 10px; padding-bottom: 10px;">PART III : 30-day Follow up (to be filled for outbreak cases)</th>
 							</tr>
 						</thead>
-          				<tbody>
+          			<tbody>
 							<tr>
 								<td style="width: 25%;"><p>Date of Follow UP</p></td>
 								<td style="width: 50%;"><input class="dp form-control" name="followup_date" id="followup_date" readonly="readonly" value="<?php if(isset($measles_Result)){ if($measles_Result->followup_date!= '1969-12-31' && $measles_Result->followup_date != NULL){ echo date('d-m-Y',strtotime($measles_Result->followup_date)); }else{ echo ''; } } ?>" type="text"></td>
 							</tr>
+	            		<tr>
 							<tr>
-								<td style="width: 25%;"><p>Outcome</p></td>
-								<td style="width: 50%;">
-									<select id="outcome" name="outcome" class="form-control text-center">
-										<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "0"){ echo 'selected="selected"';} } ?> value="0">-- Select Outcome --</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Cured"){ echo 'selected="selected"';} } ?> value="Cured">Cured</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Complication"){ echo 'selected="selected"';} } ?> value="Complication">Complication</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Death"){ echo 'selected="selected"';} } ?> value="Death">Death</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Lost to Follow-up"){ echo 'selected="selected"';} } ?> value="Lost to Follow-up">Lost to Follow-up</option>
-									</select>
-								</td>
-							</tr>             
+							<td style="width: 25%;"><p>Outcome</p></td>
+							<td style="width: 50%;">
+								<select id="outcome" name="outcome" class="form-control text-center">
+									<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "0"){ echo 'selected="selected"';} } ?> value="0">-- Select Outcome --</option>
+									<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Cured"){ echo 'selected="selected"';} } ?> value="Cured">Cured</option>
+									<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Complication"){ echo 'selected="selected"';} } ?> value="Complication">Complication</option>
+									<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Death"){ echo 'selected="selected"';} } ?> value="Death">Death</option>
+									<option <?php if(isset($measles_Result)){ if($measles_Result->outcome  == "Lost to Follow-up"){ echo 'selected="selected"';} } ?> value="Lost to Follow-up">Lost to Follow-up</option>
+								</select>
+							</td>             
 							<tr>
 								<td class="showComplication <?php if(isset($measles_Result)){ if($measles_Result->complication  != ""){}else{ echo "hide"; }}else{ echo "hide"; } ?>" style="width: 50%;margin-left: 100%;">
 									<table class="mytable2 disabledclass" style="width:100%;">
@@ -710,7 +724,7 @@
 										</tbody>
 									</table>
 								</td>              
-	            			</tr>            
+	            		</tr>            
 							<tr>               
 								<td class="showDate <?php if(isset($measles_Result)){ if($measles_Result->death_date  != "" && $measles_Result->death_date  != "1969-12-31"){}else{ echo "hide"; }}else{ echo "hide"; } ?>" style="width: 50%;margin-left: 100%;">
 									<table class="mytable2 disabledclass" style="width:100%;">
@@ -1376,18 +1390,8 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 	$(document).on('change','#type_specimen',function(){
 		if($(this).val() == 'Other'){
 			$('#other_specimen').removeClass('hide');
-			$('.noSpecimen').removeAttr('disabled','disabled');
-			//$('#hideLabPart').removeClass('hide');
-		}
-		else if($(this).val() == 'None'){
-			$('.noSpecimen').attr('disabled','disabled');
-			$('.noSpecimen').val('');
-			//$('#hideLabPart').addClass('hide');
-		}
-		else{			
+		}else{
 			$('#other_specimen').addClass('hide');
-			$('.noSpecimen').removeAttr('disabled','disabled');
-			//$('#hideLabPart').removeClass('hide');
 		}
 	});
 	if($('#cb_cross_notified').not(':checked').length){

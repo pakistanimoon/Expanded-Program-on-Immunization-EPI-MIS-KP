@@ -276,16 +276,16 @@ class User_menu_model extends CI_Model
 	    $prevlabel = "&lsaquo; Prev";
 	    $nextlabel = "Next &rsaquo;";
 	    $lastlabel = "Last &rsaquo;&rsaquo;";
-	    $page = ($page == 0 ? 1 : $page);
-	    $start = ($page - 1) * $per_page;
-	    $prev = $page - 1;
+	    $page = ($page == 0 ? 1 : $page);  
+	    $start = ($page - 1) * $per_page;                               
+	    $prev = $page - 1;                          
 	    $next = $page + 1;
 	    $lastpage = ceil($total/$per_page);
 	    //$lastpageid = $lastpage + 1;
 	    $lpm1 = $lastpage - 1; // //last page minus 1
 	    $pagination = "";
 		if($lastpage > 1)
-		{
+		{   
         	$pagination .= '<div class="row"><div align="center" class="col-sm-12"><ul class="pagination">';
         	//$pagination .= "<li class='page_info'>Page {$page} of {$lastpage}</li>";
             if ($page > 1) $pagination.= "<li><a id='$prev' class='paginateMe' href='{$url}page={$prev}'>{$prevlabel}</a></li>";

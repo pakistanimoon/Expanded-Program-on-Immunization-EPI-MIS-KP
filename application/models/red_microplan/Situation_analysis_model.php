@@ -35,8 +35,8 @@
 				break;
 			case '4' :
 				$UserLevel = 4;
-				if (isset($_SESSION['Province']) && isset($_SESSION['District']) && isset($_SESSION['tcode'])) {
-					$wc .= "distcode = '" . $_SESSION['District'] . "'AND tcode = '" . $_SESSION['tcode'] . "'  ";
+				if (isset($_SESSION['Province']) && isset($_SESSION['District']) && isset($_SESSION['facode'])) {
+					$wc .= "distcode = '" . $_SESSION['District'] . "'AND facode = '" . $_SESSION['facode'] . "'  ";
 				}
 				break;
 		

@@ -11,7 +11,13 @@
 					<th>Tecnician Code</th>
 					<th>Tecnician Name</th>
 					<?php
-						    $month = date('m');
+							$current_year=date('yy');
+						    if($year == $current_year)
+							{
+								$month = date('m');
+							}else{
+								$month='11';
+							}
 						 	if($month >=1 && $month <=2){
 								$quarter='1';
 							}elseif($month >=3 && $month <=5 ){
@@ -78,11 +84,10 @@
 	});
 		$(document).on('click','.mrClicked', function(){
 			var quarter = $(this).data('quarter');
-			//alert(quarter);
 			var code = $(this).data('code');
 			if(code.toString().length == 9){
 			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_tech_compilation_compliance?techniciancode="+code+"&quarter="+quarter;
-			var win = window.open(url,'_blank');
+			var win = window.open(url,'_self');
 			if(win){
 				win.focus();
 			}else{

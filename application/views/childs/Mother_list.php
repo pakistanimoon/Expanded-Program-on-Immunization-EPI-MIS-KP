@@ -113,7 +113,7 @@ div.dataTables_paginate {
 					render : function(data, type, row) 
 
 						{
-							return '<a id="edit_button" data-original-title="Edit" href="<?php echo base_url(); ?>Reports/MotherRegistrationEdit/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData edit" ><i class="fas fa-edit text-white"></i></a><a  data-original-title="View" href="<?php echo base_url(); ?>Reports/MotherRegistrationView/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default view"><i class="fa fa-eye text-white"></i></a>'
+						  return '<a id="edit_button" data-original-title="Edit" href="<?php echo base_url(); ?>Reports/MotherRegistrationEdit/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData edit" ><i class="fas fa-edit text-white"></i></a><a  data-original-title="View" href="<?php echo base_url(); ?>Reports/MotherRegistrationView/'+data+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default view"><i class="fa fa-eye text-white"></i></a>'
 
 						}
 

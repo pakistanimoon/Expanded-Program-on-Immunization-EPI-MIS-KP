@@ -45,5 +45,13 @@
 			var minDate = new Date(selected.date.valueOf());
 			$('#monthto').datepicker('setStartDate', minDate);
 		});
+		//just for some days commenting options
+		$("#vaccinationType option[value='fixed']").remove();
+		$("#vaccinationType option[value='outreach']").remove();
+		$("#vaccinationType option[value='mobile']").remove();
+		$("#vaccinationType option[value='lhw']").remove();
+		$("#age_wise option[value='0to11']").remove();
+		$("#age_wise option[value='12to23']").remove();
+		$("#age_wise option[value='above2']").remove();
 	});
 </script>

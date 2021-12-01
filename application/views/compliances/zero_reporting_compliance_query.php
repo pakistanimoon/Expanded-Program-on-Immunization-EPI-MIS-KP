@@ -72,7 +72,7 @@
 		//to get data from server
 		var districtData = '<?php echo $district_data; ?>';
 		if( ! districtData){
-			$("table tbody tr").each(function(){
+			/* $("table tbody tr").each(function(){
 				var lastone = $("table tbody tr:last-child").index();
 				if($(this).index()==lastone){
 					//alert($(this).index());
@@ -99,7 +99,7 @@
 						});
 					}	
 				}			
-			});
+			}); */
 		}
 		else{
 			$("#export-form").prop('enctype', "multipart/form-data");

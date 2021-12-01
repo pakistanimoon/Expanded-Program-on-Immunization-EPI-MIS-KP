@@ -11,12 +11,7 @@ $currentYear = date('Y');
         $("select").children().first().remove();      	
 		}
 		
-        <?php if($this -> session -> UserLevel==4){ ?>
-			var tcode= <?php echo $this->session->Tehsil; ?>;
-			$('#tcode').val(tcode);
-			$('#tcode').trigger("change");
-		<?php } ?>
-    });
+	});
 	//$(document).ready(function(){
 		/* if((isExists('monthto') && isExists('monthfrom'))){
 			$('#pre-btn').prop('disabled', true);

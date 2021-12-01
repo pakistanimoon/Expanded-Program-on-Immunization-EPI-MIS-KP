@@ -158,14 +158,6 @@
 					</div>
 <script type="text/javascript">
 	$(document).ready(function(){
-		
-		<?php if($this -> session -> UserLevel==4){ ?>
-	    var tcode= <?php echo $this->session->Tehsil; ?>;
-		$('#tcode').val(tcode);
-		$('#tcode').trigger("change");
-		<?php } ?>
-		
-		
 		$(document).on('change','#sections', function(e){
 			var select = $(this).val();
 			if(select== "ttri"){			

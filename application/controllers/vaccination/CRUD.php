@@ -1,33 +1,27 @@
 <?php
 /*
-            _V_A_C_C_I_N_A_T_I_O_N 
+            _V_A_C_C_I_N_A_T_I_O_N  
 		 ______________________________
-		/""""""""""""""""""""""""""""""\
-        ||       Class : CRUD         ||
-	    ||  Author: Raja Imran Qamer  ||
-	    ||     Date : 2019-12-31      ||
-	    ||  rajaimranqamer@gmail.com  ||
-	    ||     "Merged Forms"         ||
-	    || {Vaccination + Consumption}||
-	    ||   **Pace Technologies**    ||
-		||____________________________||
-		\__*_*_*________________:_:_:__/
-	                ||   ||
-		            ||___||
-					'''''''
-		   __________________________
-		   """"""""""""""""""""""""""
-		  //                       //
-		 //   A S D F G H J K L   //
-		//_______________________//
-		""""""""""""""""""""""""""
+                                            
+ .d8888b.  RIQ                       RIQ    
+d88P  Y88b 8M8                       8M8    
+Y88b.      8R8                       8R8    This is a main class for CRUD of vaccination module
+ "IMRAN.   8A8888  .d88b.  8I888b.   8A8    written by Raja Imran Qamer and copytighted by 
+    "Y88b. 8N8    d88""88b 8M8 "88b  8N8    Pace Technologies and Dept of EPi, ministry of health.
+      "888 888    888  888 8R8  888  Y8P    if someone asked you to make some changes or rewrite. 
+PACE  d88P Y88b.  Y88..88P 8A8 TECH         don't do directly without knowledge & taking help from 
+ "Y8888P"   "PACE  "TECH"  8N888P"   RIQ    rajaimranqamer@gmail.com - 2019-12-31
+                           888              Merged Forms, {Vaccination + Consumption}
+                           888              
+                           RIQ              
+
 */
 class CRUD extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
 		$this -> load -> helper('epi_functions_helper');
-		$this -> load -> helper('cross_notify_functions_helper');	
+		$this -> load -> helper('cross_notify_functions_helper');
 		if($this -> session -> UserAuth == 'Yes'){}else{
 			authentication();
 		}
@@ -62,12 +56,24 @@ class CRUD extends CI_Controller {
 		{
 			$fmonth = $this -> input -> post('year')."-".$this -> input -> post('month');
 			$facode = $this -> input -> post('facode');
+			/* $WCdata = array(
+			'distcode' 	=> ($this -> input -> post('distcode'))?$this -> input -> post('distcode'):'1',
+			'tcode' 	=> ($this -> input -> post('tcode'))?$this -> input -> post('tcode'):'1',
+			'uncode' 	=> ($this -> input -> post('uncode'))?$this -> input -> post('uncode'):'1',
+			'facode' 	=> ($this -> input -> post('facode'))?$this -> input -> post('facode'):'1'
+			); */
 			/** For Edit report code Start here ***/
 			$edit = $this -> input -> post('edit');
 			$allproducts = $this->input->post("product");
 			unset($allproducts["vaccinated"]);//remove vaccinated
 			if($edit=="edit")
 			{
+				$reported_facode = $this -> input -> post('reported_facode');
+				//$codeAuthentic = facilityAuthentication($WCdata);
+				/* if($checkcodes !=TRUE){
+					$this -> session -> set_flashdata('message','Please Select Respective and Authentic Facility!');
+					redirect('/vaccination/edit/'.$fmonth."/".$reported_facode);exit;
+				} */
 				$res=freezeReport('epi_consumption_master',$facode,$fmonth,NUll,TRUE);
 				if($res==1){
 					$this->session->set_flashdata('message',"Report Freezed You cannot Update it Now.");
@@ -187,6 +193,11 @@ class CRUD extends CI_Controller {
 				redirect( base_url().'vaccination');
 			}
 			/** For Edit report code  END here ***/
+			/* $codeAuthentic = facilityAuthentication($WCdata);
+			if($checkcodes !=TRUE){
+				$this -> session -> set_flashdata('message','Please Select Respective and Authentic Facility!');
+				redirect('/vaccination/add/');exit;
+			} */
 			$this->db->trans_start();
 			//first call vaccination save function to save data in fac_mvrf_db table
 			$this->fac_mvrf_save();
@@ -331,10 +342,10 @@ class CRUD extends CI_Controller {
 			$this->common->insert_record("monthly_outuc_coverage",$datatosave);					
 			//}
 			$data = $this -> crud -> total_get_monthly_outuc_coverage($facode,$fmonth,$distcode,$item_id,$antigen);
-			echo json_encode($data); 
-			$this->db->trans_complete();			
+			echo json_encode($data);
+			$this->db->trans_complete();
 		}
-	}		
+	}			
 	public function itemslist(){
 		$activity = ($this->input->post("activity"))?$this->input->post("activity"):"routine";
 		$fmonth = ($this->input->post("fmonth"))?$this->input->post("fmonth"):NULL;
@@ -346,8 +357,6 @@ class CRUD extends CI_Controller {
 		$fmonthparts = explode("-",$prevfmonth);
 		$prevyear = $fmonthparts[0];
 		$existingitems = $this-> crud -> get_existing_items($whcode,$prevfmonth);
-		//$str = $this->db->last_query();
-		//print_r($str); exit;
 		//edit
 		if($edit=="1"){
 			$ucvaccdata=$this-> common -> get_info("fac_mvrf_db",NULL,NULL,NULL,array("fmonth"=>$fmonth,"facode"=>$whcode));
@@ -473,7 +482,7 @@ class CRUD extends CI_Controller {
 		//dataEntryValidator(0);
 		if($this -> input -> post('distcode') && $this -> input -> post('tcode') && $this -> input -> post('uncode') &&  $this -> input -> post('facode')){
 			//$data = $this -> getPostedData();
-			$prodmapp = array("2"=>array(1),"20"=>array(2),"15"=>array(3,4,5,6),"19"=>array(14,15),"17"=>array(13,21),"4"=>array(10,11,12),"3"=>array(7,8,9),"5"=>array(16,18),"6"=>array(1,2,3,4,5),"9999"=>array(17),"9998"=>array(19),"29"=>array(20));//columns name inside array, 9999 for fully immunized
+			$prodmapp = array("2"=>array(1),"20"=>array(2),"15"=>array(3,4,5,6),"19"=>array(14,15),"17"=>array(13,21),"4"=>array(10,11,12),"3"=>array(7,8,9),"5"=>array(16,18),"6"=>array(1,2,3,4,5),"9999"=>array(17),"9998"=>array(19),"36"=>array(20));//columns name inside array
 			$distcode = $this -> session -> District;
 			$procode  = $this -> session -> Province;
 			$facode   = $this -> input -> post('facode');
@@ -579,7 +588,7 @@ class CRUD extends CI_Controller {
 							$iu_data["cri_r29_f".$colnum] = $this->getValueOrZero($onerow["iutd2"]);
 							$iu_data["cri_r30_f".$colnum] = $this->getValueOrZero($onerow["iudc2"]);
 							$iu_data["cri_r31_f".$colnum] = $this->getValueOrZero($onerow["iutd3"]);
-							$iu_data["cri_r32_f".$colnum] = $this->getValueOrZero($onerow["iudc3"]);
+							$iu_data["cri_r32_f".$colnum] = $this->getValueOrZero($onerow["iudc3"]);						
 							
 							$ou_data["oui_r1_f".$colnum] = $this->getValueOrZero($onerow["oufm1"]);
 							$ou_data["oui_r2_f".$colnum] = $this->getValueOrZero($onerow["ouff1"]);
@@ -691,7 +700,6 @@ class CRUD extends CI_Controller {
 					else{
 						$cri_data['submitted_date'] = date('Y-m-d');						
 						$inserted_id = $this -> Common_model -> insert_record('fac_mvrf_db',$cri_data);
-						
 						//update allvaccinationsum
 						$this->crud->update_all_vaccinations($fmonth,$facode);
 					}
@@ -758,7 +766,7 @@ class CRUD extends CI_Controller {
 		$vaccinated[9999] = 1;
 		$vaccinated[9998] = 2;
 		//print_r($vaccinated);exit;
-		$prodmapp = array("2"=>array(1),"20"=>array(2),"15"=>array(3,4,5,6),"19"=>array(14,15),"17"=>array(13,21),"4"=>array(10,11,12),"3"=>array(7,8,9),"5"=>array(16,18),"6"=>array(1,2,3,4,5),"9999"=>array(17),"9998"=>array(19),"29"=>array(20));//columns name inside array
+		$prodmapp = array("2"=>array(1),"20"=>array(2),"15"=>array(3,4,5,6),"19"=>array(14,15),"17"=>array(13,21),"4"=>array(10,11,12),"3"=>array(7,8,9),"5"=>array(16,18),"6"=>array(1,2,3,4,5),"9999"=>array(17),"9998"=>array(19),"36"=>array(20));//columns name inside array
 		foreach($vaccinated as $key=>$oneprod){
 			for($ind = 0; $ind < $oneprod; $ind++){
 				$onerow = array();
@@ -1033,7 +1041,7 @@ class CRUD extends CI_Controller {
 		$uncode = $this -> input-> post('uncode');
 		$data = $this -> crud -> view_monthly_outuc_coverage($facode,$fmonth,$countrycode,$uncode);
 		echo json_encode($data); 
-	} 
+	}  
 	public function getDataShareUcList() { 
 		$facode = $this -> input-> post('facode');
 		$fmonth = $this -> input-> post('fmonth');
@@ -1043,11 +1051,12 @@ class CRUD extends CI_Controller {
 			$distcode=CrossProvince_DistrictName($val["distcode"],true);
 			$tcode=CrossProvince_TehsilName($val["tcode"],true);
 			$uncode=CrossProvince_UCName($val["uncode"],true);
-			$dstblrow .= '<tr data-countrycode='.$val["countrycode"].' data-uncode='.$val["uncode"].'><td>'.$val["countryname"].'</td><td>'.$val["provincename"].'</td><td>'.$distcode.'</td><td>'.$tcode.'</td><td>'.$uncode.'</td><td><a id="#edit_outucdata" href="#" data-toggle="modal" data-target="#DataSharingModal" data-toggle="tooltip" title="" class="btn btn-xs btn-default edit_outucdata" data-original-title="Edit"><i class="fa fa-pencil"></i></a><a data-toggle="tooltip" title="Delete" onclick="return confirm(Are you sure you want to delete?)"  class="btn btn-xs btn-default delete_outucdata" data-original-title="Delete"><i class="fa fa-close"></i></a></td></tr>';
+			$dstblrow .= '<tr data-countrycode='.$val["countrycode"].' data-uncode='.$val["uncode"].'><td>'.$val["countryname"].'</td><td>'.$val["provincename"].'</td><td>'.$distcode.'</td><td>'.$tcode.'</td><td>'.$uncode.'</td><td><a id="#edit_outucdata" href="#" data-toggle="modal" data-target="#DataSharingModal" data-toggle="tooltip" title="" class="btn btn-xs btn-default edit_outucdata" data-original-title="Edit"><i class="fa fa-pencil"></i></a></td></tr>';
 		}
-		echo $dstblrow; 
+		echo $dstblrow;
 	} 
 	public function getDataShareUcList_view() { 
+
 		$facode = $this -> input-> post('facode');
 		$fmonth = $this -> input-> post('fmonth');
 		$data = $this -> crud -> getDataShareUcList($facode,$fmonth);

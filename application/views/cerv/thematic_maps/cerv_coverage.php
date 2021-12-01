@@ -1,30 +1,4 @@
 <?php
- // $month = (isset($data['yearmonth_from']))?$data['yearmonth_to']:'';
-  //$year = (isset($data['year']))?$data['year']:'';
-  //$fmonth = $year.'-'.$month;
-  
-  
-	/* 	$fmonthfrom = $data['yearmonth_from'];
-		$monthfromarr = explode('-',$fmonthfrom);
-		$monthfrom = $monthfromarr[1];
-		$yearfrom = $monthfromarr[0];
-		
-		$fmonthto = $data['yearmonth_to'];
-		$monthtoarr = explode('-',$fmonthto);
-		$monthto = $monthtoarr[1];
-		$yearto = $monthtoarr[0];
-		
-		
-		$month = $yearfrom.'-'.$monthfrom;
-		$month = $yearto.'-'.$monthto;
-  
-  
-  
-  echo '<pre>'; print_r($data);exit;
-   */
-		
-  
-  
 	$dataId = 0;
 	if(isset($data['id'])){
 		$dataId = $data['id'];
@@ -108,7 +82,6 @@
 				*	This will load filter form based on 
 				*	name provided to filters array.
 				*/
-				//$filterRow['yearmonth_from']= $month;
 				$filters['filter'] = 'Coverage';
 				$filters['dropout'] = false;
 				$this->load->view('cerv/thematic_maps/parts_view/filters',$filters); ?>
@@ -117,7 +90,7 @@
 	<div class="container-fluid">
 		<span class="tooglebtnfilter"  onclick="openNavR()"><img src="<?php echo base_url();?>includes/images1/filericon.png"></span>
 	</div>
-</div> 
+</div>
   <!--filter bar-->
 <?php 
 	if(!isset($_REQUEST['export_excel'])){
@@ -180,17 +153,8 @@
 			$('#biyear').removeAttr('required','required');
 		}else{}
 	});
-	/* $(document).ready(function(){
+	$(document).ready(function(){
 		$('.crdview_grphwrp').css('cursor','pointer');
 		$('#reportType').trigger('click');
 	});
-		function eventHandler(e, run, fmonth){
-		var dataId = e.point.id;
-		var fmonthfrom = '<?php echo (isset($fmonthfrom))?$fmonthfrom:''; ?>';
-		var fmonthto = '<?php echo (isset($fmonthto))?$fmonthto:''; ?>';
-		if(run){
-        	var url = '<?php echo base_url(); ?>Cerv/thematic_maps/CervCoverage/'+dataId+'/'+fmonthfrom+'/'+fmonthto;
-        	window.open(url, '_blank');
-		}
-	} */
 </script>

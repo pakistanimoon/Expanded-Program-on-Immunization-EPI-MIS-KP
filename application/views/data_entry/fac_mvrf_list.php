@@ -55,7 +55,7 @@
 					<label class="col-xs-1 control-label lbl-setting"  for = "facode" >Technicians:</label>
 						<div class="col-xs-2">
 							<select id="vacc_name" name="vacc_name" class="filter-status  form-control">
-								<!-- <option value="0"></option> -->
+								<option value="0"></option>
 								<?php
 								foreach($resultveccname as $row){?>
 									<option value="<?php echo $row['vacc_name'];?>" ><?php echo $row['vacc_name'];?></option><?php

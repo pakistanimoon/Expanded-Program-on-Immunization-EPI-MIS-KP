@@ -1,6 +1,6 @@
 <?php
-//local
 class Cerv_model extends CI_Model {
+	
 	public function __construct() {
 		parent::__construct();
 	}
@@ -179,6 +179,7 @@ class Cerv_model extends CI_Model {
 				GROUP BY uncode 
 				ORDER BY uncode) as a
 		";
+		//echo $query; exit;
 		return $this -> db -> query($query) -> result_array();
 	}
 	
@@ -209,6 +210,7 @@ class Cerv_model extends CI_Model {
 				GROUP BY uncode 
 				ORDER BY uncode
 		";
+		//echo $query; exit;
 		return $this -> db -> query($query) -> result_array();
 	}
 	
@@ -235,6 +237,7 @@ class Cerv_model extends CI_Model {
 							(measles1 IS NULL AND measles2 IS NULL AND '{$date}'::date >= dateofbirth + interval '1 month'*9 + interval '1' day) OR
 							(measles1 IS NOT NULL AND measles2 IS NULL AND '{$date}'::date >= measles1 + interval '30' day AND '{$date}'::date >= dateofbirth + interval '1 year' + interval '1 month'*3 + interval '1' day))
 		";
+		//echo $query; exit;
 		return $this -> db -> query($query) -> result_array();
 	}
 	
@@ -253,9 +256,9 @@ class Cerv_model extends CI_Model {
 		/* $query .= "
 			techniciancode,technicianname(techniciancode) as technician,unname(uncode) as uc FROM techniciandb tech where distcode in ('701','702') and techniciancode in ('701049001','702003001','702004001','702009003','702009004','702010001','702013001','702013002') and status='Active' order by techniciancode asc
 		"; */
-		/* $query .= "
+	/* 	$query .= "
 			techniciancode,technicianname(techniciancode) as technician,unname(uncode) as uc FROM techniciandb tech where distcode in ('{$distcode}') and techniciancode like ('{$distcode}%') and status='Active' order by techniciancode asc
-		"; */
+	   "; */
 		
 		$query .= "
 			techniciancode, name as technician, uc from (SELECT DISTINCT ON (code) code as techniciancode,name,unname(post_uncode) as uc,post_distcode,post_hr_sub_type_id,post_status FROM hr_db_history ORDER BY code DESC, id DESC) as tech where post_distcode in ('{$distcode}') and post_hr_sub_type_id='01' and post_status='Active'

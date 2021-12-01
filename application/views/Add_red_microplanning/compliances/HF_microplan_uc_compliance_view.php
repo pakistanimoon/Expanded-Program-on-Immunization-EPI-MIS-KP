@@ -64,6 +64,7 @@
 		}); 
 </script>
 <script type="text/javascript">
+
 	$(document).ready(function(){
 		//$("#fixTable").tableHeadFixer({"left" : 1});
 		$('.DrillDownRow').css('cursor','pointer');

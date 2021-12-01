@@ -27,8 +27,8 @@
 				break;
 			case '4' :
 				$UserLevel = 4;
-				if (isset($_SESSION['Province']) && isset($_SESSION['District']) && isset($_SESSION['tcode'])) {
-					$wc .= "distcode = '" . $_SESSION['District'] . "'AND tcode = '" . $_SESSION['tcode'] . "'  ";
+				if (isset($_SESSION['Province']) && isset($_SESSION['District']) && isset($_SESSION['facode'])) {
+					$wc .= "distcode = '" . $_SESSION['District'] . "'AND facode = '" . $_SESSION['facode'] . "'  ";
 				}
 				break;
 		}
@@ -68,7 +68,8 @@
 		}
 		return $data;	
 	}
-	public function hf_quarterplan_view($facode,$year,$quarter,$techniciancode){		
+	
+	public function hf_quarterplan_view($facode,$year,$quarter,$techniciancode){	
 		$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from hf_quarterplan_db where facode='$facode' and year='$year' and quarter='$quarter' and techniciancode='$techniciancode'";
 		$result = $this-> db-> query($query);	
 		$data['data'] = $result-> result_array();
@@ -82,6 +83,8 @@
 		    $data[$key]['datat3'] = $result-> result_array(); 
 		 
 		}
+		//print_r($data);exit;
+		
 		return $data;	
 	}	
 }

@@ -208,7 +208,7 @@
    								</td> -->
    							</tr>
 							<!-- <tr>
-								<td><label class="pt7">EPI Week No <span style="color:red;">*</span></label></td>
+								<td><label class="pt7">Epid Week No <span style="color:red;">*</span></label></td>
 								<td>
 									<select class="form-control" required name="week" id="week">
 										<?php if(isset($afp_Result)){ ?>
@@ -243,7 +243,7 @@
                      <?php echo $years; } ?>
                      </select>
                   </td>
-                  <td><label class="pt7">EPI Week No <span style="color:red;">*</span></label></td>
+                  <td><label class="pt7">Epid Week No <span style="color:red;">*</span></label></td>
                   <td>
                      <select class="form-control" required name="week" id="week">
                         <?php if(isset($afp_Result)){ ?>

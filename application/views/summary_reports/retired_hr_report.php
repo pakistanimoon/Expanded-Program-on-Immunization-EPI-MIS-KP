@@ -43,8 +43,7 @@
 			url =  "<?php echo base_url();?>Computer-Operator/View/"+code;
 		}
 		if(code.toString().length > 3 && hr_type == 'med_technician'){
-			//url =  "<?php echo base_url();?>Medical-Technician/View/"+code;
-			url =  "<?php echo base_url();?>HF-Incharge/View/"+code;
+			url =  "<?php echo base_url();?>Medical-Technician/View/"+code;
 		}
 		if(code.toString().length > 3 && hr_type == 'technician'){
 			url =  "<?php echo base_url();?>Technician/View/"+code;

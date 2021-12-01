@@ -1,5 +1,3 @@
-<?php $utype=$_SESSION["UserType"]; 
-?>
 <div class="panel-body">
 					<form method="post" id="filter-form">
 						<div class="row" style="width:100%; padding:4px 17px">
@@ -52,25 +50,42 @@ td{
 		<table id="fixTable" class="table table-bordered table-hover table-striped">
 			<thead>
 				<tr>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Serial No.</th>
+				<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Serial No.</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Card No.</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Name</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Husband Name</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">UnionCouncil</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3" id="village1" class="vl">Complete Address</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3" id="cnt1" class="cn">Contact</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Age in Years</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" colspan="17" style="text-align:center">Date of Vaccination</th>
+
 				</tr>
+
 				<tr >
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" colspan="5">TT</th>
+
 				</tr>
 				<tr>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black">1</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black">2</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black">3</th>
+
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black">4</th>
+
                     <th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black">5</th>
+
 				</tr>
 			</thead>
 			<tbody>
@@ -78,24 +93,45 @@ td{
 			//echo "abcd"; print_r($defaulters); exit;
 			$startpoint = isset($startpoint)?$startpoint:0;
 			foreach($PVRresult as $key => $val){ ?>
+
 				<tr class="DrillDownRow" style="cursor: pointer;">
+
 				    <!--<input type="hidden" name="child_registration_no" value="<?php echo $val['mother_registration_no']; ?>" />-->
+																					  
+
 				   <td style='text-align:center; border: 1px solid black' class='text-center'>
+
 						<!--<?php echo $key+1; ?>-->
+
 						<?php echo ++$startpoint; ?>
+
 						<input type="hidden" name="child_registration_no" value="<?php echo $val['mother_registration_no']; ?>" />
+
 					</td>
+
 					<td style='text-align:center; border: 1px solid black' class='text-center'><?php echo $val['mothercode']; ?></td>
+
 					<td style='text-align:center; border: 1px solid black' class='text-center'><?php echo $val['mother_name']; ?></td>
+
 					<td style='text-align:center; border: 1px solid black' class='text-center'><?php echo $val['husband_name']; ?></td>
+
 					<td style='text-align:center; border: 1px solid black' class='text-center'><?php echo $val['unioncouncil']; ?></td>
+
 					<td style='text-align:center; border: 1px solid black' class='text-center v1'><?php echo $val['village']; ?></td>
+
 					<td style='text-align:center; border: 1px solid black' class='text-center cn'><?php echo $val['contactno']; ?></td>
+
                     <td style='text-align:center; border: 1px solid black' class='text-center'><?php echo $val['mother_age']; ?></td>
+
 					<?php $date = date('Y-m-d'); if(isset($defaulters) && $defaulters == 1){ ?>
 
+
+
 					<!-- tt1 -->
-					<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:					
+
+					<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:
+					
+
 					<?php 
 					if ($val['tt1'] != NULL)
 						echo 'green';
@@ -117,6 +153,7 @@ td{
 
 					<!-- tt2 -->
 					<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:
+
 					<?php 
 					$doseResult = dueDoses_women('tt2',$val['tt1']);
 					if ($val['tt2'] != NULL && $doseResult <= date('Y-m-d', strtotime($val['tt1']. ' + 30 days')))
@@ -139,6 +176,7 @@ td{
 
 					<!-- tt3 -->
 					<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:
+
 					<?php 
 					$doseResult = dueDoses_women('tt3',$val['tt2']);
 					if ($val['tt3'] != NULL && $doseResult <= date('Y-m-d', strtotime($val['tt2']. ' + 6 month')))
@@ -160,7 +198,8 @@ td{
 					?></td>
 
 					<!-- tt4 -->
-					<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:
+						<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:
+
 					<?php 
 					$doseResult = dueDoses_women('tt4',$val['tt3']);
 					if ($val['tt4'] != NULL && $doseResult <= date('Y-m-d', strtotime($val['tt3']. ' + 1 year')))
@@ -183,6 +222,7 @@ td{
 					
 					<!-- tt5 -->
 					<td class='text-center' style="text-align:center;white-space:nowrap;color:#FFF;background-color:
+
 					<?php 
 					$doseResult = dueDoses_women('tt5',$val['tt4']);
 					if ($val['tt5'] != NULL && $doseResult <= date('Y-m-d', strtotime($val['tt4']. ' + 1 year')))
@@ -205,10 +245,15 @@ td{
 
 					<?php }else{ ?>
 					<td class='text-center' style='text-align:center; border: 1px solid black';<?php $date = date('Y-m-d'); echo (isset($val['tt1']) && $val['tt1'] != NULL && $val['tt1'] > date('Y-m-d', strtotime($date)))?'color:#FFF;background-color:red':''; ?>"><?php echo (isset($val['tt1']) && $val['tt1'] != NULL)?date("M d, Y", strtotime($val['tt1'])):''; ?></td>
+
 					<td class='text-center' style='text-align:center; border: 1px solid black';<?php $date = date('Y-m-d'); echo (isset($val['tt2']) && $val['tt2'] != NULL && ($val['tt2'] < date('Y-m-d', strtotime($val['tt1']. ' + 30 days')) || $val['tt2'] > date('Y-m-d', strtotime($date))))?'color:#FFF;background-color:red':''; ?>"><?php echo (isset($val['tt2']) && $val['tt2'] != NULL && $val['tt2'])?date("M d, Y", strtotime($val['tt2'])):''; ?></td>
+
                     <td class='text-center' style='text-align:center; border: 1px solid black';<?php $date = date('Y-m-d'); echo (isset($val['tt3']) && $val['tt3'] != NULL && ($val['tt3'] < date('Y-m-d', strtotime($val['tt2']. ' + 6 month')) || $val['tt3'] > date('Y-m-d', strtotime($date))))?'color:#FFF;background-color:red':''; ?>"><?php echo (isset($val['tt3']) && $val['tt3'] != NULL)?date("M d, Y", strtotime($val['tt3'])):''; ?></td>
+
                     <td class='text-center' style='text-align:center; border: 1px solid black';<?php $date = date('Y-m-d'); echo (isset($val['tt4']) && $val['tt4'] != NULL && ($val['tt4'] < date('Y-m-d', strtotime($val['tt3']. ' + 1 year')) || $val['tt4'] > date('Y-m-d', strtotime($date))))?'color:#FFF;background-color:red':''; ?>"><?php echo (isset($val['tt4']) && $val['tt4'] != NULL)?date("M d, Y", strtotime($val['tt4'])):''; ?></td>
+
                     <td class='text-center' style='text-align:center; border: 1px solid black';<?php $date = date('Y-m-d'); echo (isset($val['tt5']) && $val['tt5'] != NULL && ($val['tt5'] < date('Y-m-d', strtotime($val['tt4']. ' + 1 year')) || $val['tt5'] > date('Y-m-d', strtotime($date))))?'color:#FFF;background-color:red':''; ?>"><?php echo (isset($val['tt5']) && $val['tt5'] != NULL)?date("M d, Y", strtotime($val['tt5'])):''; ?></td>
+
 					<?php } ?>
 				</tr>
 			<?php } ?>
@@ -233,19 +278,7 @@ td{
 	$(document).ready(function(){
 		$("#fixTable").tableHeadFixer({"left" : 3});
 	});
-	<?php if($utype=="Manager") {?>
-			$(document).ready(function(){
-				var className = $('#village1').attr('class');
-				$('.'+className).hide();
 
-				var className2 = $('#cnt1').attr('class');
-				$('.'+className2).hide();
-				// $('#village1').hide();
-				// $('#village').hide();
-				// $('#cnt').hide();
-				// $('#cnt1').hide();					
-			});
-	<?php } ?>
 <?php  if(!$this->input->post('export_excel')){ ?>
 
   $('.DrillDownRow').css('cursor','pointer');

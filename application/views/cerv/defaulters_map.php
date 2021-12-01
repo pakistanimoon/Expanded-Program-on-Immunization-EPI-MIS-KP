@@ -26,7 +26,8 @@
 				};
 				
 	//var src = 'http://epiict.pacemis.com/Cerv/Dashboard/kml_generator/'+'<?php echo $uncode; ?>';
-	var src = 'http://epikp.pacemis.com/Cerv/Dashboard/kml_generator/'+'<?php echo $uncode; ?>';
+	//var src = 'http://epikp.pacemis.com/Cerv/Dashboard/kml_generator/'+'<?php echo $uncode; ?>';
+	var src = 'http://epimis.cres.pk//Cerv/Dashboard/kml_generator/'+'<?php echo $uncode; ?>';
 
 function initMap() {
 		map = new google.maps.Map(document.getElementById('defaulters-map'), {
@@ -61,7 +62,7 @@ function initMap() {
 							<tr>
 								<td><?php echo $skey+1; ?></td>
 								<td>
-									<img style="height: 40px; border-radius: 2px;" src="<?php echo (file_exists("./webapis/cerv/assets/childs/{$child['child_registration_no']}.jpg"))?'http://islamabad.epimis.pk/webapis/cerv/assets/childs/'.$child['child_registration_no'].'.jpg':'http://epiict.pacemis.com/webapis/cerv/assets/childs/default.png'; ?>">
+									<img style="height: 40px; border-radius: 2px;" src="<?php echo (file_exists("./webapis/cerv/assets/childs/{$child['child_registration_no']}.jpg"))?'http://cerv.nhsrc.pk/webapis/cerv/assets/childs/'.$child['child_registration_no'].'.jpg':'http://cerv.nhsrc.pk/webapis/cerv/assets/childs/default.png'; ?>">
 								</td>
 								<td><?php echo $child['nameofchild']; ?></td>
 								<td><?php echo $child['fathername']; ?></td>
@@ -117,4 +118,4 @@ function initMap() {
 		});
 }
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuUJa9F40swmKWlO5Y2rCAn7eW1A3-vqA&callback=initMap&libraries=places"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeFNhAVwp0q8R7N6J9H-hRLxrUdaNov-I&callback=initMap&libraries=places"></script>

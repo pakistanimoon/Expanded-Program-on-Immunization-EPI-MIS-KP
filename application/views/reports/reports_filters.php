@@ -1,7 +1,6 @@
 <br>
-<?php 
-	echo $listing_filters; 
-	$currentYear = date('Y');
+<?php echo $listing_filters; 
+$currentYear = date('Y');
 ?>
 <script type="text/javascript" src="<?php echo base_url(); ?>/includes/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript">
@@ -62,7 +61,7 @@
 		});
 		////////END/////////
 		
-		////////For data entry date filter show and hide/////////
+////////For data entry date filter show and hide/////////
 		var reportType = $("#reporttype").closest('.row').show();
 	    $("#filter-form").prepend(reportType);
 		$(document).on('change','#reporttype',function(){
@@ -79,11 +78,11 @@
 				$('#datefrom').val('');
 			}
 		});
-		////////END///////// 
+////////END/////////
         <?php if($this -> session -> UserLevel==4){ ?>
-		    var tcode= <?php echo $this->session->Tehsil; ?>;
-			$('#tcode').val(tcode);
-			$('#tcode').trigger("change");
+	    var tcode= <?php echo $this->session->Tehsil; ?>;
+		$('#tcode').val(tcode);
+		$('#tcode').trigger("change");
 		<?php } ?>
 		if((isExists('monthto') && isExists('monthfrom'))){
 			$('#pre-btn').prop('disabled', true);
@@ -116,7 +115,7 @@
 		$("#case_type option[value='AWD/Chol>5']").remove();
 		$("#case_type option[value='B Diar']").remove();
 		$("#case_type option[value='HepB<5']").remove();
-
+		
 		if($('input[name=report_type]:checked').val() == "yearly"){
 			$('#month').val('');
 			$('#month').removeAttr('required','required');
@@ -169,6 +168,8 @@
 			$('#coverage_dist').attr('disabled','disabled');
 			$('#coverage_pro').removeAttr('disabled','disabled');
 		}
+		
+
 	});
 	$("#distcode").click(function(){
 		var distcode = $("#distcode").val();
@@ -197,7 +198,8 @@
 			$('#acces_type').hide();
 			$('#coverage_pro option[value="in_district"]').prop('selected', true);
 			//$('#coverage_pro option[value="total_districts"]').prop('selected', true);
-		}		
+		}
+		
 	});
 	$(document).on('click','#report_type',function(){
 		if($(this).val() == "yearly"){
@@ -272,16 +274,6 @@
 		var fromDate = new Date(selected.date.valueOf());
 		$('#monthto').datepicker('setStartDate', fromDate);
 	});
-	// if((isExists('monthto') && isExists('monthfrom'))){
-	// 	$('#pre-btn').prop('disabled', true);
-	// 	$(document).on('change','.dp-my',function(){
-	// 		if(($('#end_month').val() !="" && $('#start_month').val() !="")){
-	// 			$('#pre-btn').prop('disabled', false);
-	// 		}else{
-	// 			$('#pre-btn').prop('disabled', true);
-	// 		}
-	// 	});
-	// }
 	/* $(document).on('change','#week',function(){
 		var week = $(this).val();
 		var year = $('#year').val();
@@ -329,7 +321,7 @@
 			}
 		});		
 	});
-	
+		
 	$(document).on('change','#year',function(){
 		var year = $(this).val();
 		$.ajax({
@@ -370,7 +362,7 @@
 				//$('#to_week').val(obj.EndDate);
 			}
 		});
-	}); 
+	});
 	$(document).on('change','#to_week',function(){
 		var to_week = $(this).val();
 		var year = $('#year').val();
@@ -399,50 +391,4 @@
 			});
 		}
 	});
-
- 	//------------------- Compliance ---------------------//
-	year = $('#compliance_year').val();		
-	var year = this.value;
-	var curryear = (new Date).getFullYear();
-	if(year < curryear){
-		$data1 = "month=13";
-	}
-	else{
-		$data1 = "";
-	}
-	$.ajax({
-		type: "POST",
-		data: $data1,
-		url: '<?php echo base_url(); ?>Ajax_calls/getReportingMonths',
-		success: function(result){
-			$('#start_month').html(result);
-			$('#end_month').html(result);
-			$("#start_month").val($("#start_month option:first").val());
-			$("#end_month").val($("#end_month option:last").val());
-		}
-	});
-	
-	$(document).on('change','#compliance_year', function(){		
-		var year = this.value;
-		var curryear = (new Date).getFullYear();
-		if(year < curryear)
-		{
-			$data1 = "month=13";
-		}
-		else{
-			$data1 = "";
-		}
-		$.ajax({
-			type: "POST",
-			data: $data1,
-			url: '<?php echo base_url(); ?>Ajax_calls/getReportingMonths',
-			success: function(result){
-				$('#start_month').html(result);
-				$('#end_month').html(result);
-				$("#start_month").val($("#start_month option:first").val());
-				$("#end_month").val($("#end_month option:last").val());
-			}
-		});
-	});
-
 </script>

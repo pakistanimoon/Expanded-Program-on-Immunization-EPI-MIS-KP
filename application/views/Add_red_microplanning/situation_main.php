@@ -1,5 +1,5 @@
 <?php 
-
+//live
 	date_default_timezone_set('Asia/Karachi'); // CDT
 	$current_date = date('Y-m-d');
 	//print_r($data);exit;
@@ -51,7 +51,7 @@ $(document).ready(function() {
 	$('#a').on('click', function () {
 	var techniciancode = $('#techniciancodeh').val();
 	var year = $('#yearh').val();
-	
+	//var filter_view=$('#filterh').val();
 	if (techniciancode > 0)
 		{
 		$('#ticode').prop("disabled", true); 
@@ -59,6 +59,7 @@ $(document).ready(function() {
 		$('#faicode').prop("disabled", true); 
 		$('#technician').prop("disabled", true); 
 		$('#year').prop("disabled", true); 
+		
 		$('#myBtn').show(); 
 		}else{
 		$('#ticode').attr("disabled", false); 
@@ -72,6 +73,7 @@ $(document).ready(function() {
             $("ul li:last-child").find('a').attr("data-toggle","tab");	 */	 
 		$.ajax({
 			url: "<?php echo base_url(); ?>Ajax_red_rec/situation_analysis_add/"+techniciancode+"/"+year,  
+			 
 			success: function(result){
 				$('#1a').html(result);				
 			}
@@ -233,6 +235,7 @@ $(document).ready(function() {
 						<form>
 						<div class="row" style="width:100%; padding:4px 17px">
 							<input type="hidden" name="submitted_date" id="submitted_date" value="<?php echo $current_date; ?>" class="form-control">					
+							
 							<div class="col-md-2 col-md-offset-1">
 								<label>Tehsil: <span style="color:red;">*</span></label>
 							</div>
@@ -539,12 +542,14 @@ $(document).ready(function() {
 		}		
 	});
 	$(document).on('change', '#technician', function(){
-		 var faicode = this.value;
+		 var faicode = $("#faicode").val();
+		 //alert(faicode);
 		 var techniciancode = this.value;
+		 //alert(techniciancode);
 		 var selectedyear = $("#year").find("option:selected").val();
 		 $.ajax({
 				type: 'post',
-				data: {"techniciancode":techniciancode,"selectedyear":selectedyear,"faicode":faicode},
+				data: {"faicode":faicode,"techniciancode":techniciancode,"selectedyear":selectedyear},
 				url: "<?php echo base_url(); ?>Ajax_red_rec/checkTechnician_avalible",
 				success: function (data) {
 					 var check = JSON.parse(data);
@@ -559,11 +564,12 @@ $(document).ready(function() {
 	});
 	$(document).on('change', '#year', function(){
 		 var year = this.value;
+		 var faicode = $('#faicode :selected').val();
 		 var techniciancode = $('#technician :selected').val();
 		 
 		 $.ajax({
 				type: 'post',
-				data: "techniciancode="+techniciancode+"&year="+year,
+				data: "techniciancode="+techniciancode+"&faicode"+faicode+"&year="+year,
 				url: "<?php echo base_url(); ?>Ajax_red_rec/checkTechnician_avalible",
 				success: function (data) {
 					 var check = JSON.parse(data);
@@ -577,7 +583,7 @@ $(document).ready(function() {
 				}
 		}); 
 	});
-	$(document).on('change', '#year', function(){				  
+	$(document).on('change', '#year', function(){
 		$("#technician").trigger("change");
 	});
   $(document).on('keyup','#population', function(){
@@ -616,7 +622,7 @@ var span = document.getElementsByClassName("closex")[0];
 	
 	$('#myModal').removeClass('hide');
 	$('.x').val('');
-	//$('#myModal').trigger(':reset');
+	$('#myModal').trigger(':reset');
     modal.style.display = "block";
 } */
 

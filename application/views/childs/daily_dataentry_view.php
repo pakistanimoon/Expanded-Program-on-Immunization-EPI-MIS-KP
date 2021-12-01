@@ -13,16 +13,23 @@
 		}
 
 //print_r($data['childDataview'][1]['techniciancode']);exit;
-//ECHO "<PRE>";  print_r($data);exit;
-//print_r($Monthlentry); exit();
+
 	 ?>
-	<div id="parent" style="overflow:auto">                
+	 <div class="row">
+    	   	   	  <div class="col-xs-1" style="margin-top:-14px; margin-left: 37%;">
+    	   	   		<h4 style="font-size: 14px;">Date:</h4>
+    	   	   	  </div>
+    	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
+    	   	   		<h5><?php echo $date ?></h5>
+    	   	   	  </div>
+	</div>
+	<div id="parent" style="overflow:auto">
 		<table id="fixTable"  class="table table-bordered table-hover table-striped">
 			<thead>
 				<tr>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="2">Un Code</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="2">Uc Name</th>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="2">Submit on </th>
+					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="2">submit on <?php echo $date ?></th>
 				</tr>	
 			</thead>
 			<tbody id="tbody">  
@@ -38,8 +45,8 @@
 								$unname = $val['unname'];
 								echo $unname; 
 								echo "<td style='text-align:center; border: 1px solid black;' class='text-center DrillDownRow'>";
-								$submitteddate = $val['submitteddate'];
-								echo $submitteddate;
+								$count = $val['count'];
+								echo $count;
 						}
 							echo "</tr>";
 					}

@@ -62,7 +62,6 @@
 		$(document).on('click','.clickedReport', function(){
 			var code = $(this).data('value');
 			var case_type = '<?php echo $data['case_type']; ?>';
-		
 			<?php if(isset($data['year'])) { ?>
 				var year='<?php echo $data['year']; ?>';
 			<?php }else{ ?>

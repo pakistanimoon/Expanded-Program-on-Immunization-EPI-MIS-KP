@@ -58,10 +58,10 @@ class Provincial extends CI_Controller
 			$data[$i] = array(
 					"label"	=> $value['name'],
 					"value"	=> (int)$value['stock'],
-			);
+				);
 				$i++;
 		}
-   echo  json_encode($data);
+		echo  json_encode($data);
 	}
 		public function get_stock_in_hand()
 	{
@@ -102,7 +102,7 @@ class Provincial extends CI_Controller
 		}
 			
 		$viewData['data'] =$data;
-	if($result=='true'){
+		if($result=='true'){
 		$viewData['fileToLoad'] = 'dashboard/provincial_stock';
 		$viewData['pageTitle']='EPI-MIS Dashboard | Inventory Stock ';
 		//send response to client.
@@ -131,7 +131,7 @@ class Provincial extends CI_Controller
 			$data[$i] = array(
 					"label"	=> $value['name'],
 					"value"	=> (int)$value['stock']
-				);
+					);
 				$i++;
 		}
 		//exit;
@@ -154,7 +154,7 @@ class Provincial extends CI_Controller
 			$data[$i] = array(
 					"label"	=> $value['name'],
 					"value"	=> (int)$value['stock']
-			);
+				);
 				$i++;
 		}
 		
@@ -200,12 +200,9 @@ class Provincial extends CI_Controller
 		foreach($tehsils as $key=>$value)
 		{
 			
-											  
 			$data[$i] = array(
 					"label"	=> $value['name'],
 					"value"	=> (int)$value['stock']
-																																				 
-  
 				);
 				$i++;
 		}
@@ -230,15 +227,16 @@ class Provincial extends CI_Controller
 		}
 		$data['data']=$items;
 		echo json_encode($data);
-}
+
+	}
 	/*For HF stock out rate at province level */
 		public function get_str_stock_out_data()
 	{
         $whtype = ($this -> input -> post('level'))?$this -> input -> post('level'):'2';
         $itemCategory = $this->getItemCategoryId(($this -> input -> post('typeofitems'))?$this -> input -> post('typeofitems'):'1');
 		$reportingmonth = date('Y-m', strtotime('-1 month', time()));
-		$items = $this->rcvr_mdl->get_vacc_stock_out_data($reportingmonth,$itemCategory);
-	   $data[] ="";
+		$items = $this->rcvr_mdl->get_str_stock_out_data_new($reportingmonth,$itemCategory);
+		$data[] ="";
 		$distcode=$this->session->District;
 		
 				foreach($items as $key=>$value)
@@ -262,7 +260,6 @@ class Provincial extends CI_Controller
 				);
 			
 		}
-	
 		echo  json_encode($data);
 	}
 	public function getItemCategoryId($type){
@@ -284,12 +281,25 @@ class Provincial extends CI_Controller
 	public function get_stockout_Rate_districts()
 	{
 		$cr_table_row=$_REQUEST['cr_table_row'];
+		//$itemIdClause = implode(" OR ",$cr_table_row);
 		$itemid=$_REQUEST['itemid'];
 		$itemname=$_REQUEST['itemname'];
 		$reportingmonth = date('Y-m', strtotime('-1 month', time()));
+		//$districts = $this->common->fetchall("districts",NULL,"distid,distcode ,district as name //,hf_total_submitted_count('$reportingmonth',distcode) as submitted,
+		//get_pro_level_all_fac_stock_out_new('$cr_table_row','$reportingmonth','distcode',distcode) as stockout");
 		$districts = $this->common->fetchall("districts",NULL,"distid,distcode ,district as name ,hf_total_submitted_count('$reportingmonth',distcode) as submitted,
-		get_pro_level_all_fac_stock_out_new('$cr_table_row','$reportingmonth','distcode',distcode) as stockout");
-		//print_r($districts);exit;
+		(
+				select count(*) from(
+					select main_id as balance from epi_consumption_detail join epi_consumption_master on 
+					epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+					where main_id>0 and (
+						array_to_string($cr_table_row,' OR ')
+					)
+					and fmonth = '$reportingmonth' 
+					group by fmonth,main_id having sum(closing_doses) < 1
+				) as innerq
+			) as stockout		
+		");
 		$data[] ="";
 				foreach($districts as $key=>$value)
 				{		
@@ -355,4 +365,4 @@ class Provincial extends CI_Controller
 		echo json_encode($data);
 	}
 }
-?>		
+?>	

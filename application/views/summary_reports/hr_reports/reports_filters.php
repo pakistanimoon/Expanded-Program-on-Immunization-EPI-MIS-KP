@@ -367,13 +367,13 @@
 		).insertBefore(
 			$('.content-wrapper').find('section').find('.row').find('.row:last')
 		); 
+		
 		 $( 
 			'<div class="row" id="HRType">'+
 				'<div class="form-group">'+
 					'<label class="col-xs-3 control-label" for = "type_id" >Select HR</label>'+
 					'<div class="col-xs-7">'+
 						'<select class="form-control" name="type_id[]" id="type_id" multiple="multiple">'+
-							//'<?php echo getVaccines_options(true,1,FALSE,array(1)); ?>'+
 							'<?php echo get_all_subtype_name(true); ?>'+
 						'</select>'+
 					'</div>'+
@@ -392,5 +392,5 @@
 			maxHeight: 118   
 		});
 		$('#type_id').multiselect('rebuild');
-<?php }?>	
+<?php }?>
 </script>

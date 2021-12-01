@@ -1,5 +1,4 @@
 <?php
-//local
 class Reports_list extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
@@ -19,22 +18,23 @@ class Reports_list extends CI_Controller {
 		//$dataChild['fileToLoad'] = 'childs/child_registration';
 		$this -> load -> view('template/reports_template',$dataChild);
 	} */
-	public function child_list(){
+	public function child_list(){ 
+		//live
 		//Code for Pagination
 		 $page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
 		if ($page <= 0){
 			$page = 1;
 		}
-		$per_page = 30;
+		$per_page = 50; 
 		// Set how many records do you want to display per page.
 		$startpoint = ($page * $per_page) - $per_page;
 		$statement = "cerv_child_registration";
 		$data = $this ->Child_list_model ->Child_list($per_page,$startpoint);
-		//$wc='procode is not NULL';
+		$wc='procode is not NULL';
 		//echo '<pre>';print_r($data);exit;
-		$data['pagination'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?');
+		$data['pagination'] = $this -> Common_model -> pagination($statement, $per_page, $page, $url = '?');
 		$data['UserLevel'] = $this -> session -> UserLevel;
-		//$data['startpoint'] = ($page * $per_page) - $per_page;
+		$data['startpoint'] = ($page * $per_page) - $per_page;
 		$data['edit']="Yes";
 		if ($data != 0) {
 			$data['data'] = $data;
@@ -45,20 +45,19 @@ class Reports_list extends CI_Controller {
 			$data['message'] = "You must have rights to access this page.";
 			$this -> load -> view("message", $data);
 		}
-	} 
-	
+	}
 	// new code start
 	
 	
 	public function child_vaccinated_search()
 	{
+		
 		/* $childname = $this -> input -> post('nameofchild');
 		
 		$search = $this -> Child_list_model -> child_search($childname);
 		
 		 */
-		$childname  = $this-> input-> get('nameofchild');
-		$fathername  = $this-> input-> get('fathername');
+	
 		$draw = intval($this->input->get("draw"));
 		$start = intval($this->input->get("start"));
 		$length = intval($this->input->get("length"));
@@ -133,14 +132,14 @@ class Reports_list extends CI_Controller {
 				"dateofbirth" => $r->dateofbirth,
 				"fathername" => $r->fathername,
 				"distcode" => $r->distcode,
-				"tcode" => $r->tcode,
-				"uncode" => $r->uncode,
+				"tcode" => TehsilName($r->tcode),
+				"uncode" => UnName($r->uncode),
 				"address" => $r->address,
 				"recno" => $r->recno,
 			);
 			$i++;
 		}
-		$query = "SELECT COUNT(*) AS num FROM cerv_child_registration ";
+		$query = "SELECT COUNT(*) AS num FROM cerv_child_registration";
 		$total_mfpdb = $this->db->query($query)->row();
 		$billion = array(
 			"draw" => $draw,
@@ -155,20 +154,15 @@ class Reports_list extends CI_Controller {
 	// new code 
 	
 	public function child_search(){
-		
-		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
-		if ($page <= 0){
-			$page = 1;
-		}
-		$per_page = 200;
-		$startpoint = ($page * $per_page) - $per_page;
-		$statement = "cerv_child_registration";
+		 //print_r($_POST);exit;
+		//$tcode  = $this-> input-> POST('tcode');
 		$childname  = $this-> input-> POST('nameofchild');
 		$childcardnbr  = $this-> input-> POST('childcardnbr');
 		$fathername = $this-> input-> POST('fathername');
 		$mobilenbr  = $this-> input-> POST('mobilenbr');
 		$bcg        = $this-> input-> POST('bcg');
 		$cnicnbr    = $this-> input-> POST('cnicnbr'); 
+		
 		$dateofbirth = $this-> input-> POST('dateofbirth');
 		$gender = $this-> input-> POST('gender');
 		$tcode  = $this-> input -> post('tcode');
@@ -176,191 +170,70 @@ class Reports_list extends CI_Controller {
 		$facode  = $this-> input -> post('facode');
 		$village  = $this-> input -> post('village');
 		$techniciancode  = $this-> input -> post('techniciancode');
-		$data['LinkedCase'] = $this-> Child_list_model-> child_search($childname,$childcardnbr,$fathername,$mobilenbr,$bcg,$cnicnbr,$dateofbirth,$gender,$tcode,$uncode,$facode,$village,$techniciancode,$per_page,$startpoint);
-		$wc = '';
-			if ($childname != "") {
-				$wc .= " nameofchild = '" . $childname . "'  And";
-			}
-		$wc = rtrim($wc,'And');
-		$data['pagination'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?',$wc);
+		//print_r($bcg);exit;
+		//$fathername = $this-> input-> POST('fathername');
+		$data['LinkedCase'] = $this-> Child_list_model-> child_search($childname,$childcardnbr,$fathername,$mobilenbr,$bcg,$cnicnbr,$dateofbirth,$gender,$tcode,$uncode,$facode,$village,$techniciancode);
 		echo json_encode($data['LinkedCase']);
-	}
-	public function child_search_by_form(){
-		/* print_r($_GET);
-		echo "<br>";  */
+		//print_r($data);exit;
 		
-		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
-			if ($page <= 0){
-				$page = 1; 
-			}
-		$per_page = 30;
-		$startpoint = ($page * $per_page) - $per_page;
-		$statement = "cerv_child_registration";
-		$childname  = $this-> input-> get('child_name');
-		$childcardnbr  = $this-> input-> get('childcardnbr');
-		$fathername = $this-> input-> get('fathername');
-		$mobilenbr  = $this-> input-> get('contactno');
-		$cnicnbr    = $this-> input-> get('fathercnic'); 
-		$dateofbirth = $this-> input-> get('dateofbirth');
-		$dateofbirthto = $this->input-> get('dateofbirthto');
+		// new code by nasir
 		
-		/* if($data3['dateofbirthto'] == ''){
-		$data3 =  date('Y-m-d',strtotime('first day of last month'));
-			$dateofbirthto['dateofbirthto'] = $data3;
-		}else{
-			 $dateofbirthto['dateofbirthto']=$this->input->post('yearmonthto');
-		} */
+		/* $linked_epid_number = $this -> input -> post('linked_epid_number');
+		$data['LinkedCase'] = $this -> Ajax_cross_notified_model -> getLinked_CaseInformation($linked_epid_number);
+		//print_r($data);
+		echo json_encode($data['LinkedCase']); */
 		
-		$gender = $this-> input-> get('gender');
-		$givename=$this->input->get('givename');
-		$tcode  = $this-> input -> get('tcode');
-		$uncode  = $this-> input -> get('uncode');
-		/* echo $uncode;
-		echo "<br>"; */
-		$facode  = $this-> input -> get('abc_facode');
-		/* echo $facode;
-		echo "<br>"; */
-		//$facode2  = $this-> input -> get('abc_facode');
-		$village  = $this-> input -> get('villagemohallah');
-		//$village2  = $this-> input -> get('villagemohallah');
-		$techniciancode  = $this-> input -> get('techniciancode');
-		//$techniciancode2  = $this-> input -> get('techniciancode');
+		// new code by nasir
 		
-		$wc = '';
-		if ($childname != "") { 
-			$wc .= " LOWER(nameofchild) LIKE LOWER('".'%'.$childname.'%'."')  And";
-		}
-		if ($fathername != "") {
-			$wc .= " LOWER(fathername) LIKE LOWER('".'%'.$fathername.'%'."')  And";
-		} 
-		 if ($mobilenbr != "") {
-			$wc .= " contactno = '" .$mobilenbr. "'  And";
-		}  
-		if($cnicnbr != ""){
-			$wc .= " fathercnic = '" .$cnicnbr. "'  And";
-		}
-		if($childcardnbr != ""){
-			$wc .= " cardno = '" .$childcardnbr. "'  And";
-		}
-		if($dateofbirth != ""){
-			$wc .= " dateofbirth >= '".$dateofbirth."' And";
-		}
-		if($dateofbirthto != ""){
-			$wc .= " dateofbirth <= '".$dateofbirthto."' And";
-		}
-		/* if($dateofbirth != ""){
-			$wc .= " dateofbirth >= '".$dateofbirth['dateofbirth']."' And dateofbirth <= '".$dateofbirthto['dateofbirthto']."' And";
-		} */
-		if($gender != ""){
-			$wc .= " gender = '" .$gender. "'  And";
-		}
-		foreach($givename as $key => $value) {
+		
+		
+		
+		
+		//$result = $this->db->query();
+		
+		//print_r($data);exit;
+		//$data ='<div class="col-md-4"><label class="radio-inline radiopop"><input '..' type="radio" name="cfc_free">NA</input></label></div><div class="col-md-4"><label class="radio-inline radiopop"><input disabled="disabled" '.$varChecked2.' type="radio" name="cfc_free">Yes</input></label></div><div class="col-md-4"><label class="radio-inline radiopop"><input disabled="disabled" '.$varChecked3.' type="radio" name="cfc_free">No</input></label></div>';
+		
+		/* 	foreach($result as $key => $childnames){
 				
-				if($value == 'bcg'){
-					$wc .= " bcg IS NULL  And";
-				}
-				if($value == 'hepb'){
-					$wc .= " hepb IS NULL  And";
-				} 
-				if($value == 'opv0'){
-					$wc .= " opv0 IS NULL  And";
-				} 
-				if($value == 'opv1'){
-					$wc .= " opv1 IS NULL  And";
-				} 
-				if($value == 'opv2'){
-					$wc .= " opv2 IS NULL  And";
-				} 
-				if($value == 'opv3'){
-					$wc .= " opv3 IS NULL  And";
-				} 
-				if($value == 'penta1'){
-					$wc .= " penta1 IS NULL  And";
-				} 
-				if($value == 'penta2'){
-					$wc .= " penta2 IS NULL  And";
-				} 
-				if($value == 'penta3'){
-					$wc .= " penta3 IS NULL  And";
-				} 
-				if($value == 'pcv1'){
-					$wc .= " pcv1 IS NULL  And";
-				} 
-				if($value == 'pcv2'){
-					$wc .= " pcv2 IS NULL  And";
-				} 
-				if($value == 'pcv3'){
-					$wc .= " pcv3 IS NULL  And";
-				} 
-				if($value == 'ipv'){
-					$wc .= " ipv IS NULL  And";
-				} 
-				if($value == 'rota1'){
-					$wc .= " rota1 IS NULL  And";
-				} 
-				if($value == 'rota2'){
-					$wc .= " rota2 IS NULL  And";
-				} 
-				if($value == 'measles1'){
-					$wc .= " measles1 IS NULL  And";
-				} 
-				if($value == 'measles2'){
-					$wc .= " measles2 IS NULL  And";
-				} 
+			
+			$data = '<table>
+							<tr>
+								<th> Name of Child </th>
+							</tr>
+							<tr>
+								<td>
+								'.echo $childnames['nameofchild'].'
+									</td>
+							</tr>
+					 </table>';
+		}   */
+		
+		//echo $data;
+	//	$data['allData'] = $result;
+		
+		//exit();
+		
+		
+		/* $childname = $this -> input -> post('nameofchild');
+		//print_r($childname );exit; 
+		$data = $this -> Child_list_model -> child_search($childname);
+		
+		$data['fileToLoad'] = 'childs/Child_list';
+		$data['pageTitle'] = 'EPI-MIS | Search Child List';
+		$this -> load -> view('template/epi_template', $data);
+		
+		
+	 	$data = '<option value="">--Select Technician--</option>';
+		if( ! empty($technicians)){
+			foreach($technicians as $key => $technician){
+				$data .= '<option value="'.$technician['techniciancode'].'">'.$technician['technicianname'].'</option>';
 			}
-		if($tcode != "" AND $tcode > 0){
-			$wc .= " tcode = '" .$tcode. "'  And";
 		}
-		if($uncode != "" AND $uncode > 0){
-			$wc .= " uncode = '" .$uncode. "'  And";
-		} 
-		if($facode != "" AND $facode > 0){
-			$wc .= " reg_facode = '" .$facode. "'  And";
-		}
-		/* if($facode2 != "" AND $facode2 > 0){
-			$wc .= " reg_facode	 = '" .$facode2. "'  And";
-		} */
-		if($village != "" AND $village > 0){
-			$wc .= " villagemohallah = '" .$village. "'  And";
-		}
-		/* if($village2 != "" AND $village2 > 0){
-			$wc .= " villagemohallah = '" .$village2. "'  And";
-		} */
-		if($techniciancode != "" AND $techniciancode > 0){
-			$wc .= " techniciancode = '" .$techniciancode. "'  And";
-		}
-		/* if($techniciancode2 != "" AND $techniciancode2 > 0){
-			$wc .= " techniciancode = '" .$techniciancode2. "'  And";
-		} */
-		$wc = rtrim($wc,'And');
-		//$wc = str_replace("®_facode", " And reg_facode", $wc);
-		$data['data'] = $this-> Child_list_model-> child_search_by_form($wc,$per_page,$startpoint);
-		
-		//echo  $this->db->last_query(); 
-		unset($_GET['page']); // delete edit parameter;
-		$qs = http_build_query($_GET);
-		$data['paginationss'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?'.$qs.'&',$wc);
-		//$data['paginationss'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?'.$_SERVER['QUERY_STRING'].'&',$wc);
-		
-		  /* echo "<br>";
-		 print_r($url);  */
-		//print_r($paginationss);
-		$data['UserLevel'] = $this -> session -> UserLevel;
-		$data['startpoint'] = ($page * $per_page) - $per_page;
-		
-		 echo "<br>";
-		if ($data != 0) {
-			$data['data'] = $data;
-			$data['fileToLoad'] = 'childs/child_search_by_form';
-			$data['pageTitle'] = 'EPI-MIS | child Search';
-			$this -> load -> view('template/epi_template', $data);
-		} else {
-			$data['message'] = "You must have rights to access this page.";
-			$this -> load -> view("message", $data);
-		}
-	} 
+		echo $data; */ 
+	}
 	
-	
+	// End code 
 	public function child_add() {
 		//echo'on working condition';exit;
 		$code= $this -> session -> Province; 
@@ -368,8 +241,8 @@ class Reports_list extends CI_Controller {
 		$data['fileToLoad'] = 'childs/Child_add';
 		$data['pageTitle'] = 'EPI-MIS | Add Child Registration Form';
 		$this -> load -> view('template/epi_template', $data);
+		
 	}
-	
 	public function child_edit() {
 		//dataEntryValidator(0);
 		$recno = $this -> uri -> segment(3);
@@ -393,7 +266,7 @@ class Reports_list extends CI_Controller {
 		$data['pageTitle'] = 'EPI-MIS | View Child Registration Form';
 		$this -> load -> view('template/epi_template', $data);
 	}
-	
+ 	
 	public function child_add_save() {
 		$reg_facode = $this -> input -> post ('facode');
 		$cardno = $this -> input -> post ('cardno');
@@ -468,14 +341,13 @@ class Reports_list extends CI_Controller {
 					$data['pageTitle'] = 'EPI-MIS | Update Child Registration Form';
 					//$data['edit']='1';
 					$this -> load -> view('template/epi_template', $data);
-				}else{ 
+				}else{
 					$data['message'] = "You must have rights to access this page.";
 					$this -> load -> view("message", $data);
 				}
 			}
 		}else{
 			if($this -> input -> post ('recno')){
-				
 				$childData = array(
 					'procode' => ($this -> input -> post ('procode'))? $this -> input -> post ('procode') : Null,
 					'distcode' => ($this -> input -> post ('distcode'))? $this -> input -> post ('distcode') : Null,
@@ -519,73 +391,16 @@ class Reports_list extends CI_Controller {
 				$message="Record Updated Successfully";
 				$this -> session -> set_flashdata('message',$message);
 				redirect($location);
-			}
 		}
-	}
-	public function child_migrate() {
-		//echo'on working condition';exit;
-		$code= $this -> session -> Province; 
-		$data['data'] = $data = $this ->Child_list_model ->Child_migrate($code);
-		$data['fileToLoad'] = 'childs/Child_migrate';
-		$data['pageTitle'] = 'EPI-MIS | Migrate Child Registration Form';
-		$this -> load -> view('template/epi_template', $data);
-		
-	}
-	public function child_migrate_save() {
-		
-		/* 1st move recode orignal to dublicate tabel */
-		$migrated_recno = $this -> input -> post ('recno');//$data['recno'];
-		$migrated_child_registration_no = $this -> input -> post ('child_registration_no');//$data['child_registration_no'];
-		//$dublicate_data = $this ->Child_list_model ->Dublicate_child_migrated($migrated_child_registration_no,$migrated_recno);
-		/* 2nd update recode from orignal */
-		$reg_facode = $this -> input -> post ('facode');
-		$cardno = $this -> input -> post ('cardno');
-		/*explode for year*/
-		$dateofbirth = $this -> input -> post ('dateofbirth');
-		$explode_date= explode("-",$dateofbirth);
-		$year=$explode_date[0];
-		/*explode for child_registration_no*/
-		$arr = array($reg_facode,$year,$cardno);
-		$child_registration_no_allot=implode("-",$arr);
-		if($migrated_recno){
-			$MigratedchildData = array(
-					'distcode' => ($this -> input -> post ('distcode'))? $this -> input -> post ('distcode') : Null,
-					'tcode' => ($this -> input -> post ('tcode'))? $this -> input -> post ('tcode') : Null,
-					'uncode' => ($this -> input -> post ('uncode'))? $this -> input -> post ('uncode') : Null,
-					'reg_facode' => ($this -> input -> post ('facode'))? $this -> input -> post ('facode') : Null,
-					'techniciancode' => ($this -> input -> post ('techniciancode'))? $this -> input -> post ('techniciancode') : Null,
-					'cardno' => ($this -> input -> post ('cardno'))? $this -> input -> post ('cardno') : Null,
-					'child_registration_no' => ($child_registration_no_allot)? $child_registration_no_allot : Null,
-					'villagemohallah' => ($this -> input -> post ('address'))? $this -> input -> post ('address') : Null,
-					'housestreet' => ($this -> input -> post ('housestreet'))? $this -> input -> post ('housestreet') : Null,
-					'updatedatetime' => date('Y-m-d'),
-					
-				);
-				//$orignalDataUpdate = $this -> Child_list_model -> Child_update($MigratedchildData,$migrated_recno);
-		}
-		/* 3rd add reg-from and reg-to */
-		if($migrated_child_registration_no != $child_registration_no_allot){
-			$childTransactionData = array(
-					'child_registration_no_from' => ($migrated_child_registration_no)? $migrated_child_registration_no : Null,
-					'child_registration_no_to' => ($child_registration_no_allot)? $child_registration_no_allot : Null
-			);
-			$data = $this -> Child_list_model -> Transaction_child_migrated($childTransactionData);
-		}
-		echo 'Done still here';exit;
-		
-		
-		$data['fileToLoad'] = 'childs/Child_migrate';
-		$data['pageTitle'] = 'EPI-MIS | Migrate Child Registration Form';
-		$this -> load -> view('template/epi_template', $data);
-		 
-	}
+	 }
+ } 
 	public function mother_list(){
 		//Code for Pagination
 		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
 		if ($page <= 0){
 			$page = 1;
 		}
-		$per_page = 2; 
+		$per_page = 50;
 		// Set how many records do you want to display per page.
 		$startpoint = ($page * $per_page) - $per_page;
 		$statement = "cerv_child_registration";
@@ -606,9 +421,9 @@ class Reports_list extends CI_Controller {
 			$this -> load -> view("message", $data);
 		}
 	}
-	
 	public function mother_vaccinated_search()
 	{
+		 
 		$draw = intval($this->input->get("draw"));
 		$start = intval($this->input->get("start"));
 		$length = intval($this->input->get("length"));
@@ -698,6 +513,7 @@ class Reports_list extends CI_Controller {
 		echo json_encode($output);
 		exit();
 	} 
+	
 	public function mother_add() {
 		$code= $this -> session -> Province; 
 		$data['data'] = $data = $this ->Child_list_model ->Mother_add($code);
@@ -706,14 +522,10 @@ class Reports_list extends CI_Controller {
 		$this -> load -> view('template/epi_template', $data);
 		
 	}
-	public function mother_view($id)
-	{
-		$data['data'] = $this -> Child_list_model -> mother_view($id);
-		$data['fileToLoad'] = 'childs/Mother_view';
-		$data['pageTitle'] = 'EPI-MIS | View Mother Registration Form';
-		$this -> load -> view('template/epi_template', $data);
-	}
+	
 	public function mother_add_save() {
+		//print_r($_POST);exit;
+		//live
 		//print_r($_POST);exit;
 		$reg_facode = $this -> input -> post ('facode');
 		$cardno = $this -> input -> post ('cardno');
@@ -727,7 +539,7 @@ class Reports_list extends CI_Controller {
 		//$year = date("Y");
 		$tt1 = $this -> input -> post ('tt1');
 		$explode_date= explode("-",$tt1);
-		$year=$explode_date[0]; 
+		$year=$explode_date[0];
 		$arr = array($reg_facode,$year,$cardno);
 		$mother_registration_no=implode("-",$arr);
 				$motherData = array(
@@ -754,7 +566,7 @@ class Reports_list extends CI_Controller {
 					'tt3' => ($this -> input -> post ('tt3'))? $this -> input -> post ('tt3') : Null,
 					'tt4' => ($this -> input -> post ('tt4'))? $this -> input -> post ('tt4') : Null,
 					'tt5' => ($this -> input -> post ('tt5'))? $this -> input -> post ('tt5') : Null,
-					);  
+					);
 				//echo "<pre>"; print_r($motherData);exit;
 			$data = $this -> Child_list_model -> mother_add_save_model($motherData);
 			//print_r($data); exit;
@@ -774,7 +586,15 @@ class Reports_list extends CI_Controller {
 			$this -> load -> view("message", $data);
 		}
 	}
- public function mother_update() {
+	public function mother_view($id)
+	{
+		$data['data']   = $this -> Child_list_model -> mother_view($id);
+		$data['fileToLoad'] = 'childs/Mother_view';
+		$data['pageTitle'] = 'EPI-MIS | View Mother Registration Form';
+		$this -> load -> view('template/epi_template', $data);
+	}
+	
+	public function mother_update() {
 	// echo $this -> input -> post ('recno');exit;
 		$recno = $this -> input -> post ('recno');
 		$this->load->library('form_validation');
@@ -828,7 +648,7 @@ class Reports_list extends CI_Controller {
 				$data = $this -> Child_list_model -> Mother_update($motherData,$recno);
 		}
 	 }
-	}
+ }
 	function getPostedData(){
 		$data=array();$dataPosted=array();
 		$dataPosted = $_POST;
@@ -850,6 +670,7 @@ class Reports_list extends CI_Controller {
 				unset($data[$key]);
 		}
 		return $data;
+		}
 	}
- }
-	?>
+ 
+ ?>

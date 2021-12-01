@@ -84,11 +84,7 @@ class Other_Reports extends CI_Controller {
 				)
 			);
 			$reportPeriod = array('year','from_week','to_week');
-			if($this->session->UserLevel==4){
-				$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-			}else{
-				$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-			}
+			$dataHtml .= $this->reportfilters->createReportFilters(true,true,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
 		}
 		else if($functionName == 'VPD'){
 			$customDropDown = array(
@@ -102,11 +98,7 @@ class Other_Reports extends CI_Controller {
 			);
 			//$reportPeriod = array('cryearly','weekly','dates');
 			$reportPeriod = array('year','from_week','to_week');
-			if($this->session->UserLevel==4){
-				$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-			}else{
-				$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-			}
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
 		}elseif($functionName == 'Outbreak_Response'){
 			$customDropDown = array(
 				array(
@@ -129,13 +121,9 @@ class Other_Reports extends CI_Controller {
 				) 
 			);
 			$reportPeriod = array('date-from-to-date');
-			if($this->session->UserLevel==4){
-				$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-			}else{
-				$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
-			}
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,'No','No',NULL,$customDropDown);
 		}else
-		$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false);
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false);
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;
@@ -154,7 +142,7 @@ class Other_Reports extends CI_Controller {
 				$title = "Age/Gender Wise Count of EPID";
 				break;
 			case "VPD":
-				$title = "Weekly/Facility/District Wise VPD";
+				$title = "Weekly/Monthly/District Wise VPD";
 				break;
 			case "OUTBREAK":
 				$title = "Disease Outbreak Report";
@@ -167,7 +155,8 @@ class Other_Reports extends CI_Controller {
 	}
 	function disease_outbreak($distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL, $disease=NULL)
 	{
-		
+		//kp
+	//	exit;
 		
 		if($distcode AND $year AND $from_week AND $to_week AND $disease)
 		{
@@ -185,65 +174,7 @@ class Other_Reports extends CI_Controller {
 		$dataMSR['pageTitle']='EPI-MIS | Age/Gender Wise Count of EPID';
 		$this->load->view('template/reports_template',$dataMSR);
 	}
-	function VPD_Count($distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL, $report_type=NULL)
-	{
-		//print_r($_POST);exit();
-		if($distcode AND $year AND $report_type)
-		{
-			$data = array('distcode' => $distcode, 'year' => $year, 'from_week' => $from_week ,'to_week' => $to_week , 'report_type' => $report_type);
-		}
-		else
-		{
-			$distcode = ($this -> session -> District)?$this -> session -> District:0;
-			$data = $this -> getPostedData();
-		}
-		if($this-> uri-> segment(6) != ''){
-			$data['distcode'] = $distcode = $this-> uri-> segment(3);
-			$data['year'] = $year = $this-> uri-> segment(4);
-			$data['from_week'] = $from_week = $this-> uri-> segment(5);
-			$data['to_week'] = $to_week = $this-> uri-> segment(6);
-			//unset($data['distcode']);
-			//print_r($data); exit();
-		}
-		$dataMSR['data'] = $this-> other_reports_model-> VPD($data);
-		//echo '<pre>'; print_r($dataMSR); exit;
-		$dataMSR['fileToLoad'] = 'other_reports/vpd_count_report_view';
-		$dataMSR['pageTitle']='EPI-MIS | Weekly/District/Facility Wise VPD';
-		$this->load->view('template/reports_template',$dataMSR);
-		//template_loader('other_reports/vpd_count_report_view', $dataMSR, array($this->_module), 'reports');
-	}
 
-	function disease_outbreak_villages()
-	{
-		//print_r($_POST);exit();
-		$code = $this -> uri -> segment(3);
-		$year = $this -> uri -> segment(4);
-		$disease = $this -> uri -> segment(5);
-		if(strlen($code) == 9){
-			$uncode = $code;
-			$data = array('uncode' => $uncode, 'year' => $year, 'disease' => $disease);
-		}
-		else
-		{
-			$distcode = ($this -> session -> District)?$this -> session -> District:0;
-			$data = $this -> getPostedData();
-		}
-		//print_r($data);exit();
-		$dataMSR['data'] = $this-> other_reports_model->disease_outbreak($data);
-		$dataMSR['fileToLoad'] = 'other_reports/outbreak_report';
-		$dataMSR['pageTitle']='EPI-MIS | Age/Gender Wise Count of EPID';
-		$this->load->view('template/reports_template',$dataMSR);
-	}
-
-	function MSR(){
-		$distcode = ($this -> session -> District)?$this -> session -> District:0;
-		$data = $this -> getPostedData();
-		$dataMSR['data'] = $this -> other_reports_model -> MSR($data);
-		$dataMSR['fileToLoad'] = 'other_reports/surveillance_report_view';
-		$dataMSR['pageTitle']='EPI-MIS | Monthly Surveillance Report';
-		$this->load->view('template/reports_template',$dataMSR);
-	}
-	
 	function EPID_Count($distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL, $disease=NULL, $case_type=NULL, $report_type=NULL){
 		// $distcode = ($this -> session -> District)?$this -> session -> District:0;
 		// $data = $this -> getPostedData();
@@ -273,8 +204,66 @@ class Other_Reports extends CI_Controller {
 		$dataMSR['pageTitle']='EPI-MIS | Age/Gender Wise VPD';
 		$this->load->view('template/reports_template',$dataMSR);
 	}
+
+	function VPD_Count($distcode=NULL, $year=NULL, $from_week=NULL, $to_week=NULL, $report_type=NULL)
+	{ 
+		//print_r($_POST);exit();
+		if($distcode AND $year AND $report_type)
+		{
+			$data = array('distcode' => $distcode, 'year' => $year, 'from_week' => $from_week ,'to_week' => $to_week , 'report_type' => $report_type);
+		}
+		else
+		{
+			$distcode = ($this -> session -> District)?$this -> session -> District:0;
+			$data = $this -> getPostedData();
+		}
+		if($this-> uri-> segment(6) != ''){
+			$data['procode'] = $procode = $this-> uri-> segment(3);
+			$data['year'] = $year = $this-> uri-> segment(4);
+			$data['from_week'] = $from_week = $this-> uri-> segment(5);
+			$data['to_week'] = $to_week = $this-> uri-> segment(6);
+			//unset($data['distcode']);
+			//print_r($data); exit();
+		}
+		$dataMSR['data'] = $this-> other_reports_model-> VPD($data);
+		//echo '<pre>'; print_r($dataMSR); exit;
+		$dataMSR['fileToLoad'] = 'other_reports/vpd_count_report_view';
+		$dataMSR['pageTitle'] = 'EPI-MIS | Weekly/District/Facility Wise VPD';
+		$this->load->view('template/reports_template',$dataMSR);
+		//template_loader('other_reports/vpd_count_report_view', $dataMSR, array($this->_module), 'reports');
+	}
+
+	function disease_outbreak_villages()
+	{
+		//print_r($_POST);exit();
+		$code = $this -> uri -> segment(3);
+		$year = $this -> uri -> segment(4);
+		$disease = $this -> uri -> segment(5);
+		if(strlen($code) == 9){
+			$uncode = $code;
+			$data = array('uncode' => $uncode, 'year' => $year, 'disease' => $disease);
+		}
+		else
+		{
+			$distcode = ($this -> session -> District)?$this -> session -> District:0;
+			$data = $this -> getPostedData();
+		}
+		//print_r($data);exit();
+		$dataMSR['data'] = $this-> other_reports_model->disease_outbreak($data);
+		$dataMSR['fileToLoad'] = 'other_reports/outbreak_report';
+		$dataMSR['pageTitle']='EPI-MIS | Age/Gender Wise Count of EPID';
+		$this->load->view('template/reports_template',$dataMSR);
+	}
+	function MSR(){
+		$distcode = ($this -> session -> District)?$this -> session -> District:0;
+		$data = $this -> getPostedData();
+		$dataMSR['data'] = $this -> other_reports_model -> MSR($data);
+		$dataMSR['fileToLoad'] = 'other_reports/surveillance_report_view';
+		$dataMSR['pageTitle']='EPI-MIS | Monthly Surveillance Report';
+		$this->load->view('template/reports_template',$dataMSR);
+	}	
 	
-	function Outbreak_Response($distcode=NULL, $disease=NULL, $Indicator=NULL, $date_of_activity_from=NULL, $date_of_activity_to=NULL){
+	function Outbreak_Response($distcode=NULL, $disease=NULL, $Indicator=NULL, $date_of_activity_from=NULL, $date_of_activity_to=NULL){		
 		//echo jjj; exit;
 		//echo $Indicator; exit;
 		/* $data = array( 'indicator' => $Indicator );
@@ -286,7 +275,7 @@ class Other_Reports extends CI_Controller {
 		}else{
 			$data = $this -> getPostedData();
 		}	
-		// echo $data['indicator']; exit;
+		//echo $data['indicator']; exit;
 		if($data['indicator'] == "district wise")
 		{
 			if($this->input->post('distcode')){
@@ -295,7 +284,7 @@ class Other_Reports extends CI_Controller {
 			if( $data['disease'] == "Diphtheria")
 			{
 				$dataDeptheria['pageTitle'] = 'Diphtheria Outbreak Response';
-				$dataDeptheria['data'] = $this -> Other_reports_model -> OutbreakResponse($data,$dataDeptheria['pageTitle']);
+				$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponse($data,$dataDeptheria['pageTitle']);
 				//print_r($dataDeptheria['data']); exit; 				
 				$dataDeptheria['fileToLoad'] = 'other_reports/deptheria_outbreak_response';
 				$this -> load -> view('template/reports_template',$dataDeptheria);
@@ -313,8 +302,8 @@ class Other_Reports extends CI_Controller {
 			else if( $data['disease'] == "Acute Flacid Paralysis")
 			{
 				$dataDeptheria['pageTitle'] = 'Acute Flacid Paralysis Outbreak Response';
-				$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponse($data,$dataDeptheria['pageTitle']);
-				//print_r($dataDeptheria['data']); exit; 
+				$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponse($data,$dataDeptheria['pageTitle']);			
+				//print_r($dataDeptheria['data']); exit(); 			
 				$dataDeptheria['fileToLoad'] = 'other_reports/acute_flacid_paralysis_response_compliance';
 				$this -> load -> view('template/reports_template',$dataDeptheria);
 			}
@@ -349,16 +338,7 @@ class Other_Reports extends CI_Controller {
 				//print_r($dataDeptheria['data']); exit(); 			
 				$dataDeptheria['fileToLoad'] = 'other_reports/hepatitis_response_compliance';
 				$this -> load -> view('template/reports_template',$dataDeptheria);
-			}
-			else if( $disease == "Childhood TB")
-			{
-				$dataDeptheria['pageTitle'] = 'Childhood TB Outbreak Response';
-				$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponse($data,$dataDeptheria['pageTitle']);			
-				//print_r($dataDeptheria['data']); exit(); 			
-				$dataDeptheria['fileToLoad'] = 'other_reports/childhood_tb_response_compliance';
-				$this -> load -> view('template/reports_template',$dataDeptheria);
-			}
-			else if( $data['disease'] == "Typhoid")
+			}else if( $data['disease'] == "Typhoid")
 			{
 				$dataDeptheria['pageTitle'] = 'Typhoid Outbreak Response';
 				$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponse($data,$dataDeptheria['pageTitle']);			
@@ -367,7 +347,7 @@ class Other_Reports extends CI_Controller {
 				$this -> load -> view('template/reports_template',$dataDeptheria);
 			}
 		}
-		else if ($data['indicator'] == "vaccine wise"){
+		else if (($data['indicator'] == "vaccine wise")){
 			//echo abc; 
 			//print_r($data); exit;
 			if(isset($data['distcode']) > 0){
@@ -381,13 +361,12 @@ class Other_Reports extends CI_Controller {
 			$data = $this -> other_reports_model -> outbreak_report_list($distcode,$date_of_activity_from,$date_of_activity_to);
 			$data['argu'] = array($distcode,$date_of_activity_from,$date_of_activity_to);
 			//print_r($data); exit;
-			$this->load->view('other_reports/outbreak_report_vaccine',$data);		
-		}		
+			$this->load->view('other_reports/outbreak_report_vaccine',$data);	
+		}
+		
 	}
-
 	function outbreak_report(){
-		//echo "yyy"; 
-		//print_r($_POST); exit();
+		//echo "yyy"; print_r($_POST);
 		$distcode = ($this -> input -> post('distcode'))?$this -> input -> post('distcode'):$this -> uri -> segment(3);
 		
 		//$year = $this -> uri -> segment(4);
@@ -403,9 +382,9 @@ class Other_Reports extends CI_Controller {
 		{
 			$dataDeptheria['pageTitle'] = 'Diphtheria Outbreak Response';
 			$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponseMeasles($data,$dataDeptheria['pageTitle']);
+			
+			
 			//print_r($dataDeptheria['data']); exit; 
-			
-			
 			
 			$dataDeptheria['fileToLoad'] = 'other_reports/deptheria_outbreak_response_report';
 			$this -> load -> view('template/reports_template',$dataDeptheria);
@@ -415,12 +394,10 @@ class Other_Reports extends CI_Controller {
 			$dataDeptheria['pageTitle'] = 'Measles Outbreak Response';
 			$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponseMeasles($data,$dataDeptheria['pageTitle']);
 			
+			//print_r($dataDeptheria['data']); exit; 
 			
 			$dataDeptheria['fileToLoad'] = 'other_reports/msl_response_compliance_report';
-			
 			$this -> load -> view('template/reports_template',$dataDeptheria);
-			//print_r($dataDeptheria); exit; 
-			
 		}
 		else if( $disease == "Acute Flacid Paralysis")
 		{
@@ -462,15 +439,6 @@ class Other_Reports extends CI_Controller {
 			$dataDeptheria['fileToLoad'] = 'other_reports/hepatitis_response_compliance_report';
 			$this -> load -> view('template/reports_template',$dataDeptheria);
 		}
-		else if( $disease == "Childhood TB")
-		{
-			//print_r('a'); exit();
-			$dataDeptheria['pageTitle'] = 'Childhood TB Outbreak Response';
-			$dataDeptheria['data'] = $this -> other_reports_model -> OutbreakResponseMeasles($data,$dataDeptheria['pageTitle']);			
-			//print_r($dataDeptheria['data']); exit(); 			
-			$dataDeptheria['fileToLoad'] = 'other_reports/childhood_tb_response_compliance_report';
-			$this -> load -> view('template/reports_template',$dataDeptheria);
-		}
 		else if( $disease == "Typhoid")
 		{
 			$dataDeptheria['pageTitle'] = 'Typhoid Outbreak Response';
@@ -480,7 +448,6 @@ class Other_Reports extends CI_Controller {
 			$this -> load -> view('template/reports_template',$dataDeptheria);
 		}
 	}
-
 	function getPostedData(){
 		$data=array();$dataPosted=array();
 		$dataPosted = $_POST;

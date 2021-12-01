@@ -53,19 +53,45 @@ class Reports extends CI_Controller {
 				$startdate = $monthfrom.'-01 00:00:00';
 				$enddate = date("Y-m-t", strtotime($monthto.'-01')).' 11:59:59';
 				$items = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,get_stackholder_activity_name(activity_type_id) as activity",array("item_category_id"=>'1'),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
+				
 				$prevbalance = $this->invnrep->getprevbalance($startdate,$whtype,$whcode);
+				
 				$prevbalance = array_column($prevbalance,"balance","id");
+				
 				$receivebalance = $this->invnrep->getintervalReceive($startdate,$enddate,$whtype,$whcode);
+				
+				//print_r($this->db->last_query());exit;
 				$receivebalance = array_column($receivebalance,"balance","id");
 				//print_r($this->db->last_query());exit;
+				
 				$issuebalance = $this->invnrep->getintervalIssue($startdate,$enddate,$whtype,$whcode);
-				$issuebalance = array_column($issuebalance,"balance","id");
+				
+				$issuebalance = array_column($issuebalance,"balance","id");		
+
+// That file which is_Adjustment is show data which is 1 of the coloum is_Adjustment
+
+				
+				$adjustment_post = $this->invnrep->getintervaladj_positive($startdate,$enddate,$whtype,$whcode);
+				
+				$adjustment_post = array_column($adjustment_post,"balance","id");	
+				
+				
+				$adjustment_negat = $this->invnrep->getintervaladj_negative($startdate,$enddate,$whtype,$whcode);
+				
+				$adjustment_negat = array_column($adjustment_negat,"balance","id");	
+				
+				// end
+				
 				$activityid = 0;$activityindex=-1;
 				foreach($items as $key=>$onerow){
+
+
 					$itemid = $onerow["id"];
 					$items[$key]['prevbalance'] = isset($prevbalance[$itemid])?$prevbalance[$itemid]:0;
 					$items[$key]['receivebalance'] = isset($receivebalance[$itemid])?$receivebalance[$itemid]:0;
 					$items[$key]['issuebalance'] = isset($issuebalance[$itemid])?$issuebalance[$itemid]:0;
+					$items[$key]['adjustment_post'] = isset($adjustment_post[$itemid])?$adjustment_post[$itemid]:0;
+					$items[$key]['adjustment_negat'] = isset($adjustment_negat[$itemid])?$adjustment_negat[$itemid]:0;
 					if($activityid != $onerow["activityid"]){
 						$activityindex++;
 						$data["purpose"][$activityindex]=array("id"=>$onerow["activityid"],"name"=>$onerow["activity"],"items"=>1);
@@ -74,10 +100,12 @@ class Reports extends CI_Controller {
 						$data["purpose"][$activityindex]["items"]++;
 					}
 				}
-			$data["reportdata"] = $items;
-			$fileToLoad = 'inventory_management/reports/vaccine_distribution';
-			$template = 'template/reports_template';
-			$title = 'Vaccine Distribution Report';	
+
+
+				$data["reportdata"] = $items;
+				$fileToLoad = 'inventory_management/reports/vaccine_distribution';
+				$template = 'template/reports_template';
+				$title = 'Vaccine Distribution Report';	
 			}else if($report_type=="2"){
 				$startdate = $monthfrom.'-01 00:00:00';
 				$enddate = date("Y-m-t", strtotime($monthto.'-01')).' 11:59:59';
@@ -584,6 +612,161 @@ class Reports extends CI_Controller {
 		$data['fileToLoad'] = 'inventory_management/reports/voucher_detail';
 		$data['pageTitle'] = 'EPI-MIS | Voucher Detail';
 		$this->load->view('template/reports_template',$data);	
-	}	
+	}
+
+	public function current_stock($default='filter')
+	{
+		
+		if($default==='filter')
+		{
+			$this -> load -> library('reportfilters');
+			$this -> load -> helper('inventory_helper');
+			$reportperiod = array();
+			$reportPath = base_url()."current_stock";
+			$reportTitle = "Current Stock";
+			$indicators = 'Vaccine';
+			//$activity = array("0"=>"Purpose")+array_column( get_purposes(TRUE,NULL,FALSE), "activity","pk_id"); 
+			$report_type = array("0"=>"Report Type","p_summary"=>"Product Wise Summary","b_summary"=>"Batch Wise Summary","manuf_summary"=>"Manufacturer Wise Summary","p_dist"=>"Priority Distribution","class"=>NULL);
+			//$category = array("0"=>"Category","all"=>"All","vac"=>"Vaccine","non_vac"=>"Non-Vaccine","dilluent"=>"Dilluent","class"=>NULL);
+			$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportperiod,false,NULL,NULL,"No","No",NULL,array($report_type));
+			$dataHtml .= $this->reportfilters->filtersFooter();
+			$data['listing_filters'] = $dataHtml;
+			$data['type'] = 'current_stock';
+			$data['data']=$data;
+			$data['fileToLoad'] = 'inventory_management/reports/reports_filters';
+			$data['pageTitle']='EPI-MIS | Current Stock Filter';
+			$this -> load -> view('template/epi_template',$data);
+		}
+		else if($default=='preview')
+		{
+			$distcode = $this->input->post('distcode');
+			$category = $this->input->post('vacc_ind');
+			$cat_type ="'".implode("','", $category)."'";
+			$purpose_type = $this->input->post('act_purpose');
+			$purpose ="'".implode("','", $purpose_type)."'";
+			$report_type = $this->input->post('report_type');
+			
+			if($report_type == 'p_summary')
+			{
+				$this->stock_product_summary($distcode, $purpose, $cat_type);
+			}
+			else if($report_type == 'b_summary')
+			{
+				$this->stock_batch_Summary($distcode, $purpose, $cat_type);
+			}
+			else if($report_type == 'p_dist')
+			{
+				$this->stock_batch_priority($distcode, $purpose, $cat_type);
+			}
+			else if($report_type == 'manuf_summary')
+			{
+				$this->stock_manufacturer_summary($distcode, $purpose, $cat_type);
+			}
+		}
+	}
+	
+	public function stock_product_summary($distcode, $purpose, $category)
+	{
+		//Vaccine Productstock_issue_dispatch_report
+		$data['data']['searchResult'] = $this->invn->product_summary_report($distcode, $purpose, $category);
+		$data['data']['distcode'] = $distcode;
+		$data['data']['purpose'] = $purpose;
+		$data['data']['category'] = $category;
+		$data['data']['exportIcons']=exportIcons($_REQUEST);
+		$data['fileToLoad'] = 'inventory_management/stock_batch_Vaccine_summary';
+		$data['pageTitle'] = 'EPI-MIS | Stock Batch Vaccine Summary';
+		$this->load->view('template/reports_template',$data);
+	}
+	
+	public function stock_batch_Summary($distcode, $purpose, $category)
+	{
+		$data['data']['searchResult'] = $this->invn->batch_summary_report($distcode, $purpose, $category);
+		$data['data']['distcode'] = $distcode;
+		$data['data']['purpose'] = $purpose;
+		$data['data']['category'] = $category;
+		$data['data']['exportIcons']=exportIcons($_REQUEST);
+		$data['fileToLoad'] = 'inventory_management/stock_batch_nbrwise_summary';
+		$data['pageTitle'] = 'EPI-MIS | Stock Batch Vaccine Summary';
+		$this->load->view('template/reports_template',$data);
+	}
+	
+	public function stock_batch_priority($distcode, $purpose, $category)
+	{
+		$data['data']['searchResult'] = $this->invn->priority_summary_report($distcode, $purpose, $category);
+		$allproducts= array_column($data['data']['searchResult'], 'itemname');
+		$allpriority= array_column($data['data']['searchResult'], 'priority');
+		$allactivitytype= array_column($data['data']['searchResult'], 'activity_type_id');
+		$uniqueprod = array_unique($allproducts);
+		$uniquepriority = array_unique($allpriority);
+		$uniqueactivity = array_unique($allactivitytype);
+		$data['data']['uniqueprod']=$uniqueprod;
+		$data['data']['uniquepriority']=$uniquepriority;
+		$data['data']['uniqueactivity']=$uniqueactivity;
+		$data['data']['distcode'] = $distcode;
+		$data['data']['purpose'] = $purpose;
+		$data['data']['category'] = $category;
+		$data['data']['exportIcons']=exportIcons($_REQUEST);
+		$data['fileToLoad'] = 'inventory_management/stock_batch_Vaccine_priority';
+		$data['pageTitle'] = 'EPI-MIS | Stock Batch Vaccine Priority Detail';
+		$this->load->view('template/reports_template',$data);
+	}
+	
+	public function adjustment_report($default='filter')
+	{
+
+		if($default==='filter')
+		{
+			$reportPeriod = array('month-from-to-current');
+			$reportPath = base_url()."adjustment_report";
+			$reportTitle = "Adjustment Report";
+			$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle); 
+			$report_type = array("0"=>"Report Type","p_summary"=>"Product Wise Summary","b_summary"=>"Batch Wise Summary","manuf_summary"=>"Manufacturer Wise Summary","p_dist"=>"Priority Distribution","class"=>NULL);
+			$dataHtml .= $this->reportfilters->createReportFilters(true,true,true,true,$reportPeriod,false,NULL,NULL,"No","No",NULL,array());
+			$dataHtml .= $this->reportfilters->filtersFooter();
+			$data['listing_filters'] = $dataHtml;
+			$data['data']=$data;
+			$data['fileToLoad'] = 'inventory_management/reports/reports_filters';
+			$data['pageTitle']='EPI-MIS | Current Stock Filter';
+			$this -> load -> view('template/epi_template',$data);
+		}
+		else if($default=='preview')
+		{
+			$data['data'] = NULL;
+
+		if($this -> input -> post('monthfrom') && $this -> input -> post('monthto'))
+		{
+			$data['data']['distcode'] = $distcode = $this -> input -> post('distcode');
+			$data['data']['tcode'] = $tcode = $this -> input -> post('tcode');
+			$data['data']['uncode'] = $uncode = $this -> input -> post('uncode');
+			$data['data']['facode'] = $facode = $this -> input -> post('facode');
+			$data['data']['monthfrom'] = $monthfrom = $this -> input -> post('monthfrom');
+			$data['data']['monthto'] = $monthto = $this -> input -> post('monthto');
+			$result=$this->invnrep->adjustment_report($distcode,$tcode,$uncode,$facode,$monthfrom,$monthto);
+
+			$data['data']['searchResult']=$result;
+
+		}
+
+			$data['fileToLoad'] = 'consumption/reports/adjustment/adjustment_report_view';
+			$data['exportIcons']=exportIcons($_REQUEST,NULL,'excel');
+			$data['pageTitle'] = 'EPI-MIS | Adjustment - Report';
+			$this->load->view('template/epi_template',$data);
+
+		}
+	}
+		
+	public function stock_manufacturer_summary($distcode, $purpose, $category)
+	{
+		
+		$data['data']['searchResult'] = $this->invn->manufacturer_summary_report($distcode, $purpose, $category);
+		$data['data']['distcode'] = $distcode;
+		$data['data']['purpose'] = $purpose;
+		$data['data']['category'] = $category; 
+		$data['data']['exportIcons']=exportIcons($_REQUEST);
+		$data['fileToLoad'] = 'inventory_management/stock_batch_Manufacturer';
+		$data['pageTitle'] = 'EPI-MIS | Stock Batch -Manufacturer';
+		$this->load->view('template/reports_template',$data);
+	}
 }
 ?>

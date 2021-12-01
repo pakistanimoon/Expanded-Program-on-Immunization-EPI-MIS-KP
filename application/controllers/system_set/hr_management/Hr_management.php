@@ -83,7 +83,7 @@ class Hr_management extends CI_Controller {
 			$data['selectlevel'] = ($this -> input -> post ('level'))? $this -> input -> post ('level') : Null;
 			$data['selecttype'] = ($this -> input -> post ('type'))? $this -> input -> post ('type') : Null;
 			$data['select_subtype'] = ($this -> input -> post ('sub_type'))? $this -> input -> post ('sub_type') : Null;
-			$data['select_gender'] = ($this -> input -> post ('gender'))? $this -> input -> post ('gender') : Null;
+			$data['select_gendere'] = ($this -> input -> post ('gender'))? $this -> input -> post ('gender') : Null;
 			$data['select_marital'] = ($this -> input -> post ('marital_status'))? $this -> input -> post ('marital_status') : Null;
 			$data['select_qualify'] = ($this -> input -> post ('lastqualification'))? $this -> input -> post ('lastqualification') : Null;
 			$data['select_employee'] = ($this -> input -> post ('employee_type'))? $this -> input -> post ('employee_type') : Null;
@@ -233,7 +233,7 @@ class Hr_management extends CI_Controller {
 		if($this->form_validation->run() == false)
 		{
 			//print_r($_POST);exit();
-			$data['code']            = $this->input->post("code");
+			$data['code'] 			= $this->input->post("code");
 			$data['selectlevel']	 = ($this -> input -> post ('level'))? $this -> input -> post ('level') : Null;
 			$data['selecttype'] 	 = ($this -> input -> post ('type'))? $this -> input -> post ('type') : Null;
 			$data['select_subtype']  = ($this -> input -> post ('sub_type'))? $this -> input -> post ('sub_type') : Null;

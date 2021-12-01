@@ -1,7 +1,7 @@
 <!--start of page content or body-->
 <?php //print_r($results);exit;
-    $utype=$this -> session -> utype; 
-    $UserLevel=$_SESSION['UserLevel'];
+ $utype=$this -> session -> utype; 
+$UserLevel=$_SESSION['UserLevel'];
 ?>
 <div class="container bodycontainer">
 <div class="row">
@@ -61,14 +61,14 @@
           </div>
         </div>
 		<br>
-       <?php if ((($_SESSION['UserLevel']=='3')|| ($_SESSION['UserLevel']=='4')) && ($this -> session -> utype=='DEO') ){ ?>
+        <?php if (($_SESSION['UserLevel']=='3') && ($this -> session -> utype=='DEO') ){ ?>
         
 		<div class="row" style="margin-top:5px;">   
           <div class="form-group">
-            <div class="col-xs-5" style="margin-left: 72% !important;">
-              <a href="<?php echo base_url(); ?>EPICenters/Add">
+            <div class="col-xs-5" style="margin-left: 72% !important;">  
+             <!-- <a href="<php echo base_url(); ?>EPICenters/Add">
                 <button class="submit btn-success btn-sm"><i class="fa fa-plus"></i>   Add EPI Center </button> 
-              </a>
+              </a> --->
               <a href="<?php echo base_url(); ?>EPICenters/Mark">
                 <button class="submit btn-success btn-sm"><i class="fa fa-check-square-o"></i>   Mark EPI Center for EPI-MIS</button>
               </a>
@@ -91,7 +91,7 @@
                 <th class="text-center Heading">Disease Surveillance Facility</th>
                 <th class="text-center Heading">Vaccination Facility</th>
                 <th class="text-center Heading">EPI Technicians</th>               
-                <?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($this -> session -> utype=='DEO') ){ ?>
+                <?php if (($_SESSION['UserLevel']=='3') && ($this -> session -> utype=='DEO') ){ ?>
                   <th class="text-center Heading">Action</th>
                 <?php } ?>
               </tr>
@@ -117,7 +117,7 @@
           <td class="text-left" ><?php echo ucwords($row['areatype']); ?></td> 
           <td class="text-left" ><?php echo $row['unioncouncil']; ?></td>
           <td class="text-left" ><?php echo $row['tehsil']; ?></td>
-		 <?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($this -> session -> utype=='DEO') ){ ?>
+		  <?php if (($_SESSION['UserLevel']=='3') && ($this -> session -> utype=='DEO') ){ ?>
 		  <td class="text-center" ><?php echo $row['ds_status']; ?>
 		  <a href="<?php echo base_url(); ?>Status/View/<?php echo $row['facode']; ?>" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
           </td>  
@@ -125,7 +125,7 @@
 		  <td class="text-center" ><?php echo $row['ds_status']; ?>
           <?php } ?>  
 		 </td>
-		 <?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($this -> session -> utype=='DEO') ){ ?>
+		 <?php if (($_SESSION['UserLevel']=='3') && ($this -> session -> utype=='DEO') ){ ?>
 		 <td class="text-center" ><?php echo $row['vacc_status']; ?>
 		  <a href="<?php echo base_url(); ?>Status/View/<?php echo $row['facode']; ?>" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
 		 
@@ -168,14 +168,20 @@
 <script src="<?php echo base_url(); ?>includes/js/fooTable/footable.filter.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-    $(function () {	  
-        $('.footable').footable();	
-    });  
+
+  $(function () {
+	  
+    $('.footable').footable();
+	
+  });
+  
 </script>
 <script type="text/javascript">
-    $(document).ready(function() { 
-        <?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($_SESSION['utype']=='DEO')){?>
-            var columns = [
+
+$(document).ready(function() {
+ <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
+    var columns = [ 
+
 				{ data: "serial",orderable: false,},
 				{ data: "fac_name" },
 				{ data: "fatype" },
@@ -185,21 +191,13 @@
 				{ data: "tehsil"},
 				{ data: "ds_status",orderable: false,
 					render : function(data,type,row) {
-					return row['ds_status']+'<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>'			
+					return row['ds_status']+'<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>'
+			
 					}
 				},
 				{ data: "vacc_status",orderable: false,
 					render : function(data,type,row) {
 						return row['vacc_status']+'<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>'
-					}
-				},
-				{ data: "is_vacc_fac",orderable: false,
-					render : function(data,type,row) {
-    					if(row['is_vacc_fac']=='1'){
-    						return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'" <?php echo ("'+row['is_vacc_fac']+'"? $tick: $cross);?> </a>'
-    					}else{
-    						return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'"<?php echo ("'+row['is_vacc_fac']+'"? $cross: $tick);?> </a>'
-    					} 
 					}
 				},
 				{ data: "is_ds_fac",orderable: false,
@@ -211,16 +209,27 @@
 						}
 					}
 				},
+				{ data: "is_vacc_fac",orderable: false,
+					render : function(data,type,row) {
+					if(row['is_vacc_fac']=='1'){
+						return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'" <?php echo ("'+row['is_vacc_fac']+'"? $tick: $cross);?> </a>'
+					}else{
+						return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'"<?php echo ("'+row['is_vacc_fac']+'"? $cross: $tick);?> </a>'
+					} 
+					}
+				},
 				{ data: "total_technicians"},
 				{ data: "facode",orderable: false,
-					render : function(data,type,row) {					
+					render : function(data,type,row) {
+					
 						return '<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a><a data-original-title="View" href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>'
 					}
 				}  
 		]; 
-    <?php } elseif (($_SESSION['utype']=='Manager')||($_SESSION['UserLevel']=='2')) {?>  
+  <?php } elseif (($_SESSION['utype']=='Manager')||($_SESSION['UserLevel']=='2')){?>
+  
 
-        var columns = [
+    var columns = [
 			{ data: "serial",orderable: false,},
 			{ data: "fac_name" },
 			{ data: "fatype" },
@@ -228,24 +237,15 @@
 			{ data: "areatype" },
 			{ data: "unioncouncil" },
 			{ data: "tehsil"},
-			{ data: "vacc_status",orderable: false,
-				render : function(data,type,row) {
-					return row['vacc_status']+'<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>'
-				}
-			},
 			{ data: "ds_status",orderable: false,
 				render : function(data,type,row) {
 					return row['ds_status']+'<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>'
 			
 				}
 			},
-			{ data: "is_vacc_fac",orderable: false,
+			{ data: "vacc_status",orderable: false,
 				render : function(data,type,row) {
-					if(row['is_vacc_fac']=='1'){
-						return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'" <?php echo ("'+row['is_vacc_fac']+'"? $tick: $cross);?> </a>'
-					}else{
-					return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'"<?php echo ("'+row['is_vacc_fac']+'"? $cross: $tick);?> </a>'
-					} 
+					return row['vacc_status']+'<a href="<?php echo base_url(); ?>Status/View/'+row['facode']+'" data-toggle="tooltip" title="" class="btn btn-xs btn-default" data-original-title="Edit"><i class="fa fa-pencil"></i></a>'
 				}
 			},
 			{ data: "is_ds_fac",orderable: false,
@@ -257,6 +257,15 @@
 					}
 				}
 			},
+			{ data: "is_vacc_fac",orderable: false,
+				render : function(data,type,row) {
+					if(row['is_vacc_fac']=='1'){
+						return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'" <?php echo ("'+row['is_vacc_fac']+'"? $tick: $cross);?> </a>'
+					}else{
+					return '<a href="<?php echo base_url(); ?>System_setup/flcf_view?facode='+row['facode']+'"'+row['facode']+'"<?php echo ("'+row['is_vacc_fac']+'"? $cross: $tick);?> </a>'
+					} 
+				}
+			},
 			{ data: "total_technicians"},
 			{ data: "facode",orderable: false,
 				render : function(data,type,row) {
@@ -264,37 +273,39 @@
 				}
 			}  
 		]; 
-	<?php } ?> 
+		<?php } ?> 
 	var table = $('#flcf-tbl').DataTable({
-		"pageLength" : 15,  
-		"serverSide": true,
-		"order":[
-			[1, "desc" ]
-		],
-		"ajax": {
-			url : "<?php echo base_url(); ?>Ajax_calls/flcf_dataTables",
-			type : 'GET'
-		},
-		"columns": columns,
-		dom: 'lrtips'
+			"pageLength" : 15,  
+			"serverSide": true,
+			"order":[
+				[1, "asc" ]
+			],
+			"ajax": {
+				url : "<?php echo base_url(); ?>Ajax_calls/flcf_dataTables",
+				type : 'GET'
+			},
+			"columns": columns,
+			dom: 'lrtips'
 	});
 	
-	table.columns(13).search("Active").draw();	 
-	
-	$('#fac_name').on('change', function () {
-	   table.columns(2).search( this.value ).draw();
-	});
-	$('#fatype').on('change', function () {
-	   table.columns(2).search( this.value ).draw();
-	});
-	$('#tcode').on('change', function () {
-	   table.columns(6).search( this.value ).draw();
-	});
-	$('#flcf_search').on('keyup change', function () {
-	   table.search( this.value ).draw();
-	});
+		table.columns(13).search("Active").draw();	 
+		
+		$('#fac_name').on('change', function () {
+		table.columns(2).search( this.value ).draw();
+		});
+		$('#fatype').on('change', function () {
+		table.columns(3).search( this.value ).draw();
+		});
+		$('#facode').on('change', function () {
+		table.columns(4).search( this.value ).draw();
+		});
+		
+
+		$('#flcf_search').on('keyup change', function () {
+		table.search( this.value ).draw();
+		});
 });
- /*  var tcode=0;
+/*var tcode=0;
   var fatype=0;
   var distcode=0;
   function getTehValue(){

@@ -106,13 +106,13 @@
 									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">Age in Month</th>
 									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">Sex</th>
 									<?php
-									if(isset($data['case_type']) == 'Msl' || $caseTypePagination == 'Msl'){ 
+									if((isset($data['case_type']) && $data['case_type'] == 'Msl') || $caseTypePagination == 'Msl'){ 
 									//if($data['case_type'] == 'Msl'){ ?>
-									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/rash onset</th>
+									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/Rash Onset</th>
 									<?php } else if ($data['case_type'] == 'Diph' ){ ?>
-									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/adherent membrance onset</th>
+									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/Adherent Membrane Onset</th>
 									<?php } else { ?>
-									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/onset</th>
+									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/Onset</th>
 									<?php } ?>	
 									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/notification</th>
 									<th rowspan="2" style="text-align:center; border: 1px solid black;background-color: #008D4C !important; color: #fff !important;">D/investigation</th> 

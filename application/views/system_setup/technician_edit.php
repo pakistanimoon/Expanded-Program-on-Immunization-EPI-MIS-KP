@@ -366,11 +366,11 @@
                     </select>
 					</div>
 					</div>
-<!-- 	                <div class="showTehsil" id="showTehsil" style="display: none;">
+	              <!--  <div class="showTehsil" id="showTehsil" style="display: none;">
                       <label class="col-xs-2 control-label" style="margin-left:110px" for = "showTehsil" >  Tehsil</label>
                       <div class="col-xs-3">
-                         <select id="new_tcode" name="new_tcode" class="form-control" size="1">
-						          <option value="<?php echo $row['tcode'];?>">Select Tehsil</option>
+                          <select id="new_tcode" name="new_tcode" class="form-control" size="1">
+						          <option value="select">Select Tehsil</option>
 						         <?php 
 									foreach($resultTeh as $row){?>
 										<option value="<?php echo $row['tcode'];?>" ><?php echo $row['tehsil'];?></option><?php
@@ -382,7 +382,7 @@
                       <label class="col-xs-2 control-label" style="margin-left:0px"   for = "showUnc" >  Union Council</label>
                       <div class="col-xs-3">
                           <select id="new_uncode" name="new_uncode" class="form-control" size="1">
-						          <option value="">Select Union Council</option>
+						          <option value="select">Select Union Council</option>
 						          
 						  </select>
 					</div>
@@ -393,7 +393,7 @@
                       <label class="col-xs-2 control-label" style="margin-left:110px"   for = "showTehsil" >  Facility</label>
                       <div class="col-xs-3">
                           <select id="new_facode" name="new_facode" class="form-control" size="1">
-						          <option value="">Select HF Facility</option>
+						          <option value="select">Select HF Facility</option>
 						          
 						  </select>
 					</div>

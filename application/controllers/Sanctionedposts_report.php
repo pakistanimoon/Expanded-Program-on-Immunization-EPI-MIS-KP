@@ -21,7 +21,7 @@
 			$neWc = $wc;
 			$replacements = array(0 => "province");
 			$neWc[0] = str_replace("procode", "province", $neWc[0]);
-			$data = $this-> Sanctionedposts_report_model-> sanctioned_posts_report($neWc);
+			$data = $this-> Sanctionedposts_report_model-> sanctioned_posts_report($neWc);			
 			$data['data']=$data;
 			//print_r($data);exit();
 			if($data != 0){

@@ -58,12 +58,29 @@ class Reports_model extends CI_Model {
 			//unset($datArray['years']);
 		}
 		if ($reportName == 'vaccine_demand') {
-			$Caption = "Vaccine Demand Report";
-			$datArray['typeWise'] = "";
-			$datArray['month-from-to-previous'] = "";
-			$datArray['demand_type'] = "";
-			$datArray['vaccines'] = "";
-			unset($datArray['years']);
+			$this -> load -> library('reportfilters');		
+			$reportPeriod = array("month-from-to-previous");
+			$reportPath = base_url()."Reports/vaccine_demand";
+			$reportTitle = "Vaccine Consumption Report";
+			$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
+			$allvaccines = array_column(getVaccines_options(true,1,true),"item_name","itemid");
+			$allvaccines['0'] = 'Product';
+			$customDropDown = array(
+				array(
+					'0' => 'Indicator',
+					'used_vials' => 'Vials Used',
+					'used_doses' => 'Doses Used',
+					'unused_vials' => 'Unusable Vials',
+					'unused_doses' => 'Unusable Doses',
+					'closing_vials' => 'Closing Vials',
+					'closing_doses' => 'Closing Doses',
+				),
+				$allvaccines
+			);
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,"No","No",NULL,$customDropDown);
+			$dataHtml .= $this->reportfilters->filtersFooter();
+			$datArray['listing_filters'] = $dataHtml;
+			return $datArray;
 		}
 		if ($reportName == 'measle_coverage_dropout') {
 			$Caption = "Measles Coverage Vs. Measles Cases";
@@ -85,6 +102,7 @@ class Reports_model extends CI_Model {
 			//$datArray['typeWise'] = "";
 			$datArray['month-from-to'] = "";
 			//$datArray['vacc_to'] = "";
+			$datArray['acces_type'] = "";
 			unset($datArray['years']);
 		}
 		if ($reportName == 'flcf_vacc_coverage_compliance') {
@@ -512,7 +530,7 @@ class Reports_model extends CI_Model {
 						case 'all':
 						
 							if($in_out_coverage == 'in_uc'){
-								echo "a";exit();
+								//echo "a";exit();
 								$m_cols = "sum(cri_r1_f".$i.")+sum(cri_r3_f".$i.")+sum(cri_r5_f".$i.")+sum(cri_r7_f".$i.")+sum(cri_r9_f".$i.")+sum(cri_r11_f".$i.")+sum(cri_r13_f".$i.")+sum(cri_r15_f".$i.")+sum(cri_r17_f".$i.")+sum(cri_r19_f".$i.")+sum(cri_r21_f".$i.")+sum(cri_r23_f".$i.")";
 								$f_cols = "sum(cri_r2_f".$i.")+sum(cri_r4_f".$i.")+sum(cri_r6_f".$i.")+sum(cri_r8_f".$i.")+sum(cri_r10_f".$i.")+sum(cri_r12_f".$i.")+sum(cri_r14_f".$i.")+sum(cri_r16_f".$i.")+sum(cri_r18_f".$i.")+sum(cri_r20_f".$i.")+sum(cri_r22_f".$i.")+sum(cri_r24_f".$i.")";
 							}
@@ -1692,19 +1710,10 @@ class Reports_model extends CI_Model {
 	public function hf_consumption_requisition($data)
 	{
 		/////////////new code By usama sher khan  start///////
-		$date_from = explode("-",$data['monthfrom']); // split
-		$new_date_from = $date_from[1]."-".$date_from[0];
-		$date_to = explode("-",$data['monthto']); // split
-		$new_date_to = $date_to[1]."-".$date_to[0];
-		$datfrom = $date_from[0]-1;
-		$datfrom = '0'.$datfrom;
-		if($datfrom == 00 )
-		{
-			$date_toy[1]=$date_from[1]-1;
-			$date_tom[0] = $date_from[0]+11;
-			$OB_date = $date_toy[1]."-".$date_tom[0];
-			
-		}
+		//code update by omer:for kpk new table format 
+		$new_date_from = $data['monthfrom'];
+		$new_date_to = $data['monthto'];
+		$wc[]=null;
 		if(isset($data['tcode']) && $data['tcode'] > 0){
 			$wc[] = " tcode = '".$data['tcode']."' ";
 		}
@@ -1723,58 +1732,62 @@ class Reports_model extends CI_Model {
 		}
 	   	if(isset($data['distcode']) && $data['distcode'] > 0)
 		{
-			$criNames1 = $this -> Common_model -> fetchall('epi_item_pack_sizes','','item_name,number_of_doses,cr_table_row_numb,', array('item_category_id<>'=>4,'activity_type_id'=>1),'',array('by'=>'list_rank','type'=>'asc'));
-			$queryForYearlyData="select";	  
-			foreach($criNames1 as $key => $val)
-			{
-				$rowno = $val['cr_table_row_numb'];
-				$find = array("-"," ",".","(",")");
-				$replace = array("");
-				$itemnames = array($val['item_name']);
-				 $items_doses[$val['item_name']] = $val['number_of_doses'];
-				$itemname= str_replace($find,$replace,$itemnames); 
-				$queryForYearlyData.="
-				(select sum(cr_r".$rowno."_f1) from form_b_cr where districts.distcode=form_b_cr.distcode and  fmonth = '$new_date_from' ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).") as ".$itemname[0]."OB,";
-				$queryForYearlyData.="
-				(select sum(cr_r".$rowno."_f2) from form_b_cr where districts.distcode=form_b_cr.distcode".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).((!empty($wc1)) ?  ' AND ' . implode(' AND ', $wc1) : '' ).") as ".$itemname[0]."R,";
-				$queryForYearlyData.="
-				(select sum(cr_r".$rowno."_f4) from form_b_cr where districts.distcode=form_b_cr.distcode ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).((!empty($wc1)) ?  ' AND ' . implode(' AND ', $wc1) : '' ).") as ".$itemname[0]."USE,";
-				$queryForYearlyData.="
-				(select sum(cr_r".$rowno."_f5) from form_b_cr where districts.distcode=form_b_cr.distcode ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).((!empty($wc1)) ?  ' AND ' . implode(' AND ', $wc1) : '' ).") as ".$itemname[0]."UNUSE,";
-				$queryForYearlyData.="
-				(select sum(cr_r".$rowno."_f6) from form_b_cr where districts.distcode=form_b_cr.distcode  and  fmonth = '$new_date_to' ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).") as ".$itemname[0]."CB,";
-	        }
-			
-			$queryForYearlyData = rtrim($queryForYearlyData,",");
-			$queryForYearlyData.=" from districts where distcode = '".$data['distcode']."'";
+			$wc[] = " distcode = '".$data['distcode']."' ";
 		}
-		else{
-				$criNames1 = $this -> Common_model -> fetchall('epi_item_pack_sizes','','item_name,number_of_doses,cr_table_row_numb,', array('item_category_id<>'=>4,'activity_type_id'=>1),'',array('by'=>'list_rank','type'=>'asc'));
-				$queryForYearlyData="select";	  
-				foreach($criNames1 as $key => $val)
-				{
-					$rowno = $val['cr_table_row_numb'];
-					$find = array("-"," ",".","(",")");
-					$replace = array("");
-					$itemnames = array($val['item_name']);
-					$items_doses[$val['item_name']] = $val['number_of_doses'];
-					$itemname= str_replace($find,$replace,$itemnames); 
-					$queryForYearlyData.="
-					(select sum(cr_r".$rowno."_f1) from form_b_cr where form_b_cr.procode='".$_SESSION["Province"]."' and  fmonth = '$new_date_from' ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).") as ".$itemname[0]."OB,";
-					$queryForYearlyData.="
-					(select sum(cr_r".$rowno."_f2) from form_b_cr where form_b_cr.procode='".$_SESSION["Province"]."' ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).((!empty($wc1)) ?  ' AND ' . implode(' AND ', $wc1) : '' ).") as ".$itemname[0]."R,";
-					$queryForYearlyData.="
-					(select sum(cr_r".$rowno."_f4) from form_b_cr where form_b_cr.procode='".$_SESSION["Province"]."'  ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).((!empty($wc1)) ?  ' AND ' . implode(' AND ', $wc1) : '' ).") as ".$itemname[0]."USE,";
-					$queryForYearlyData.="
-					(select sum(cr_r".$rowno."_f5) from form_b_cr where form_b_cr.procode='".$_SESSION["Province"]."'  ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).((!empty($wc1)) ?  ' AND ' . implode(' AND ', $wc1) : '' ).") as ".$itemname[0]."UNUSE,";
-					$queryForYearlyData.="
-					(select sum(cr_r".$rowno."_f6) from form_b_cr where form_b_cr.procode='".$_SESSION["Province"]."'   and  fmonth = '$new_date_to' ".((!empty($wc)) ?  ' AND ' . implode(' AND ', $wc) : '' ).") as ".$itemname[0]."CB,";
-					
-				}
-				$queryForYearlyData = rtrim($queryForYearlyData,",");
-			    $queryForYearlyData.=" from districts limit 1";
 		
+		$whereCondition=((!empty($wc1)) ? implode(' AND ', $wc1) : '' );	
+		$whereCondition.=((!empty($wc)) ? implode(' AND ', $wc) : '' );	
+		//print_r($whereCondition);print_r($wc1);
+			$this->db->select("epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,
+					round(coalesce(sum(epi_consumption_detail.opening_doses),0),1) as opening,
+					round(coalesce(sum(epi_consumption_detail.received_doses),0),1) as received, 
+					sum(coalesce(epi_consumption_detail.used_vials,0)) as used, 
+					sum(coalesce(epi_consumption_detail.unused_vials,0)) as unused,
+					sum(coalesce(epi_consumption_detail.closing_vials,0)) as closing ");
+			$this->db->from('epi_consumption_master');
+			$this->db->join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
+			$this->db->join("epi_item_pack_sizes ips","epi_consumption_detail.item_id = ips.pk_id");
+			$this->db->where($whereCondition);
+			$this->db->where('ips.item_category_id <> 4');
+			$this->db->where('ips.activity_type_id=1');
+			$this->db->group_by(' epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,ips.list_rank');
+			$this->db->order_by('ips.list_rank');
+			$result['consumption']=$this -> db -> get() -> result_array();
+			if ($this -> input -> post('export_excel')) {
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=Consolidated_Consumption_Requisition_Report.xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
 		}
+		//Excel file code ENDS*******************
+		$subTitle = 'Consolidated Consumption and Requisition Report';
+		$result['TopInfo'] = reportsTopInfo($subTitle, $data);
+		$result['exportIcons']=exportIcons($_REQUEST);
+		$result['monthfrom'] =  $data['monthfrom'];
+		$result['monthto'] =  $data['monthto'];
+		$result['datefrom'] = $new_date_from;
+		$result['dateto'] = $new_date_to;
+		//print_r($result);exit;
+		return $result; 
+			//echo $this->db->last_query();exit;
+			 
+			/* $d = "select epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,
+				round(coalesce(sum(case when fmonth='2019-01' then epi_consumption_detail.opening_doses else 0 end)/ips.number_of_doses,0),1) as opening,
+				round(coalesce(sum(epi_consumption_detail.received_doses)/ips.number_of_doses,0),1) as received, 
+				sum(epi_consumption_detail.used_vials) as used, 
+				sum(epi_consumption_detail.unused_vials) as unused,
+				sum(case when fmonth='2019-02' then epi_consumption_detail.closing_vials else 0 end) as closing 
+				from epi_consumption_master 
+				join epi_consumption_detail on epi_consumption_detail.main_id = epi_consumption_master.pk_id 
+				join epi_item_pack_sizes ips on epi_consumption_detail.item_id = ips.pk_id 
+				where fmonth between '2019-01' and '2019-02' and procode = '3' and ips.item_category_id <> 4 and ips.activity_type_id = 1 
+				group by  epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,ips.list_rank
+				order by ips.list_rank"; */
+				//echo $d;exit;
+			
+	/* 	
 	   ////////////////end////////////// 
 	   $result = $this-> db -> query($queryForYearlyData) -> result_array();
 		if ($this -> input -> post('export_excel')) {
@@ -1795,7 +1808,7 @@ class Reports_model extends CI_Model {
 		$result['dateto'] = $new_date_to;
 		$result['Name'] = $items_doses;
 		//print_r($result);exit;
-		return $result;
+		return $result; */
 	}
 	
 	/* 
@@ -3288,7 +3301,7 @@ class Reports_model extends CI_Model {
 	 *	It May be viewed as month wise and quarter wise
 	 *
 	 *	@author Awais Iqbal
-	 *
+	 *  @updated by moon on 2019-03-08 according to new pattern
 	 *	@param 	Array	$data   		Posted values and other Added data
 	 *	@return Array 	$returned_data
 	 *
@@ -3296,29 +3309,50 @@ class Reports_model extends CI_Model {
 	public function vaccine_demand($data)
 	{
 		//print_r($data);exit;
-		$column_name = $data['column_name'];
+		$column_name = $data['indicator'];
+		unset($data['indicator']);
+		$product = $data['product'];
 		$fmonth = $data['monthfrom'];
 		$th = date('M Y', strtotime($fmonth));
 		//If data is required Facility wise
-		if(isset($data['distcode']) AND $data['distcode'] > 0 AND $data['type_wise'] == 'facility')
+		if(isset($data['distcode']) AND $data['distcode'] > 0 /*  AND $data['type_wise'] == 'facility' */)
 		{
-			$m_portion = "SELECT facode, facilityname(facode),";
+			/* $m_portion = "SELECT facode, facilityname(facode),";
 			$t_portion = "SELECT ";
 			while ($fmonth <= $data['monthto']) 
 			{
-				$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM form_b_cr 
-								WHERE fmonth='$fmonth' AND form_b_cr.facode=facilities.facode) AS \"$th\",";
+				$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
+							join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+							WHERE fmonth='$fmonth' AND facode=facilities.facode AND item_id = $product) AS \"$th\",";
 				$t_portion .= "sum(\"$th\") AS \"Total $th\",";
 				$th = date('M Y', strtotime($fmonth. 'first day of next month'));
 				$fmonth = date('Y-m', strtotime($fmonth. 'first day of next month'));
 			}
-			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM form_b_cr 
-								WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND form_b_cr.facode=facilities.facode) AS \"all total\"";
+			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
+							join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+							WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND facode=facilities.facode AND item_id = $product) AS \"all total\"";
 			$t_portion .= "sum(\"all total\") AS \"Total\",";
-			$m_portion .= " FROM facilities WHERE distcode='{$data['distcode']}' AND hf_type='e' ORDER BY facode";
+			$m_portion .= " FROM facilities WHERE distcode='{$data['distcode']}' AND hf_type='e' AND is_vacc_fac=1 ORDER BY facode"; */
+			
+			
+			$m_portion = '';
+			while ($fmonth <= $data['monthto']) 
+			{
+				$m_portion .= "COALESCE(SUM(case when fmonth='$fmonth' then $column_name else 0 end), 0) AS \"$th\",";
+				$th = date('M Y', strtotime($fmonth. 'first day of next month'));
+				$fmonth = date('Y-m', strtotime($fmonth. 'first day of next month'));
+			}
+			$moonquery = "select facilities.facode, facilityname(facilities.facode),
+			$m_portion
+			COALESCE(SUM($column_name), 0) as \"Total\"
+			from facilities FULL JOIN epi_consumption_master on facilities.facode = epi_consumption_master.facode 
+			JOIN epi_consumption_detail on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+			WHERE facilities.distcode='{$data['distcode']}' AND hf_type='e' AND fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product 
+			group by facilities.facode";
+			//in above query  AND is_vacc_fac='1' check remaining but if you are going to add it then it must be added into district query aswell.
 		}
 		//If data is required UC wise
-		elseif(isset($data['distcode']) AND $data['distcode'] > 0 AND $data['type_wise'] == 'uc')
+		/* elseif(isset($data['distcode']) AND $data['distcode'] > 0 AND $data['type_wise'] == 'uc')
 		{
 			$m_portion = "SELECT uncode, unname(uncode),";
 			$t_portion = "SELECT ";
@@ -3330,28 +3364,46 @@ class Reports_model extends CI_Model {
 				$th = date('M Y', strtotime($fmonth. 'first day of next month'));
 				$fmonth = date('Y-m', strtotime($fmonth. 'first day of next month'));
 			}
-			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM form_b_cr 
-								WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND form_b_cr.uncode=unioncouncil.uncode) AS \"all total\"";
+			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
+							join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+							WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND form_b_cr.uncode=unioncouncil.uncode) AS \"all total\"";
 			$t_portion .= "sum(\"all total\") AS \"Total\",";
 			$m_portion .= " FROM unioncouncil WHERE distcode='{$data['distcode']}' ORDER BY uncode";
-		}
+		} */
 		//If data is required district wise
 		else
 		{
-			$m_portion = "SELECT distcode, districtname(distcode),";
+			/* $m_portion = "SELECT distcode, districtname(distcode),";
 			$t_portion = "SELECT ";
 			while ($fmonth <= $data['monthto']) 
 			{
-				$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM form_b_cr 
-								WHERE fmonth='$fmonth' AND form_b_cr.distcode=districts.distcode) AS \"$th\",";
+				$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
+								join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+								WHERE fmonth='$fmonth' AND distcode=districts.distcode AND item_id = $product) AS \"$th\",";
 				$t_portion .= "sum(\"$th\") AS \"Total $th\",";
 				$th = date('M Y', strtotime($fmonth. 'first day of next month'));
 				$fmonth = date('Y-m', strtotime($fmonth. 'first day of next month'));
 			}
-			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM form_b_cr 
-								WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND form_b_cr.distcode=districts.distcode) AS \"all total\"";
+			$m_portion .= "(SELECT COALESCE(SUM($column_name), 0) FROM epi_consumption_detail
+								join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+								WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND distcode=districts.distcode AND item_id = $product) AS \"all total\"";
 			$t_portion .= "sum(\"all total\") AS \"Total\",";
-			$m_portion .= " FROM districts ORDER BY distcode";
+			$m_portion .= " FROM districts ORDER BY distcode"; */			
+			
+			$m_portion = '';
+			while ($fmonth <= $data['monthto']) 
+			{
+				$m_portion .= "COALESCE(SUM(case when fmonth='$fmonth' then $column_name else 0 end), 0) AS \"$th\",";
+				$th = date('M Y', strtotime($fmonth. 'first day of next month'));
+				$fmonth = date('Y-m', strtotime($fmonth. 'first day of next month'));
+			}
+			$moonquery = "select districts.distcode,districtname(districts.distcode),
+			$m_portion
+			COALESCE(SUM($column_name), 0) as \"Total\"
+			from districts FULL JOIN epi_consumption_master on districts.distcode = epi_consumption_master.distcode 
+			JOIN epi_consumption_detail on epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+			WHERE fmonth BETWEEN '{$data['monthfrom']}' AND '{$data['monthto']}' AND item_id = $product 
+			group by districts.distcode";
 		}
 		if($this->input->post('export_excel')) 
 		{
@@ -3360,14 +3412,13 @@ class Reports_model extends CI_Model {
 			header("Pragma: no-cache");
 			header("Expires: 0");
 		}
-		$data['allData'] = $this->db->query($m_portion)->result_array();
-		$t_portion = rtrim($t_portion, ',');
-		$t_portion .= " FROM ($m_portion) As b";
-		$data['allDataTotal'] = $this->db->query($t_portion)->result_array();
-		$result['htmlData'] = getListingReportTable($data['allData'], '', $data['allDataTotal']);
-		$sub_title = "Vaccine Demand Report";
+		$data['allData'] = $this->db->query($moonquery)->result_array();
+		//echo $this->db->last_query();
+		$result['htmlData'] = getListingReportTable($data['allData'], ''/* , $data['allDataTotal'] */);
+		$sub_title = "Vaccine Consumption Report";
 		$result['subtitle'] = $sub_title;
-		$data['vacc_demand_product_name'] = $data['vaccine'];
+		$data['vacc_ind'] = array($product);
+		$data['mini_title'] = get_consumption_detail_column_title($column_name);
 		$result['TopInfo'] = reportsTopInfo($sub_title, $data);
 		$result['exportIcons'] = exportIcons($_REQUEST);
 		unset($data['allData']);
@@ -3376,7 +3427,7 @@ class Reports_model extends CI_Model {
 		return $result;
 		//echo "<pre>";print_r($result['htmlData']);exit;
 	}
-		public function all_dropout($data)
+	public function all_dropout($data)
 	{
 		$query = "SELECT * FROM indicator_main WHERE indmain IN (24,25,26,27) ORDER BY indmain";
 		$result = $this->db->query($query)->result_array();
@@ -3442,6 +3493,8 @@ class Reports_model extends CI_Model {
 		$t_query = "SELECT $str FROM fac_mvrf_db WHERE $whereCondition $whereFmonth";
 		$result = $this->db->query($query)->result_array();
 		$result_total = $this->db->query($t_query)->result_array();
+		//$str = $this->db->last_query();
+		//print_r($str); exit;
 		$sub_title = "Dropouts Report";
 		$returned_data['subtitle'] = $sub_title;
 		$returned_data['TopInfo'] = reportsTopInfo($sub_title, $data);
@@ -3466,41 +3519,78 @@ class Reports_model extends CI_Model {
 		}else{
 			$wc = " procode = '".$procode."' ";
 		}
-		if(isset($data['distcode']) AND $data['distcode'] > 0 AND $data['type_wise'] == 'Uniouncouncil'){	
-				$query="Select * from(select uncode,unname(uncode),
-					sum(case when (Access > 80) and (utilization < 10) then 1 else null end) as cat1,
-					sum(case when (Access > 80) and (utilization > 10) then 1 else null end) as cat2,
-					sum(case when (Access < 80) and (utilization < 10) then 1 else null end) as cat3,
-					sum(case when (Access < 80) and (utilization > 10) then 1 else null end) as cat4 
-					from(select uncode,
-						round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.uncode,'unioncouncil','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0) as Access,
-						round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1) as utilization
-					from fac_mvrf_db where {$wc} group by distcode,uncode order by distcode,uncode) as a group by uncode order by unname(uncode) ) as a order by cat4 ,cat3 ,cat2 ,cat1 ";
-				
-				$total_query="Select * from (select distcode,districtname(distcode), count(uncode) as totaluc,
-					sum(case when (Access > 80) and (utilization < 10) then 1 else null end) as cat1,
-					sum(case when (Access > 80) and (utilization > 10) then 1 else null end) as cat2,
-					sum(case when (Access < 80) and (utilization < 10) then 1 else null end) as cat3,
-					sum(case when (Access < 80) and (utilization > 10) then 1 else null end) as cat4 
-					from(select distcode,uncode,
-						round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.uncode,'unioncouncil','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0) as Access,
-						round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1) as utilization	 
-					from fac_mvrf_db where {$wc} 
-					group by distcode,uncode order by distcode,uncode) as a group by distcode order by  districtname(distcode)) as a order by cat4 desc,cat3 desc,cat2 desc,cat1 asc";
+		if(isset($data['distcode']) AND $data['distcode'] > 0 ){
+
+			if($data["type_wise"]=="facility"){
+		
 					
-					$total_query = $this->db->query($total_query)->result_array();
-					$result = $this->db->query($query)->result_array();
-					$returned_data['result'] = $result;
-					$returned_data['total_query'] = $total_query;
-					return $returned_data;
+				$query="Select * from(select facode,facilityname(facode), 
+						sum(case when (Access >= 80) and (utilization < 10) then 1 else null end) as cat1, 
+						sum(case when (Access >= 80) and (utilization >= 10) then 1 else null end) as cat2, 
+						sum(case when (Access < 80) and (utilization < 10) then 1 else null end) as cat3, 
+						sum(case when (Access < 80) and (utilization >= 10) then 1 else null end) as cat4 from(select facode, 
+						COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}')::numeric
+						/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.facode,'facility','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0),0) as Access, 
+						COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1),0) as utilization 
+						from fac_mvrf_db where {$wc} 
+						group by distcode,facode order by distcode,facode) as a 
+						group by facode order by facilityname(facode) ) as a order by cat4 ,cat3 ,cat2 ,cat1";
+									
+				$total_query="Select * from 
+						(select distcode,districtname(distcode), 
+						count(facode) as totaluc, 
+						sum(case when (Access >= 80) and (utilization < 10) then 1 else null end) as cat1, 
+						sum(case when (Access >= 80) and (utilization >= 10) then 1 else null end) as cat2, 
+						sum(case when (Access < 80) and (utilization < 10) then 1 else null end) as cat3, 
+						sum(case when (Access < 80) and (utilization >= 10) then 1 else null end) as cat4 
+						from(
+						select distcode,facode, 
+						COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}')::
+						numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.facode,
+						'facility','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0),0) as Access, 
+						COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}') :: numeric - 
+						sumvaccinevacination(9,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/
+						NULLIF(sumvaccinevacination(7,fac_mvrf_db.facode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: 
+						numeric)*100 ,1),0) as utilization from fac_mvrf_db where {$wc} 
+						group by distcode,facode order by distcode,facode) as a group by distcode 
+						order by districtname(distcode)) as a order by cat4 desc,cat3 desc,cat2 desc,cat1 asc";
+		
+			}
+			else	
+			{
+				$query="Select * from(select uncode,unname(uncode),
+						sum(case when (Access >= 80) and (utilization < 10) then 1 else null end) as cat1,
+						sum(case when (Access >= 80) and (utilization >= 10) then 1 else null end) as cat2,
+						sum(case when (Access < 80) and (utilization < 10) then 1 else null end) as cat3,
+						sum(case when (Access < 80) and (utilization >= 10) then 1 else null end) as cat4 
+						from(select uncode,
+							COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.uncode,'unioncouncil','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0),0) as Access,
+							COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1),0) as utilization
+						from fac_mvrf_db where {$wc} group by distcode,uncode order by distcode,uncode) as a group by uncode order by unname(uncode) ) as a order by cat4 ,cat3 ,cat2 ,cat1 ";
+					$total_query="Select * from (select distcode,districtname(distcode), count(uncode) as totaluc,
+						sum(case when (Access >= 80) and (utilization < 10) then 1 else null end) as cat1,
+						sum(case when (Access >= 80) and (utilization >= 10) then 1 else null end) as cat2,
+						sum(case when (Access < 80) and (utilization < 10) then 1 else null end) as cat3,
+						sum(case when (Access < 80) and (utilization >= 10) then 1 else null end) as cat4 
+						from(select distcode,uncode,
+							COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.uncode,'unioncouncil','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0),0) as Access,
+							COALESCE(round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1),0) as utilization	 
+						from fac_mvrf_db where {$wc} 
+						group by distcode,uncode order by distcode,uncode) as a group by distcode order by  districtname(distcode)) as a order by cat4 desc,cat3 desc,cat2 desc,cat1 asc";
+				}		
+				$total_query = $this->db->query($total_query)->result_array();
+				$result = $this->db->query($query)->result_array();
+				$returned_data['result'] = $result;
+				$returned_data['total_query'] = $total_query;
+				return $returned_data;
 		}
-		else{
+		else{ 
 					
 			$query="Select * from (select distcode,districtname(distcode), count(uncode) as totaluc,
-					sum(case when (Access > 80) and (utilization < 10) then 1 else 0 end) as cat1,
-					sum(case when (Access > 80) and (utilization > 10) then 1 else 0 end) as cat2,
+					sum(case when (Access >= 80) and (utilization < 10) then 1 else 0 end) as cat1,
+					sum(case when (Access >= 80) and (utilization >= 10) then 1 else 0 end) as cat2,
 					sum(case when (Access < 80) and (utilization < 10) then 1 else 0 end) as cat3,
-					sum(case when (Access < 80) and (utilization > 10) then 1 else 0 end) as cat4
+					sum(case when (Access < 80) and (utilization >= 10) then 1 else 0 end) as cat4
 					from(select distcode,uncode,
 						round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}')::numeric/NULLIF(getmonthlytarget_specificyearrsurvivinginfants(fac_mvrf_db.uncode,'unioncouncil','{$startyear}','{$sm}','{$endyear}','{$em}') :: float,0))*100):: numeric,0) as Access,
 						round(((sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,fac_mvrf_db.uncode,'{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1) as utilization

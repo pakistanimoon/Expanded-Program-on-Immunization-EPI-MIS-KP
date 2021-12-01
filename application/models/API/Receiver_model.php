@@ -3,10 +3,9 @@ class Receiver_model extends CI_Model {
 	//================ Constructor Function Starts ==================//
 	public function __construct() {
 		parent::__construct();
-		//$this -> load -> model ('Common_model',"common");
+		$this -> load -> model ('Common_model',"common");
 	}
 	//============================ Constructor Function Ends ============================//
-	
 	
 	public function get_cc_equipments_count($status=NULL)
 	{
@@ -165,7 +164,48 @@ class Receiver_model extends CI_Model {
 		return $query->row()->available;
 	}
 
-
+	//for drilldown at provicial level 
+	/*public function get_str_stock_out_data_new($fmonth,$itemCategory)
+	{
+		$parts = explode("-",$fmonth);
+		if(isset($parts[0]) && isset($parts[1])){
+			$year = $parts[0];
+			$monthnum = 'duem'.ltrim($parts[1], '0');
+			$distcode=$this->session->District;
+			if($distcode){
+				$due="(SELECT sum($monthnum) FROM consumptioncompliance where year = '".$year."' and distcode='$distcode') as due";
+				$submitted="(SELECT count(*) FROM epi_consumption_master where fmonth ='$fmonth' and distcode='$distcode') as submitted";
+				$stockout="get_pro_level_all_fac_stock_out_new(aggtable.abc,'$fmonth','distcode','$distcode') as stockout";
+			}
+			else
+			{
+				$due="(SELECT sum($monthnum) FROM consumptioncompliance where year = '".$year."') as due";
+				$submitted="(SELECT count(*) FROM epi_consumption_master where fmonth ='$fmonth') as submitted";
+				$stockout="get_pro_level_all_fac_stock_out_new(aggtable.abc,'$fmonth') as stockout";
+			}
+			$query ="
+			select 
+			pk_id as id,
+			description as name,
+			$due,
+			$submitted,
+			aggtable.abc as cr_table_row_numb,
+			$stockout 
+			from epi_items 
+			join (
+				select item_id,array_agg('epi_consumption_detail.item_id='||pk_id) abc
+				from epi_item_pack_sizes 
+				where cr_table_row_numb is not NULL 
+				group by item_id 
+			) aggtable
+			on aggtable.item_id = epi_items.pk_id
+			where item_category_id = $itemCategory and abc is not null
+			order by pk_id asc";
+			$query = $this->db->query($query);
+			return $query->result_array();
+		}
+		return array();
+	}*/
 
 	public function get_items_stock_out_data($fmonth,$items,$storecode='3')
 	{
@@ -234,7 +274,7 @@ class Receiver_model extends CI_Model {
 		return array();
 		//cr_table_row_numb blunder should be removed from above table
 	}
-	public function get_str_stock_out_data_new($fmonth,$itemCategory)
+	public function get_str_stock_out_data_new($fmonth,$itemCategory,$storecode='3')
 	{
 		$parts = explode("-",$fmonth);
 		if(isset($parts[0]) && isset($parts[1])){
@@ -242,7 +282,11 @@ class Receiver_model extends CI_Model {
 			$distwhere = '';
 			$distcode=$this->session->District;
 			if($distcode){
-				$distwhere = " and distcode = '$distcode'";
+				$distwhere .= " and distcode = '$distcode'";
+			}
+			if($storecode){
+				$mastercolumnname = $this->getMasterColumnName($storecode);
+				$distwhere .= " and $mastercolumnname = '$storecode'";
 			}
 			$duemonthnum = 'duem'.ltrim($parts[1], '0');
 			$submonthnum = 'subm'.ltrim($parts[1], '0');
@@ -281,8 +325,7 @@ class Receiver_model extends CI_Model {
 		//<1
 		//cr_table_row_numb blunder should be removed from above table
 	}
-	//Stock Out for Vlmis Data for Punjb and SIndh as well 
-	public function get_vacc_stock_out_data($fmonth,$itemId,$storecode)
+	public function get_vacc_stock_out_data($fmonth,$itemId)
 	{
 		$parts = explode("-",$fmonth);
 		if(isset($parts[0]) && isset($parts[1])){
@@ -300,7 +343,7 @@ class Receiver_model extends CI_Model {
 			$year = $parts[0];
 			$duemonthnum = 'duem'.ltrim($parts[1], '0');
 			$submonthnum = 'subm'.ltrim($parts[1], '0');
-			$queryduesub ="SELECT sum($duemonthnum) as due,sum($submonthnum) as sub FROM consumptioncompliance where year = '".$year."' and procode='$storecode' group by year";
+			$queryduesub ="SELECT sum($duemonthnum) as due,sum($submonthnum) as sub FROM consumptioncompliance where year = '".$year."' group by year";
 			$queryobj = $this->db->query($queryduesub);
 			$result = $queryobj->row();
 			$query ="
@@ -311,40 +354,17 @@ class Receiver_model extends CI_Model {
 			'".$result->sub."' as submitted,			
 			(
 				select count(*) from(
-					select main_id as balance from epi_consumption_detail join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id where $where and fmonth = '$fmonth' and procode='$storecode' group by procode,fmonth,main_id having sum(closing_doses) < 1
+					select main_id as balance from epi_consumption_detail join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id where $where and fmonth = '$fmonth' group by fmonth,main_id having sum(closing_doses) < 1
 				) as innerq
 			) as stockout 
 			from epi_item_pack_sizes 
 			where cr_table_row_numb is not NULL and pk_id = $itemId";
 			$query = $this->db->query($query);
 			return $query->result_array();
-			//print_r($whrr);exit;
 		}
 		return array();
 	}
-	public function get_comsumption_data($data)
-	{
-		$monthfrom=$data['monthfrom'];
-		$monthto=$data['monthto'];
-		$procode=$data['procode'];
-		$this->db->select("epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,
-					round(coalesce(sum(epi_consumption_detail.opening_doses),0)) as opening,
-					round(coalesce(sum(epi_consumption_detail.received_doses),0)) as received, 
-					round(sum(coalesce(epi_consumption_detail.used_vials,0))) as used, 
-					round(sum(coalesce(epi_consumption_detail.unused_vials,0))) as unused,
-					round(sum(coalesce(epi_consumption_detail.closing_vials,0))) as closing ");
-			$this->db->from('epi_consumption_master');
-			$this->db->join("epi_consumption_detail","epi_consumption_detail.main_id = epi_consumption_master.pk_id");
-			$this->db->join("epi_item_pack_sizes ips","epi_consumption_detail.item_id = ips.pk_id");
-			$this->db->where('fmonth >= ',$monthfrom);
-			$this->db->where('fmonth <= ',$monthto);
-			$this->db->where('procode',$procode);
-			$this->db->where('ips.item_category_id <> 4');
-			$this->db->where('ips.activity_type_id=1');
-			$this->db->group_by(' epi_consumption_detail.item_id,ips.item_name,ips.number_of_doses,ips.list_rank');
-			$this->db->order_by('ips.list_rank');
-			return $this -> db -> get() -> result_array();
-	}
+	
 	public function get_technicians_data($year)
 	{
 		$query = "select tot_technician,(SELECT round(((sum(duem1+duem2+duem3+duem4+duem5+duem6+duem7+duem8+duem9+duem10+duem11+duem12))//12)::numeric,0) FROM consumptioncompliance ccp where year = '{$year}') as centers,pop,round(((pop::numeric)//tot_technician::numeric)::numeric,0) as technicianratio 
@@ -435,6 +455,29 @@ class Receiver_model extends CI_Model {
 		}
 		return array();
 		//cr_table_row_numb blunder should be removed from above table
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				getMasterColumnName
+		@ Description:  		This function will be used to return column name of consumption mater table which will be matched with value in query.
+	*/
+	public function getMasterColumnName($storecode){
+		$length = strlen($storecode);
+		switch($length){
+			case "1":
+				return "procode";
+				break;
+			case "3":
+				return "distcode";
+				break;
+			case "6":
+				return "facode";
+				break;
+			default:
+				return "procode";
+				break;
+		}
 	}
 }
 ?>

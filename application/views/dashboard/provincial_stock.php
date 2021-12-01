@@ -7,9 +7,6 @@ if($this -> session -> UserLevel=='2'){
 if($this -> session -> UserLevel=='3'){
 	$regoin="Facility";$val=1;
 }
-if($this -> session -> UserLevel=='4'){
-	$regoin="Tehsil";$val=2;
-}
 ?>
 <div class="flypanels-main">
 	<div class="flypanels-topbar"> 
@@ -173,94 +170,10 @@ if($this -> session -> UserLevel=='4'){
 						<div id="chart-container6" style="overflow:scroll;height:350px;border:1px solid #e2e2e2;"></div>
 						</div>
 					</div>
-					<!-- Hf Stock out for stock Greater Than Required -->
-					<div class="row" style="margin-bottom:20px">
-					<div class="col-md-8">
-						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
-							<span>HF Stock out Rate Requisition Camparison (Vaccines) <?php echo $reportingmonth ;?> </span>
-							<div class="pull-right">
-								<a   style="color:#000000; cursor: pointer;"  onclick="renderTableHFRequisition('chart-container9','vaccines')" style="color:#000000;" title="Tabular View"><span ><i class="icon fa fa-table"></i></span>
-								</a>							
-								<a    style="color:#000000; cursor: pointer;" title="Stacked Area View"><span ><i class="icon fa fa-line-chart" onclick="loadvaccineHFRequired('msline',false)"></i></span>
-								</a>
-								<a    style="color:#000000; cursor: pointer;" title="Line Bar View"><span ><i class="icon fa fa-bar-chart" onclick="loadvaccineHFRequired('mscolumn2d',false)"></i></span>
-								</a>
-							</div>
-						</div>
-						<!--For Non Vaccines:Item Category :2-->
-						<div id="chart-container9" style="overflow:scroll;height:350px;border:1px solid #e2e2e2;"></div>
-						</div>
-						<div class="col-md-4">
-						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
-							<span>Stock out Rate (Requisition )(Dilluent)</span>
-							<div class="pull-right">
-								<a  style="color:#000000; cursor: pointer;"  onclick="renderTableHFRequisition('chart-container10','diluents')"  style="color:#000000;" title="Tabular View"><span ><i class="icon fa fa-table"></i></span>
-								</a>							
-								<a    style="color:#000000; cursor: pointer;" title="Stacked Area View"><span ><i class="icon fa fa-line-chart" onclick="loadDilluentHFRequired('msline','false')"></i></span>
-								</a>
-								<a    style="color:#000000; cursor: pointer;" title="Line Bar View"><span ><i class="icon fa fa-bar-chart" onclick="loadDilluentHFRequired('mscolumn2d','false')"></i></span>
-								</a>
-							</div>
-						</div>
-					<!--For Non Vaccines:Item Category :2-->
-						<div id="chart-container10" style="overflow:scroll;height:350px;border:1px solid #e2e2e2;"></div>
-						</div>
-					</div>
-					<!-- For Drilldown HF stock out rate Required/Suggested-->
-					<div class="row" id="HFRequisitiondrillchart" style="margin-bottom:20px;display:none" >
-					<div class="col-md-12">
-						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
-							<span id="textnewreq">HF Stock out Rate Required/Suggested Requisition District Wise</span>
-							<!-- work on it later <div class="pull-right">
-								<a  class="" type="tabular" style="color:#000000; cursor: pointer;" onclick=""  style="color:#000000;" title="Tabular View"><span ><i class="icon fa fa-table"></i></span>
-								</a>							
-								<a   class="" type="line" style="color:#000000; cursor: pointer;" title="Line  View"><span ><i class="icon fa fa-line-chart" onclick=""></i></span>
-								</a>
-								<a  class=""  type="column2d" style="color:#000000; cursor: pointer;" title="Bar View"><span ><i class="icon fa fa-bar-chart" onclick=""></i></span>
-								</a>
-							</div> -->
-						</div>
-						<!--For Drill down chart -->
-						<div id="chart-container11" style="overflow:scroll;height:350px;border:1px solid #e2e2e2;"></div>
-						</div>
-					</div>
-					<div class="row" id="HF_Fac_Requisitiondrillchart" style="margin-bottom:20px;display:none" >
-					<div class="col-md-12">
-						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
-							<span id="textnewreqhf">HF Stock out Rate Required/Suggested Requisition  Facilities Wise</span>
-							<!-- work on it later <div class="pull-right">
-								<a  class="" type="tabular" style="color:#000000; cursor: pointer;" onclick=""  style="color:#000000;" title="Tabular View"><span ><i class="icon fa fa-table"></i></span>
-								</a>							
-								<a   class="" type="line" style="color:#000000; cursor: pointer;" title="Line  View"><span ><i class="icon fa fa-line-chart" onclick=""></i></span>
-								</a>
-								<a  class=""  type="column2d" style="color:#000000; cursor: pointer;" title="Bar View"><span ><i class="icon fa fa-bar-chart" onclick=""></i></span>
-								</a>
-							</div> -->
-						</div>
-						<!--For Drill down chart -->
-						<div id="chart-container13" style="overflow:scroll;height:350px;border:1px solid #e2e2e2;"></div>
-						</div>
-					</div>
-					<!-- for hf stock out requisition non vaacines -->
-					<div class="row" style="margin-bottom:20px">
-					<div class="col-md-12">
-						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
-							<span>HF Stock out Rate Requisition (Non Vaccines),According to closing balance in submitted reports of  <?php echo $reportingmonth ;?></span>
-							<div class="pull-right">
-								<a   style="color:#000000; cursor: pointer;" onclick="renderTableHFRequisition('chart-container12','nonvaccines')"  style="color:#000000;" title="Tabular View"><span ><i class="icon fa fa-table"></i></span>
-								</a>							
-								<a    style="color:#000000; cursor: pointer;" title="Stacked Area View"><span ><i class="icon fa fa-line-chart" onclick="loadNonVaccineHFRequired('msline',false)"></i></span>
-								</a>
-								<a    style="color:#000000; cursor: pointer;" title="Line Bar View"><span ><i class="icon fa fa-bar-chart" onclick="loadNonVaccineHFRequired('mscolumn2d',false)"></i></span>
-								</a>
-							</div>
-						</div>
-						<!--For Non Vaccines:Item Category :2-->
-						<div id="chart-container12" style="overflow:scroll;height:350px;border:1px solid #e2e2e2;"></div>
-						</div>
-					</div>
 					
 		</div>
+
+
  <!--filter bar-->
 	<?php  if(!isset($_REQUEST['export_excel'])){
 		if(isset($edit)){
@@ -271,7 +184,7 @@ if($this -> session -> UserLevel=='4'){
 	} ?>
 <script type="text/javascript">
 	//Global Variables For Store Chart Data to use for Different Chart Type.
-	Dilluent=NonVaccine=districtWise=itemname=itemtype=HFVaccine=HFNonVaccine=HFDilluent=itemid=DistrictWiseFacility=HFstockout=itemCategory=HFVaccineRequired=HFdilluentRequired=HfRequisitionStockOut=HFNonVaccineRequired=null;
+	Dilluent=NonVaccine=districtWise=itemname=itemtype=HFVaccine=HFNonVaccine=HFDilluent=itemid=DistrictWiseFacility=HFstockout=itemCategory=null;
 	dataSource = {
 		"chart": {
 			"caption": "Total Avialable Stock in Warehouse (<?php echo $this->session->loginfrom;?>)",
@@ -311,17 +224,10 @@ if($this -> session -> UserLevel=='4'){
 		},
 		{
 			"seriesname": "District",
-            <?php if($this -> session -> UserLevel=='4'){ ?>
-			"initiallyHidden":<?php echo $val;?>,
-			<?php }?> 
-            "data": <?php echo json_encode($data['district']);?>
+			"data": <?php echo json_encode($data['district']);?>
 		},
 		{
-			"seriesname": "Tehsil",
-			"data": <?php echo json_encode($data['tehsil']);?>
-		},
-		{
-            "seriesname": "Facility",
+			"seriesname": "Facility",
 			"data": <?php echo json_encode($data['facility']);?>
 		}]
 	};
@@ -361,6 +267,8 @@ if($this -> session -> UserLevel=='4'){
 					}
 				});
 		}
+		//console.log(DistrictWiseFacility);
+		//console.log(itemCategory);
 		$('#text').attr('type','facilities');
 		if(itemCategory==1)
 		{
@@ -483,144 +391,10 @@ if($this -> session -> UserLevel=='4'){
 			}
 		});	
 	}
-		//function to get facility stock of tehsil parameter
-	function getTehsilFacilityWise(itemid,name,type,columntype,itemseqid,tcode)
-	{
-		$('#drillchart').show();
-		if(type=="1")
-		{
-			$('#text').text('Available Stock (Vaccine)');
-		}
-		if(type=="2")
-		{
-			$('#text').text('Available Stock (Non Vaccine)');
-		}
-		if(type=="3")
-		{
-			$('#text').text('Available Stock (Dilluent)');
-		}	
-		$.ajax({
-			type: "POST", //columntype :district wise,tehsil wise etc
-			data : {itemid:itemid,itemseqid:itemseqid,itemname:name,type:type,tcode:tcode},
-			dataType: "JSON",
-			url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_tehsils_facilities",
-			success: function(result)
-			{
-				FusionCharts.ready(function() {
-					var salesChart = new FusionCharts({
-						type:'column2d',
-						renderAt: "chart-container4",
-						width: '100%',
-						height: '350',
-						dataFormat: 'json',
-						dataSource: {
-							"chart": {
-								"caption": "Facility Level Stock  Available Stock of "+name+"",
-								//"subCaption": statusName,
-								"plottooltext": "Total Available Equipments at $label are <b>$dataValue</b>",
-								"yaxisname": "Vials/Pcs",
-								"linethickness": "2",
-								"formatnumberscale": "1",
-								"baseFont": "lato-regular",
-								"slantlabels": "1",
-								"labelDisplay": "rotate",
-								"divLineAlpha": "40",
-								"anchoralpha": "0",
-								"animation": "1",
-								"legendborderalpha": "20",
-								"drawCrossLine": "1",
-								"crossLineColor": "#0d0d0d",
-								"crossLineAlpha": "100",
-								"tooltipGrayOutColor": "#80bfff",
-								"theme": "zune",
-								"showValues" : "1",
-								"valueFontColor": "#000000",
-								"valueBgColor": "#FFFFFF",
-								"valueBgAlpha": "50",
-								"thousandSeparatorPosition": "3,3,3",
-								"useDataPlotColorForLabels": "1",                    
-								"exportenabled": "1",
-								"showBorder": "1"
-							},
-							"data": result
-						}
-					})
-					.render();
-				});
-			}
-		});	
-	}
-	//function to get facility stock of tehsil parameter
-	function getTehsilFacility(itemid,name,type,columntype,itemseqid,distcode)
-	{ 
-		$('#drillchart').show();
-		if(type=="1")
-		{
-			$('#text').text('Available Stock (Vaccine)');
-		}
-		if(type=="2")
-		{
-			$('#text').text('Available Stock (Non Vaccine)');
-		}
-		if(type=="3")
-		{
-			$('#text').text('Available Stock (Dilluent)');
-		}	
-		$.ajax({
-			type: "POST", //columntype :district wise,tehsil wise etc
-			data : {itemid:itemid,itemseqid:itemseqid,itemname:name,type:type,distcode:distcode},
-			dataType: "JSON",
-			url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_tehs_facilities",
-			success: function(result)
-			{ 
-				FusionCharts.ready(function() {
-					var salesChart = new FusionCharts({
-						type:'column2d',
-						renderAt: "chart-container4",
-						width: '100%',
-						height: '350',
-						dataFormat: 'json',
-						dataSource: {
-							"chart": {
-								"caption": "Tehsil Level Stock  Available Stock of "+name+"",
-								//"subCaption": statusName,
-								"plottooltext": "Total Available Equipments at $label are <b>$dataValue</b>",
-								"yaxisname": "Vials/Pcs",
-								"linethickness": "2",
-								"formatnumberscale": "1",
-								"baseFont": "lato-regular",
-								"slantlabels": "1",
-								"labelDisplay": "rotate",
-								"divLineAlpha": "40",
-								"anchoralpha": "0",
-								"animation": "1",
-								"legendborderalpha": "20",
-								"drawCrossLine": "1",
-								"crossLineColor": "#0d0d0d",
-								"crossLineAlpha": "100",
-								"tooltipGrayOutColor": "#80bfff",
-								"theme": "zune",
-								"showValues" : "1",
-								"valueFontColor": "#000000",
-								"valueBgColor": "#FFFFFF",
-								"valueBgAlpha": "50",
-								"thousandSeparatorPosition": "3,3,3",
-								"useDataPlotColorForLabels": "1",                    
-								"exportenabled": "1",
-								"showBorder": "1"
-							},
-							"data": result
-						}
-					})
-					.render();
-				});
-			}
-		});	
-	}
-//Function to show chart district wise detail 
+	//Function to show chart district wise detail 
 	function getDistrictWise(itemid,name,type,chartType,ajax)
 	{
-		//console.log($(this));
+		////console.log($(this));
 		$('#drillchart').show();
 		$('#text').attr('type','district');
 		
@@ -698,93 +472,12 @@ if($this -> session -> UserLevel=='4'){
 						.render();
 					});
 	}
-	//Function to show chart tehsil wise detail 
-	function getTehsilWise(itemid,name,type,chartType,ajax)
-	{
-		////console.log($(this));
-		$('#drillchart').show();
-		$('#text').attr('type','tehsil');
-		
-
-		if(ajax=='true')
-		{
-			itemname=name;itemtype=type;itemid=itemid;
-			$.ajax({
-				type: "POST",
-				data : {itemid:itemid,type:type},
-				async:false,
-				dataType: "JSON",
-				url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_tehsils",
-				success: function(result)
-				{
-					tehsilWise=result; 
-				}
-			}); 
-		}
-			if(itemtype=="1")
-		{
-			$('#text').text('Available Stock Tehsil Wise(Vaccine)');
-			
-		}
-		if(itemtype=="2")
-		{
-			$('#text').text('Available Stock Tehsil Wise(Non Vaccine)');
-			
-		}
-		if(itemtype=="3")
-		{
-			$('#text').text('Available Stock Tehsil Wise(Dilluent)');
-			
-		}
-	//Fusion chart 	
-					FusionCharts.ready(function() {
-						var salesChart = new FusionCharts({
-							type:chartType,
-							renderAt: "chart-container4",
-							width: '100%',
-							height: '350',
-							dataFormat: 'json',
-							dataSource: {
-								"chart": {
-									"caption": "Tehsils Wise Total Available Stock of "+itemname+"",
-									//"subCaption": statusName,
-									"plottooltext": "Total Available Stock at $label are <b>$dataValue</b>",
-									"yaxisname": "Vials/Pcs",
-									"linethickness": "2",
-									"formatnumberscale": "1",
-									"baseFont": "lato-regular",
-									"slantlabels": "1",
-									"labelDisplay": "rotate",
-									"divLineAlpha": "40",
-									"anchoralpha": "0",
-									"animation": "1",
-									"legendborderalpha": "20",
-									"drawCrossLine": "1",
-									"crossLineColor": "#0d0d0d",
-									"crossLineAlpha": "100",
-									"tooltipGrayOutColor": "#80bfff",
-									"theme": "zune",
-									"showValues" : "1",
-									"valueFontColor": "#000000",
-									"valueBgColor": "#FFFFFF",
-									"valueBgAlpha": "50",
-									"thousandSeparatorPosition": "3,3,3",
-									"useDataPlotColorForLabels": "1",                    
-									"exportenabled": "1",
-									"showBorder": "1"
-								},
-								"data": tehsilWise
-							}
-						})
-						.render();
-					});
-	}
 	//function to get facility stock tehsil wise 
-	function getTehsilWiseFacility(itemid,itemseqid,columntype,type,name)
+	function getTehsilWiseFacility(itemid,itemseqid,columntype,type,name,distcode)
 	{
 		$.ajax({
 			type: "POST", //columntype :district wise,tehsil wise etc
-			data : {itemid:itemid,itemseqid:itemseqid,name:name,itemCategory:type},
+			data : {itemid:itemid,itemseqid:itemseqid,distcode:distcode,name:name,itemCategory:type},
 			dataType: "JSON",
 			url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_Tehsil_facilities",
 			success: function(result)
@@ -896,10 +589,6 @@ if($this -> session -> UserLevel=='4'){
 			//laodNonVaccineHFStockOut(chartType="line",ajax="true");
 			laodNonVaccineHFStockOut(chartType="column2d",ajax="true");
 			laodDilluentHFStockOut(chartType="column2d",ajax="true");
-			//NEW HF stock out 
-			loadvaccineHFRequired(chartType="mscolumn2d",ajax="true");
-			loadDilluentHFRequired(chartType="mscolumn2d",ajax="true");
-			loadNonVaccineHFRequired(chartType="mscolumn2d",ajax="true");
 	});
 	function laodVaccineHFStockOut(chartType,ajax)
 	{
@@ -1148,17 +837,10 @@ if($this -> session -> UserLevel=='4'){
 					},
 					{
 						"seriesname": "District",
-                        <?php if($this -> session -> UserLevel=='4'){ ?>
-			            "initiallyHidden":<?php echo $val;?>,
-						<?php }?> 
-                        "data": Dilluent['data']['district']
+						"data": Dilluent['data']['district']
 					},
 					{
-						"seriesname": "Tehsil",
-						"data": Dilluent['data']['tehsil']
-					},
-					{
-                        "seriesname": "Facility",
+					"seriesname": "Facility",
 						"data": Dilluent['data']['facility']
 					}]		
 				}
@@ -1231,17 +913,10 @@ if($this -> session -> UserLevel=='4'){
 							},
 							{
 							  "seriesname": "District",
-                              <?php if($this -> session -> UserLevel=='4'){ ?>
-			                  "initiallyHidden":<?php echo $val;?>,
-							  <?php }?> 
-                              "data": NonVaccine['data']['district']
+							  "data": NonVaccine['data']['district']
 							},
 							{
-							  "seriesname": "Tehsil",
-							  "data": NonVaccine['data']['tehsil']
-							},
-							{
-                              "seriesname": "Facility",
+"seriesname": "Facility",
 							  "data": NonVaccine['data']['facility']
 							}
 						  ]		
@@ -1259,12 +934,10 @@ if($this -> session -> UserLevel=='4'){
 		// equivalent to a table by parsing the exported CSV.
 		var region='<?php echo $this->session-> UserLevel; ?>';
 		$('#'+containerId).html('<img src="<?php echo base_url(); ?>includes/images/ajax-loader_bluenn.gif"> loading...');
-		var htmlheader='<tr><th>Items</th><th>Provincial</th><th>District</th><th>Tehsil</th><th>Facility</th></tr>';
+		var htmlheader='<tr><th>Items</th><th>Provincial</th><th>District</th><th>Facility</th></tr>';
 		if(region=='3')
-			var htmlheader='<tr><th>Items</th><th>District</th><th>Tehsil</th><th>Facility</th></tr>';
-        if(region=='4')
-			var htmlheader='<tr><th>Items</th><th>District</th><th>Tehsil</th><th>Facility</th></tr>';
-$.ajax({
+			var htmlheader='<tr><th>Items</th><th>District</th><th>Facility</th></tr>';	
+		$.ajax({
 			type: "POST",
 			data : {'itemCategory':ItemCategory,'result':'false'},
 			//dataType: "JSON",
@@ -1280,7 +953,7 @@ $.ajax({
 					var tddata=(region== '2' ?'<td>'+jsondata.data[data].province_stock+'</td>':'') ; 
 					if(jsondata.data[data].facility==null) 
 						jsondata.data[data].facility=0;
-					htmlheader+='<tr><th>'+jsondata.data[data].name+'</th>'+tddata+'<td style="cursor:pointer" containderid='+containerId+' class="distdrilldown" id='+jsondata.data[data].id+' itemname='+jsondata.data[data].name+' >'+jsondata.data[data].district_stock+'</td><td style="cursor:pointer" containderid='+containerId+' class="tehdrilldown" id='+jsondata.data[data].id+' itemid='+jsondata.data[data].itemid+' itemname='+jsondata.data[data].name+'>'+jsondata.data[data].tehsil_stock+'</td><td style="cursor:pointer" containderid='+containerId+' class="facdrilldown" id='+jsondata.data[data].id+' itemid='+jsondata.data[data].itemid+' itemname='+jsondata.data[data].name+'>'+jsondata.data[data].facility+'</td></tr>';
+					htmlheader+='<tr><th>'+jsondata.data[data].name+'</th>'+tddata+'<td style="cursor:pointer" containderid='+containerId+' class="distdrilldown" id='+jsondata.data[data].id+' itemname='+jsondata.data[data].name+' >'+jsondata.data[data].district_stock+'</td><td style="cursor:pointer" containderid='+containerId+' class="facdrilldown" id='+jsondata.data[data].id+' itemid='+jsondata.data[data].itemid+' itemname='+jsondata.data[data].name+'>'+jsondata.data[data].facility+'</td></tr>';
 				}
 					$('#'+containerId).html('<table class="table table-bordered table-hover table-striped" style="padding-top: 0%; width: 100%; height: 100%; table-layout: fixed;" role="grid" width="100%" max-height="350px">'+htmlheader+'</table>');
 
@@ -1424,7 +1097,7 @@ $.ajax({
 	//HF stock out rate tabular
 	function renderTableHF(containerId,ItemCategory) 
 	{
-	$('#'+containerId).html('<img src="<?php echo base_url(); ?>includes/images/ajax-loader_bluenn.gif"> loading...');
+$('#'+containerId).html('<img src="<?php echo base_url(); ?>includes/images/ajax-loader_bluenn.gif"> loading...');
 		var htmlheader='<tr><th>Items</th><th>Stock Out Rate</th></tr>';
 		$.ajax({
 			type: "POST",
@@ -1477,265 +1150,6 @@ $.ajax({
 		//district/facilities wise 
 		//getDistrictWiseHFStockoutRate('5','BCG-20','Vaccine','column2d','false');   
 	});		
-	/**NEw hf stock out required chart */
-	function loadvaccineHFRequired(chartType,ajax)
-	{
-		if(ajax=="true")
-		{
-			$.ajax({
-				type: "POST",
-				data : {'typeofitems':'vaccines','result':'false'},
-				dataType: "JSON",
-				async:false,
-				url: "<?php echo base_url() ?>API/Provincial/get_HF_stockOut_Rate_Requisition",
-				success: function(result)
-				{
-					//alert(result);
-					HFVaccineRequired=result;
-					//console.log(result);
-
-				}
-			});
-		}
-		//code for chart
-		FusionCharts.ready(function() {
-			var salesChart = new FusionCharts({
-				type:chartType,
-				renderAt: "chart-container9",
-				width: '100%',
-				height: '350',
-				dataFormat: 'json',
-				dataSource: HFVaccineRequired
-			})
-			.render();
-		});
-	}	
-	function loadDilluentHFRequired(chartType,ajax)
-	{
-		if(ajax=="true")
-		{
-			$.ajax({
-				type: "POST",
-				data : {'typeofitems':'diluents','result':'false'},
-				dataType: "JSON",
-				async:false,
-				url: "<?php echo base_url() ?>API/Provincial/get_HF_stockOut_Rate_Requisition",
-				success: function(result)
-				{
-					//alert(result);
-					HFdilluentRequired=result;
-					//console.log(result);
-
-				}
-			});
-		}
-		//code for chart
-		FusionCharts.ready(function() {
-			var salesChart = new FusionCharts({
-				type:chartType,
-				renderAt: "chart-container10",
-				width: '100%',
-				height: '350',
-				dataFormat: 'json',
-				dataSource:HFdilluentRequired
-			})
-			.render();
-		});
-	}	
-	function loadNonVaccineHFRequired(chartType,ajax)
-	{
-		if(ajax=="true")
-		{
-			$.ajax({
-				type: "POST",
-				data : {'typeofitems':'nonvaccines','result':'false'},
-				dataType: "JSON",
-				async:false,
-				url: "<?php echo base_url() ?>API/Provincial/get_HF_stockOut_Rate_Requisition",
-				success: function(result)
-				{
-					//alert(result);
-					HFNonVaccineRequired=result;
-					//console.log(result);
-
-				}
-			});
-		}
-		//code for chart
-		FusionCharts.ready(function() {
-			var salesChart = new FusionCharts({
-				type:chartType,
-				renderAt: "chart-container12",
-				width: '100%',
-				height: '350',
-				dataFormat: 'json',
-				dataSource:HFNonVaccineRequired
-			})
-			.render();
-		});
-	}
-		//function for drillchart for HF stock out rate	Requisition district wise
-	function getDistrictWiseHFStockoutRate_Requisition(itemid,agg_items_id,itemname,category_id,ajax,requisiton)
-	{
-		$('#chart-container11').html('<img src="<?php echo base_url(); ?>includes/images/ajax-loader_bluenn.gif"> loading...');
-		$('#HFRequisitiondrillchart').show();  
-		if(category_id=="1")
-		{
-			$('#textnewreq').text('HF Stock out Rate '+requisiton+' Requisition  District Wise(Vaccine)');
-		}
-		if(category_id=="2")
-		{
-			$('#textnewreq').text('HF Stock out Rate  '+requisiton+' Requisition District  Wise(Non Vaccine)');
-		}
-		if(category_id=="3")
-		{
-			$('#textnewreq').text('HF Stock out Rate  '+requisiton+' Requisition District  Wise(Dilluent)');
-		}
-		if(ajax=="true")
-		{     
-			$.ajax({
-				type: "POST", //columntype :district wise,tehsil wise etc
-				data : {itemid:itemid,agg_items_id:agg_items_id,itemname:itemname,requisiton:requisiton,category_id:category_id},
-				dataType: "JSON",
-				async:false,
-				url: "<?php echo base_url() ?>API/Provincial/get_stockout_Rate_Requisition_districts",
-				success: function(result)
-				{
-					HfRequisitionStockOut=result;
-					////console.log(HFstockout);
-				}
-			});
-		}
-		//chart 
-		FusionCharts.ready(function() {
-			var salesChart = new FusionCharts({
-				type:'column2d',
-				renderAt: "chart-container11",
-				width: '100%',
-				height: '350',
-				dataFormat: 'json',
-				dataSource: {
-					"chart": {
-					"caption": "HF Stock out Rate "+requisiton+" Requisition District Wise of "+itemname+"", 
-						//"subCaption": statusName,
-						"plottooltext": "Total  Stock out Rate Requisition at $label are <b>$dataValue</b>",
-						"yaxisname": "Vials/Pcs",
-						"linethickness": "2",
-						"formatnumberscale": "1",
-						"baseFont": "lato-regular",
-						"slantlabels": "1",
-						"labelDisplay": "rotate",
-						"divLineAlpha": "40",
-						"numberSuffix": "%",
-						"anchoralpha": "0",
-						"animation": "1",
-						"legendborderalpha": "20",
-						"drawCrossLine": "1",
-						"crossLineColor": "#0d0d0d",
-						"crossLineAlpha": "100",
-						"tooltipGrayOutColor": "#80bfff",
-						"theme": "zune",
-						"showValues" : "1",
-						"valueFontColor": "#000000",
-						"valueBgColor": "#FFFFFF",
-						"valueBgAlpha": "50",
-						"thousandSeparatorPosition": "3,3,3",
-						"useDataPlotColorForLabels": "1",                    
-						"exportenabled": "1",
-						"showBorder": "1"
-					},
-					"data": HfRequisitionStockOut
-				}
-			})
-			.render();
-		});
-		
-	}
-	////function for drillchart for HF stock out rate	Requisition facility wise 
-	function getFacilityWiseHFStockoutRate_Requisition(itemid,agg_items_id,itemname,itemCategory,ajax,requisition,distcode,distname)
-	{
-		
-		
-		$('#HF_Fac_Requisitiondrillchart').show();
-		$('#textnewreqhf').text('HF Stock out Rate Requisition Facility Wise');
-		$.ajax({
-			type: "POST", //columntype :district wise,tehsil wise etc
-			data : {itemid:itemid,agg_items_id:agg_items_id,itemname:itemname,distcode:distcode,requisition:requisition},
-			dataType: "JSON",
-			url: "<?php echo base_url() ?>API/Provincial/get_stockout_Rate_Requisition_facility",
-			success: function(result)
-			{
-				FusionCharts.ready(function() {
-					var salesChart = new FusionCharts({
-						type:'column2d',
-						renderAt: "chart-container13",
-						width: '100%',
-						height: '350',
-						dataFormat: 'json',
-						dataSource: {
-							"chart": {
-								"caption": "HF Stock out Rate "+requisition+" Requisition Facility  Wise of "+itemname+" ("+distname+")", 
-								//"subCaption": statusName,
-								"plottooltext": "Total  Stock out Rate Requisition at $label are <b>$dataValue</b>",
-								"yaxisname": "Vials/Pcs",
-								"linethickness": "2",
-								"formatnumberscale": "1",
-								"baseFont": "lato-regular",
-								"slantlabels": "1",
-								"labelDisplay": "rotate",
-								"divLineAlpha": "40",
-								"numberSuffix": "%",
-								"anchoralpha": "0",
-								"animation": "1",
-								"legendborderalpha": "20",
-								"drawCrossLine": "1",
-								"crossLineColor": "#0d0d0d",
-								"crossLineAlpha": "100",
-								"tooltipGrayOutColor": "#80bfff",
-								"theme": "zune",
-								"showValues" : "1",
-								"valueFontColor": "#000000",
-								"valueBgColor": "#FFFFFF",
-								"valueBgAlpha": "50",
-								"thousandSeparatorPosition": "3,3,3",
-								"useDataPlotColorForLabels": "1",                    
-								"exportenabled": "1",
-								"showBorder": "1"
-							},
-							"data": result
-						}
-					})
-					.render();
-				});
-			}
-		});
-	}
-	function renderTableHFRequisition(containerId,ItemCategory) 
-	{
-		$('#'+containerId).html('<img src="<?php echo base_url(); ?>includes/images/ajax-loader_bluenn.gif"> loading...');
-		var htmlheader='<tr><th>Items</th><th>Stock Out Greater Requisition</th><th>Stock Out Less Requisition</th></tr>';
-		$.ajax({
-			type: "POST",
-			data : {'typeofitems':ItemCategory,'result':'false'},
-			//dataType: "JSON",
-			url: "<?php echo base_url() ?>API/Provincial/get_str_stock_out_requisition_data_tabular",
-			success: function(result)
-			{
-				jsondata=JSON.parse(result);
-				for(var data in jsondata.data)
-				{
-					var stockoutgreaterrate=jsondata.data[data].stockoutgreater/jsondata.data[data].submitted;
-						stockoutgreaterrate=stockoutgreaterrate.toFixed(2)*100;
-					stockoutgreaterrate+="%"
-					var stockoutlessrate=jsondata.data[data].stockoutless/jsondata.data[data].submitted;
-					stockoutlessrate=stockoutlessrate.toFixed(2)*100;
-					stockoutlessrate+="%";	
-					htmlheader+='<tr><th>'+jsondata.data[data].name+'</th><td>'+stockoutgreaterrate+'</td><td>'+stockoutlessrate+'</td></tr>';
-				}
-				$('#'+containerId).html('<table class="table table-bordered table-hover table-striped" style="padding-top: 0%; width: 100%; height: 100%; table-layout: fixed;" role="grid" width="100%" max-height="350px">'+htmlheader+'</table>');
-			}
-	});
-	}
 </script>	
 		
 	</div>

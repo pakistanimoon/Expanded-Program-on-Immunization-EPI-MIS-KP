@@ -19,13 +19,7 @@ class Redrec_reportmodel extends CI_Model {
 		$distcode = $data['distcode'];
 		$quarter = $data['quarter'];
 		$year = $data['year'];
-		if($this->session->Tehsil){
-			$tcode=$this->session->Tehsil;
-			$wc = "and tcode = '$tcode' ";
-		}else{
-			$wc = "";
-		}
-		$query="select unname(uncode) as ucname,technicianname(techniciancode) as technicianname, case when session_type='Fixed' then facilityname(sitename_s) else sitename_s end  as sitename ,facode,* from hf_quarterplan_dates_db where distcode='$distcode' and quarter ='$quarter' and year='$year' $wc order by tcode,uncode,techniciancode,facode";
+		$query="select unname(uncode) as ucname ,technicianname(techniciancode) as technicianname,facode, case when session_type='Fixed' then facilityname(sitename_s) else sitename_s end  as sitename ,* from hf_quarterplan_dates_db where distcode='$distcode' and quarter ='$quarter' and year='$year' order by tcode,facode,uncode,techniciancode";
 		$result = $this-> db-> query($query);	
 		$data['data'] = $result-> result_array(); 
 		$resultt['distcode']=$distcode;

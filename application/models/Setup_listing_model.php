@@ -6,7 +6,7 @@ class Setup_listing_model extends CI_Model {
 		$this -> load -> model('Filter_model');
 		$this->load->helper('my_functions_helper');
 		$this->load->helper('epi_functions_helper');
-		$this->load->helper('epi_reports_helper');
+		$this -> load -> helper('epi_reports_helper');
 		error_reporting(0);
 	}
 	//////////////////////////////////Constructor End////////////////////////////////////////////////////////////
@@ -14,32 +14,28 @@ class Setup_listing_model extends CI_Model {
 	////////////////////////////////// Listing Filters Start////////////////////////////////////////////////////////////
 	public function listing($listing_name) {
 		$post_data=posted_Values();
-	    //print_r($post_data); exit;
 		if(!$post_data['distcode']>0)
 			$post_data['distcode']= $this->session->District;
-		$neWc1 = $wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['tcode']);
+		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode']);
 		//echo '<pre>';print_r($post_data);exit;
-		//$UserLevel=$_SESSION['UserLevel'];
-		//$datArray['UserLevel']= $UserLevel;
-		//$neWc1 = $wc;
-		//$replacements = array(0 => "province");
+		$UserLevel=$_SESSION['UserLevel'];
+		$datArray['UserLevel']= $UserLevel;
+		$neWc1 = $wc;
+		$replacements = array(0 => "province");
 		$neWc1[0] = str_replace("procode","province",$neWc1[0]);
 		if($this ->input -> post('distcode')){
 		   unset($neWc1[1]);
 		}
-		if($this -> session -> UserLevel==4){
-			unset($neWc1[2]);
-		}
 		$datArray = NULL;
 		$resultDist = NULL;
-		if($listing_name=="district" || $listing_name=="tehsil" || $listing_name=="union_Council" || $listing_name=="EPI_Centers" || $listing_name=="VPD_Centers" || $listing_name=="supervisor" || $listing_name=="technician" || $listing_name=="Computer_Operator" || $listing_name=="Generator_Operator" || $listing_name=="Cold_Chain_Operator" || $listing_name=="Cold_Chain_Mechanic"  ||  $listing_name=="Cold_Chain_Technician" || $listing_name=="district_Surveillance_Officer"  || $listing_name=="cold_Chain_Generator_Operator" || $listing_name=="cold_Chain_Driver" || $listing_name=="med_technician" || $listing_name=="StoreKeeper" || $listing_name=="DataEntry_Operator" || $listing_name=="Measles_Focal_Person"  ){
+		if($listing_name=="district" || $listing_name=="tehsil" || $listing_name=="union_Council" || $listing_name=="EPI_Centers" || $listing_name=="VPD_Centers" || $listing_name=="supervisor" || $listing_name=="technician" || $listing_name=="Computer_Operator" || $listing_name=="Generator_Operator" || $listing_name=="Cold_Chain_Operator" || $listing_name=="Cold_Chain_Mechanic"  ||  $listing_name=="Cold_Chain_Technician" || $listing_name=="district_Surveillance_Officer"  || $listing_name=="cold_Chain_Generator_Operator" || $listing_name=="cold_Chain_Driver" || $listing_name=="med_technician" || $listing_name=="StoreKeeper" || $listing_name=="DataEntry_Operator" ){
 			$query="Select distcode, district from districts ".((!empty($neWc1))?' where '.implode(" AND ",$neWc1):'')." order by district";
 			$resultDist=$this->db->query($query);
 			$datArray['districts'] = $resultDist->result_array();
 			if($listing_name=="district" || $listing_name=="tehsil" || $listing_name=="union_Council" || $listing_name=="EPI_Centers" || $listing_name=="technician")
 				$datArray['years'] = 'years';
 		}
-		if($listing_name=="union_Council" || $listing_name=="EPI_Centers"  || $listing_name=="VPD_Centers" ||  $listing_name=="supervisor" || $listing_name=="technician"  || $listing_name=="DataEntry_Operator" || $listing_name=="Computer_Operator" || $listing_name=="Generator_Operator" || $listing_name=="Cold_Chain_Operator" || $listing_name=="Cold_Chain_Mechanic" || $listing_name=="Cold_Chain_Technician" || $listing_name=="district_Surveillance_Officer" ||  $listing_name=="cold_Chain_Generator_Operator" || $listing_name=="med_technician" ){
+		if($listing_name=="union_Council" || $listing_name=="EPI_Centers"  || $listing_name=="VPD_Centers" ||  $listing_name=="supervisor" || $listing_name=="technician"  || $listing_name=="DataEntry_Operator" || $listing_name=="Computer_Operator" || $listing_name=="Generator_Operator" || $listing_name=="Cold_Chain_Operator" || $listing_name=="Cold_Chain_Mechanic" || $listing_name=="Cold_Chain_Technician" || $listing_name=="district_Surveillance_Officer" ||  $listing_name=="cold_Chain_Generator_Operator" || $listing_name=="med_technician"){
 			$query="Select tehsil, tcode from tehsil ".(!empty($wc) ? ' WHERE '.implode(" AND ", $wc) : '')." order by tehsil";
 			$resultTeh=$this->db->query($query);
 			$datArray['tehsil'] = $resultTeh->result_array();
@@ -76,7 +72,7 @@ class Setup_listing_model extends CI_Model {
 			$result=$this->db->query($query);
 			$datArray['hr_sub_type'] = $result->result_array();
 		}
-		if($listing_name=="supervisor" || $listing_name=="StoreKeeper" || $listing_name=="DataEntry_Operator" || $listing_name=="technician" || $listing_name=="Cold_Chain_Technician" || $listing_name=="Computer_Operator" || $listing_name=="Generator_Operator"  || $listing_name=="Cold_Chain_Operator" || $listing_name=="Cold_Chain_Mechanic" || $listing_name=="district_Surveillance_Officer" || $listing_name=="cold_Chain_Technician"  || $listing_name=="cold_Chain_Generator_Operator" || $listing_name=="cold_Chain_Driver" || $listing_name=="med_technician" || $listing_name=="DataEntry_operator" || $listing_name=="Measles_Focal_Person" || $listing_name=="hr"){
+		if($listing_name=="supervisor" || $listing_name=="StoreKeeper" || $listing_name=="DataEntry_Operator" || $listing_name=="technician" || $listing_name=="Cold_Chain_Technician" || $listing_name=="Computer_Operator" || $listing_name=="Generator_Operator"  || $listing_name=="Cold_Chain_Operator" || $listing_name=="Cold_Chain_Mechanic" || $listing_name=="district_Surveillance_Officer" || $listing_name=="cold_Chain_Technician"  || $listing_name=="cold_Chain_Generator_Operator" || $listing_name=="cold_Chain_Driver" || $listing_name=="med_technician" || $listing_name=="DataEntry_operator" || $listing_name=="hr"){
 			$query="select caption,value from lookup_detail where master_id='1'";
 			$result=$this->db->query($query);
 			$datArray['status'] = $result->result_array();
@@ -127,6 +123,7 @@ class Setup_listing_model extends CI_Model {
 		$titlee = ($listing_name=='hr')?'HR Listing':$titlee;
 		$datArray['listing_filters'] = $this->Filter_model->createListingFilter($datArray, $datArray, base_url().'setup_listing/'.str_replace(" ","_",$listing_name).'_listing',$UserLevel,$titlee);
 		$datArray['titlee']= $titlee;
+		createTransactionLog("Listing", $titlee." Viewed");
 		return $datArray;
 	}
 	//////////////////////////////////Listing Filters End////////////////////////////////////////////////////////////
@@ -135,7 +132,7 @@ class Setup_listing_model extends CI_Model {
 	public function district_listing($year){
 		////////getting Procode distcode///////////////
 		$post_data=posted_Values();
-	//  print_r($post_data);exit;
+	//	print_r($post_data);exit;
 		$year = $post_data['year'];
 		//echo $year;exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],'');
@@ -178,6 +175,7 @@ class Setup_listing_model extends CI_Model {
 		$data['getListingTable']=getListingReportTable($data['allData'],'',$data['allDataTotal'],'NO');
 		$data['TopInfo'] = tableTopInfo($subTitle, $post_data['distcode'], '', $year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		//print_r($data['TopInfo']);exit;
 		return $data;
 	}
@@ -186,8 +184,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Tehsil Listing Start////////////////////////////////////////////////////////////
 	public function tehsil_listing($year) {
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		$year = $post_data['year'];
 		$distcode = $post_data['distcode'];
 		//print_r($post_data);exit;
@@ -214,7 +210,6 @@ class Setup_listing_model extends CI_Model {
 			unset($neWc1[1]);
          $distcodeWc = "AND tehsil.distcode = '".$distcode."'";
 		}
-		//print_r($distcode);exit;
 		$s="'Active'";
 		$query =' Select tehsil as "Tehsil", tehsil.tcode as  "Tehsil Code", districtname(tehsil.distcode) AS insiderow,
 		(select count(t.tcode) from tehsil t where t.distcode = tehsil.distcode) as total,
@@ -223,7 +218,7 @@ class Setup_listing_model extends CI_Model {
 		coalesce(tehsil_population.population,\'0\') as population,getnewbornpop(tehsil.tcode::text,\'tehsil\'::text,'.$year.'::text) as "New Borns", getsurvivinginfantspop(tehsil.tcode::text,\'tehsil\'::text,'.$year.'::text) as "Surviving Infants",
 		getplwpop(tehsil.tcode::text,\'tehsil\'::text,'.$year.'::text) as "P&LW",
 		round((getsurvivinginfantspop(tehsil.tcode::text,\'tehsil\'::text,'.$year.'::text)*94.98)/100) as "12-23 M",
-		getcbapop(tehsil.tcode::text,\'tehsil\'::text,'.$year.'::text) as "CBAs" FROM tehsil full join tehsil_population on  tehsil_population.tcode=tehsil.tcode and tehsil_population.year=\''.$year.'\' where procode = \''.$post_data['procode'].'\' '.$distcodeWc.' order by tehsil.distcode,tehsil.tcode';
+		getcbapop(tehsil.tcode::text,\'tehsil\'::text,'.$year.'::text) as "CBAs" FROM tehsil full join tehsil_population on  tehsil_population.tcode=tehsil.tcode  and tehsil_population.year=\''.$year.'\' where procode = \''.$post_data['procode'].'\' '.$distcodeWc.' order by tehsil.distcode,tehsil.tcode';
 		//print_r($query);exit;
 		$result=$this -> db -> query($query);
 		$data['allData'] = $result -> result_array();
@@ -235,6 +230,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($data['allData'],"Tehsil",$data['allDataTotal'],'NO');
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////Tehsil Listing End////////////////////////////////////////////////////////////
@@ -243,14 +239,14 @@ class Setup_listing_model extends CI_Model {
 	public function epi_centers_listing($year){
 		$post_data=posted_Values();
 		//$year = $post_data['year'];
-		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['tcode'],"fac.");
-		//$UserLevel=$_SESSION['UserLevel'];
-		//$datArray['UserLevel']= $UserLevel;
+		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],"fac.");
+		$UserLevel=$_SESSION['UserLevel'];
+		$datArray['UserLevel']= $UserLevel;
 		if(!($post_data['distcode']>0)){
-			redirect('setup_listing/summary_listing?listing=EPI_Centers&year='.$year);
-			exit();
+				redirect('setup_listing/summary_listing?listing=EPI_Centers&year='.$year);
+				exit();
 		}
-		//Excel file code is here*******************
+			//Excel file code is here*******************
 		if($this->input->post('export_excel'))
 		{
 			//if request is from excel
@@ -261,6 +257,10 @@ class Setup_listing_model extends CI_Model {
 			//Excel Ending here
 		}
 		//Excel file code ENDS*******************
+		if($post_data['tcode'] > 0){
+			$wc[] = "fac.tcode = '".$post_data['tcode']."'";
+
+		}
 		if($post_data['uncode'] > 0){
 			$wc[] = "fac.uncode = '".$post_data['uncode']."'";
 		}
@@ -271,12 +271,12 @@ class Setup_listing_model extends CI_Model {
 		(select count(f.facode) from facilities f where f.hf_type=\'e\' AND f.distcode = \''.$post_data['distcode'].'\' AND f.tcode = fac.tcode ) as total, tehsilname(fac.tcode) as "Tehsil",
 		unname(fac.uncode) as "Union Council", initcap(fac.areatype) as "Area Type",
 		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_facode = fac.facode and post_status= '.$s.' and post_hr_sub_type_id=\'01\') as "Technicians",
-			(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_facode = fac.facode and post_status= '.$s.' and post_hr_sub_type_id=\'09\') as "HF Incharge",
+		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_facode = fac.facode and post_status= '.$s.' and post_hr_sub_type_id=\'09\') as "HF Incharge",
 		coalesce(facilities_population.population,\'0\') as "Catchment Population", getnewbornpop(fac.facode::text,\'facility\'::text,'.$year.'::text) as "New Borns", getsurvivinginfantspop(fac.facode::text,\'facility\'::text,'.$year.'::text) as "Surviving Infants",
 		getplwpop(fac.facode::text,\'facility\'::text,'.$year.'::text) as "P&LW",
 		round((getsurvivinginfantspop(fac.facode::text,\'facility\'::text,'.$year.'::text)*94.98)/100) as "12-23 M",
-		getcbapop(fac.facode::text,\'facility\'::text,'.$year.'::text) as "CBAs" from facilities fac full join facilities_population on facilities_population.facode=fac.facode and facilities_population.year=\''.$year.'\' '.$where.' order by fac.tcode,fac.fac_name asc';
-
+		getcbapop(fac.facode::text,\'facility\'::text,'.$year.'::text) as "CBAs" from facilities fac full join facilities_population on facilities_population.facode=fac.facode and facilities_population.year=\''.$year.'\' '.$where.' order by fac.tcode,fac.uncode asc';
+		//print_r($query);exit;
 		$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$fortotal = '\' \' as totaluc,
@@ -291,11 +291,13 @@ class Setup_listing_model extends CI_Model {
 		$queryTotal =' Select '.$fortotal.'  FROM ('.$query.') as a';
 		$resultTotal=$this->db->query($queryTotal);
 		$allDataTotal=$resultTotal->result_array();
+		//print_r($allDataTotal);exit;
 		$subTitle ="EPI Center Listing";
 		$data['subtitle']=$subTitle;
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal,'NO');
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']= exportIcons($post_data);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////Health Facility Listing End////////////////////////////////////////////////////////////
@@ -303,14 +305,15 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////VPD Center Listing Start////////////////////////////////////////////////////////////
 	public function vpd_centers_listing($year){
 		$post_data=posted_Values();
-		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['tcode'],"fac.");
-		//$UserLevel=$_SESSION['UserLevel'];
-		//$datArray['UserLevel']= $UserLevel;
+		//$year = $post_data['year'];
+		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],"fac.");
+		$UserLevel=$_SESSION['UserLevel'];
+		$datArray['UserLevel']= $UserLevel;
 		if(!($post_data['distcode']>0)){
-			redirect('setup_listing/summary_listing?listing=VPD_Centers&year='.$year);
-			exit();
+				redirect('setup_listing/summary_listing?listing=VPD_Centers&year='.$year);
+				exit();
 		}
-		//Excel file code is here*******************
+			//Excel file code is here*******************
 		if($this->input->post('export_excel'))
 		{
 			//if request is from excel
@@ -321,9 +324,14 @@ class Setup_listing_model extends CI_Model {
 			//Excel Ending here
 		}
 		//Excel file code ENDS*******************
+		if($post_data['tcode'] > 0){
+			$wc[] = "fac.tcode = '".$post_data['tcode']."'";
+
+		}
 		if($post_data['uncode'] > 0){
 			$wc[] = "fac.uncode = '".$post_data['uncode']."'";
 		}
+
 		$s="'Active'";
 		$where = 'where fac.hf_type=\'e\' AND fac.is_ds_fac  = \'1\' '.((!empty($wc))? ' AND '.implode(" AND ",$wc):'');
 		$query =' Select fac.fac_name as "VPD Center Name",
@@ -338,8 +346,10 @@ class Setup_listing_model extends CI_Model {
 		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_facode = fac.facode and post_status= '.$s.' and post_hr_sub_type_id=\'01\') as "Technicians",
 		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_facode = fac.facode and post_status= '.$s.' and post_hr_sub_type_id=\'09\') as "HF Incharge"
 		from facilities fac  '.$where.'  order by fac.tcode,fac.fac_name asc';
+		//print_r($query);exit;
 		$result=$this->db->query($query);
 		$allData=$result->result_array();
+		//print_r($allData); exit;
 		$fortotal = '\' \' as totaluc,
 		\' \' as abc,
 		\' \' as klm,
@@ -351,80 +361,8 @@ class Setup_listing_model extends CI_Model {
 	    $queryTotal =' Select '.$fortotal.'  FROM ('.$query.') as a'; 
 		$resultTotal=$this->db->query($queryTotal);
 	    $allDataTotal=$resultTotal->result_array();
-		$subTitle ="VPD Center Listing";
-		$data['subtitle']=$subTitle;
-		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal,'NO');
-		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
-		$data['exportIcons']= exportIcons($post_data);
-		return $data;
-	}
-	///////////********************************************************************************///////////////////////
-	//////////////////////////////////Village Mohalla Listing Start////////////////////////////////////////////////////////////
-		//////////////////////////////////Village Mohalla Listing Start////////////////////////////////////////////////////////////
-	public function village_mohalla_listing($year){
-		$post_data=posted_Values();
-		//$year = $post_data['year'];
-		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],"fac.");
-		$UserLevel=$_SESSION['UserLevel'];
-		$datArray['UserLevel']= $UserLevel;
-	
-		if(!($post_data['distcode']>0)){
-	redirect('setup_listing/summary_listing?listing=Village_Mohalla&year='.$year);
-				exit();
-		}
-			//Excel file code is here*******************
-		if($this->input->post('export_excel'))
-		{
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Health_Facility_Listing.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-		//Excel file code ENDS*******************
-		$totalrow='tcode';
-		$tfuntionname='tehsilname';
-		if($post_data['tcode'] > 0){
-			$wc[] = "fac.tcode = '".$post_data['tcode']."'";
-			$totalrow='uncode';
-			$tfuntionname='unname';
-		}
-		if($post_data['uncode'] > 0){
-			$wc[] = "fac.uncode = '".$post_data['uncode']."'";
-			
-		}
-		
-		// after union Council
-		//'.$tfuntionname.'(fac.'.$totalrow.') AS insiderow ,
-		//(select count(f.vcode) from villages_population f where uncode= fac.uncode and '.$wc_year.')  as total,
-		
-		//print_r($totalrow);exit;
-		$s="'Active'";
-		$wc_year= "year = '".$year."'";
-		$where = 'where  '.((!empty($wc))? '  '.implode(" AND ",$wc):'');
-		//print_r($where);exit;
-		 $query = ' Select tehsilname(fac.tcode) as "Tehsil",
-		unname(fac.uncode) as "union Council",
-		fac.village as "Village Mohalla Name",
-		(select population from villages_population where vcode= fac.vcode and '.$wc_year.') as "Population"
-	 	from villages fac  '.$where.' group by fac.tcode,fac.uncode,fac.vcode,fac.village order by fac.'.$totalrow.',fac.uncode,fac.village asc';
-		$result=$this->db->query($query);
-	//	echo "$query";  $allData=$result->result_array();
-		//echo "<pre>"; print_r($allData); exit;
-		$fortotal = '\' \' as totaluc,
-		\' \' as abc,
-		\' \' as klm,
-		\' \' as xyz,
-		\' \' as pqr,
-		\' \' as fbc,
-		\' \' as rec';
-		$innerrowName = "Village Mohalla";
-	    $queryTotal =' Select '.$fortotal.'  FROM ('.$query.') as a'; 
-		$resultTotal=$this->db->query($queryTotal);
-	    $allDataTotal=$resultTotal->result_array();
 		//print_r($allDataTotal);exit;
-		$subTitle ="Village Mohalla Population";
+		$subTitle ="VPD Center Listing";
 		$data['subtitle']=$subTitle;
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal,'NO');
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
@@ -433,22 +371,25 @@ class Setup_listing_model extends CI_Model {
 		return $data;
 	}
 	//////////////////////////////////Health Facility Listing End////////////////////////////////////////////////////////////
+	///////////********************************************************************************///////////////////////
 	//////////////////////////////////Union Council Listing Start////////////////////////////////////////////////////////////
 	public function union_council_listing($year){
 		$post_data=posted_Values();
-		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['tcode'],"unioncouncil.");
-		//$UserLevel=$_SESSION['UserLevel'];
-		//$datArray['UserLevel']= $UserLevel;
-		//$tcode		= isset($_REQUEST['tcode'])?$_REQUEST['tcode']:$this->input->post('tcode');
+     //echo $year;exit;
+	//	$year = $post_data['year'];
+		$wc = getWC_Array($post_data['procode'],NULL,$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
+		$UserLevel=$_SESSION['UserLevel'];
+		$datArray['UserLevel']= $UserLevel;
+		$tcode		= isset($_REQUEST['tcode'])?$_REQUEST['tcode']:$this->input->post('tcode');
 		/*if($tcode >0){
 			$wc[] = "tcode = '".$tcode."'";
 		} */
 		if(!($post_data['distcode'] > 0)){
-			redirect('setup_listing/summary_listing?listing=union_Council&year='.$year);
-			exit();
-        }/* else{
+				redirect('setup_listing/summary_listing?listing=union_Council&year='.$year);
+				exit();
+        }else{
 			$wc[] = "unioncouncil.distcode = '".$post_data['distcode']."'";
-		} */
+		}
 		//Excel file code is here*******************
 		if($this->input->post('export_excel'))
 		{
@@ -460,10 +401,10 @@ class Setup_listing_model extends CI_Model {
 			//Excel Ending here
 		}
 		//Excel file code ENDS*******************
-		/* if($tcode >0){
+		if($tcode >0){
 			$wc[] = "unioncouncil.tcode = '".$post_data['tcode']."'";
 
-		} */
+		}
 		//main query to view report
 		$s="'Active'";
 		$query =' Select un_name as "Union Council Name",
@@ -494,6 +435,7 @@ class Setup_listing_model extends CI_Model {
 
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////Union Council Listing End////////////////////////////////////////////////////////////
@@ -501,8 +443,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////DataEntry_Operator_listingStart////////////////////////////////////////////////////////////
 	public function DataEntry_Operator_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		//print_r($wc);exit();
@@ -568,6 +508,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -584,8 +525,6 @@ class Setup_listing_model extends CI_Model {
 	///////////////////////////StoreKeeper_listing Start/////////////////////////////////
 		public function StoreKeeper_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -650,6 +589,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -666,8 +606,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Technician Listing Start////////////////////////////////////////////////////////////
 	public function technician_listing($year){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//$year = $post_data['year'];
 		//echo $year;exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode']);
@@ -719,21 +657,8 @@ class Setup_listing_model extends CI_Model {
 		});
 		//main query to view report
 	   $where = ((!empty($wc))? 'where '.implode(" AND ",$wc):'');
- //print_r($year);exit;
- 
- 	if($year == NULL){
- 
+ // print_r($where);exit;
 		 $query = 'select techniciandb.technicianname as "Technician Name", techniciandb.techniciancode as "Technician Code",
-		techniciandb.employee_type as "Employee Type", tehsilname(techniciandb.tcode) as "Tehsil",
-		unname(techniciandb.uncode) as "Union Council",
-		facilityname(techniciandb.facode) as "EPI Center", initcap(techniciandb.areatype) as "Area Type",
-		tech_pop(techniciandb.techniciancode) as "Catchment Population",
-		techniciandb.status,
-	    \'District: \' || districtname(techniciandb.distcode) || \', EPI Center: \' || facilityname(techniciandb.facode) as insiderow,
-		(select count(technician.techniciancode) from techniciandb technician '.str_replace("techniciandb.","technician.",$where).' AND technician.facode = techniciandb.facode ) as total
-		from techniciandb  '.$where.'  order by techniciandb.techniciancode,techniciandb.tcode,techniciandb.facode';
-	}else{	
-		$query = 'select techniciandb.technicianname as "Technician Name", techniciandb.techniciancode as "Technician Code",
 		techniciandb.employee_type as "Employee Type", tehsilname(techniciandb.tcode) as "Tehsil",
 		unname(techniciandb.uncode) as "Union Council",
 		facilityname(techniciandb.facode) as "EPI Center", initcap(techniciandb.areatype) as "Area Type",
@@ -743,7 +668,6 @@ class Setup_listing_model extends CI_Model {
 	    \'District: \' || districtname(techniciandb.distcode) || \', EPI Center: \' || facilityname(techniciandb.facode) as insiderow,
 		(select count(technician.techniciancode) from techniciandb technician '.str_replace("techniciandb.","technician.",$where).' AND technician.facode = techniciandb.facode ) as total
 		from techniciandb  '.$where.'  order by techniciandb.techniciancode,techniciandb.tcode,techniciandb.facode';
-		}
 //print_r($query);exit;
 	   $result=$this->db->query($query);
 		$allData=$result->result_array();
@@ -764,6 +688,7 @@ class Setup_listing_model extends CI_Model {
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Technician Listing";
@@ -780,8 +705,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Medical Technician Listing Start////////////////////////////////////////////////////////////
 	public function med_technician_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode']);
 		//print($wc);exit;
 		//echo '<pre>';print_r($post_data);exit;
@@ -857,6 +780,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Technician Listing";
@@ -873,12 +797,9 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Supervisor Listing Start////////////////////////////////////////////////////////////
 	public function supervisor_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
-        //echo '<pre>';print_r($post_data);exit();
+	    //echo '<pre>';print_r($post_data);exit();
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['tcode'],$post_data['facode']);
-		//print_r($wc ); exit; 
-        $sup_type=$this->input->get_post('supervisor_type')?$this->input->post('supervisor_type'):NULL;
+		$sup_type=$this->input->get_post('supervisor_type')?$this->input->post('supervisor_type'):NULL;
 		$UserLevel=$_SESSION['UserLevel'];
 		$datArray['UserLevel']= $UserLevel;
 		// $status			= isset($_REQUEST['status'])?$_REQUEST['status']:$this->input->post('status');
@@ -945,6 +866,7 @@ class Setup_listing_model extends CI_Model {
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		//print_r($_REQUEST);exit();
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////Supervisor Council Listing End////////////////////////////////////////////////////////////
@@ -953,8 +875,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Computer Operator Listing Start////////////////////////////////////////////////////////////
 	public function computer_operator_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1014,6 +934,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -1026,91 +947,12 @@ class Setup_listing_model extends CI_Model {
 		return $data;
 	}
 
-	//////////////////////////////////Computer Operator Listing End////////////////////////////////////////////////////////////
+		//////////////////////////////////Computer Operator Listing End////////////////////////////////////////////////////////////
 	///////////********************************************************************************///////////////////////
-	//////////////////////////////////Measles Focal Person Listing Start////////////////////////////////////////////////////////////
-	public function measles_focal_person_listing(){
-		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
-		//echo '<pre>';print_r($this->input->post());exit;
-		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
-		$UserLevel=$_SESSION['UserLevel'];
-		$datArray['UserLevel']= $UserLevel;
-		/*$status		= isset($_REQUEST['status'])?$_REQUEST['status']:$this->input->post('status');
-		$facode		= isset($_REQUEST['facode'])?$_REQUEST['facode']:$this->input->post('facode');*/
-		//$tcode		= isset($_REQUEST['tcode'])?$_REQUEST['tcode']:$this->input->post('tcode');
-		if(isset($_REQUEST['export_excel']))
-		{
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=Measles_Focal_Person_Listing.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
-
-		if($post_data['status'] !=''){
-			$wc[] = "status = '".$post_data['status']."'";
-		}
-		/*
-		if($tcode >0){
-					$wc[] = "tcode = '".$tcode."'";
-				}*/
-		if(!($post_data['distcode'] > 0)){
-				redirect('setup_listing/summary_listing?listing=Measles_Focal_Person&status='.$status);
-				exit();
-		}
-		unset($wc[0]);
-		array_walk($wc, function(&$value, $key){
-			$value = 'mfpdb.'.$value;
-		});
-		//main query to view report
-		$s="'Active'";
-		$where1 = ((!empty($wc))? ' where '.implode(" AND ",$wc):'');
-		$query = 'select mfpdb.mfpname as "Measles Focal Person Name",
-			mfpdb.mfpcode as "Measles Focal Person Code",
-			mfpdb.nic as "CNIC",
-			districtname(mfpdb.distcode) as "District",
-			mfpdb.status as Status,
-			\'District: \' || districtname(mfpdb.distcode)  as insiderow,
-			(select count(measles_focal_person.mfpcode) from mfpdb measles_focal_person '.str_replace("mfpdb.","measles_focal_person.",$where1).') as total   from mfpdb
-			 ' . $where1 . ' ';
-		$result=$this->db->query($query);
-		$allData=$result->result_array();
-		$innerrowName = "Measles Focal Person";
-		$fortotal =  '\' \' as totalfc,
-			\' \' as totalcnic,
-			\' \' as totalstatus';
-		//query to get overall total
-		$queryTotal =' Select Distinct '.$fortotal.'  FROM ('.$query.') as a';
-		$resultTotal=$this->db->query($queryTotal);
-		$allDataTotal=$resultTotal->result_array();
-		$subTitle ="Measles Focal Person Listing";
-		//$data['subtitle']=$this->getReportHead($subTitle);
-		$data['subtitle']=$subTitle;
-		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
-		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
-		$data['exportIcons']=exportIcons($_REQUEST);
-		/*$result=$this->db->query($query);
-		$allData=$result->result_array();
-		$subTitle ="Computer Operator";
-		$data['subtitle']=$subTitle;
-		$data['report_table']=getListingReportTable($allData,'','','NO');
-		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],"",$post_data['facode'],"","",$year);
-		//print_r($_REQUEST);exit();
-		$data['exportIcons']=exportIcons($_REQUEST);
-		createTransactionLog("Listing", $subTitle." Viewed");*/
-		return $data;
-	}
-
-	//////////////////////////////////Measles Focal Person Listing End////////////////////////////////////////////////////////////
-	//////////********************************************************************************///////////////////////
+	///////////********************************************************************************///////////////////////
 	//////////////////////////////////Generator Operator Listing Start////////////////////////////////////////////////////////////
 	public function generator_operator_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1170,6 +1012,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -1186,8 +1029,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Cold Chain Operator Listing Start////////////////////////////////////////////////////////////
 	public function cold_chain_operator_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1247,6 +1088,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -1263,8 +1105,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Cold_Chain_Mechanic Listing start////////////////////////////////////////////////////////////
 	public function cold_chain_mechanic_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1319,6 +1159,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////Cold Chain Technician Listing End////////////////////////////////////////////////////////////
@@ -1326,8 +1167,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////District Surveillance Officer Listing Start////////////////////////////////////////////////////////////
 	public function district_surveillance_officer_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1396,6 +1235,7 @@ class Setup_listing_model extends CI_Model {
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		//print_r($_REQUEST);exit();
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////District surveillance Officer Listing End////////////////////////////////////////////////////////////
@@ -1403,8 +1243,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Cold Chain Technician Listing Start////////////////////////////////////////////////////////////
 	public function cold_chain_technician_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1464,6 +1302,7 @@ class Setup_listing_model extends CI_Model {
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -1480,8 +1319,6 @@ class Setup_listing_model extends CI_Model {
 	//////////////////////////////////Cold Chain Generator Operator Listing Start////////////////////////////////////////////////////////////
 public function cold_chain_generator_operator_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1532,6 +1369,7 @@ public function cold_chain_generator_operator_listing(){
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		return $data;
 	}
 	//////////////////////////////////Cold Chain Technician Listing End////////////////////////////////////////////////////////////
@@ -1539,8 +1377,6 @@ public function cold_chain_generator_operator_listing(){
 	//////////////////////////////////Cold Chain Driver Listing Start////////////////////////////////////////////////////////////
 	public function cold_chain_driver_listing(){
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		//echo '<pre>';print_r($this->input->post());exit;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode'],$post_data['tcode']);
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1600,6 +1436,7 @@ public function cold_chain_generator_operator_listing(){
 		$data['report_table']=getListingReportTable($allData,$innerrowName,$allDataTotal);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],$post_data['facode'],$year);
 		$data['exportIcons']=exportIcons($_REQUEST);
+		createTransactionLog("Listing", $subTitle." Viewed");
 		/*$result=$this->db->query($query);
 		$allData=$result->result_array();
 		$subTitle ="Computer Operator";
@@ -1619,10 +1456,7 @@ public function cold_chain_generator_operator_listing(){
 	//	print_r($year);exit;
 	//echo "danish";exit;
 		$post_data=posted_Values();
-		if(!$post_data['distcode']>0)
-			$post_data['distcode']= $this->session->District;
 		$wc = getWC_Array($post_data['procode'],$post_data['distcode'],$post_data['facode']);
-        //print_r($wc); exit; 
 		$status		= isset($_REQUEST['status'])?$_REQUEST['status']:'Active';
 		$year		= isset($_REQUEST['year'])?$_REQUEST['year']:'';
 		$UserLevel=$_SESSION['UserLevel'];
@@ -1646,11 +1480,12 @@ public function cold_chain_generator_operator_listing(){
 		if(isset($_REQUEST['distcode'])){
 			unset($neWc1[1]);
 		}
-	     //print_r($neWc1);exit;
+		//print_r($neWc1);exit;
 		//print_r($neWc1);exit;
 		$status="Active";
 		//$year = 2016;
 		$curYear = date('Y');
+		//print_r($curYear); exit;
 		if($type=='supervisor')
 		{
 			if($sup_type=='EPI Coordinator'){
@@ -1702,7 +1537,6 @@ public function cold_chain_generator_operator_listing(){
 		(select count(facode) from facilities where facilities.distcode = districts.distcode and facilities.hf_type = \'e\' ) as "EPI Center",
 		(select coalesce(districts_population.population,\'0\') from districts_population where districts.distcode=districts_population.distcode and districts_population.year=\''.$curYear.'\') as population
 		FROM districts '.((!empty($neWc1))? 'where '.implode(" AND ",$neWc1):'');
-        
 			}
 		}
 		else if ($type=='district_Surveillance_Officer'){
@@ -1721,7 +1555,7 @@ public function cold_chain_generator_operator_listing(){
 			(select count(cocode) from codb where codb.distcode = districts.distcode and codb.status=\''.$status.'\') as "Computer Operator",
 			(select count(facode) from facilities where facilities.distcode = districts.distcode and facilities.hf_type = \'e\' ) as "EPI Center",
 			(select coalesce(districts_population.population,\'0\') from districts_population where districts.distcode=districts_population.distcode and districts_population.year=\''.$curYear.'\') as population
-			FROM districts '.((!empty($neWc1))? 'where '.implode(" AND ",$neWc1):'');
+			from districts '.((!empty($neWc1))? 'where '.implode(" AND ",$neWc1):'');
 		}
 		else if ($type=='Generator_Operator'){
 			$query =' Select district as "District ", districts.distcode as  "District Code",
@@ -1787,6 +1621,9 @@ public function cold_chain_generator_operator_listing(){
 			FROM districts '.((!empty($neWc1))? 'where '.implode(" AND ",$neWc1):'');
 		}
 		else if($type=='technician'){
+
+
+
 			$query =' Select district as "District ", districts.distcode as  "District Code",
 			(select count(tcode) from tehsil where tehsil.distcode = districts.distcode ) as "tehsils",
 			(select count(uncode) from unioncouncil where distcode = districts.distcode ) as "UCs",
@@ -1853,22 +1690,7 @@ public function cold_chain_generator_operator_listing(){
 			}
 		}
 		else {
-			if($this -> session -> UserLevel==4){
-				unset($neWc1[0]);
-				$query =' Select tehsil.tehsil as "Tehsil", tehsil.tcode as  "Tehsil Code",
-		(select count(tcode) from tehsil where tehsil.tcode = tehsil.tcode ) as "tehsils",
-		(select count(uncode) from unioncouncil where tcode = tehsil.tcode ) as "UCs",
-		(select count(facode) from facilities where facilities.tcode = tehsil.tcode and facilities.hf_type = \'e\' ) as "EPI Centers",
-		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_tcode = tehsil.tcode and post_status= \''.$status.'\' and  post_hr_sub_type_id=\'10\') as "District Surveillance Officer",
-		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_tcode = tehsil.tcode and post_status= \''.$status.'\' and  post_hr_sub_type_id=\'17\') as "Computer Operator",
-		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_tcode = tehsil.tcode and post_status= \''.$status.'\' and  post_hr_sub_type_id=\'09\') as "HF Incharge",
-		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_tcode = tehsil.tcode and post_status= \''.$status.'\' and  post_hr_sub_type_id=\'01\') as "Technician",
-		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_tcode = tehsil.tcode and post_status= \''.$status.'\' and  post_hr_sub_type_id=\'14\') as "Driver",
-		(select coalesce(tehsil_population.population,\'0\') from tehsil_population where tehsil.tcode=tehsil_population.tcode and tehsil_population.year=\''.$year.'\') as population
-	    FROM tehsil '.((!empty($neWc1))? 'where '.implode(" AND ",$neWc1):'');
-		//$query.=' and districts_population.year=\''.$year.'\'';
-		$query.='order by tehsil.tehsil asc';	
-		 }else{
+
 			$query =' Select districts.district as "District", districts.distcode as  "District Code",
 		(select count(tcode) from tehsil where tehsil.distcode = districts.distcode ) as "tehsils",
 		(select count(uncode) from unioncouncil where distcode = districts.distcode ) as "UCs",
@@ -1880,10 +1702,11 @@ public function cold_chain_generator_operator_listing(){
 		(SELECT COUNT(*) from (SELECT DISTINCT ON (code)code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery where post_distcode = districts.distcode and post_status= \''.$status.'\' and  post_hr_sub_type_id=\'14\') as "Driver",
 		(select coalesce(districts_population.population,\'0\') from districts_population where districts.distcode=districts_population.distcode and districts_population.year=\''.$year.'\') as population
 	    FROM districts '.((!empty($neWc1))? 'where '.implode(" AND ",$neWc1):'');
-		//$query.=' and districts_population.year=\''.$year.'\'';
+		//$query.='';
 		$query.='order by districts.district asc';
-         }
-        }
+
+
+		}
 		
 		$result=$this->db->query($query);
 		$allData=$result->result_array();
@@ -1906,6 +1729,7 @@ public function cold_chain_generator_operator_listing(){
 		$data['exportIcons']=exportIcons($_REQUEST);
 		$data['TopInfo']=$this->tableTopInfo($subTitle,$post_data['distcode'],'',$year);
 		$data['subtitle']=$subTitle;
+		createTransactionLog("Listing", $titlee." Listing Summary Viewed");
 		return $data;
 	}
 	//////////////////////////////////Summary Council Listing End////////////////////////////////////////////////////////////
@@ -2062,10 +1886,7 @@ public function cold_chain_generator_operator_listing(){
 			    	  }
 		return $html;
 	}
-	//////////////////////////////////Top Table Info  End////////////////////////////////////////////////////////////
-	///////////********************************************************************************///////////////////////
-	//////////////////////////////////Setup Listing Model End////////////////////////////////////////////////////////////
-    public function hr_listing(){
+	public function hr_listing(){
 		//print_r($_POST); exit();
 		$post_data=posted_Values();
 		//print_r($post_data); exit();
@@ -2154,17 +1975,6 @@ public function cold_chain_generator_operator_listing(){
 				$type="post";
 				$wc = "post_distcode = '" . $distcode . "' AND post_status = '" . $status. "' ";
 			}
-		}else if($this->input->get_post('tcode') && $this->input->get_post('status')){
-			//echo'bb'; exit();
-			$status=$this->input->get_post('status');
-			$tcode=$this->input->get_post('tcode');
-			if($status =="Transferred" || $status =="Posted"){
-				$type="pre";
-				$wc = "pre_tcode = '" . $tcode . "' AND pre_status = '" . $status. "' ";
-			}else{
-				$type="post";
-				$wc = "post_tcode = '" . $tcode . "' AND post_status = '" . $status. "' ";
-			}
 		}
 	    /* array_walk($wc, function(&$value, $key){
 			$value = 'hr_db_history.'.$value;
@@ -2176,19 +1986,11 @@ public function cold_chain_generator_operator_listing(){
 			districtname(hr_db_history.'.$type.'_distcode) as "District",
 			hr_db_history.'.$type.'_status as "Status"
 			from hr_db_history where '.$wc.' order by hr_db_history.name asc'; */
-		if( $_SESSION['UserLevel']=='4'){
-			$query='SELECT name as "HR Name",getsubtypename(post_hr_sub_type_id) as "HR Type",
-			codee as "HR Code",fathername as "Father Name",employee_type as "Employee Type",
-			tehsilname('.$type.'_tcode) as tehsil,'.$type.'_status as "Status" 
-			from (SELECT DISTINCT ON (code) code as codee,* FROM hr_db_history ORDER BY code DESC, id DESC) 
-			subquery where '.$wc.' ';	
-		}else{
-			$query='SELECT name as "HR Name",getsubtypename(post_hr_sub_type_id) as "HR Type",
-			codee as "HR Code",fathername as "Father Name",employee_type as "Employee Type",
-			districtname('.$type.'_distcode) as district,'.$type.'_status as "Status" 
-			from (SELECT DISTINCT ON (code) code as codee,* FROM hr_db_history ORDER BY code DESC, id DESC) 
-			subquery where '.$wc.' ';	
-		}	
+		$query='SELECT name as "HR Name",getsubtypename(post_hr_sub_type_id) as "HR Type",
+		codee as "HR Code",fathername as "Father Name",employee_type as "Employee Type",
+		districtname('.$type.'_distcode) as district,'.$type.'_status as "Status" 
+		from (SELECT DISTINCT ON (code) code as codee,* FROM hr_db_history ORDER BY code DESC, id DESC) 
+		subquery where '.$wc.' ';	
 		//echo $query;exit;
 		$result=$this->db->query($query);
 		$allData=$result->result_array();
@@ -2200,5 +2002,8 @@ public function cold_chain_generator_operator_listing(){
 		$data['exportIcons']=exportIcons($_REQUEST);
 		return $data;
 	}
+	//////////////////////////////////Top Table Info  End////////////////////////////////////////////////////////////
+	///////////********************************************************************************///////////////////////
+	//////////////////////////////////Setup Listing Model End////////////////////////////////////////////////////////////
 }
 ?>

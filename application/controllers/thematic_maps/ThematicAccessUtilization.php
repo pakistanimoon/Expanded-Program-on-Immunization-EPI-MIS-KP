@@ -60,8 +60,8 @@ class ThematicAccessUtilization extends CI_Controller {
 		$monthnameto = monthname($monthto);
 		
 		if ($yearfrom == $yearto && $monthnamefrom != $monthnameto){
-			$yearMonth = " From {$monthnamefrom} to {$monthnameto}, {$yearfrom}" ;
-			$data['hovermap'] = " Year: <b>From {$monthnamefrom} to {$monthnameto}, {$yearfrom}</b>";
+			$yearMonth = " {$yearfrom} {$monthnamefrom} to {$monthnameto}" ;
+			$data['hovermap'] = " Year: <b>{$yearfrom}, From {$monthnamefrom} to {$monthnameto}</b>";
 		}
 		else if ($yearfrom == $yearto && $monthnamefrom == $monthnameto)
 		{
@@ -145,11 +145,6 @@ class ThematicAccessUtilization extends CI_Controller {
 		$procode=$this->session->Province;
 		if($data['id'] AND $data['id'] > 0){
 			$code = $data['id'];
-			$wc = " and fac.distcode='{$code}' ";
-			if($this -> session -> UserLevel == 4){
-				$code = $this->session->TehsilCode;
-				$wc = " and fac.tcode='{$code}' ";
-			}
 			$query="select code,name,Access,utilization,
 			sum(case when (Access >= 80) and (utilization < 10) then 1 else null end) as cat1,
 			sum(case when (Access >= 80) and (utilization >= 10) then 1 else null end) as cat2,
@@ -162,11 +157,10 @@ class ThematicAccessUtilization extends CI_Controller {
 					path
 					from fac_mvrf_db fac
 					join uc_wise_maps_paths d1 on d1.uncode=fac.uncode 
-					where fac.procode = '{$procode}' {$wc}  
+					where fac.procode = '{$procode}' and fac.distcode='{$data['id']}' 
 					group by fac.uncode,path order by fac.uncode
 			) as a group by code,name,path,Access,utilization order by cat4,cat3,cat2,cat1";
-		}
-		else{
+		}else{
 			$query="
 			select code,name,Access,utilization,
 			sum(case when (Access >= 80) and (utilization < 10) then 1 else null end) as cat1,
@@ -184,7 +178,6 @@ class ThematicAccessUtilization extends CI_Controller {
 				group by fac.distcode,path order by fac.distcode
 				) as a group by code,name,path,Access,utilization order by cat4,cat3,cat2,cat1";
 		}
-		//echo $query;
 		$result = $this -> maps -> getEPIDIndicator($code,$query);
 		return $result;
 		
@@ -202,7 +195,7 @@ class ThematicAccessUtilization extends CI_Controller {
 		}
 		else
 		{
-			$data['id']  		= ($this -> session -> UserLevel == 4 )?$this -> session -> TehsilCode:(($this->input->post('id'))?$this->input->post('id'):$this -> session -> District);
+			$data['id']  		= ($this -> input -> post('id'))?$this -> input -> post('id'):$this -> session -> District;
 			$data['fmonthfrom'] = ($this->input->post('monthfrom'))?$this->input->post('monthfrom'):date('Y',strtotime("first day of previous months")).'-'.date('m',strtotime("first day of previous months"));
 			$data['fmonthto'] 	= ($this->input->post('monthto'))?$this->input->post('monthto'):date('Y',strtotime("first day of previous months")).'-'.date('m',strtotime("first day of previous months"));
 		}
@@ -224,8 +217,8 @@ class ThematicAccessUtilization extends CI_Controller {
 		$monthnameto = monthname($monthto);
 		
 		if ($yearfrom == $yearto && $monthnamefrom != $monthnameto){
-			$yearMonth = " From {$monthnamefrom} to {$monthnameto}, {$yearfrom}" ;
-			$data['hovermap'] = " Year: <b>From {$monthnamefrom} to {$monthnameto}, {$yearfrom}</b>";
+			$yearMonth = " {$yearfrom} {$monthnamefrom} to {$monthnameto}" ;
+			$data['hovermap'] = " Year: <b>{$yearfrom}, From {$monthnamefrom} to {$monthnameto}</b>";
 		}
 		else if ($yearfrom == $yearto && $monthnamefrom == $monthnameto)
 		{
@@ -243,12 +236,8 @@ class ThematicAccessUtilization extends CI_Controller {
 		$procode = $this->session->Province;
 		$info['mapName'] = $info['barName'] = "{$locality} Wise Access and Utilization, {$districtName}, {$yearMonth}";
 		$info['subtittle'] = $this -> session -> provincename;
-		$Otype = "district";
-		if($this -> session -> UserLevel == 4){
-			$Otype = "tehsil";
-		}
-		$select = "select round(getmonthlytarget_specificyearrsurvivinginfants('{$data['id']}','{$Otype}','{$yearfrom}','{$monthfrom}','{$yearto}','{$monthto}'):: numeric) as SurvInfTargets,
-					sumvaccinevacination(7,'{$data['id']}','{$fmonthfrom}','{$fmonthto}')::numeric/nullif(round(getmonthlytarget_specificyearrsurvivinginfants('{$data['id']}','{$Otype}','{$yearfrom}','{$monthfrom}','{$yearto}','{$monthto}'):: numeric),0)*100 as coverage,
+		$select = "select round(getmonthlytarget_specificyearrsurvivinginfants('{$data['id']}','district','{$yearfrom}','{$monthfrom}','{$yearto}','{$monthto}'):: numeric) as SurvInfTargets,
+					sumvaccinevacination(7,'{$data['id']}','{$fmonthfrom}','{$fmonthto}')::numeric/nullif(round(getmonthlytarget_specificyearrsurvivinginfants('{$data['id']}','district','{$yearfrom}','{$monthfrom}','{$yearto}','{$monthto}'):: numeric),0)*100 as coverage,
 					round(((sumvaccinevacination(7,'{$data['id']}','{$fmonthfrom}','{$fmonthto}') :: numeric - sumvaccinevacination(9,'{$data['id']}','{$fmonthfrom}','{$fmonthto}'):: numeric)/NULLIF(sumvaccinevacination(7,'{$data['id']}','{$fmonthfrom}','{$fmonthto}'):: float,0) :: numeric)*100 ,1) as dropout";
 		$targets = $this -> maps -> getEPIDIndicator(NULL,$select,true);
 		
@@ -331,11 +320,11 @@ class ThematicAccessUtilization extends CI_Controller {
 
 		$compliance = array();
 		foreach ($serieses as $key => $value) {
-			$compliance[$key] = $value['y'];
+				$compliance[$key] = $value['y'];
 		}
 		array_multisort($compliance, SORT_ASC, $serieses);
 		foreach ($serieses as $key => $value) {
-			array_push($serieses1, $value['name']);
+				array_push($serieses1, $value['name']);
 		}
 		
 		$s['data'] = $serieses;

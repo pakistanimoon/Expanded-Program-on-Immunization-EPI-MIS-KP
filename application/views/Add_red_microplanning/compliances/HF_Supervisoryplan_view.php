@@ -8,13 +8,9 @@
 		<table id="fixTable"  class="table table-bordered table-hover table-striped text-nowrap">
 			<thead>
 				<tr>
-				    <?php if($this->session->Tehsil){ ?>
-						<th rowspan="2">Tcode</th>
-						<th rowspan="2">Tehsil</th>
-					<?php } else{?>
-						<th rowspan="2">Distcode</th>
-						<th rowspan="2">Distname</th>
-					<?php } ?>
+				    
+					<th rowspan="2">Distcode</th>
+					<th rowspan="2">Distname</th>
 					<th rowspan="2">No. of <br> Supervisor (Due)</th>
 					<?php
 							$current_year = date('yy');
@@ -43,8 +39,7 @@
 								$currentmonth = date('m');
 							}else{
 								$currentmonth='12';
-							}
-						 								
+							}						
 							for ($month = 1; $month <= $currentmonth; $month++) {
 								if($month < 10){
 								   $month='0'.$month;
@@ -67,15 +62,9 @@
 				 	foreach($data as $val)
 					{
 						echo "<tr class='DrillDownRow'><td class='text-center'>";
-					    if($this->session->Tehsil){
-							echo $val->tcode;
-							echo "</td><td class='text-center'>";
-							echo $val->tehsil;
-						}else{
-							echo $val->distcode;
-							echo "</td><td class='text-center'>";
-							echo $val->district;
-						}
+					    echo $val->distcode;
+						echo "</td><td class='text-center'>";
+						echo $val->district;
 						echo "</td><td class='text-center'>";
 						echo $val->totalsupervisor;
 						for ($month = 1; $month <= $currentmonth; $month++) {
@@ -140,16 +129,7 @@
 				//Broswer has blocked it
 				alert('Please allow popups for this site');
 			}
-		}else if(code.toString().length == 6){
-			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_supervisoryplan_tech_compliance?tcode="+code+"&year="+year;
-			var win = window.open(url,'_self');
-			if(win){
-				win.focus();
-			}else{
-				//Broswer has blocked it
-				alert('Please allow popups for this site');
-			}
-		}	
+		}		
 	});
 	
 </script>

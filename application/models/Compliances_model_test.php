@@ -166,7 +166,7 @@ class Compliances_model_test extends CI_Model {
 					}					
 				}
 				else // between year
-				{
+				{					
 					$between_year++;
 					$topHead = array("Jan-{$between_year}", "Feb-{$between_year}", "Mar-{$between_year}", "Apr-{$between_year}", "May-{$between_year}", "Jun-{$between_year}", "Jul-{$between_year}", "Aug-{$between_year}", "Sep-{$between_year}", "Oct-{$between_year}", "Nov-{$between_year}", "Dec-{$between_year}");
 
@@ -314,8 +314,8 @@ class Compliances_model_test extends CI_Model {
 			// if($data['allDataTotal'][$index]['completeness'] == '0%'){
 			// 	unset($data['allDataTotal'][$index]['completeness']);
 			// }
-			// print_r($data['allDataTotal']);exit();
-			// $result1 = getDistComplianceFMVRReportTableFromTo($result,$data['allDataTotal'],NULL,'yes',$fmonth1,$fmonth2);
+			//print_r($data['allDataTotal']);exit();
+			//$result1 = getDistComplianceFMVRReportTableFromTo($result,$data['allDataTotal'],NULL,'yes',$fmonth1,$fmonth2);
 			$result1 = getDistComplianceFMVRReportTableFromTo($result,$data['allDataTotal'],NULL,'yes',$dd_start_year,$dd_start_month,$dd_end_year,$dd_end_month);
 		}
 		else
@@ -380,7 +380,7 @@ class Compliances_model_test extends CI_Model {
 													round((sum(sub$col)::float//sum(due$col))::numeric*100,1) as TotalCompletePerc$col,";
 						//}
 						$col++;
-					}						
+					}	
 				}
 				else if($j == $end_year) // end year
 				{
@@ -423,7 +423,7 @@ class Compliances_model_test extends CI_Model {
 					$between_year++;
 					$topHead = array("jan-{$between_year}", "feb-{$between_year}", "mar-{$between_year}", "apr-{$between_year}", "may-{$between_year}", "jun-{$between_year}", "jul-{$between_year}", "aug-{$between_year}", "sep-{$between_year}", "oct-{$between_year}", "nov-{$between_year}", "dec-{$between_year}");
 
-					for ($ind = 1; $ind < 13; $ind++)
+					for ($ind = 1; $ind < 13 ; $ind++)
 					{
 						$col = sprintf("%02d", $col);
 						$i=$ind;
@@ -447,7 +447,7 @@ class Compliances_model_test extends CI_Model {
 						$col++;
 					}				
 				}
-			}			
+			}
 			////////////set condition////////////////////
 			////////////set from here///////////////
 			$smonthlyPortion='';
@@ -458,7 +458,7 @@ class Compliances_model_test extends CI_Model {
 			$eallouterPortion='';
 			$coll = 1;
 			//$col = 1;
-			for($l=$start_year; $l <= $end_year; $l++)
+			for( $l=$start_year ; $l <= $end_year ; $l++)
 			{
 				if ($l == $start_year)
 				{
@@ -494,7 +494,7 @@ class Compliances_model_test extends CI_Model {
 					//$j=12;
 					$due="";$sub="";$timely="";
 					/* if($year==$curr_year)
-						$j=$month; */					
+						$j=$month; */
 					for($i=$start_month;$i<=$end_month;$i++)
 					{
 						$due.='COALESCE(duem'.$i.',0) +';
@@ -518,7 +518,6 @@ class Compliances_model_test extends CI_Model {
 					//$j=12;
 					$due="";$sub="";$timely="";
 					//$set_start_month
-					//echo $end_monthhs;exit();
 					for($i=1;$i<=$end_monthhs;$i++)
 					{
 						$due.='COALESCE(duem'.$i.',0) +';
@@ -609,14 +608,12 @@ class Compliances_model_test extends CI_Model {
 							sum(sub99) as totalSub99,
 							round((sum({$totaltimelysubplus})::float//sum(due99))::numeric*100,1) as TotalTimelyPerc,
 							round((sum(sub99)::float//sum(due99))::numeric*100,1) as TotalCompletePerc";
-			//print_r($outerPortion);exit();					
+									
 			//////////to here ///////////
 
 			$headerArray[]="total";
-			$query = 'select distcode, district,  ' . $monthlyPortion . '  from districts where distcode <> \'9\' order by district';
-			//echo 
-			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a'; 
-			//exit();
+			$query = 'select distcode, district,  ' . $monthlyPortion . '  from districts where distcode <> \'9\' order by district'; 
+			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a';
 			$result = $this -> db -> query($query);
 			$data['allData'] = $result -> result_array();
 			$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
@@ -626,7 +623,6 @@ class Compliances_model_test extends CI_Model {
 			$this -> db -> where(array('distcode <>'=>'9'));
 			//echo $this->db->last_query();exit();
 			$provinceCount = $this -> db -> get('districts') -> row();
-			//$col = 5;
 			for($k=0;$k<$col;$k++)
 			{
 				for($count=0;$count<$provinceCount->num;$count++)
@@ -641,7 +637,6 @@ class Compliances_model_test extends CI_Model {
 					unset($data['allData'][$count]['totalcompletesub']);
 				}
 			}
-			//print_r($data['allDataTotal']); exit();
 			$result1 = getComplianceReportTable($data['allData'], $data['allDataTotal'],NULL,NULL,$headerArray);
 		}
 		//print_r($data);
@@ -649,10 +644,10 @@ class Compliances_model_test extends CI_Model {
 		$dataReturned["year"] = $year;
 		$dataReturned["monthfrom"] = $monthfrom;
 		$dataReturned["monthto"] = $monthto;
-		$dataReturned['pageTitle'] = 'Period Wise Compliance Report';
+		$dataReturned['pageTitle'] ='Period Wise Compliance Report';
 		$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
 		$dataReturned['exportIcons'] = exportIcons($_REQUEST);
-		return $dataReturned;
+		return $dataReturned;	
 	}
 
 	function HF_Consumption_Requisition_Test($data,$title){
@@ -1330,7 +1325,6 @@ class Compliances_model_test extends CI_Model {
 		//$dataReturned['year'] = $data['year'];
 		return $dataReturned;
 	}
-	
 	// Do not delete this commented block.
 	/* function Issue_Receipt($data,$title){
 		$revisedCondition = array("form_date >=" => $data['datefrom'], "form_date <=" => $data['dateto']);
@@ -2472,4 +2466,4 @@ class Compliances_model_test extends CI_Model {
 	}
 		
 	//last_query($query);
-} 
+}

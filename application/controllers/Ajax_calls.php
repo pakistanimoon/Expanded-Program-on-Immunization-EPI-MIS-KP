@@ -1,5 +1,5 @@
 <?php
-//kp local
+//live
 class Ajax_calls extends CI_Controller {
 
 	//================ Constructor function starts==================//
@@ -10,7 +10,7 @@ class Ajax_calls extends CI_Controller {
 		$this -> load -> model('Ajax_calls_model');
 	}
 	public function getYears(){
-		$year = $this -> input -> post('year'); 
+		$year = $this -> input -> post('year');  
 		echo $years = getEpiWeekYearsOptions($year);
 	}
 	public function getEpiWeeksDates(){
@@ -125,8 +125,7 @@ class Ajax_calls extends CI_Controller {
 				$weekOptions .= '<option '.$isSelected.' value="'.($i+1).'">Week '.$month.'</option>';
 			}
 			echo $weekOptions;
-		}
-		/* else if($year < $curr_year ){
+		}/* else if($year < $curr_year ){
 			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
@@ -143,7 +142,8 @@ class Ajax_calls extends CI_Controller {
 			echo $weekOptions;
 		}
 	}
-		
+	
+	
 	/* public function getEpiWeeks(){
 		$year = $this -> input -> post('year');
 		date_default_timezone_set('Asia/Karachi');
@@ -254,8 +254,8 @@ class Ajax_calls extends CI_Controller {
 		$year = $this -> input -> post('year');
 		$curr_year = date("Y");////date("Y")////,strtotime("-1 week")
 		if($year == $curr_year || $year == "" ){
-			$query = "SELECT epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
-			////$query = "SELECT epi_week_numb as num from epi_weeks";
+			$query = "select epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
+			////$query = "select epi_week_numb as num from epi_weeks";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			////date_default_timezone_set('Asia/Karachi');
@@ -275,7 +275,7 @@ class Ajax_calls extends CI_Controller {
 		}
 		else if(($year+1) == $curr_year ){
 			//weeks of previous year
-			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
+			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option value="0">--Select Week--</option>';
@@ -334,13 +334,14 @@ class Ajax_calls extends CI_Controller {
 			echo $weekOptions;
 		}
 	}
+	
 	public function getidsrsEpiWeeks(){
 		$current_date = date("Y-m-d",strtotime("-1 week"));
 		$year = $this -> input -> post('year');
 		$curr_year = date("Y");
 
 		if($year == $curr_year || $year == "" ){
-			$query = "SELECT epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
+			$query = "select epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option selected="selected" value="0">--Select Week--</option>';
@@ -354,7 +355,7 @@ class Ajax_calls extends CI_Controller {
 		}
 		else if(($year+1) == $curr_year ){
 			//weeks of previous year
-			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
+			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option selected="selected" value="0">--Select Week--</option>';
@@ -371,7 +372,6 @@ class Ajax_calls extends CI_Controller {
 		}
 	}
 	public function getEpiFromTOWeeks(){
-		//print_r($_POST);exit();
 		$current_date = date("Y-m-d",strtotime(date("Y-m-d")." -7 days"));//to get data till last week
 		$year = $this -> input -> post('year');
 		$from_week = $this -> input -> post('from_week');
@@ -380,7 +380,7 @@ class Ajax_calls extends CI_Controller {
 		$query = $this -> db -> query($query);
 		$result = $query -> row();
 		$date_from  = $result->date_from;
-		$query = "SELECT epi_week_numb as num from epi_weeks where epi_week_numb >= '$from_week' and year='$year' and date_from BETWEEN '$date_from' and '$current_date' order by epi_week_numb";
+		$query = "SELECT epi_week_numb as num from epi_weeks where epi_week_numb >= '$from_week' and year='$year' and date_from BETWEEN  '$date_from' and '$current_date' order by epi_week_numb";
 		$query = $this -> db -> query($query);
 		$result = $query -> result_array();
 		date_default_timezone_set('Asia/Karachi');
@@ -390,7 +390,8 @@ class Ajax_calls extends CI_Controller {
 		} */
 		$isSelected="";
 		$weekOptions='<option value="">--Select Week--</option>';
-		foreach($result as $row){			
+		foreach($result as $row){
+			
 			$month = sprintf("%02d",($row['num']));
 			$isSelected = ($to_week==$row['num'])?'selected="selected"':''; 
 			$weekOptions .= '<option '.$isSelected.' value="'.$row['num'].'">Week '.$month.'</option>';
@@ -398,33 +399,6 @@ class Ajax_calls extends CI_Controller {
 		}
 		echo $weekOptions;
 	}
-	// public function getEpiFromTOWeeks(){
-	// 	$current_date = date("Y-m-d",strtotime(date("Y-m-d")." -7 days"));//to get data till last week
-	// 	$year = $this -> input -> post('year');
-	// 	$from_week = $this -> input -> post('from_week');
-	// 	$to_week = $this -> input -> post('to_week');
-	// 	$query = "SELECT date_from from epi_weeks where year='$year' and epi_week_numb=$from_week";
-	// 	$query = $this -> db -> query($query);
-	// 	$result = $query -> row();
-	// 	$date_from  = $result->date_from;
-	// 	$query = "SELECT epi_week_numb as num from epi_weeks where epi_week_numb >= '$from_week' and year='$year' and date_from BETWEEN '$date_from' and '$current_date'";
-	// 	$query = $this -> db -> query($query);
-	// 	$result = $query -> result_array();
-	// 	date_default_timezone_set('Asia/Karachi');
-	// 	/* $to_week1="";
-	// 	if($to_week < 10){
-	// 		$to_week1="0".$to_week;
-	// 	} */
-	// 	$isSelected="";
-	// 	$weekOptions='<option value="">--Select Week--</option>';
-	// 	foreach($result as $row){			
-	// 		$month = sprintf("%02d",($row['num']));
-	// 		$isSelected = ($to_week==$row['num'])?'selected="selected"':''; 
-	// 		$weekOptions .= '<option '.$isSelected.' value="'.$row['num'].'">Week '.$month.'</option>';
-	// 		//$weekOptions .= '<option value="'.$row['num'].'">Week '.$month.'</option>';
-	// 	}
-	// 	echo $weekOptions;
-	// }
 	public function change_password() {
 		$data = $this -> Ajax_calls_model -> change_password();
 		echo $data;
@@ -446,10 +420,10 @@ class Ajax_calls extends CI_Controller {
 		echo $data; 
 	}
 	public function getMeasleNumber() {
-		$year = $this -> input -> post('year');
-		$epid_code = $this -> input -> post('epid_code');
-		$data = $this -> Ajax_calls_model -> getMeasleNumber($year, $epid_code);  
-		echo $data;
+			$year = $this -> input -> post('year');
+			$epid_code = $this -> input -> post('epid_code');
+			$data = $this -> Ajax_calls_model -> getMeasleNumber($year, $epid_code);  
+			echo $data;
 	}
 	
 	public function getepi_number() {
@@ -463,7 +437,8 @@ class Ajax_calls extends CI_Controller {
 		echo $data;
 	}
 	
-	public function getcase_definition() {		
+	public function getcase_definition() {
+		
 		$case_type = $this -> input -> post('case_type');
 		if($case_type==''){
 			$case_type="Acute Flaccid Paralysis";
@@ -473,6 +448,7 @@ class Ajax_calls extends CI_Controller {
 	}
 	
 	public function supervisor_filter() {
+
 		$page = $this -> uri -> segment(3);
 		$distcode = $this -> uri -> segment(4);
 		$tcode = $this -> uri -> segment(5);
@@ -491,31 +467,40 @@ class Ajax_calls extends CI_Controller {
 		echo $data;
 	}
 	public function checkNICNumber(){
+
 		$nic = $this->input->post('nic');
 		$code = $this->input->post('code');
 		$data=$this -> Ajax_calls_model -> checkNICNumber($nic,$code);
 		echo $data;
+
 	}
 	public function checktechNIC(){
+
 		$nic = $this->input->post('nic');
 		$code = $this->input->post('code');
 		$data=$this -> Ajax_calls_model -> checktechNIC($nic,$code);
 		//echo $data;
 		echo (empty($data))?0:json_encode($data);
+
 	}
 	public function checkcctechNIC(){
+
 		$nic = $this->input->post('nic');
 		$code = $this->input->post('code');
 		$data=$this -> Ajax_calls_model -> checkcctechNIC($nic,$code);
 		echo $data;
+
 	}
 	public function checkCoNIC(){
+
 		$nic = $this->input->post('nic');
 		$code = $this->input->post('code');
 		$data=$this -> Ajax_calls_model -> checkCoNIC($nic,$code);
 		echo $data;
+
 	}
 	public function checkMfpNIC(){
+
 		$nic = $this->input->post('nic');
 		$code = $this->input->post('code');
 		$data=$this -> Ajax_calls_model -> checkMfpNIC($nic,$code);
@@ -826,6 +811,7 @@ class Ajax_calls extends CI_Controller {
 	}
 	public function generate_measles_case_code() {
 		echo $case_epi_no = $this->input->get('case_epi_no');
+		
 		$data=$this -> Ajax_calls_model -> generate_measles_case_code($case_epi_no);
 		echo $data;
 	}
@@ -837,8 +823,7 @@ class Ajax_calls extends CI_Controller {
 		$data=$this -> Ajax_calls_model -> generateCode($distcode);
 		echo $data;
 	}
-	public function fmvrf_filter() {
-		
+	public function fmvrf_filter() {		
 		$facode = $this->input->get('facode'); 
 		$distcode = $this->input->get('distcode');
 		$year = $this->input->get('year');
@@ -849,8 +834,7 @@ class Ajax_calls extends CI_Controller {
 		$data=$this -> Ajax_calls_model -> fmvrf_filter($facode,$distcode,$year,$month,$techname,$uncode);
 		echo $data;
 	}
-	public function fac_mvrf_filter() {
-		
+	public function fac_mvrf_filter() {		
 		$facode = $this->input->get('facode'); 
 		$distcode = $this->input->get('distcode');
 		$year = $this->input->get('year');
@@ -913,14 +897,10 @@ class Ajax_calls extends CI_Controller {
 		getAllMonthsOptions();
 	}
 	public function getMonths_aug2020()
-	{	$years = $this -> input -> post('year');
+	{	
+		$years = $this -> input -> post('year');
 		getAllMonthsOptions_aug2020(false,$years);
 	}
-	public function getReportingMonths()
-	{
-		getMonthsOptionsTillPrevious();
-	}
-
 	public function getMonthsHF()
 	{
 
@@ -1434,7 +1414,7 @@ class Ajax_calls extends CI_Controller {
 		echo $data; 
 	} 
 	public function createReport(){
-		$rep_title = $this->input->post('title'); 
+		$rep_title = $this->input->post('title');
 		$fIds = $this->input->post('fIds');
 		$lastsgment = $this->input->post('lastsgment');
 		$reportid = $this->input->post('reportid');
@@ -1520,6 +1500,7 @@ class Ajax_calls extends CI_Controller {
 		$data = $this -> Ajax_calls_model -> validateExistRecord($table,$facode,$fmonthSelected,$fmonthPrevious);
 		echo $data;
 	}
+	
 	public function check_compiled_datasource() { 
 		$facode = $this -> input-> post('facode');
 		$fmonth = $this -> input-> post('fmonth');
@@ -1657,11 +1638,9 @@ class Ajax_calls extends CI_Controller {
       			$column = $value['data'];
 				 
       			if($_SESSION['UserLevel']=='2'){
-					$column = str_replace('district', 'distcode', $column);
       				$column = str_replace('districtname', 'distcode', $column);
       			}elseif ($_SESSION['UserLevel']=='3'){
       				$column = str_replace('tehsilname', 'tcode', $column);
-					$column = str_replace('tehsil', 'tcode', $column);
 				}if( ! empty($search_value)){
       				$multiple_search .= " AND ";
       				$multiple_search .= "$column='$search_value'";
@@ -1735,10 +1714,9 @@ class Ajax_calls extends CI_Controller {
 		$fmonth = date('Y-m');
 		$curr_date = date('Y-m-d');
 		$q = "SELECT epi_week_numb FROM epi_weeks WHERE date_from >='$curr_date' ORDER BY epi_week_numb LIMIT 1";
-		$my_week = currentWeek(date('Y'), true); //$result->epi_week_numb;
 		$result = $this ->db->query($q)->row();
-		$fweek = date('Y').'-'.sprintf("%02d", $my_week);
-		$query = "SELECT fac_name,fatype,facode,areatype,unname(uncode) as unioncouncil,tehsilname(tcode)as tehsil,catchment_area_pop,getfstatus_vacc('$fmonth',facode) as vacc_status,getfstatus_ds('$fweek',facode) as ds_status, is_vacc_fac,is_ds_fac,(select count(facode) from hr_db where hr_db.facode=facilities.facode and hr_sub_type_id='01') as total_technicians from facilities where hf_type='e' and $wc $search $multiple_search $order LIMIT {$length} OFFSET {$start}  ";
+		$fweek = date('Y').'-'.sprintf("%02d", $result->epi_week_numb);
+		$query = "select fac_name,fatype,facode,areatype,unname(uncode) as unioncouncil,tehsilname(tcode)as tehsil,catchment_area_pop,getfstatus_vacc('$fmonth',facode) as vacc_status,getfstatus_ds('$fweek',facode) as ds_status, is_vacc_fac,is_ds_fac,(select count(facode) from techniciandb where techniciandb.facode=facilities.facode) as total_technicians from facilities where $wc $search $multiple_search $order LIMIT {$length} OFFSET {$start}  ";
 		$facilities = $this->db->query($query);
 		$str = $this->db->last_query();
 		$data = array();
@@ -1785,8 +1763,8 @@ class Ajax_calls extends CI_Controller {
 	                "fatype" => $r->fatype,
 	                "facode" => $r->facode,
 	                "areatype" => $r->areatype,
-					"unioncouncil" => $r->unioncouncil,
-	                "tehsil" => $r->tehsil,
+					"unioncouncil" => $r->uncode,
+	                "tehsil" => $r->tcode,
 					"vacc_status"  => $r->vacc_status,
 					"ds_status" => $r->ds_status,
 					"is_vacc_fac" => $r->is_vacc_fac,
@@ -1797,7 +1775,7 @@ class Ajax_calls extends CI_Controller {
             
             $i++;
         }
-		$query = "SELECT COUNT(*) AS num FROM facilities WHERE hf_type='e' and $wc $search $multiple_search";
+		$query = "SELECT COUNT(*) AS num FROM facilities WHERE $wc $search $multiple_search";
 		$total_facilities = $this->db->query($query)->row();
         $output = array(
             "draw" => $draw,
@@ -2615,7 +2593,6 @@ public function dso_dataTables()
         exit();
 	}
 
-	
 
 	public function do_dataTables()
 	{
@@ -3553,7 +3530,7 @@ public function dso_dataTables()
 		}
 		echo json_encode($return);
 	}
-	public function getTransportColdroom(){
+	public function getTransportColdroom(){ 
 		$id = $this->input->post('id');
         $wc = "where ccm_sub_asset_type_id='$id' and is_active='1'";
 		$query="select pk_id,ccm_make_id,makername(ccm_make_id) as make_name from epi_cc_models {$wc}";
@@ -4209,44 +4186,12 @@ public function dso_dataTables()
         echo json_encode($output);
         exit();
 	}
-	
-	//////////
-
 	public function getcerv_villages() {
   		//$uncode = $this -> input -> post('uncode');
   		$facode = ($this -> input -> post('facode'))?$this -> input -> post('facode'):$this -> uri -> segment(3);
   		$data = $this -> Ajax_calls_model -> getcerv_villages($facode);
   		echo $data;
  	}
-	/* 
-	public function getfacilitiesby_uncode() {
-  		//$uncode = $this -> input -> post('uncode');
-  		$uncode = ($this -> input -> post('uncode'))?$this -> input -> post('uncode'):$this -> uri -> segment(3);
-  		$data = $this -> Ajax_calls_model -> getfacilitiesby_uncode($uncode);
-  		echo $data;
- 	} */
-	
-	
-	////////////////////
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public function getVillages() {
   		//$uncode = $this -> input -> post('uncode');
   		$uncode = ($this -> input -> post('uncode'))?$this -> input -> post('uncode'):$this -> uri -> segment(3);
@@ -4306,7 +4251,7 @@ public function dso_dataTables()
 	public function checkmotherNIC(){
 		$nic = $this->input->post('mother_cnic');
 		$data=$this -> Ajax_calls_model -> checkmotherNIC($nic);
-		echo (empty($data))?0:json_encode($data); 
+		echo (empty($data))?0:json_encode($data);
 	}
 	/* public function CheckmotherRegistrationNo(){
 		$mother_registration_no = $this->input->post('mother_registration_no');
@@ -4332,30 +4277,5 @@ public function dso_dataTables()
 		$data = $this -> Ajax_calls_model -> get_Hr_sub_type_option($hr_sub_type_id);
 		echo json_encode($data);
 	}
-	
-	// Starts
-	
-/* 	
-	public function child_card_number() {
-  		//$recno = $this -> input -> post('uncode');
-		//print_r($recno);exit;
-  		$recno = ($this -> input -> post('recno'))?$this -> input -> post('recno'):$this -> uri -> segment(3);
-
-  		$data = $this -> Ajax_calls_model -> child_card_number($recno);
-  		echo $data;
- 	} */
-	 
-	  
-	public function child_card_number(){
-		$recno = $this-> input-> get('recno');
-		print_r($recno);exit;
-		/* $tcode = $this-> input-> get('tcode');
-		$uncode = $this-> input-> get('uncode');
-		$village = $this-> input-> get('village'); */
-		$data = $this-> Ajax_calls_model-> child_card_number($recno);
-		echo $data;
-	}
-	
-	//Ends
 }
 ?>

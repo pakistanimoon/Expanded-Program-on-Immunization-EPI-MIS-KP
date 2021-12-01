@@ -3,7 +3,7 @@
 	<div class="panel-heading">EPI Center Details(<?php echo $data['resultfac']['fac_name'];?>)</div>
 				
 				<div style="padding:0px 15px;margin-top:1px;">
-						<table id="techdb-tbl" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
+						<table id="techdb-tbl" border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
             <thead>
               <tr>
 			   <th class="text-center Heading">Population Facility (0-11)</th> 
@@ -46,7 +46,7 @@
 				
 				<div class="panel-heading" style="color:black;margin-left:16px;margin-right:16px;">Basic Information</div>
 				<div style="padding:0px 15px;margin-top:1px;">
-						<table id="techdb-tbl" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
+						<table id="techdb-tbl" border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
             <thead>
               <tr>
 			    <th class="text-center Heading">EPI Center Name </th>
@@ -77,7 +77,7 @@
 
  			<div class="panel-heading" style="color:black;margin-left:16px;margin-right:16px;">Human Resource</div>	
 				<div style="padding:0px 15px;margin-top:1px;">
-						<table id="techdb-tbl" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
+						<table id="techdb-tbl" border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
             <thead>
               <tr>
 			     <th class="text-center Heading">S#</th> 
@@ -136,7 +136,7 @@
 				
 				<div class="panel-heading" style="color:black;margin-left:16px;margin-right:16px;">Cold Chain Equipment</div>
 				<div style="padding:0px 15px;margin-top:1px;">
-						<table id="techdb-tbl" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
+						<table id="techdb-tbl" border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
             <thead>
               <tr>
 			    <th class="text-center Heading">S#</th>
@@ -176,13 +176,44 @@
 			 </table>
 		
 				</div> 	
+	<!-- Start -->	
+<?php if(!empty($data2)): ?>
+	<div class="panel-heading" style="color:black;margin-left:16px;margin-right:16px;">Inventory(Stock)- From Closing Balance Consumption Report(<?php echo $data2[0]['fmonth']; ?>)</div>
+	<div style="margin-top:1px;">
+		<table id="techdb-tbl" border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true" style="top:-40px">
+			  <thead>
+					  <tr>
+						<th class="text-center Heading">Item</th>
+						<th class="text-center Heading">No. of doses in vial</th> 
+						<th class="text-center Heading">No. of available batches</th>				
+						<th class="text-center Heading">Available Quantity in Vials</th>
+						<th class="text-center Heading">Available Quantity in Doses</th>       
+					  </tr>
+					</thead>
+			<tbody id="ajax_data" style="text-align:center;"> 
+			<?php                                
+				foreach($data2 as $key=>$singlerec){
+			 ?>
+				<tr class="DrilledDown">
+				<td class="text-left"><?php echo $singlerec["item"]; ?></td>
+				<td class="text-center"><?php echo $singlerec["batch_doses"] ?></td>
+				<td class="text-center"><?php echo $singlerec["batch_number"]; ?></td>
+				<td class="text-center"><?php echo $singlerec["closing_vials"]; ?></td>
+				<td class="text-center"><?php echo $singlerec["closing_doses"]; ?></td>
+				</tr>
+			<?php } ?>
+			</tbody>
+		</table>
+	</div>
+<?php endif; ?>
+
 <!---start-->
 			<div class="panel-body">
 				<!--it is use for show message-->
 				<!--<form name="dataform" id="dataform" action="<?php echo base_url(); ?>Status/Save/<?php echo $facode; ?>" method="POST" class="form-horizontal form-bordered">-->     
 					<input type="hidden" value="<?php echo (isset($facode)?$facode : '') ?>" name="facode">
 					<div class="panel-heading" style="color:black;margin-left:2px;margin-right:2px;">EPI Center Functional Status</div>
-					<table class="table table-bordered table-striped table-hover mytable2 mytable3">
+					<table class="table table-bordered table-striped table-hover mytable2 mytable3" border="1">
 						<!--<thead>
 							<tr>
 								<th style="border-right:0px;width: 40%;">
@@ -200,7 +231,7 @@
 												
 												</tbody>
 											</table>
-											<table class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true">
+											<table border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true">
 												<thead>
 													
 													<tr>
@@ -232,7 +263,7 @@
 																	<td class="text-center"><?php echo $data1['case']; ?></td>
 																	<td class="text-center"><?php echo $data1['m_y_from']; ?></td>
 																	<td class="text-center"><?php echo $data1['m_y_to'];?></td>
-																	<td class="text-center"><?php if(isset($data1['reason_vacc'])) { echo $data['reason_vacc']; }?></td>
+																	<td class="text-center"><?php if(isset($data1['reason_vacc'])) { echo $data1['reason_vacc']; }?></td>
 																	<?php
 																	if( ! ($count > 1)){ ?>
 																		<td class="text-center"></td>
@@ -270,7 +301,7 @@
 				<!--it is use for show message-->    
 					<input type="hidden" value="<?php echo (isset($facode)?$facode : '') ?>" name="facode">
 					<div class="panel-heading" style="color:black;margin-left:2px;margin-right:2px;">Surveillance Site Functional Status</div>
-					<table class="table table-bordered table-striped table-hover mytable2 mytable3">
+					<table border="1" class="table table-bordered table-striped table-hover mytable2 mytable3">
 						<!--<thead>
 							<tr>
 								<th style="border-right:0px;width: 40%;">
@@ -289,7 +320,7 @@
 												</tbody>
 											</table>
 											
-											<table class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true">
+											<table border="1" class="table table-bordered table-hover table-striped footable table-vcenter tbl-listing" data-filter="#filter" data-filter-text-only="true">
 												<thead>
 													
 													<tr>

@@ -8,11 +8,7 @@
 
 			<center>
 				<label>
-				<?php if($this -> session -> UserLevel==4){ ?>
-					<?php if($data['tcode'] !="0"){echo "Tehsil : <span style=\"font-weight: 400;\">";echo get_Tehsil_Name($data['tcode']);} ?></span><br>
-				<?php } else {?>
 					<?php if($data['distcode'] !="0"){echo "District : <span style=\"font-weight: 400;\">";echo get_District_Name($data['distcode']);} ?></span><br>
-				<?php } ?>	
 					Purpose :  <span style="font-weight: 400;">
 									<?php 
 										foreach($arr1 as $values){

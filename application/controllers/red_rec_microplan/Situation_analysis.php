@@ -1,5 +1,4 @@
 <?php
-//local
 	class Situation_analysis extends CI_Controller{
 		//================ Constructor function starts==================//
 		public function __construct(){
@@ -24,24 +23,29 @@
 			$this-> load-> view('template/epi_template',$data);	
 		}*/
 		public function situation_analysis_save(){
-			//print_r($_POST);exit;			
+			//print_r($_POST);exit;
+			
 			$edit = $this-> input-> post('edit');
 			//$recid = $this-> input-> post('recid');
 			$add_edit = $this-> input-> post('add_edit');
 			//print_r($add_edit);exit;
 			if ($edit != '' || $add_edit != '' ){
-				if ($edit != '' ){					
-					$tcode = $this-> input-> post('ticode');				   
-					$uncode = $this-> input-> post('unicode');
-					$facode = $this-> input-> post('facode');
-					$techniciancode = $this-> input-> post('techniciancode');
+				if ($edit != '' ){
+					
+				$tcode = $this-> input-> post('ticode');				   
+				$uncode = $this-> input-> post('unicode');
+				$facode = $this-> input-> post('facode');
+				$techniciancode = $this-> input-> post('techniciancode');
 				}
-				elseif($add_edit  != '' ){					
-					$tcode = $this-> input-> post('tcode');				   
-					$uncode = $this-> input-> post('uncode');
-					$facode = $this-> input-> post('facode');
-					$techniciancode = $this-> input-> post('techniciancode');
-				}				
+				elseif($add_edit  != '' ){
+					
+				$tcode = $this-> input-> post('tcode');				   
+				$uncode = $this-> input-> post('uncode');
+				$facode = $this-> input-> post('facode');
+				$techniciancode = $this-> input-> post('techniciancode');
+				}
+			
+				
 				$procode = $_SESSION["Province"];
 				$distcode = $this -> session -> District;
 				$year = $this-> input-> post('year');
@@ -68,7 +72,7 @@
 				$priority = $this-> input-> post('priority');
 				$recid = $this-> input-> post('recid');
 				$recid_d = implode(",", $recid = $this-> input-> post('recid'));
-				$query = "delete from situation_analysis_db where techniciancode='$techniciancode' and year='$year' and recid not in ($recid_d)";
+				$query = "delete from situation_analysis_db where facode='$facode' and techniciancode='$techniciancode' and year='$year' and recid not in ($recid_d)";
 				//print($query);exit;
 				$result = $this-> db-> query($query);
 				foreach($this-> input-> post('recid') as $key=>$val){
@@ -76,13 +80,13 @@
 					$edit_array=array(
 						'procode' => $procode,
 						'distcode' => $distcode,
-						'tcode' => $tcode,
-						'uncode' => $uncode,
-						'facode' => $facode,
-						'techniciancode' => $techniciancode,
-						'year' => $year,
-						'submitted_date' => $submitted_date,
-						'updated_date'=>date("Y-m-d"),
+					  'tcode' => $tcode,		   
+					  'uncode' => $uncode,
+					  'facode' => $facode,
+					   'techniciancode' => $techniciancode,
+					   'year' => $year,
+					   'submitted_date' => $submitted_date,
+					   'updated_date'=>date("Y-m-d"),
 						'area_name' => (isset($area_name[$key]) AND $area_name[$key] != '')?$area_name[$key]:NULL,
 						'less_one_year' => (isset($less_one_year[$key]) AND $less_one_year[$key] > 0)?$less_one_year[$key]:0,
 						'f3_total_population' => (isset($f3_total_population[$key]) AND $f3_total_population[$key] > 0)?$f3_total_population[$key]:0,
@@ -104,19 +108,21 @@
 						'priority' => (isset($priority[$key]) AND $priority[$key] > 0)?$priority[$key]:0,   
 					);
 					//print_r($edit_array);
-				 	if ($recid > 0){
-						// print_r($edit_array);
-						//print('exit1');//exit;
+				 if ($recid > 0){
+					// print_r($edit_array);
+					  //print('exit1');//exit;
 						$this-> Common_model-> update_record('situation_analysis_db',$edit_array,array('techniciancode'=>$techniciancode,'year'=>$year,'recid'=>$recid));
+						
 					}
-					elseif($recid == 0) {
+					elseif($recid == 0 ) {
 						//print_r($edit_array);
 						//print('exit0');//exit;
 						$this-> Common_model-> insert_record('situation_analysis_db',$edit_array);
+					
 					} 
-				 	//print_r($edit_array);
+				 //print_r($edit_array);
 				}
-				$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility, year from situation_analysis_db where techniciancode='$techniciancode' and year='$year' order by priority asc";
+				$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility, year from situation_analysis_db where facode='$facode' and techniciancode='$techniciancode' and year='$year' order by priority asc";
 		            $result = $this-> db-> query($query);	
 		            $data =	$result-> result_array();
 		           
@@ -125,7 +131,8 @@
                     echo $myJSON; 
 		      
 			}////////////edit if end /////////////
-			else{				
+			else{
+				
 				$distcode = $this -> session -> District;
 			    $tcode = $this-> input-> post('ticode');				   
 			    $uncode = $this-> input-> post('unicode');
@@ -136,7 +143,6 @@
 				$area_name = $this-> input-> post('area_name');
 				$less_one_year = $this-> input-> post('less_one_year');
 				$f3_total_population = $this-> input-> post('f3_total_population');
-				// for ajk//$f3_total_population = $this-> input-> post('f3_total_population');
 				$penta1 = $this-> input-> post('penta1');
 				$penta3= $this-> input-> post('penta3');					
 				$measles = $this-> input-> post('measles');
@@ -153,23 +159,25 @@
 				$utilization = $this-> input-> post('utilization');
 				$category = $this-> input-> post('category');
 				$priority = $this-> input-> post('priority');
-				$checkquery = "SELECT count(*) as recordnum from situation_analysis_db where year='$year' and techniciancode='$techniciancode'";
+				$checkquery = "SELECT count(*) as recordnum from situation_analysis_db where facode='$facode' and facode='$facode' and  year='$year' and techniciancode='$techniciancode'";
 				$result = $this-> db->query($checkquery);
 				$record = $result-> row_array();
 				$num_of_records = $record['recordnum'];
-				if($num_of_records > 0){					
+				if($num_of_records > 0){
+					
 					echo "yes";		
 					exit();
-				}				
+				}
+				
 				foreach($this->input->post('area_name') as $key=>$val){
 					$addDataArray=array(
 						'distcode' => $distcode,
 						'tcode' => $tcode,		   
-						'uncode' => $uncode,
-						'facode' => $facode,
-						'techniciancode' => $techniciancode,
-						'year' => $year,
-						'submitted_date' => $submitted_date,
+					   'uncode' => $uncode,
+					   'facode' => $facode,
+					   'techniciancode' => $techniciancode,
+					   'year' => $year,
+					   'submitted_date' => $submitted_date,
 						'area_name' => (isset($area_name[$key]) AND $area_name[$key] != '')?$area_name[$key]:NULL,
 						'less_one_year' => (isset($less_one_year[$key]) AND $less_one_year[$key] > 0)?$less_one_year[$key]:0,
 						'f3_total_population' => (isset($f3_total_population[$key]) AND $f3_total_population[$key] > 0)?$f3_total_population[$key]:0,
@@ -189,23 +197,29 @@
 						'utilization' => (isset($utilization[$key]) AND $utilization[$key] != '')?$utilization[$key]:NULL,
 						'category' => (isset($category[$key]) AND $category[$key] > 0)?$category[$key]:0,
 						'priority' => (isset($priority[$key]) AND $priority[$key] > 0)?$priority[$key]:0,  
-					);		           
+					);
+		           
 					$this-> Common_model-> insert_record('situation_analysis_db',$addDataArray);
-				}
-
-				$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility, year from situation_analysis_db where techniciancode='$techniciancode' and year='$year' order by priority asc";
-				$result = $this-> db-> query($query);	
-				$data =	$result-> result_array();
-				$myJSON = json_encode($data);
-				echo $myJSON;				
+					
+					
+			   }
+			        $query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility, year from situation_analysis_db where facode='$facode' and techniciancode='$techniciancode' and year='$year' order by priority asc";
+		            $result = $this-> db-> query($query);	
+		            $data =	$result-> result_array();
+		           
+                     $myJSON = json_encode($data);
+                  
+                    echo $myJSON; 
+				
 			}
 		}		
 		public function situation_analysis_edit(){
-			$techniciancode = $this-> uri -> segment(4);
-			$year = $this-> uri -> segment(5);
-			$recid = $this-> uri -> segment(6);
-			$current_month = date('m');
+		   $techniciancode = $this-> uri -> segment(4);
+		   $year = $this-> uri -> segment(5);
+		   $recid = $this-> uri -> segment(6);
+		   $current_month = date('m');
 			$quarter = getQuater($current_month);
+			
 			$checkqurterplan="select * from hf_quarterplan_db where techniciancode='$techniciancode' and year='$year' and quarter='$quarter'";
 			$result = $this-> db-> query($checkqurterplan);	
 		    $datacheck =	$result-> result_array();
@@ -222,13 +236,11 @@
         
 			$techniciancode = $this-> uri -> segment(4);
 			$year = $this-> uri -> segment(5);
-			//$filter = $this-> uri -> segment(6);
 			//$submitted= $this-> uri -> segment(6);
 			$data['data'] = $this-> Situation_analysis_model-> situation_analysis_view($techniciancode,$year);
-			//$data['data']['exportIcons']=exportIcons($_REQUEST);
 			$data['fileToLoad'] = 'Add_red_microplanning/situation_main_view';
 			$data['pageTitle'] = 'RED/REC Micro Plannning | EPI-MIS';
-			$data['filter_view'] = $this -> uri -> segment(6);
+			$data['filter_view'] = $this-> uri -> segment(6);
 			$this-> load-> view('template/epi_template',$data);
 		}
 		public function Red_map_view(){
@@ -241,11 +253,11 @@
 			//print_r($data);
 			$this-> load-> view('template/epi_template',$data);
 		}
-		public function situation_main(){
+			public function situation_main(){
 			$distcode = $this-> session-> District; 
 			$query="SELECT tcode, tehsilname(tcode) as tehsil from tehsil where distcode='{$distcode}'";
 			$data['data'] = $this->db->query($query)->result_array();
-			//$data['data'] =	"test";
+			//$data['data'] =	"";
 			$data['fileToLoad'] = 'Add_red_microplanning/situation_main';
 			$data['pageTitle'] = 'RED/REC Micro Plannning | EPI-MIS';
 			$this-> load-> view('template/epi_template',$data);	
@@ -268,29 +280,30 @@
 			//print_r($data);
 			$this-> load-> view('template/epi_template',$data);
 		}
-		public function red_map_upload(){
-			$techniciancode = $this-> input-> post('techniciancode');
-			$year = $this-> input-> post('year');
-			if(!empty($_FILES)){
-				$fileName = $_FILES['file']['name'];
-				$fileArray = explode('.', $fileName);
-				$fileExt = end($fileArray);
-				$date = date('Y-m-d H:i:s');
-				$fileName = $date."-".$techniciancode.".".$fileExt;
-				$temp = $_FILES['file']['tmp_name'];
-				$dir_separator = DIRECTORY_SEPARATOR;
-				$folder = "uploads";
-				$destination_path = FCPATH.$dir_separator.$folder.$dir_separator;
-				$target_path = $destination_path.$fileName;
-				move_uploaded_file($temp, $target_path);
-				//$imagePath = $_FILES['file']['name'];
-				$date1 = date('Y-m-d');
-			 	$red_map = array(
-			 		'red_map' => $fileName,		   
-					'date_red_map' => $date1,
-				 );
-			 	$this-> Situation_analysis_model-> red_map_upload($red_map,$techniciancode,$year);
-			}
+	public function red_map_upload(){
+		
+		$techniciancode = $this-> input-> post('techniciancode');
+		$year = $this-> input-> post('year');
+		if(!empty($_FILES)){
+			$fileName = $_FILES['file']['name'];
+			$fileArray = explode('.', $fileName);
+			$fileExt = end($fileArray);
+			$date = date('Y-m-d H:i:s');
+			$fileName = $date."-".$techniciancode.".".$fileExt;
+			$temp = $_FILES['file']['tmp_name'];
+			$dir_separator = DIRECTORY_SEPARATOR;
+			$folder = "uploads";
+			$destination_path = FCPATH.$dir_separator.$folder.$dir_separator;
+			$target_path = $destination_path.$fileName;
+			move_uploaded_file($temp, $target_path);
+			//$imagePath = $_FILES['file']['name'];
+			$date1 = date('Y-m-d');
+		 	$red_map = array(
+		 		'red_map' => $fileName,		   
+				'date_red_map' => $date1,
+			 );
+		 	$this-> Situation_analysis_model-> red_map_upload($red_map,$techniciancode,$year);
 		}
+	}
 }
 ?>

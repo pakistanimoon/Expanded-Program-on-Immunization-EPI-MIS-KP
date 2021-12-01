@@ -149,7 +149,7 @@
 					if($dayy < 10){
 						$dayy='0'.$dayy;
 					}
-					echo "<tr class='DrillDownRow' data-toggle='modal' data-target='#myModal'><td style='left: 0px;background: #008D4C !important;color: white;font-size: 16px;'>Day $i</td>";
+					echo "<tr class='DrillDownRow'><td style='left: 0px;background: #008D4C !important;color: white;font-size: 16px;'>Day $i</td>";
 					///////////////////////////////////////////////
 					$firstdate = "$moonyear-".$allmonths[0]."-$dayy";
 					$found = array_key_exists($firstdate,$m1dates);
@@ -228,28 +228,9 @@
 							}
 								echo '</tr>';
 				} */ ?>
-<!--<div class="container">
-	<div class="modal fade" id="myModal1" role="dialog">
-		<div class="modal-dialog">
-			<!-- Modal content-->
-	<!--		<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">Health Facility Workplan</h4>
-				</div>
-				<div class="modal-body">
-						<div id="mergermodalbody"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-  </div>
-</div>-->
-
-
+			
 					
+				
 				<!--End for one row record-->
 				       <!-- <tr>
 						<?php// for($i=1; $i<=31; $i++) { ?>
@@ -439,14 +420,10 @@
 }); */
 </script>
 <script type="text/javascript">
-var modal = document.getElementById('myModal');
-
 	 $(document).ready(function(){
 		$('.DrillDownRow').css('cursor','pointer');
-			
 	});
 	$('.DrillDownRow').on('click', function(){
-		//$('#myModal1').modal('show');
 			var facode = '<?php echo $data['data'][0]['facode']; ?>';
 			var year = '<?php echo $data['data'][0]['year']; ?>';
 			var quarter = '<?php echo $data['data'][0]['quarter']; ?>';
@@ -461,8 +438,7 @@ var modal = document.getElementById('myModal');
 			}else{
 				alert('Please allow popups for this site');
 			}
-		}
-			
+		}		
 	}); 
 </script>
 

@@ -1,4 +1,4 @@
-<?php if( ! $this -> input -> post('export_excel')){ ?>
+<?php if( ! $this -> input -> post('export_excel')){ ?>  
 				<div class="panel-body">
 					<form method="post" id="filter-form">
 						<div class="row" style="width:100%; padding:4px 17px">
@@ -46,7 +46,6 @@
 td{
 	padding:4px !important;
 }
-
 </style>
 	<div id="parent">
 <?php } ?>
@@ -58,6 +57,9 @@ td{
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Card No.</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Name</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Gender</th>
+								  
+							  
+								
 																				  
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">Paternity with Nationality</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black" rowspan="3">UnionCouncil</th>
@@ -102,6 +104,8 @@ td{
 				<tr style="cursor: pointer;">
 				    <!--<input type="hidden" name="child_registration_no" value="<?php echo $val['child_registration_no']; ?>" />-->
 				     <td style='text-align:center; border: 1px solid black;' class='text-center DrillDownRow'>
+														  
+		 
 						<a target="_blank" href="<?php echo base_url('Reports/ChildRegistrationEdit').'/'.$val['recno']; ?>"><i class="fa fa-edit btn btn-primary btn-xs" style="padding:1px 1px !important;"></i></a>
 						<a class="delrecord" data-recno="<?php echo $val['recno']; ?>"><i class="fa fa-trash btn btn-danger btn-xs" style="padding:1px 1px !important;"></i></a>
 					</td>

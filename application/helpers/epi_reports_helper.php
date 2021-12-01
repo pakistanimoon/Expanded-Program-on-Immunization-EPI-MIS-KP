@@ -1,5 +1,4 @@
 <?php
-//kp local
 if(!function_exists('authentication')){
 	function authentication()
 	{
@@ -107,12 +106,11 @@ if(!function_exists('getListingReportTable')){
 					   $i++;
                 }	
 				$returnData .= "</tr>";
-				
 				foreach($value as $k => $v)
 				{
 					if(is_numeric($v))
                     {
-                        $moon[$k] = (key_exists($k,$moon) && is_numeric($k))?$moon[$k]+$v:$v;
+						$moon[$k] = (key_exists($k,$moon) && is_numeric($k))?$moon[$k]+$v:$v;
 						//$moon[$k] =  key_exists($k,$moon)?$moon[$k]+$v:$v;
                     }
                     else{
@@ -122,13 +120,13 @@ if(!function_exists('getListingReportTable')){
 				/* foreach($value as $k => $v)
 				{
 					if(is_numeric($v) and key_exists($k,$moon) and is_numeric($moon[$k]))
-                    {	 
-					   $moon[$k] =  $moon[$k]+$v;
+                    {
+						$moon[$k] =  $moon[$k]+$v;
                     }
-                    else{ 
+                    else{
                         $moon[$k] =  key_exists($k,$moon)?$moon[$k]:$v;
                     }
-                } */	 
+                } */
             }
             if(count($moon) > 0 && $allTotal != 'NO' && $sectionTotal != 'NO' && $indicator_report=='NO' || $otherReports=='YES')
             {
@@ -184,7 +182,6 @@ if(!function_exists('getListingReportTable')){
                 <td style='font-weight:bold; background-color: #111;color: #FFF;'></td>
                 <td style='font-weight:bold; background-color: #111;color: #FFF;'>Total:</td>
                 <td class='text-center' style='font-weight:bold; background-color: #111; color: #FFF;'>";
-	
                 $returnData .= implode("</td>
                 <td class='text-center' style='font-weight:bold; background-color: #111;color: #FFF;'>",$moon);
                 $returnData .= "</td></tr>";
@@ -229,7 +226,6 @@ function is_decimal( $val )
 {
     return is_numeric( $val ) && floor( $val ) != $val;
 }
-
 function getDistComplianceFMVRReportTableFromTo($allData,$allTotal=NULL,$allTotalDue=NULL,$timelycomplete=NULL,$dd_start_year=NULL,$dd_start_month=NULL,$dd_end_year=NULL,$dd_end_month=NULL){
     $count = 0;
     $returnData = '<div id="parent"><table id="fixTable" class="table table-bordered table-hover">';
@@ -311,11 +307,11 @@ function getDistComplianceFMVRReportTableFromTo($allData,$allTotal=NULL,$allTota
             }
             else if($v=='notsubmitted')
             {
-                $moonreturnhtml = '<p class="text-center" title="Not Submitted" style="color:red;font-weight: bold;font-size: 16px;cursor: pointer;"><i class="fa fa-times"></i></p>';
+                $moonreturnhtml = '<p class="text-center" title="Not Submitted" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
             }
             else if($v=='notfunctional')
             {
-                $moonreturnhtml = '<p class="text-center" title="Not Functional" style="color:brown;font-weight: bold;font-size: 16px; cursor: pointer;">NF</p>';
+                $moonreturnhtml = '<p class="text-center" title="Not Functional" style="color:brown;font-weight: bold;font-size: 16px;">NF</p>';
             }
             else{
                 /*if($v=='1'){ $v="<p>&#10004;</p>"; }else{ $v="<p>&#xf00d;</p>"; }*/
@@ -362,7 +358,6 @@ function getDistComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=N
     $returnData = '<div id="parent"><table id="fixTable" class="table table-bordered table-hover">';
 	foreach($allData as $key => $value)
     {
-        //print_r($value); exit();
         if($count == 0)
         {
             $returnData .= "<thead>";
@@ -389,21 +384,21 @@ function getDistComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=N
 			}
 			if($v>=1)
             {
-				return '<p class="mrClicked text-center" style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'">&#10004;</p>';
+				return '<p class="mrClicked text-center"  style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'">&#10004;</p>';
 			    //return '<img width="20" class="mrClicked" height="20" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'" src="../includes/images/'.$v.'.png" />';
             }
             else if($v=='zr')
             {
-                return '<p class="mrClicked text-center" style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'">ZR</p>';
+                return '<p class="mrClicked text-center"  style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'">ZR</p>';
 			    //return '<img width="20" class="mrClicked" height="20" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'" src="../includes/images/'.$v.'.png" />';
             }
             else if($v=='timely')
             {
-                return '<p class="mrClicked text-center" style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'"><img style="width:20px;" title="Timely" src="'.base_url().'includes/images/timely.png"></p>';
+                return '<p class="mrClicked text-center"  style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'"><img style="width:20px;" title="Timely" src="'.base_url().'includes/images/timely.png"></p>';
             }
             else if($v=='complete')
             {
-                return '<p class="mrClicked text-center" title="Complete" style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'">&#10004;</p>';
+                return '<p class="mrClicked text-center" title="Complete"  style="color:green;font-weight: bold;font-size: 16px;" data-value="'.$code.'" data-month="'.sprintf("%'.02d",$counter-4).'">&#10004;</p>';
             }
             else if($v=='notsubmitted')
             {
@@ -442,7 +437,7 @@ function getDistComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=N
 			if($timelycomplete){
 				$endbody ="<tr style='font-weight:bold;'><td></td><td style='color:black;'>".$titleArray[$key].":</td><td style='color:black;' class='text-center'>";
 			}else{
-				$endbody ="<tr style='font-weight:bold;'><td></td><td style='color:black;'>Total Submitted:</td><td style='color:black;' class='text-center'>";
+				$endbody ="<tr style='font-weight:bold;'><td></td><td style='color:black;'>Total Submited:</td><td style='color:black;' class='text-center'>";
 			}
             $endbody .= implode("</td><td style='color:black;' class='text-center'>",$value);
             $endbody .="</td></tr>";
@@ -451,7 +446,7 @@ function getDistComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=N
     }
     return $returnData .= "</tbody></table></div>";
 }
-function getProComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=NULL){
+function getProComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=NULL){       
     $count = 0;
     $returnData = '<table border="1" cellspacing="0" width="100%" align="center" style="text-align:center;" class="table table-condensed tableuc table-vcenter row-border order-column">';
     foreach($allData as $key => $value)
@@ -499,7 +494,7 @@ function getProComplianceFMVRReportTable($allData,$allTotal=NULL,$allTotalDue=NU
     }
     return $returnData .= "</tbody></table>";
 }
-function showCountsComplianceReport($allData,$allTotal=NULL,$allTotalDue=NULL){
+function showCountsComplianceReport($allData,$allTotal=NULL,$allTotalDue=NULL){       
     $count = 0;
     $returnData = '<table border="1" cellspacing="0" width="100%" align="center" style="text-align:center;" class="table table-condensed tableuc table-vcenter row-border order-column">';
     foreach($allData as $key => $value)
@@ -552,7 +547,7 @@ function showCountsComplianceReport($allData,$allTotal=NULL,$allTotalDue=NULL){
     }
     return $returnData .= "</tbody></table>";
 }
-function showListingReport($allData,$allTotal=NULL,$allTotalDue=NULL){
+function showListingReport($allData,$allTotal=NULL,$allTotalDue=NULL){       
     $count = 0;
     $returnData = '<table border="1" cellspacing="0" width="100%" align="center" style="text-align:center;" class="table table-condensed tableuc table-vcenter row-border order-column tbl-listing">';
     foreach($allData as $key => $value)
@@ -590,7 +585,6 @@ function showListingReport($allData,$allTotal=NULL,$allTotalDue=NULL){
     }
     return $returnData .= "</tbody></table>";
 }
-
 if(!function_exists('getComplianceReportTableForDSCompliance')){
     function getComplianceReportTableForDSCompliance($allData,$allTotal=NULL,$weekFrom=NULL,$weekTo=NULL,$vaccination=NULL,$headerNames=NULL,$percentHeader=NULL,$complianceTotalF=NULL,$zero=null){ 
         $count = 0;
@@ -697,7 +691,6 @@ if(!function_exists('getComplianceReportTableForDSCompliance')){
         return $returnData .= "</tbody></table></div>";
     }
 }
-
 if(!function_exists('getComplianceReportTable')){
     function getComplianceReportTable($allData,$allTotal=NULL,$weekly=NULL,$vaccination=NULL,$headerNames=NULL,$percentHeader=NULL,$complianceTotalF=NULL,$zero=null){ 
 		$count = 0;
@@ -711,7 +704,7 @@ if(!function_exists('getComplianceReportTable')){
 					$months = array('Fully-Vaccinated','Un-Vaccinated');
 				}
 				else if($weekly){
-					$months = array();
+						$months = array();
 					for ($ind = 1; $ind <= $weekly; $ind++) {
 						$ind = sprintf("%02d", $ind);
 						$months[] = "Week ".$ind;
@@ -735,41 +728,41 @@ if(!function_exists('getComplianceReportTable')){
 					$colspanValue = "5";
 					$firstColspan = "1";
 				}
-    			else{
-    				if($headerNames){
-    					$colspanValue = "4";
-    					$firstColspan = "2";
-    				}
-    				else if($zero=='zero')
-    				{
-    					//For zero Report Compliances
-    					$colspanValue = "5";
-    					$firstColspan = "2";
-    				}
-    				else{
-    					
-    					$colspanValue = "3";
-    					$firstColspan = "2";
-    				}					
-    			}				
-    			$returnData .= "<thead>
-    								<tr><th colspan='$firstColspan'></th><th colspan='$colspanValue' class='text-center'>";
-    			$returnData .= implode("</th><th colspan='$colspanValue' class='text-center'>",array_map("ucwords",array_values($months)));
-    			$returnData .= "</th></tr>
-    			<tr><th>";
-				$counter = 1;
-				
-				$returnData .= implode("</th><th>", array_map(function($v)use(&$counter,$vaccination,$percentHeader){
-					if($counter++ > 2){
-						if($percentHeader!=''){
-							return ucwords(substr($v, 0, -2))." % ";
-						}
-						return ucwords(substr($v, 0, -2));
+				else{
+					if($headerNames){
+						$colspanValue = "4";
+						$firstColspan = "2";
 					}
-					if($vaccination && $vaccination=="YES")
-						return ucwords(substr($v, 0, -2));
-					return ucwords($v);
-				},array_keys($value)));
+					else if($zero=='zero')
+					{
+						//For zero Report Compliances
+						$colspanValue = "5";
+						$firstColspan = "2";
+					}
+					else{
+						
+						$colspanValue = "3";
+						$firstColspan = "2";
+					}
+				}
+				$returnData .= "<thead>
+									<tr><th colspan='$firstColspan'></th><th colspan='$colspanValue' class='text-center'>";
+				$returnData .= implode("</th><th colspan='$colspanValue' class='text-center'>",array_map("ucwords",array_values($months)));
+				$returnData .= "</th></tr>
+				<tr><th>";
+					$counter = 1;
+					
+					$returnData .= implode("</th><th>", array_map(function($v)use(&$counter,$vaccination,$percentHeader){
+						if($counter++ > 2){
+							if($percentHeader!=''){
+								return ucwords(substr($v, 0, -2))." % ";
+							}
+							return ucwords(substr($v, 0, -2));
+						}
+						if($vaccination && $vaccination=="YES")
+							return ucwords(substr($v, 0, -2));
+						return ucwords($v);
+					},array_keys($value)));
 					$returnData .= "</th></tr></thead><tbody>";
 			}       
 			$count++;
@@ -796,17 +789,16 @@ if(!function_exists('getComplianceReportTable')){
 					$endbody .="%</td></tr>";//<td>$sumResult</td>
 				}else{
 					$endbody .= implode("</td><td class='text-center' style='color: #FFF;'>",$value);
-					$endbody .="</td></tr>"; //<td>$sumResult</td>
+					$endbody .="</td></tr>";//<td>$sumResult</td>
 				}				
 				$returnData .= $endbody = str_replace("<td class='text-center' style='color: #FFF;'></td>","<td class='text-center' style='color: #FFF;'>0</td>",$endbody);        
-			} 
+			}
 		}
 		return $returnData .= "</tbody></table></div>";
 	}
 }
 function tableTopInfo($subTitle = "", $distcode = "", $facode = "", $year = "", $type = "", $ind_name = "", $month = "", $advRepTitle = "", $fmonthFrom = "", $fmonthTo = "", $ailmentName = "", $logisticName = "" , $lhwcode="",$tcode="",$quarter="") {
-	//echo 'zsk-3' ; 
-
+	
 		// echo  $subTitle.'<br>'.$distcode.'<br>'.$facode.'<br>'.$year;exit();
 		$CI = & get_instance();
 		$html = '
@@ -899,6 +891,7 @@ function tableTopInfo($subTitle = "", $distcode = "", $facode = "", $year = "", 
 									<div class="row">
                                     <div class="col-xs-1" style="width:100%; text-align: center;">
     	   	   		<h4 style="margin-top: 0px;font-size: 20px; font-weight: 900;text-align: center; width: 100%;">Report by:</h4>
+								 
     	   	   	  </div>
                         <div class="col-xs-4" style="width: 100%; text-align: center;">
     	   	   		<h5 style="width: 100%; font-weight: 600; margin-top: -5px;">' . $type . '</h5>
@@ -943,6 +936,7 @@ function tableTopInfo($subTitle = "", $distcode = "", $facode = "", $year = "", 
 												<div class="row">
                                                 <div class="col-xs-1" style="width:100%; text-align: center;">
 			    	   	   		<h4 style="margin-top: 0px;font-size: 20px; font-weight: 900;text-align: center; width: 100%;">Month From:</h4>
+									 
 			    	   	   	  </div>
                                     <div class="col-xs-4" style="width: 100%; text-align: center;">
 			    	   	   		<h5 style="width: 100%; font-weight: 600; margin-top: -5px;">'.$fmonthFrom.'</h5>
@@ -965,57 +959,59 @@ function tableTopInfo($subTitle = "", $distcode = "", $facode = "", $year = "", 
 function exportIcons($postVars=NULL,$pdf=NULL,$excelonly=NULL){
     //print_r($postVars);exit();
 	$finalString = 
-		'<div class="col-xs-2 text-right" style="margin-top:15px;">
-            <form method="post" id="export-form" action="">';
-			foreach ($postVars as $key => $value) {
-				if($key == 'submit')
-					continue;
-				if(is_array($value)){
-					$name=$key."[]";
-					foreach ($value as $key1 => $value1) {
-						$finalString .= '<input type="hidden" name="'.$name.'" value="'.$value1.'" />';							
-					}
-				}else{
-					$value = ($value == '' || $value == '/')?'':$value;
-					$finalString .= '<input type="hidden" name="'.$key.'" value="'.$value.'" />';
-				}									
-			}
-			//send only excel btn html 
-			if($excelonly=="excel"){
-					$finalString .=					
-    			'<input type="hidden" name="export_excel" value="export_excel" /> 
-    				<img class="handland"  data-original-title="View in Excel" onclick="document.getElementById(\'export-form\').submit()" src="'.base_url().'includes/images/excel.png" style="height:32px;margin-left:500px;" alt="img-excel" data-toggle="tooltip" title="Excel" data-placement="bottom" />
-    				</form> </div>'	;
-			}
-			else{				
-    			if($pdf==NULL){
-    				$finalString .= 
-        			'<input type="hidden" name="export_excel" value="export_excel" />
-        				<div class="row">
-        					<div class="col-xs-2" style="margin-right: 47px; margin-top: 11px;">
-        						<img class="handland" id="vampire" data-original-title="View in Excel" onclick="document.getElementById(\'export-form\').submit()" src="'.base_url().'includes/images/excel.png" style="height:32px;margin-right:-105px;" alt="img-excel" data-toggle="tooltip" title="Excel" data-placement="bottom" />
-        					</div>';
-    			}
-                else{
-    				$finalString .= '<input type="hidden" name="export_pdf" value="export_pdf" />
-    				<div class="row">
-    					<div class="col-xs-1" style="margin-right: -68px;margin-top: 11px;">
-    						<a class="handland" onclick="document.getElementById(\'export-form\').submit()"><img data-original-title="View in PDF" src="'.base_url().'includes/images/pdf.jpg" style="height:32px;" alt="img-pdf" data-toggle="tooltip" title="View in PDF" data-placement="bottom" /></a>
-    					</div>';
-    			}
-    			$finalString .= 
-    					'<div class="col-xs-1 col-xs-offset-2" style="margin-right: -68px;margin-top: 11px;">
-    						<img class="handland" onclick="window.print();" src="'.base_url().'includes/images/print.png" style="height:34px;" alt="img-print" data-toggle="tooltip" data-original-title="Print" title="Print" data-placement="bottom" />
-    					</div>
-    					<div class="col-xs-1 col-xs-offset-4" style="margin-top: 11px;">
-    						<img class="handland" onclick="JavaScript:window.close();" src="'.base_url().'includes/images/close.png" style="height:34px;" alt="img-close" data-toggle="tooltip" data-original-title="Close" title="Close" data-placement="bottom" />
-    					</div>
-    				</div>
-    			</form>
-    		</div>
-			';
-			}
-		return $finalString;
+	'<div class="col-xs-2 text-right" style="margin-top:15px;">
+	<form method="post" id="export-form" action="">';
+		foreach ($postVars as $key => $value) {
+			if($key == 'submit')
+				continue;
+			if(is_array($value)){
+				$name=$key."[]";
+				foreach ($value as $key1 => $value1) {
+					$finalString .= '<input type="hidden" name="'.$name.'" value="'.$value1.'" />';							
+				}
+			}else{
+				$value = ($value == '' || $value == '/')?'':$value;
+				$finalString .= '<input type="hidden" name="'.$key.'" value="'.$value.'" />';
+			}									
+		}
+		//send only excel btn html 
+		if($excelonly=="excel"){
+				$finalString .=
+				
+		'<input type="hidden" name="export_excel" value="export_excel" />
+			<img class="handland" data-original-title="View in Excel" onclick="document.getElementById(\'export-form\').submit()" src="'.base_url().'includes/images/excel.png" style="height:32px;margin-left:500px;" alt="img-excel" data-toggle="tooltip" title="Excel" data-placement="bottom" />
+			</form> </div>'	;
+		}
+		else{
+			
+		if($pdf==NULL){
+			$finalString .= 
+		'<input type="hidden" name="export_excel" value="export_excel" />
+			<div class="row">
+				<div class="col-xs-2" style="margin-right: 47px; margin-top: 11px;">
+					<img class="handland" id="vampire" data-original-title="View in Excel" onclick="document.getElementById(\'export-form\').submit()" src="'.base_url().'includes/images/excel.png" style="height:32px;margin-right:-105px;" alt="img-excel" data-toggle="tooltip" title="Excel" data-placement="bottom" />
+				</div>';
+		}else{
+					 
+			$finalString .= '<input type="hidden" name="export_pdf" value="export_pdf" />
+			<div class="row">
+				<div class="col-xs-1" style="margin-right: -68px;margin-top: 11px;">
+					<a class="handland" onclick="document.getElementById(\'export-form\').submit()"><img data-original-title="View in PDF" src="'.base_url().'includes/images/pdf.jpg" style="height:32px;" alt="img-excel" data-toggle="tooltip" title="View in PDF" data-placement="bottom" /></a>
+				</div>';
+		}
+		$finalString .= 
+				'<div class="col-xs-1 col-xs-offset-2" style="margin-right: -68px;margin-top: 11px;">
+					<img class="handland" onclick="window.print();" src="'.base_url().'includes/images/print.png" style="height:34px;" alt="img-print" data-toggle="tooltip" data-original-title="Print" title="Print" data-placement="bottom" />
+				</div>
+				<div class="col-xs-1 col-xs-offset-4" style="margin-top: 11px;">
+					<img class="handland" onclick="JavaScript:window.close();" src="'.base_url().'includes/images/close.png" style="height:34px;" alt="img-close" data-toggle="tooltip" data-original-title="Close" title="Close" data-placement="bottom" />
+				</div>
+			</div>
+		</form>
+	</div>
+		';
+		}
+	return $finalString;
 }
 function exportIcons_forViewForms($postVars=NULL,$pdf=NULL,$excelonly=NULL){
     //print_r($postVars);exit();
@@ -1152,10 +1148,10 @@ if(!function_exists('Warehousetypename')){
 function reportsTopInfo($subTitle,$data) {
       //  echo "<pre>"; print_r($data);exit();
 		$html = '
-				<div class="row" style="width: 100%; font-size: 25px; text-align: center;">
-					<span class="" style="text-align:center; width: 100%;">
-						<span style="text-decoration: underline;  font-size:25px; font-weight:800; underline; position: relative;">'. $subTitle .'</span>
-					</span>
+				<div class="row">
+					<div class="col-xs-12" style="margin-top: -30px;text-align:center">
+						<h3 style="text-decoration: underline; position: relative; left: -36px;">'. $subTitle .'</h3>
+					</div>
 				</div>
 		';
 		/*$html .= '
@@ -1172,6 +1168,9 @@ function reportsTopInfo($subTitle,$data) {
 				<div class="row">
     	   	   	  <div class="col-xs-1" style="text-align: center;">
     	   	   		<h4 style="margin-top: 0px; font-size: 20px; font-weight: 900; text-align: center;">Indicator:</h4>
+					 
+																				   
+												  
     	   	   	  </div>
     	   	      <div class="col-xs-4" style="width: 100%; text-align: center;">
     	   	   		<h5 style="width: 100%; font-weight: 600; margin-top: -5px;">' . $data['mini_title'] . '</h5>
@@ -1250,13 +1249,13 @@ function reportsTopInfo($subTitle,$data) {
     	   	   </div>';
 		}
 		if (array_key_exists("year",$data) && $data['year'] != ''){
-				$html .= ' <div class="row" style="width: 100%; text-align: center;">
-            <span class="" style="display: inline; margin-top:-14px; white-space: nowrap; width: 200px !important">
-    	   	   		<span style="font-size: 16px; font-weight: 600; position: relative; display: inline;">Year:</spam>
-				  </span>
-				<span class="" style=" margin-top:-11px; margin-left: 15px; display: inline;">
-					<span style="display: inline;">' . $data['year']  . '</span>
-				</span>
+				$html .= ' <div class="row">
+            <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%; white-space: nowrap;">
+    	   	   		<h4 style="font-size: 16px;">Year:</h4>
+    	   	   	  </div>
+                         <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
+    	   	   		<h5>' . $data['year']  . '</h5>
+    	   	   	  </div>
     	   	   </div>';
 		}
 		if (array_key_exists("case_type",$data) && $data['case_type'] != ''){
@@ -1290,33 +1289,24 @@ function reportsTopInfo($subTitle,$data) {
                </div>';
         }
 		if (array_key_exists("from_week",$data) && $data['from_week'] != ''){
-			$html .= ' <div class="row" style="width: 100%; text-align: center;">
-    	   	   	  <span class="" style="font-size:16px; font-weight:600;">
-    	   	   		<span style="font-size: 16px;">From Week:</span>
-    	   	   	  </span>
-    	   	      <span class="" style="">
-    	   	   		<span style="">' . sprintf("%02d",$data['from_week'])  . '</span>
-    	   	   	  </span>
+			$html .= ' <div class="row">
+    	   	   	  <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%; white-space: nowrap;">
+    	   	   		<h5 style="font-size: 16px;">From Week:</h4>
+    	   	   	  </div>
+    	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
+    	   	   		<h5 style="">' . sprintf("%02d",$data['from_week'])  . '</h5>
+    	   	   	  </div>
     	   	   </div>';
 		}
 		if (array_key_exists("to_week",$data) && $data['to_week'] != ''){
-			/* $html .= ' <div class="row" style="width: 100%; text-align: center;">
+			$html .= ' <div class="row">
     	   	   	  <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%; white-space: nowrap;">
     	   	   		<h5 style="font-size: 16px;">To Week:</h4>
     	   	   	  </div>
     	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
     	   	   		<h5>' . sprintf("%02d",$data['to_week']) . '</h5>
     	   	   	  </div>
-    	   	   </div>'; */
-			   $html .= ' <div class="row" style="width: 100%; text-align: center;">
-    	   	   	  <span class="" style="font-size:16px; font-weight:600;">
-    	   	   		<span style="font-size: 16px;">Tp Week:</span>
-    	   	   	  </span>
-    	   	      <span class="" style="">
-    	   	   		<span style="">' . sprintf("%02d",$data['to_week'])  . '</span>
-    	   	   	  </span>
     	   	   </div>';
-			   
 		}
         if (array_key_exists("indicator",$data) && $data['indicator'] != ''){
             $html .= ' <div class="row">
@@ -1328,7 +1318,17 @@ function reportsTopInfo($subTitle,$data) {
                   </div>
                </div>';
         }
-		 
+		 if (array_key_exists("suveillance_indicator",$data) && $data['suveillance_indicator'] != ''){
+            $html .= ' <div class="row">
+                  <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%;">
+                    <h4 style="font-size: 14px;">Indicator:</h4>
+                  </div>
+                  <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
+                    <h5>' . get_SurveillanceIndicator_Name($data['suveillance_indicator']) . '</h5>
+                  </div>
+               </div>';
+        }
+		
 		if (array_key_exists("vacc_ind",$data) && $data['vacc_ind'] != ''){
 			if(is_array($data['vacc_ind'])){
 				$allnames = array_map("getVaccines_name",$data['vacc_ind']);
@@ -1382,26 +1382,7 @@ function reportsTopInfo($subTitle,$data) {
     	   	   	  </div>
     	   	   </div>';
 		}
-		if (array_key_exists("datefrom",$data) && $data['datefrom'] != ''){
-			$html .= ' <div class="row">
-    	   	   	  <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%;">
-    	   	   		<h4 style="font-size: 14px;">Date From:</h4>
-    	   	   	  </div>
-    	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
-    	   	   		<h5>' . $data['datefrom']  . '</h5>
-    	   	   	  </div>
-    	   	   </div>'; 
-		}
-		if (array_key_exists("dateto",$data) && $data['dateto'] != ''){
-			$html .= ' <div class="row">
-    	   	   	  <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%;">
-    	   	   		<h4 style="font-size: 14px;">Date TO:</h4>
-    	   	   	  </div>
-    	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
-    	   	   		<h5>' . $data['dateto']  . '</h5>
-    	   	   	  </div>
-    	   	   </div>';
-		}
+		
 		/*if (array_key_exists("monthto",$data) && $data['monthto'] != ''){
 			$html .= ' <div class="row">
     	   	   	  <div class="col-xs-2" style="margin-top:-14px; margin-left: 39%;">
@@ -1463,6 +1444,17 @@ function reportsTopInfo($subTitle,$data) {
     	   	   	  </div>
     	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
     	   	   		<h5>' . get_subtype_name($data['type_id']) . '</h5>
+    	   	   	  </div>
+    	   	   </div>';
+    	}
+		if (array_key_exists("trainingtypes",$data) && $data['trainingtypes'] != ''){
+			$html .= ' 
+						<div class="row">
+    	   	   	  <div class="col-xs-1" style="margin-top:-14px; margin-left: 37%;">
+    	   	   		<h4 style="font-size: 14px;">Training Type:</h4>
+    	   	   	  </div>
+    	   	      <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
+    	   	   		<h5>' . get_training_name($data['trainingtypes']) . '</h5>
     	   	   	  </div>
     	   	   </div>';
     	}
@@ -1555,13 +1547,13 @@ function reportsTopInfo($subTitle,$data) {
 					$reportType = "Facilities List";
 					break;
 			}
-            $html .= ' <div class="row" style="width: 100%; text-align: center;">
-                  <span class="" style="">
-                    <span style="font-size: 16px; font-weight: 600;">Report Type:</span>
-                  </span>
-                  <span class="" style="">
-                    <span>' . $reportType  . '</span>
-                  </span>
+            $html .= ' <div class="row">
+                  <div class="col-xs-1" style="margin-top:-14px; margin-left: 39%; white-space: nowrap;">
+                    <h4 style="font-size: 16px;">Report Type:</h4>
+                  </div>
+                  <div class="col-xs-4" style=" margin-top:-11px; margin-left: 15px;">
+                    <h5>' . $reportType  . '</h5>
+                  </div>
                </div>';
         }
 		if (array_key_exists("reportType",$data) && $data['reportType'] != ''){
@@ -1683,7 +1675,6 @@ function reportsTopInfo($subTitle,$data) {
 		}
 		return $html;
 }
-
 function reportsslimTopInfo($subTitle,$data) {
        // print_r($data);exit();
 		$html = '
@@ -1832,123 +1823,123 @@ function reportsslimTopInfo($subTitle,$data) {
                   </div>
                ';
         }
-		if (array_key_exists("monthfrom",$data) && $data['monthfrom'] != ''){
+        if (array_key_exists("monthfrom",$data) && $data['monthfrom'] != ''){
             if($appendedcounts==0){
-				$html .= $startnewdiv;
-			}
-			if($appendedcounts==3){
-				$html .= $enddiv.$startnewdiv;
-				$appendedcounts = 1;
-			}else{
-				$appendedcounts++;
-			}
+                $html .= $startnewdiv;
+            }
+            if($appendedcounts==3){
+                $html .= $enddiv.$startnewdiv;
+                $appendedcounts = 1;
+            }else{
+                $appendedcounts++;
+            }
             $html .= ' 
                   <div class="col-md-1" style="text-align: center;">
-    	   	   		<h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Period:</h4>
+                    <h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Period:</h4>
                   </div>
                   <div class="col-md-3" style="text-align: center;">
-    	   	   		<h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $data['monthfrom'] .' - ' .$data['monthto']  . '</h5>
+                    <h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $data['monthfrom'] .' - ' .$data['monthto']  . '</h5>
                   </div>
                ';
         }
-		if (array_key_exists("vaccination_type",$data) && $data['vaccination_type'] != ''){
-			$vaccination_type = $data['vaccination_type'];
-			switch($vaccination_type){
-				case 'all':
-					$title = "All";
-					break;
-				case 'fixed':
-					$title = "Fixed";
-					break;
-				case 'outreach':
-					$title = "Outreach";
-					break;
-				case 'mobile':
-					$title = "Mobile";
-					break;
-				case 'lhw':
-					$title = "LHW";
-					break;
-			}
+        if (array_key_exists("vaccination_type",$data) && $data['vaccination_type'] != ''){
+            $vaccination_type = $data['vaccination_type'];
+            switch($vaccination_type){
+                case 'all':
+                    $title = "All";
+                    break;
+                case 'fixed':
+                    $title = "Fixed";
+                    break;
+                case 'outreach':
+                    $title = "Outreach";
+                    break;
+                case 'mobile':
+                    $title = "Mobile";
+                    break;
+                case 'lhw':
+                    $title = "LHW";
+                    break;
+            }
             if($appendedcounts==0){
-				$html .= $startnewdiv;
-			}
-			if($appendedcounts==3){
-				$html .= $enddiv.$startnewdiv;
-				$appendedcounts = 1;
-			}else{
-				$appendedcounts++;
-			}
+                $html .= $startnewdiv;
+            }
+            if($appendedcounts==3){
+                $html .= $enddiv.$startnewdiv;
+                $appendedcounts = 1;
+            }else{
+                $appendedcounts++;
+            }
             $html .= ' 
                   <div class="col-md-1" style="text-align: center;">
-    	   	   		<h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Vaccination:</h4>
+                    <h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Vaccination:</h4>
                   </div>
                   <div class="col-md-3" style="text-align: center;">
-    	   	   		<h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $title . '</h5>
+                    <h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $title . '</h5>
                   </div>
                ';
         }
-		if (array_key_exists("vacc_to",$data) && $data['vaccination_type'] != ''){
-			$vaccination_type = $data['vacc_to'];
-			switch($vaccination_type){
-				case 'all':
-					$title = "All";
-					break;
-				case 'total_children':
-					$title = "Total Children";
-					break;
-				case 'gender':
-					$title = "Gender Wise";
-			}
+        if (array_key_exists("vacc_to",$data) && $data['vaccination_type'] != ''){
+            $vaccination_type = $data['vacc_to'];
+            switch($vaccination_type){
+                case 'all':
+                    $title = "All";
+                    break;
+                case 'total_children':
+                    $title = "Total Children";
+                    break;
+                case 'gender':
+                    $title = "Gender Wise";
+            }
             if($appendedcounts==0){
-				$html .= $startnewdiv;
-			}
-			if($appendedcounts==3){
-				$html .= $enddiv.$startnewdiv;
-				$appendedcounts = 1;
-			}else{
-				$appendedcounts++;
-			}
+                $html .= $startnewdiv;
+            }
+            if($appendedcounts==3){
+                $html .= $enddiv.$startnewdiv;
+                $appendedcounts = 1;
+            }else{
+                $appendedcounts++;
+            }
             $html .= ' 
                   <div class="col-md-1" style="text-align: center;">
-    	   	   		<h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Vaccination To:</h4>
+                    <h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Vaccination To:</h4>
                   </div>
                   <div class="col-md-3" style="text-align: center;">
-    	   	   		<h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $title . '</h5>
+                    <h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $title . '</h5>
                   </div>
                ';
         }
-		if (array_key_exists("age_wise",$data) && $data['age_wise'] != ''){
-			$age_wise = $data['age_wise'];
-			switch($age_wise){
-				case '0to11':
-					$title = "0-11 Months";
-					break;
-				case '12to23':
-					$title = "12-23 Months";
-					break;
-				case 'above2':
-					$title = "Above 2 Years";
-					break;
-				case 'all':
-					$title = "All";
-					break;
-			}
+        if (array_key_exists("age_wise",$data) && $data['age_wise'] != ''){
+            $age_wise = $data['age_wise'];
+            switch($age_wise){
+                case '0to11':
+                    $title = "0-11 Months";
+                    break;
+                case '12to23':
+                    $title = "12-23 Months";
+                    break;
+                case 'above2':
+                    $title = "Above 2 Years";
+                    break;
+                case 'all':
+                    $title = "All";
+                    break;
+            }
             if($appendedcounts==0){
-				$html .= $startnewdiv;
-			}
-			if($appendedcounts==3){
-				$html .= $enddiv.$startnewdiv;
-				$appendedcounts = 1;
-			}else{
-				$appendedcounts++;
-			}
+                $html .= $startnewdiv;
+            }
+            if($appendedcounts==3){
+                $html .= $enddiv.$startnewdiv;
+                $appendedcounts = 1;
+            }else{
+                $appendedcounts++;
+            }
             $html .= ' 
                   <div class="col-md-1" style="text-align: center;">
-    	   	   		<h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Age Group:</h4>
+                    <h4 style="margin-top: 0px; font-size: 18px; font-weight: 900;text-align: center;">Age Group:</h4>
                   </div>
                   <div class="col-md-3" style="text-align: center;">
-    	   	   		<h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $title . '</h5>
+                    <h5 style="margin-top: 0px; font-size: 18px;text-align: center;">' . $title . '</h5>
                   </div>
                ';
         }
@@ -2029,9 +2020,10 @@ function reportsslimTopInfo($subTitle,$data) {
 		}
 		return $html;
 }
+
 if(!function_exists('getPendingCasesReportTable')){
     function getPendingCasesReportTable($allData,$allTotal=NULL,$weekly=NULL,$siaCompliance=NULL,$headerNames=NULL,$percentHeader=NULL,$complianceTotalF=NULL,$siaCoverage=NULL,$siaTeams=NULL){ 
-    //echo 'zsk-2' ;
+	
          $count = 0;
         // if($siaCoverage){
         //  $returnData = '<div><table id="fixTable" class="table table-bordered table-hover" data-filter="#filter" data-filter-text-only="true">
@@ -2175,7 +2167,7 @@ if(!function_exists('getPendingCasesReportTable')){
         return $returnData .= "</tbody></table></div>";
     }
 }
-function showListingReportInOUT($allData,$allTotal=NULL,$allTotalDue=NULL){
+function showListingReportInOUT($allData,$allTotal=NULL,$allTotalDue=NULL){       
     $count = 0;
     $returnData = '<div id="parent" style="overflow:scroll;"><table border="1" cellspacing="0" width="100%" align="center" style="text-align:center;" class="table table-condensed tableuc table-vcenter row-border order-column tbl-listing">';
     foreach($allData as $key => $value)
@@ -2314,7 +2306,6 @@ if(!function_exists('getInPlusOutDistrictReportTable')){ //getInPlusOutDistrictR
 }
 if(!function_exists('getReportTable')){
     function getReportTable($allData,$allTotal=NULL,$weekly=NULL,$siaCompliance=NULL,$headerNames=NULL,$percentHeader=NULL,$complianceTotalF=NULL,$siaCoverage=NULL,$siaTeams=NULL){ 
-	//echo 'zsk-4' ; 
         $count = 0;
         // if($siaCoverage){
         //  $returnData = '<div><table id="fixTable" class="table table-bordered table-hover" data-filter="#filter" data-filter-text-only="true">
@@ -2457,7 +2448,6 @@ if(!function_exists('getReportTable')){
         return $returnData .= "</tbody></table></div>";
     }
 }
-
 if(!function_exists('getRegVaccines_options')){
 	function getRegVaccines_options($isreturn=false,$activity=1,$returndata = FALSE,$catin=array(),$selected=NULL){
 		/* $output='<option value="cr_r1_f6">BCG</option><option value="cr_r2_f6">DIL BCG</option><option value="cr_r3_f6">bOPV</option><option value="cr_r4_f6">Pentavalent-1</option><option value="cr_r5_f6">Pneumococcal-2(PCV10)</option><option value="cr_r25_f6">Pneumococcal-4(PCV10)</option><option value="cr_r6_f6">Measles-10</option><option value="cr_r8_f6">TT 10</option><option value="cr_r9_f6">TT 20</option><option value="cr_r7_f6">DIL-Measles-10</option><option value="cr_r24_f6">HBV</option><option value="cr_r10_f6">HBV-10</option><option value="cr_r20_f6">HBV-02</option><option value="cr_r11_f6">IPV-10</option><option value="cr_r19_f6">IPV-5</option><option value="cr_r18_f6">Rotarix</option><option value="cr_r23_f6">Dropper</option><option value="cr_r12_f6">AD Syringes 0.5 ml</option><option value="cr_r13_f6">AD Syringes 0.05 ml</option><option value="cr_r14_f6">Recon.Syringes (2 ml)</option><option value="cr_r15_f6">Recon. Syringes (5 ml)</option><option value="cr_r21_f6">Vitamin A Red Capsule</option><option value="cr_r22_f6">Vitamin A Blue Capsule</option><option value="cr_r16_f6">Safety Boxes</option><option value="cr_r17_f6">Other</option>';
@@ -2489,6 +2479,7 @@ if(!function_exists('getRegVaccines_options')){
 		
 	}
 }
+
 if(!function_exists('dueDoses')){
 	function dueDoses($dose, $comparisonDate){
 		$date = date('Y-m-d');
@@ -2543,7 +2534,6 @@ if(!function_exists('dueDoses')){
 		return $outputDate;
 	}
 }
-
 if(!function_exists('dueDoses_women')){
 	function dueDoses_women($dose, $comparisonDate){
 		$date = date('Y-m-d');
@@ -2561,14 +2551,13 @@ if(!function_exists('dueDoses_women')){
             case 'tt5':
                 $matchingdate = date('Y-m-d', strtotime($comparisonDate. ' + 1 year'));
                 break;
-		} 
+		}
 		$outputDate = NULL;
 		if($date >= $matchingdate)
 			$outputDate = $matchingdate;
 		return $outputDate;
 	}
 }
-
 if(!function_exists('getvaccinereport')){
 	function getvaccinereport($vaccine,$interval,$gender,$data)
 	{
@@ -2594,9 +2583,18 @@ if(!function_exists('getvaccinereport')){
 		
 		$wherea = ((!empty($wa))? 'where '.implode(" AND ",$wa):' where');
 		$query = "select count({$vaccine}) as noofchilds from cerv_child_registration ".$wherea;
+		
+        //echo $query;exit;
 
-		$results = $CI->db->query($query);
-		$rows = $results->row_array();
+        //echo $this->db->last_query();exit;
+
+		$results=$CI->db->query($query);
+		
+		//echo $this -> db -> last_query();exit;
+		$rows=$results->row_array();
+		
 		return (isset($rows['noofchilds']))?$rows['noofchilds']:0;
+		
+		//return (isset($rows -> count))?$rows -> count:0;
 	}
-}
+}	

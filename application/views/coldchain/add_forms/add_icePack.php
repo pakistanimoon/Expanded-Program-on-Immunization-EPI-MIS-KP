@@ -5,7 +5,7 @@
 			<input type="hidden" id="edit_quantity" name="edit" class="form-control numberclass edit_quantity" />
 			<div class="add_refrigerator inside-page">
 				<div class="row" style="margin-bottom:10px">
-								<div class="col-md-4">
+								<div class="col-md-4"> 
 									<div class="row">
 										<div class="col-md-4">
 											<label for="Date"> Date <span style="color:red;">*</span></label>

@@ -1,3 +1,5 @@
+<?php //print_r($data);
+ //echo $datefromReport;  exit(); ?>
 <div class="" style="font-size:12px;">
 	<div class="row">
 		<div class="panel panel-primary">
@@ -32,23 +34,71 @@
 							<td><?php if(isset($ReportingFLCF)){ echo $ReportingFLCF; } ?></td>  
 						</tr>
 						<tr>
-							<!--<td><label>Year</label></td>
-							<td><?php// echo $year; ?></td>
-							<td><label>EPI Week No</label></td>
-							<td><?php// echo $week; ?></td><td>-->
-							<td><label>Epi Week From</label></td>
-            <td><?php echo (isset($week_from))?$year.'-'.sprintf('%02d',$week_from):''; ?>
-			</td>
-			<td><label>Epi Week To</label></td>
-            <td><?php echo (isset($week_to))?$year.'-'.sprintf('%02d',$week_to):''; ?>
-			</td>
+							<?php //if((isset($week_from) && $week_from < 1) && (isset($week_to) && $week_to < 1)) { ?>
+								<!-- <td><label>Year</label></td>
+								<td><?php echo $year; ?></td> -->
+							<!-- 	<td><label>Date From</label></td>
+								<td id="datefrom"><?php echo (isset($datefromReport))?$datefromReport:''; ?>
+								</td>
+								<td><label>Date To</label></td>
+								<td id="dateto"><?php echo (isset($datetoReport))?$datetoReport:''; ?>
+								</td> -->
+							<?php if ((isset($week_from) && $week_from < 1) && (isset($week_to) && $week_to >= 1)) { ?>
+								<td><label>Epi Week From</label></td>
+								<td><?php echo (isset($week_from))?$year.'-01':''; ?>
+								</td>
+								<td><label>Epi Week To</label></td>
+								<td><?php echo (isset($week_to))?$year.'-'.sprintf('%02d',$week_to):''; ?>
+								</td>
+							<?php } else if ((isset($week_from) && $week_from >= 1) && (isset($week_to) && $week_to < 1)) { ?>
+								<td><label>Epi Week From</label></td>
+								<td><?php echo (isset($week_from))?$year.'-'.sprintf('%02d',$week_from):''; ?>
+								</td>
+								<td><label>Epi Week To</label></td>
+								<td><?php echo (isset($week_to))?$year.'-'.date('W'):''; ?>
+								</td>
+							<?php } else if ((isset($week_from) && $week_from >= 1) && (isset($week_to) && $week_to >= 1)) { ?>
+								<td><label>Epi Week From</label></td>
+								<td><?php echo (isset($week_from))?$year.'-'.sprintf('%02d',$week_from):''; ?>
+								</td>
+								<td><label>Epi Week To</label></td>
+								<td><?php echo (isset($week_to))?$year.'-'.sprintf('%02d',$week_to):''; ?>
+								</td>
+							<?php } ?>
+						</tr>
+						<tr>
+						<?php if((isset($week_from) && $week_from < 1) && (isset($week_to) && $week_to < 1)) { ?>
+								<td><label>Year</label></td>
+								<td><?php echo $year; ?></td>
+						<?php } ?>
+						<?php if(isset($week_from) && $week_from < 1 && $year == date('Y')) { ?>
+							<td><label>Date From</label></td>
+							<td id="datefrom"><?php echo "31-Dec-".(date('Y') - 1); ?>
+							</td>
+						<?php } else { ?>							
+							<td><label>Date From</label></td>
+							<td id="datefrom"><?php echo (isset($datefromReport))?$datefromReport:''; ?>
+							</td>
+						<?php } ?>
+						<?php if(isset($week_to) && $week_to < 1 && $year < date('Y')) { ?>
+							<td><label>Date To</label></td>
+							<td id="dateto"><?php echo "31-Dec-".$year; ?>
+							</td>
+						<?php } else { ?>	
+							<td><label>Date To</label></td>
+							<td id="dateto"><?php echo (isset($datetoReport))?$datetoReport:''; ?>
+							</td>
+						<?php } ?>
 						</tr>
 					</table>
 					<div id="parent">      
 						<table id="fixTable" class="table table-bordered table-condensed table-striped table-hover mytable">
 							<thead>
 								<tr>
-									<th rowspan="2">S #</th>
+								<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){ ?>
+									<th rowspan="2">Action</th>
+								<?php }?>
+									<th rowspan="2">Sr #</th>
 									<th rowspan="2">Reporting EPI Week</th>
 									<th rowspan="2">Reporting Year</th>
 									<th rowspan="2">Reporting HF</th>
@@ -79,6 +129,7 @@
 									<th colspan="2">Lab result</th>
 									<th rowspan="2">EPI Linked (Msl/Rub/N0)</th>
 									<th rowspan="2">Final Classification</th>
+									<!-- <th rowspan="2">Action</th> -->
 								</tr>
 								<tr>
 									<th>Village/muhalla</th>
@@ -89,13 +140,16 @@
 									<th>Quantity Adequate</th>
 									<th>Cold Chain OK</th>
 									<th>Measles</th>
-									<th>Rubella</th>                              
-								</tr>             
+									<th>Rubella</th> 
+									<!-- <th>Edit</th>
+									<th>View</th> -->                             
+								</tr>           
 							</thead>
 							<tbody>        
-								<?php          
+							<?php 
 								$previousWeekNumber = 0;
 								$startpoint = isset($startpoint)?$startpoint:0;
+								//print_r($measles);exit();
 								foreach($measles as $key => $row){						
 									if($row['patient_gender']=='1')       
 										$patient_gender= 'Male';           
@@ -105,7 +159,20 @@
 										$patient_gender= '';
 								?>
 								<tr class="DrillDownRow">
-									<td data-id="<?php echo $row['id']; ?>" data-year="<?php echo $row['year']; ?>"><?php echo ++$startpoint; ?></td> 
+									<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){ ?>
+										<?php if($row['case_type']=='Msl') {?>
+											<td>
+												<!-- <a href="<?php //echo base_url(); ?>Measles_investigation/measles_investigation_view/<?php //echo $row['id']; ?>/<?php //echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> -->	
+												<a href="<?php echo base_url(); ?>Measles_investigation/measles_investigation_edit/<?php echo $row['id']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+											</td>										
+										<?php } else { ?>
+											<td>
+												<!-- <a href="<?php //echo base_url(); ?>Case_investigation/case_investigation_view/<?php //echo $row['id']; ?>/<?php //echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> -->
+												<a href="<?php echo base_url(); ?>Case_investigation/case_investigation_edit/<?php echo $row['id']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+											</td>										
+										<?php } ?>
+									<?php } ?>	
+									<td data-id="<?php echo $row['id']; ?>" data-year="<?php echo $row['year']; ?>" data-casetype="<?php echo $row['case_type']; ?>"><?php echo ++$startpoint; ?></td> 
 									<td><?php echo sprintf('%02d',$row['week']); ?></td>
 									<td><?php echo $row['year']; ?></td>  
 									<td><?php echo $row['facility']; ?></td>
@@ -168,7 +235,7 @@
 									   ?>                            
 									</td>
 									<td><?php echo "-"; ?></td>
-									<td><?php echo "-"; ?></td>
+									<td><?php echo "-"; ?></td>									
 								</tr>
 								<?php } ?>    
 							</tbody>
@@ -219,28 +286,43 @@
 	</div><!--end of row-->
 </div><!--End of page content or body--> 
 <?php  if(!$this->input->post('export_excel')){ ?>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-   <script src="<?php echo base_url(); ?>includes/js/tableHeadFixer.js"></script>
-   <script src="<?php echo base_url(); ?>includes/bootstrap/js/bootstrap.min.js"></script>
-   <script type="text/javascript">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="<?php echo base_url(); ?>includes/js/tableHeadFixer.js"></script>
+	<script src="<?php echo base_url(); ?>includes/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
 		$(document).ready(function() {
-			 $("#fixTable").tableHeadFixer({"left" : 7}); 
+			 $("#fixTable").tableHeadFixer({"left" : 8}); 
 		});
-		  $('.DrillDownRow').css('cursor','pointer');
-		  $(document).on('click',".DrillDownRow", function(){
-			 var id = $(this).find("td:first-child").data('id');
-			 var year = $(this).find("td:first-child").data('year');
-			 var url = '';
-			 url = "<?php echo base_url();?>Case_investigation/case_investigation_view/"+id+"/"+year;       
-			 var win = window.open(url,'_self');
-			 if(win){
+		$('.DrillDownRow').css('cursor','pointer');
+		$(document).on('click',".DrillDownRow", function(){
+			var ulevel = '<?php echo $_SESSION['UserLevel']; ?>';
+			if(ulevel==3){
+				var id = $(this).find("td:nth-child(2)").data('id');
+				var year = $(this).find("td:nth-child(2)").data('year');
+				var casetype = $(this).find("td:nth-child(2)").data('casetype');
+			}
+			else{
+				var id = $(this).find("td:first-child").data('id');
+				var year = $(this).find("td:first-child").data('year');
+				var casetype = $(this).find("td:first-child").data('casetype');
+			}
+			var url = '';
+			if(casetype == 'Msl'){
+				url = "<?php echo base_url();?>Measles_investigation/measles_investigation_view/"+id+"/"+year;
+			}
+			else{
+				url = "<?php echo base_url();?>Case_investigation/case_investigation_view/"+id+"/"+year;
+			}			       
+			var win = window.open(url,'_self');
+			if(win){
 				//Browser has allowed it to be opened
 				win.focus();
-			 }
-			 else{
+			}
+			else{
 				//Broswer has blocked it
 				alert('Please allow popups for this site');
-			 }
-		  });
-   </script>
+			}
+		});
+	/*  */
+    </script>
 <?php } exit; ?> 

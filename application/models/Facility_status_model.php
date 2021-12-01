@@ -15,7 +15,7 @@ class Facility_status_model extends CI_Model{
 
 	function fac_status_view($facode, $is_for_view=FALSE)
 	{
-		$query = "SELECT * FROM facilities_status WHERE facode='$facode' ORDER BY substr(id,8,3)::numeric DESC";
+		$query = "SELECT * FROM facilities_status WHERE facode='$facode' order by substr(id,8,3)::numeric desc";
 		$result['status_data'] = $this->db->query($query)->result_array();
 		if($is_for_view)
 		{

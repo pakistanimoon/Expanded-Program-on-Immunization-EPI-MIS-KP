@@ -63,30 +63,16 @@ class Indicator_Reports_New extends CI_Controller {
 		return $data;
 	}
 	
-	function HFMVRF($distcode=NULL, $monthfrom=NULL, $monthto=NULL, $indicator=NULL, $reportPeriodnew=NULL,$facode=NULL,$tcode=NULL,$uncode=NULL)
+	function HFMVRF($distcode=NULL, $monthfrom=NULL, $monthto=NULL, $indicator=NULL, $reportPeriodnew=NULL)
 	{
-		//print_r($_POST);
 		if($distcode AND $monthfrom AND $monthto AND $indicator AND $reportPeriodnew)
 		{
-			//print_r($tcode);
-			//echo'agg'; 
 			$data = array('distcode' => $distcode, 'monthfrom' => $monthfrom, 'monthto' => $monthto, 'indicator' => $indicator, 'reportPeriodnew' => $reportPeriodnew);
-		if($tcode > 0){
-			//echo'pani'; 	
-			$data = array('distcode' => $distcode, 'monthfrom' => $monthfrom, 'monthto' => $monthto, 'indicator' => $indicator, 'reportPeriodnew' => $reportPeriodnew,'tcode'=>$tcode);
 		}
-	    if($tcode > 0 && $uncode > 0 ){
-			//echo'pani'; 	
-			$data = array('distcode' => $distcode, 'monthfrom' => $monthfrom, 'monthto' => $monthto, 'indicator' => $indicator, 'reportPeriodnew' => $reportPeriodnew,'tcode'=>$tcode,'uncode'=>$uncode);
-		}
-	    if($tcode > 0 && $uncode > 0 && $facode > 0){
-			//echo'pani'; 	
-			$data = array('distcode' => $distcode, 'monthfrom' => $monthfrom, 'monthto' => $monthto, 'indicator' => $indicator, 'reportPeriodnew' => $reportPeriodnew,'tcode'=>$tcode,'uncode'=>$uncode,'facode'=>$facode);
-		}  
-		//print_r($data); exit;
-		}else{
+		else
+		{
+
 			$data = $this -> getPostedData();
-				//print_r($data);
 		}
 		$dataHFNAMR['data'] = $this -> Indicator_reports_new_model -> HFMVRF($data/* ,$wc */);
 		$indicatorTitle = $dataHFNAMR["data"]["indicatorTitle"];

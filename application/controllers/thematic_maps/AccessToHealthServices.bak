@@ -759,8 +759,8 @@ class AccessToHealthServices extends CI_Controller {
 		$data['weeklyOutBreakNNT'] = $this ->getChartData("nnt_investigation_form",$parametersData,"NT","#8B0000");
 		$data['weeklyOutBreakMeasles'] = $this ->getChartData("case_investigation_db",$parametersData,"Msl");
 		$data['weeklyOutBreakDiphtheria'] = $this ->getChartData("case_investigation_db",$parametersData,"Diph","#00FF00");
-		return $data; 
-	} 
+		return $data;
+	}
 	
 	public function ucAttendence($parametersData){
 		$data = "";
@@ -776,7 +776,7 @@ class AccessToHealthServices extends CI_Controller {
 		$arrData = $dataSeries= array();
 		$i=0;
 		foreach ($result as $value) {
-			$arrData[$i]['label'] = $value->fweek;
+			$arrData[$i]['lable'] = $value->fweek;
 			$arrData[$i]['value'] = $value->DiseasesCount;
 			$arrData[$i]['link'] = "JavaScript:drilldownfun('{$caseType}','{$value->code}','{$value->year}','{$value->week}')";
 			$arrData[$i]['color'] = "{$color}";

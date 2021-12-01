@@ -222,15 +222,15 @@
         <tr class="DrilledDown">
           <td class="text-center"><span class="footable-toggle"></span><?php echo $i; ?></td>
 		  <td class="text-center" >HF Incharge</td>   
-          <td class="text-center" ><?php echo $row['technicianname']; ?></td>
+		  <td class="text-center" ><?php echo $row['name']; ?></td>
           <td class="text-center" ><?php echo $row['fathername']; ?></td>
           <td class="text-center" ><?php echo $row['nic']; ?></td>
-           <td class="text-center" ><?php echo $row['phone']; ?></td>		  
-          <td class="text-center"><?php echo $row['status']; ?></td>
-		    <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
+          <td class="text-center" ><?php echo $row['phone']; ?></td>		  
+          <td class="text-center" ><?php echo $row['post_status']; ?></td>
+		     <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
           <td class="text-center">
-            <a data-original-title="View" href="<?php echo base_url(); ?>HF-Incharge/View/<?php echo $row['techniciancode']?>" data-toggle="tooltip" title="" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-            <a data-original-title="Edit" href="<?php echo base_url(); ?>HF-Incharge/Edit/<?php echo $row['techniciancode']?>" data-toggle="tooltip" title="" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+            <a data-original-title="View" href="<?php echo base_url(); ?>Hr_management/hr_view/<?php echo $row['code']?>" data-toggle="tooltip" title="" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+            <a data-original-title="Edit" href="<?php echo base_url(); ?>Hr_management/hr_edit_get/<?php echo $row['code']?>" data-toggle="tooltip" title="" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 	      </td>
 	       <?php } ?>
 		</tr>
@@ -291,6 +291,15 @@
 			 </table>
 		
 				</div> 	
+				
+				<!--Recent Consumption Report-->
+	<?php if($resultfac['is_vacc_fac'] == '1'): ?>		
+				
+				<div id ="ajax_data" style="padding:0px 15px;margin-top:1px;">
+
+				</div>
+	<?php endif; ?>
+				
 <!---start-->
 			<div class="panel-body">
 				<!--it is use for show message-->
@@ -462,8 +471,6 @@
 			  <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
 			    <a href="<?php echo base_url();?>System_setup/flcf_list" type="reset" class="btn btn-md btn-success "><i class="fa fa-arrow-left"></i> Back </a>
 				<a href=" <?php echo base_url(); ?>Status/View/<?php echo $resultfac['facode']; ?>" class="btn btn-md btn-success "><i class="fa fa-pencil-square-o"></i> Update Status</a>                                                    
-			  <?php } else if (($_SESSION['UserLevel']=='4') && ($_SESSION['utype']=='Store') ){?>
-			       <a href="<?php echo base_url();?>setup_listing/VPD_Centers_listing" type="reset" class="btn btn-md btn-success "><i class="fa fa-arrow-left"></i> Back </a>
 			  <?php }else{?>
 				   <a href="<?php echo base_url();?>setup_listing/listing/EPI_Centers" type="reset" class="btn btn-md btn-success "><i class="fa fa-arrow-left"></i> Back </a>
 			 <?php }?>
@@ -507,6 +514,26 @@ $(document).on('change','#dashyear',function(){
 		});
 	}
 });
+<?php if($resultfac['is_vacc_fac'] == '1'): ?>
+var facode=$("#facode").val();
+var data = {facode:facode,ajax:true};
+$(document).ready(function(){
+		$.ajax({
+			type: "POST",
+			async:true,
+			data:data,
+			//dataType : 'json',
+			url: "<?php echo base_url(); ?>System_setup/flcf_view_ajax",
+			success: function(result){
+				if(result != ""){
+				$("#ajax_data").html(result);
+				}else{
+					$("#ajax_data").hide();
+				}
+			}
+		});
+});
+<?php endif; ?>
 </script>
 
 

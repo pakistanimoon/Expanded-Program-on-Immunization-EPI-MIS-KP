@@ -164,11 +164,7 @@ class Main_page extends CI_Controller {
 					$type=$row["post_hr_sub_type_id"];
 					$distcode=$row["post_distcode"];
 					$link = "JavaScript:hrReportData('{$distcode}','{$type}')";
-				}else if($UserLevel == 4 || $chartTypeid=='table'){
-					$type=$row["post_hr_sub_type_id"];
-					$tcode=$row["post_tcode"];
-					$link = "JavaScript:hrReportData_tehsil('{$tcode}','{$type}')";
-				}
+				} 
 				$DataSet[$key]= array(
 					"label"	=> $lable,
 					"value"	=> (int)$row['count'],

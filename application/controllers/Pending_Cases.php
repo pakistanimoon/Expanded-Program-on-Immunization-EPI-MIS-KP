@@ -63,7 +63,6 @@
 			if($this-> input-> post('distcode')){
 				$distcode = $this-> input-> post('distcode');
 				$year = $data['year'];
-				//echo $distcode; exit();
 				redirect('Cross_notified_cases/Cross_notified_cases_list/'.$distcode.'/'.$year);
 			}
 			else{

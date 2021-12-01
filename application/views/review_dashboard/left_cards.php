@@ -2,13 +2,28 @@
 					<section id="rev_aside">
 						<div class="container-fluid p-0">
 							<?php
+							if(isset($ucwise) && $ucwise=='wise'){
+									$controller='ReviewDashboardUcWise';
+							}else{
+									$controller='ReviewDashboard';
+							}
 							$i=1;
 							foreach($leftCardsMainArray as $key => $indicator){
-								////////by usama for % sing
+								//print_r($indicator['id']);
+								////////by usama for % sing and also for tab setting
 								if($indicator['id']=='diseaseoutbreak') {
 										$sing='';					
 								}else{
 										$sing='&#37;';
+								}
+								if($indicator['id']=='compliances') {
+										$col_size='6';					
+								}
+								elseif($indicator['id']=='sessoinsplan'){
+										$col_size='4';
+								}else{
+								//if($indicator['id']!='compliances' || $indicator['id']=='sessoinsplan'){
+									$col_size='3';
 								}
 								////////END/
 								$ind_str = '&indicatorid='.$indicator['id'];
@@ -17,7 +32,7 @@
 								$queryString = http_build_query($_GET);
 							?>
 							<div class="row card-1 m-0">
-								<a href="<?php echo base_url('dashboard/ReviewDashboard?').$queryString.$ind_str; ?>" class="hover-tag">
+								<a href="<?php echo base_url('dashboard/'.$controller.'?').$queryString.$ind_str; ?>" class="hover-tag">
 									<div class="col-lg-12 p-0">
 										<table class="table m-0">
 											<tbody>
@@ -60,8 +75,9 @@
 																		unset($_GET['subindicatorid']);
 																		$queryString = http_build_query($_GET);
 																	?>
-																	<li class="nav-item bg-<?php echo $i; ?> carousel-item col-12 col-sm-6 col-md-4 col-lg-3 <?php echo ($j == 0)?'active':''; ?>">
-																		<a class="nav-link <?php echo ($j == 0)?'active':''; ?>" href="<?php echo base_url('dashboard/ReviewDashboard?').$queryString.$ind_str.$subind_str; ?>"><span><?php echo $carousel['value']; ?>&#37;</span> <?php echo $carousel['name']; ?></a>
+																	<li class="nav-item bg-<?php echo $i; ?> carousel-item col-12 col-sm-6 col-md-4 col-lg-<?php echo $col_size; ?> <?php echo ($j == 0)?'active':''; ?>">
+																		
+																			<a class="nav-link <?php echo ($j == 0)?'active':''; ?>"  href="<?php echo base_url('dashboard/'.$controller.'?').$queryString.$ind_str.$subind_str; ?>"><span><?php echo $carousel['value']; ?>&#37;</span> <?php echo $carousel['name']; ?></a>
 																	</li>
 																	<?php
 																	$j++;

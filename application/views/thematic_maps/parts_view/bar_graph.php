@@ -9,14 +9,15 @@ $(function () {
 	var form='<?php echo (isset($filter))?$filter:NULL; ?>';
 	var plotLinesscolor = <?php echo (isset($plotYaxis))?$plotYaxis:0; ?>;
     var rankingDataSeries = <?php echo $serieses_ranking; ?>;
+	var ucwisemap = '<?php echo (isset($ucwisemap))?$ucwisemap:'false'; ?>';
     var rankingCategories = <?php echo $serieses_ranking_cat; ?>;
     var titleText = '<?php echo $heading["barName"]; ?>';
-	var ucwisemap = '<?php echo (isset($ucwisemap))?$ucwisemap:'false'; ?>';
-	var bartooltip = '<?php echo (isset($bartooltip))?$bartooltip:FALSE; ?>';
 	var subtitle = '<?php if(isset($heading["subtittle"])){ echo $heading["subtittle"];}?>';
+    var in_out_coverage = '<?php echo (isset($in_out_coverage))?$in_out_coverage:""; ?>';
     var id = '<?php echo $id; ?>';//console.log(plotLinesscolor);
+	var bartooltip = '<?php echo (isset($bartooltip))?$bartooltip:FALSE; ?>';
 	var fmonth = '<?php (isset($fmonth))?$fmonth:''; ?>';
-    Highcharts.chart(id, {
+   Highcharts.chart(id, {
         chart: {
             type: 'bar',
 			height:'200%'
@@ -31,10 +32,7 @@ $(function () {
 		legend: {
 			enabled: false
 		},
-        /* subtitle: {
-            text: ''
-        }, */
-		<?php if(isset($bartooltip) && $bartooltip){ ?>
+        <?php if(isset($bartooltip) && $bartooltip){ ?>
 		tooltip: {
 			formatter: function () {
 				return formatter(this,ucwisemap);
@@ -86,8 +84,8 @@ $(function () {
 						);
 					} */
 					<?php if (!$this->agent->is_mobile()){ ?>
-						click: function (e) {
-                        	getDistrictWiseData(e, fmonth);
+					click: function (e) {
+							getDistrictWiseData(e, fmonth);
 						}
 					<?php } ?>
 				}

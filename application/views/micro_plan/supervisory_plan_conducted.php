@@ -1,4 +1,4 @@
-<?php // print_r($m1);exit; ?>
+<?php // print_r($data);exit; ?>
 <div class="container">
 	<div class="row">
 	<div class="panel panel-primary">
@@ -39,9 +39,22 @@
 							?>
 							<option value="<?php echo $val['supervisorcode'];?>" >
 								<?php
-									if(isset($val)){
+								
+									$str = $val['supervisorcode'];
+
+								  if (strlen($str) <= 7) {
+									  if(isset($val)){
+										 echo get_supervisor_Name($val['supervisorcode']); 
+										}
+									} else{
+										if(isset($val)){
+										 echo get_supervisor_Name_hr_db($val['supervisorcode']); 
+										}
+								  }
+								  
+									/* if(isset($val)){
 									echo get_supervisor_Name($val['supervisorcode']); 
-									}
+									} */
 								?>
 							</option>
 							<?php if($i==1) break; } ?>
@@ -54,7 +67,7 @@
 					</div>
 					<div class="col-md-3">
 						<select required class="form-control" id="year_id" name="date_year">
-							<option value="<?php echo substr($m1[0]['fmonth'],0,4); ?>" ><?php echo substr($m1[0]['fmonth'],0,4);?></option>                       
+							<option value="<?php echo substr($m1[0]['fmonth'],0,4);?>" ><?php echo substr($m1[0]['fmonth'],0,4);?></option>                       
 						</select>
 					</div>
 					<div class="col-md-3">
@@ -129,19 +142,19 @@
 								
 		                    </td>
 							<td>
-								<select required class="form-control conducted" name="conductedm1[<?php echo $key+1; ?>]" >
+								<select required class="form-control conducted conductedm1"  name="conductedm1[<?php echo $key+1; ?>]" >
 									<option   selected="selected" value="">--Select--</option>
 									 <option   <?php if($val['is_conducted'] == '1')  echo 'selected="selected"';   ?> value="1">Yes</option>
 									 <option   <?php if($val['is_conducted'] == '0')  echo 'selected="selected"';   ?> value="0">No</option>
 									<!--<option value="1">Yes</option>
 									<option value="0">No</option>-->
 								</select>
-							</td>
+							</td> 
 						    <td>
-								<input type="text" readonly required class="form-control text-center calendar1" value="<?php echo $val['conduct_date']; ?>" id="visit_date" name="conduct_datem1[<?php echo $key+1; ?>]" >
+								<input type="date" class="form-control visit_date1"  value="<?php echo $val['conduct_date']; ?>"  name="conduct_datem1[<?php echo $key+1; ?>]" >
 							</td>
 							<td>
-								<input type="text" required class="form-control" id="remarks_id" placeholder="Remarks" value="<?php echo $val['conduct_remarks']; ?>" name="conduct_remarksm1[<?php echo $key+1; ?>]" >
+								<input type="text" class="form-control remarks1" id="remarks_id" placeholder="Remarks" value="<?php echo $val['conduct_remarks']; ?>" name="conduct_remarksm1[<?php echo $key+1; ?>]" >
 							</td>
 							<!--<td>
 							        <?php 
@@ -221,7 +234,7 @@
 								    <?php } ?>
 		                    </td>
 							<td>
-								<select required class="form-control conducted" name="conductedm2[<?php echo $key+1; ?>]" >
+								<select required class="form-control conducted conductedm2" name="conductedm2[<?php echo $key+1; ?>]" >
 									<option   selected="selected" value="">--Select--</option>
 									 <option   <?php if($val['is_conducted'] == '1')  echo 'selected="selected"';   ?> value="1">Yes</option>
 									 <option   <?php if($val['is_conducted'] == '0')  echo 'selected="selected"';   ?> value="0">No</option>
@@ -230,10 +243,10 @@
 								</select>
 							</td>
 						    <td>
-								<input type="text" readonly required class="form-control text-center calendar2" value="<?php echo $val['conduct_date']; ?>" id="visit_date" name="conduct_datem2[<?php echo $key+1; ?>]" >
+								<input type="date" class="form-control visit_date2" value="<?php echo $val['conduct_date']; ?>" name="conduct_datem2[<?php echo $key+1; ?>]" >
 							</td>
 							<td>
-								<input type="text" required class="form-control" id="remarks_id" placeholder="Remarks" value="<?php echo $val['conduct_remarks']; ?>" name="conduct_remarksm2[<?php echo $key+1; ?>]" >
+								<input type="text" class="form-control remarks2" id="remarks_id" placeholder="Remarks" value="<?php echo $val['conduct_remarks']; ?>" name="conduct_remarksm2[<?php echo $key+1; ?>]" >
 							</td>
 							<!--<td>
 							        <?php 
@@ -313,7 +326,7 @@
 								    <?php } ?>
 		                    </td>
 							<td>
-								<select required class="form-control conducted" name="conductedm3[<?php echo $key+1; ?>]" >
+								<select required class="form-control conducted conductedm3" name="conductedm3[<?php echo $key+1; ?>]" >
 									 <option   selected="selected" value="">--Select--</option>
 									 <option   <?php if($val['is_conducted'] == '1')  echo 'selected="selected"';   ?> value="1">Yes</option>
 									 <option   <?php if($val['is_conducted'] == '0')  echo 'selected="selected"';   ?> value="0">No</option>
@@ -322,10 +335,10 @@
 								</select>
 							</td>
 						    <td>
-								<input type="text" readonly required class="form-control text-center calendar3" value="<?php echo $val['conduct_date']; ?>" id="visit_date" name="conduct_datem3[<?php echo $key+1; ?>]" >
+								<input type="date" class="form-control remarks3 visit_date3" value="<?php echo $val['conduct_date']; ?>" name="conduct_datem3[<?php echo $key+1; ?>]" >
 							</td>
 							<td>
-								<input type="text" required class="form-control" id="remarks_id" placeholder="Remarks" value="<?php echo $val['conduct_remarks']; ?>" name="conduct_remarksm3[<?php echo $key+1; ?>]" >
+								<input type="text" class="form-control remarks3" id="remarks_id" placeholder="Remarks" value="<?php echo $val['conduct_remarks']; ?>" name="conduct_remarksm3[<?php echo $key+1; ?>]" >
 							</td>
 							<!--<td>
 							        <?php 
@@ -374,6 +387,7 @@
 		</div> <!--end of panel panel-primary-->
 	</div><!--end of row-->
 </div><!--End of page content or body-->
+
 <script type="text/javascript">	
 $(document).ready(function(){
     $(document).on('change','#supervisor_type',function(){
@@ -627,81 +641,160 @@ $(document).ready(function(){
 			//} 
         });	
 	});
-</script>
-<script type="text/javascript">
-	// <!--For quarter--->	
-	$(document).ready(function(){
-		 // var options = {
-			// 	format : "yyyy-mm-dd",
-			// 	todayHighlight: true,
-			// 	autoclose: true,
-			// 	color: "green"
-			// };
-			// $('.calendar1').datepicker(options);
-			// });	
-		var today = new Date();
-		var dd = today.getDate();
-		var mm = today.getMonth()+1; //January is 0!
-		var qua = $("#month_id").find("option:selected").val();
-		var year = $("#year_id").find("option:selected").val();
-		if(qua == 'Quarter 1'){
-				var month1 = '01';
-				var month2 = '02';
-				var month3 = '03';
-		}else if(qua == 'Quarter 2'){
-				var month1 = '04';
-				var month2 = '05';
-				var month3 = '06';
-		}else if(qua == 'Quarter 3'){
-				var month1 = '07';
-				var month2 = '08';
-				var month3 = '09';
-		}else if(qua == 'Quarter 4'){
-				var month1 = '10';
-				var month2 = '11';
-				var month3 = '12';
-		}
-		console.log(qua);
-		console.log(month1);
-		console.log(month2);
-		console.log(month3);
-		if(month1 != 0 ){
-			var minDate = new Date(year, month1-1, 1);
-			var maxDate = new Date(year, month1, 0);
-			$('.calendar1').each(function(){
-				$('.calendar1').datepicker({
-					format : "yyyy-mm-dd",
-					startDate: minDate,
-					endDate: maxDate,
-					autoclose:true
-				});
+	<!--For quarter--->	
+			$(document).on('change','#quarter', function(){
+				var quarter = this.value;
+				//alert(quarter);
+				
+					
+				if(quarter == 1){
+					$('#m1').text('January').attr('month','01');
+					$('#m2').text('February').attr('month','02');
+					$('#m3').text('March').attr('month','03');
+					$('#month1').val('01');
+					$('#month2').val('02');
+					$('#month3').val('03');
+				}
+				else if(quarter == 2){
+					$('#m1').text('April').attr('month','04');
+					$('#m2').text('May').attr('month','05');
+					$('#m3').text('June').attr('month','06');
+					$('#month1').val('04');
+					$('#month2').val('05');
+					$('#month3').val('06');
+				}
+				else if(quarter == 3){
+					$('#m1').text('July').attr('month','07');
+					$('#m2').text('August').attr('month','08');
+					$('#m3').text('September').attr('month','09');
+					$('#month1').val('07');
+					$('#month2').val('08');
+					$('#month3').val('09');
+				}
+				else if(quarter == 4){
+					$('#m1').text('October').attr('month','10');
+					$('#m2').text('November').attr('month','11');
+					$('#m3').text('December').attr('month','12');
+					$('#month1').val('10');
+					$('#month2').val('11');
+					$('#month3').val('12');
+				}
+				else{
+					/* $('#m1').text('January').attr('month','01');
+					$('#m2').text('February').attr('month','02');
+					$('#m3').text('March').attr('month','03'); */
+					
+							if(qua == 1){
+							$('#m1').text('January').attr('month','01');
+							$('#m2').text('February').attr('month','02');
+							$('#m3').text('March').attr('month','03');
+							$('#month1').val('01');
+					        $('#month2').val('02');
+					        $('#month3').val('03');
+							
+						}
+						else if(qua == 2){
+							$('#m1').text('April').attr('month','04');
+							$('#m2').text('May').attr('month','05');
+							$('#m3').text('June').attr('month','06');
+							$('#month1').val('04');
+					        $('#month2').val('05');
+					        $('#month3').val('06');
+						}
+						else if(qua == 3){
+							$('#m1').text('July').attr('month','07');
+							$('#m2').text('August').attr('month','08');
+							$('#m3').text('September').attr('month','09');
+							$('#month1').val('07');
+					        $('#month2').val('08');
+					        $('#month3').val('09');
+						}
+						else if(qua == 4){
+							$('#m1').text('October').attr('month','10');
+							$('#m2').text('November').attr('month','11');
+							$('#m3').text('December').attr('month','12');
+							$('#month1').val('10');
+					        $('#month2').val('11');
+					        $('#month3').val('12');
+						}
+				}
+			});	
+
+
+/* if(!$(e.target).closest('.nested-element').not(this).length){
+     console.log('nested-element clicked =', this.id);
+   }else{      
+     console.log('Ignore parent event')
+   }  */
+   
+   
+		$('.conductedm1').on('change' , function (){
+			var conductedm1 = this.value;
+			if(conductedm1 == 1){
+				$(this).closest('tr').find('.visit_date1').prop('required',true);
+				$(this).closest('tr').find('.remarks1').prop('required',true);
+			}else{
+				$(this).closest('tr').find('.visit_date1').prop('required',false);
+				$(this).closest('tr').find('.remarks1').prop('required',false);
+			}
+		});
+			
+		$('.conductedm2').on('change' , function (){
+			var conductedm2 = this.value;
+			if(conductedm2 == 1){
+				$(this).closest('tr').find('.visit_date2').prop('required',true);
+				$(this).closest('tr').find('.remarks2').prop('required',true);
+			}else{
+				$(this).closest('tr').find('.visit_date2').prop('required',false);
+				$(this).closest('tr').find('.remarks2').prop('required',false);
+			}
+		});
+			
+		$('.conductedm3').on('change' , function (){
+			var conductedm3 = this.value;
+			if(conductedm3 == 1){
+				$(this).closest('tr').find('.visit_date3').prop('required',true);
+				$(this).closest('tr').find('.remarks3').prop('required',true);
+			}else{
+				$(this).closest('tr').find('.visit_date3').prop('required',false);
+				$(this).closest('tr').find('.remarks3').prop('required',false);
+			}
+		});
+			
+			/* $('#conductedm2').on('change' , function (){
+				var conductedm2 = this.value;
+				if(conductedm2 == 1){
+					alert('if');
+					$('#visit_date2').prop('required',true);
+					
+				}else{
+					alert('else');
+					$('#visit_date2').prop('required',false);
+				}
 			});
-		}
-		if(month2 != 0 ){
-		   
-			 var minDate = new Date(year, month2-1, 1);
-		     var maxDate = new Date(year, month2, 0);
-			  $('.calendar2').each(function(){
-				$('.calendar2').datepicker({
-					format : "yyyy-mm-dd",
-					startDate: minDate,
-					endDate: maxDate
-				});
-			});
-		}
-		if(month3 != 0 ){
-			 
-			 var minDate = new Date(year, month3-1, 1);
-		     var maxDate = new Date(year, month3, 0);
-			$('.calendar3').each(function(){
-				$('.calendar3').datepicker({
-					format : "yyyy-mm-dd",
-					startDate: minDate,
-					endDate: maxDate
-				});
-			});
-		}
-	});
+			$('#conductedm3').on('change' , function (){
+				var conductedm3 = this.value;
+				if(conductedm3 == 1){
+					alert('if');
+					$('#visit_date3').prop('required',true);
+					
+				}else{
+					alert('else');
+					$('#visit_date3').prop('required',false);
+				}
+			}); */
+			
+			/* $('conductedm1').on('change' , function (){
+				var conductedm1 = this.value;
+				if(conductedm1 == 1){
+					alert('if');
+					$('#visit_date1')prop('required',true);
+				}else{
+					alert('else');
+					$('#visit_date1')prop('required',false);
+				}
+			}); */
+
 </script>
 		</body>
 </html>

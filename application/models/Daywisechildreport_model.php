@@ -1,5 +1,4 @@
 <?php
-//local
 class DaywiseChildreport_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {

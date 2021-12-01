@@ -14,7 +14,6 @@
 	
 	public function session_plan_add($techniciancode,$year){		
 		$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from situation_analysis_db where techniciancode='$techniciancode' and year='$year'";
-		//for ajk//$query = "SELECT *,(select population from villages_population where year='$year' and vcode=situation_analysis_db.area_name) pop, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from situation_analysis_db where techniciancode='$techniciancode' and year='$year'";
 		$result = $this-> db-> query($query);	
 		$data['data'] =	$result-> result_array();
 		return $data['data'];	
@@ -22,7 +21,6 @@
 
 	public function session_plan_edit($techniciancode,$year){	
 		$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from situation_analysis_db where techniciancode='$techniciancode' and year='$year'";
-		//for ajk//$query = "SELECT *,(select population from villages_population where year='$year' and vcode=situation_analysis_db.area_name) pop, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from situation_analysis_db where techniciancode='$techniciancode' and year='$year'";
 		$result = $this-> db-> query($query);	
 		$data['data'] = $result-> result_array();		
 		return $data['data'];	

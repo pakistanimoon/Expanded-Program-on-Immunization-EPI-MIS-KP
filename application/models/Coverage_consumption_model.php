@@ -260,26 +260,7 @@ class Coverage_consumption_model extends CI_Model {
 				(select sum(od_r1_f16+od_r2_f16+od_r3_f16+od_r4_f16+od_r5_f16+od_r6_f16+od_r7_f16+od_r8_f16+od_r9_f16+od_r10_f16+od_r11_f16+od_r12_f16+od_r13_f16+od_r14_f16+od_r15_f16+od_r16_f16+od_r17_f16+od_r18_f16+od_r19_f16+od_r20_f16+od_r21_f16+od_r22_f16+od_r23_f16+od_r24_f16+od_r1_f18+od_r2_f18+od_r3_f18+od_r4_f18+od_r5_f18+od_r6_f18+od_r7_f18+od_r8_f18+od_r9_f18+od_r10_f18+od_r11_f18+od_r12_f18+od_r13_f18+od_r14_f18+od_r15_f18+od_r16_f18+od_r17_f18+od_r18_f18+od_r19_f18+od_r20_f18+od_r21_f18+od_r22_f18+od_r23_f18+od_r24_f18) from fac_mvrf_od_db where distcode=districts.distcode and $fmonthVar and $wc) as odmeasles
 				from fac_mvrf_db where distcode = districts.distcode and $fmonthVar and $wc),0) as measles_from_coverage, COALESCE((select sum(vaccinated) from epi_consumption_detail dtl join epi_consumption_master mst on dtl.main_id = mst.pk_id where mst.distcode = districts.distcode and mst.$fmonthVar and $wc and dtl.item_id = 9),0) as measles_from_consumption
 				from districts order by district) as innerquery";
-
-			$sum_query="SELECT *, bcg_from_consumption - bcg_from_coverage as bcg_difference, 
-					hepb_from_consumption - hepb_from_coverage as hepb_difference
-					from (select procode, 
-							(select $dueMonths from vaccinationcompliance where year='$year') as total_due_reports, 
-							(select $sumMonths from vaccinationcompliance where year='$year') as coverage_submitted_reports, 
-							(select $sumMonths from consumptioncompliance where year='$year') as consumption_submitted_reports, 
-							COALESCE((select 
-								sum(cri_r1_f1+cri_r2_f1+cri_r3_f1+cri_r4_f1+cri_r5_f1+cri_r6_f1+cri_r7_f1+cri_r8_f1+cri_r9_f1+cri_r10_f1+cri_r11_f1+cri_r12_f1+cri_r13_f1+cri_r14_f1+cri_r15_f1+cri_r16_f1+cri_r17_f1+cri_r18_f1+cri_r19_f1+cri_r20_f1+cri_r21_f1+cri_r22_f1+cri_r23_f1+cri_r24_f1) + 
-								sum(oui_r1_f1+oui_r2_f1+oui_r3_f1+oui_r4_f1+oui_r5_f1+oui_r6_f1+oui_r7_f1+oui_r8_f1+oui_r9_f1+oui_r10_f1+oui_r11_f1+oui_r12_f1+oui_r13_f1+oui_r14_f1+oui_r15_f1+oui_r16_f1+oui_r17_f1+oui_r18_f1+oui_r19_f1+oui_r20_f1+oui_r21_f1+oui_r22_f1+oui_r23_f1+oui_r24_f1) + 
-								(select sum(od_r1_f1+od_r2_f1+od_r3_f1+od_r4_f1+od_r5_f1+od_r6_f1+od_r7_f1+od_r8_f1+od_r9_f1+od_r10_f1+od_r11_f1+od_r12_f1+od_r13_f1+od_r14_f1+od_r15_f1+od_r16_f1+od_r17_f1+od_r18_f1+od_r19_f1+od_r20_f1+od_r21_f1+od_r22_f1+od_r23_f1+od_r24_f1) from fac_mvrf_od_db where $fmonthVar and $wc) as odbcg
-							from fac_mvrf_db where $fmonthVar and $wc),0) as bcg_from_coverage, COALESCE((select sum(vaccinated) from epi_consumption_detail dtl join epi_consumption_master mst on dtl.main_id = mst.pk_id where mst.$fmonthVar and $wc and dtl.item_id = 5),0) as bcg_from_consumption,
-							COALESCE((select 
-								sum(cri_r1_f2+cri_r2_f2+cri_r3_f2+cri_r4_f2+cri_r5_f2+cri_r6_f2+cri_r7_f2+cri_r8_f2+cri_r9_f2+cri_r10_f2+cri_r11_f2+cri_r12_f2+cri_r13_f2+cri_r14_f2+cri_r15_f2+cri_r16_f2+cri_r17_f2+cri_r18_f2+cri_r19_f2+cri_r20_f2+cri_r21_f2+cri_r22_f2+cri_r23_f2+cri_r24_f2) + 
-								sum(oui_r1_f2+oui_r2_f2+oui_r3_f2+oui_r4_f2+oui_r5_f2+oui_r6_f2+oui_r7_f2+oui_r8_f2+oui_r9_f2+oui_r10_f2+oui_r11_f2+oui_r12_f2+oui_r13_f2+oui_r14_f2+oui_r15_f2+oui_r16_f2+oui_r17_f2+oui_r18_f2+oui_r19_f2+oui_r20_f2+oui_r21_f2+oui_r22_f2+oui_r23_f2+oui_r24_f2) + 
-								(select sum(od_r1_f2+od_r2_f2+od_r3_f2+od_r4_f2+od_r5_f2+od_r6_f2+od_r7_f2+od_r8_f2+od_r9_f2+od_r10_f2+od_r11_f2+od_r12_f2+od_r13_f2+od_r14_f2+od_r15_f2+od_r16_f2+od_r17_f2+od_r18_f2+od_r19_f2+od_r20_f2+od_r21_f2+od_r22_f2+od_r23_f2+od_r24_f2) from fac_mvrf_od_db where $fmonthVar and $wc) as odhepb
-							from fac_mvrf_db where $fmonthVar and $wc),0) as hepb_from_coverage, COALESCE((select sum(vaccinated) from epi_consumption_detail dtl join epi_consumption_master mst on dtl.main_id = mst.pk_id where mst.$fmonthVar and $wc and dtl.item_id = 1),0) as hepb_from_consumption
-							from provinces) as innerquery group by procode, total_due_reports, coverage_submitted_reports, consumption_submitted_reports, bcg_from_coverage, bcg_from_consumption, hepb_from_coverage, hepb_from_consumption";
-
-			//echo $sum_query;exit();
+			//echo $query;exit();
 			$result = $this->db->query($query);
 			$result= $result->result();
 			$returned_data['result'] = $result;

@@ -1,5 +1,4 @@
 <?php 
-//local
 class Child_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
@@ -38,8 +37,10 @@ class Child_model extends CI_Model {
 			header("Content-Disposition: attachment; filename=permanent_register.xls");
 			header("Pragma: no-cache");
 			header("Expires: 0");
-			//Excel Ending here
+			//Excel Ending here 
 		}
+		
+		
 		//unset($wc['export_excel']);
 		$facode = $data['facode'];
 		$uncode = $data['uncode'];
@@ -93,12 +94,29 @@ class Child_model extends CI_Model {
 			";
 		}
 		$query="select recno,child_registration_no,cardno as childcode, nameofchild as name_of_child, dateofbirth as date_of_birth,
-		unname(uncode) as unioncouncil, contactno, villagename(villagemohallah) as villagemohallah,(case when gender='m' then 'Male' else 'Female' end) as \"Gender\", fathername as fname,
+		unname(uncode) as unioncouncil, contactno, villagename (villagemohallah) as villagemohallah,(case when gender='m' then 'Male' else 'Female' end) as \"Gender\", fathername as fname,
 		address as address, bcg, hepb, opv0, opv1, penta1, pcv1 as pcv10_1, opv2, penta2,
 		pcv2 as pcv10_2, opv3, penta3, pcv3 as pcv10_3, ipv, rota1, rota2, measles1, measles2 
-		from cerv_child_registration where ".$wc." {$defaultersWc} order by cardno "; 
+		from cerv_child_registration where ".$wc." {$defaultersWc} 
+		ORDER BY 
+			CASE 
+				WHEN date_part('year', bcg) IS NOT NULL 
+					THEN date_part('year', bcg) 
+				WHEN date_part('year', opv1) IS NOT NULL
+					THEN date_part('year', opv1)
+				ELSE
+					date_part('year', dateofbirth)
+				END ASC, NULLIF(regexp_replace(cardno, '\D', '', 'g'), '')::int ";
+			
+		//date_part('year', bcg), NULLIF(regexp_replace(cardno, '\D', '', 'g'), '')::int  "; //date_part('year', bcg) DESC, bcg DESC, date_of_birth DESC ";
+		/* WHEN date_part('year', opv2) IS NOT NULL
+					THEN date_part('year', opv2)
+				WHEN date_part('year', opv3) IS NOT NULL
+					THEN date_part('year', opv3)
+				WHEN date_part('year', measles1) IS NOT NULL
+					THEN date_part('year', measles1) */ 
 		if( ! $this -> input -> post('export_excel')){
-			$query .= "LIMIT {$per_page} OFFSET {$startpoint}";
+			$query .= "LIMIT {$per_page} OFFSET {$startpoint}"; 
 		}
 		$result=$this->db->query($query);
         //$str = $this->db->last_query();

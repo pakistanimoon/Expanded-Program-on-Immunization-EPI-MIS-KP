@@ -57,7 +57,7 @@
 		var options = {
 			format : "yyyy-mm-dd",
 			color: "green",
-			autoclose: true
+			autoclose:true
 		};
 		$('.dpinvn').datepicker(options);
 		$(document).on('change','#product',function(){

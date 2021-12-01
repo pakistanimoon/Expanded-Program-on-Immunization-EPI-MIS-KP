@@ -8,7 +8,7 @@ class Provincial extends CI_Controller {
 		$this -> load -> helper('inventory_helper');
 		$this -> load -> model ('Inventory_model',"invn");
 		$this -> load -> model ('Common_model',"common");
-		$this -> load -> helper('my_functions_helper');										 
+		$this -> load -> helper('my_functions_helper');
 	}
 	/*
 	@ Author:        Raja Imran Qamer
@@ -18,9 +18,9 @@ class Provincial extends CI_Controller {
 	*/
 	public function stock_receive_from_supplier()
 	{
-        $subTitle ="(Vaccine Managment) Stock Receive from Supplier";
+		$subTitle ="(Vaccine Managment) Stock Receive from Supplier";
 		$data['subtitle']=$subTitle;
-        $vvms = $this->common->fetchall("epi_vvm_types",NULL,"pk_id as id,vvm_type_name as name",array("status"=>1),NULL,array("by"=>"list_rank","type"=>"asc"));
+		$vvms = $this->common->fetchall("epi_vvm_types",NULL,"pk_id as id,vvm_type_name as name",array("status"=>1),NULL,array("by"=>"list_rank","type"=>"asc"));
 		$wh_whrarr = array(
 			"warehouse_type_id"=>$this->session->curr_wh_type,
 			get_warehouse_code_column($this->session->curr_wh_type)=>$this->session->curr_wh_code
@@ -38,7 +38,7 @@ class Provincial extends CI_Controller {
 			$data['data']["draftdata"]["batch"] = $this->common->fetchall("epi_stock_batch",array("table"=>"epi_item_pack_sizes","tablecol"=>"pk_id","id"=>"item_pack_size_id"),"epi_stock_batch.*,epi_item_pack_sizes.item_category_id,epi_item_pack_sizes.number_of_doses",array("batch_master_id"=>$masterdata->pk_id),NULL,array("by"=>"pk_id","type"=>"desc"));
 			$data['data']["draftdata"]["detail"] = $this->common->fetchall("epi_stock_detail",NULL,"epi_stock_detail.*,itemunitname(item_unit_id) as item_unit_name",array("stock_master_id"=>$masterdata->pk_id),NULL,array("by"=>"pk_id","type"=>"desc"));
 		}
-        createTransactionLog("Stock Receive from Supplier", $subTitle." - Viewed");
+		createTransactionLog("Stock Receive from Supplier", $subTitle." - Viewed");
 		//print_r($data);exit;
 		$data['fileToLoad'] = 'inventory_management/stock_receive_from_supplier';
 		$data['pageTitle'] = 'EPI-MIS | Stock Receive (Supplier)';
@@ -80,11 +80,11 @@ class Provincial extends CI_Controller {
 		$this->load->view('template/reports_template',$data);;
 	}
 	public function stock_receive_from_supplierRecNo()
-	{			
+	{
 		$tranNo=$_REQUEST['tno'];
 		$data['data']['recNo'] =  $tranNo;
-		$this -> db -> select('master.pk_id,batch.pk_id,detail.pk_id,master.transaction_date,master.transaction_number,master.transaction_reference,get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,batch.number,stackholdername(batch.stakeholder_id) as manufacturer,batch.quantity,itemunitname(detail.item_unit_id) as unit,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose,batch.expiry_date,master.created_date,warehousetypename(CAST(master.from_warehouse_type_id AS INTEGER)) as recievedFrom,master.from_warehouse_type_id,master.from_warehouse_code,master.to_warehouse_type_id,master.to_warehouse_code');
-		$whereCondition['master.transaction_type_id'] = 1; 
+		$this -> db -> select('master.pk_id,batch.pk_id,detail.pk_id,master.transaction_date,master.transaction_number,master.transaction_reference,get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,batch.number,stackholdername(batch.stakeholder_id) as manufacturer,batch.quantity,itemunitname(detail.item_unit_id) as unit,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose,batch.expiry_date,master.created_date,warehousetypename(CAST(master.from_warehouse_type_id AS INTEGER)) as recievedFrom,(case when batch.ccm_id IS NOT NULL then getccmshortname (ccm_id) else noncclocationname(batch.non_ccm_id) end) as Storelocation,master.from_warehouse_type_id,master.from_warehouse_code,master.to_warehouse_type_id,master.to_warehouse_code');
+		$whereCondition['master.transaction_type_id'] = 1;
 		$whereCondition['master.to_warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$whereCondition['master.to_warehouse_code'] = $this -> session -> curr_wh_code;
 		$whereCondition['master.transaction_number'] = $tranNo;
@@ -94,13 +94,13 @@ class Provincial extends CI_Controller {
 		$this -> db -> join('epi_stock_detail_history detail','batch.batch_id = detail.stock_batch_id','left');
 		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = batch.item_pack_size_id","LEFT OUTER");
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
-		$data['data']['searchResult'] = $this -> db -> get() -> result_array();	
+		$data['data']['searchResult'] = $this -> db -> get() -> result_array();
 		$allproducts = array_column($data['data']['searchResult'], 'itemname');
 		$uniqueprod = array_unique($allproducts);
-		$data['data']['uniqueProd']=$uniqueprod;		
+		$data['data']['uniqueProd']=$uniqueprod;
 		$data['fileToLoad'] = 'inventory_management/stock_receive_search_recNo';
 		$data['pageTitle'] = 'EPI-MIS | Stock Receive - Search RecNo';
-		$this->load->view('template/reports_template',$data);	
+		$this->load->view('template/reports_template',$data);
 	}
 	/*
 	@ Author:        Raja Imran Qamer
@@ -111,14 +111,14 @@ class Provincial extends CI_Controller {
 	public function stock_issue()
 	{
 		$subTitle ="(Vaccine Managment) Stock Issue/Dispatch";
-		$data['subtitle']=$subTitle;																  
+		$data['subtitle']=$subTitle;
 		$page =  $this->input->post('page');
 		$limit = $this->input->post('limit');
 		$offset = $this->input->post('offset');
 		$currwhtype = $this->session->curr_wh_type;
 		$currwhcode = $this->session->curr_wh_code;
-		$ajax_data="";		
-		if($limit == ""){			
+		$ajax_data="";
+		if($limit == ""){
 			$data['data']['issuedvouchers'] = $this->invn->get_issued_vouchers_list($currwhtype,$currwhcode,100,50,0);
 			$data['fileToLoad'] = 'inventory_management/stock_issue_list';
 			$data['pageTitle'] = 'EPI-MIS | Stock Issue/Dispatch';
@@ -152,18 +152,16 @@ class Provincial extends CI_Controller {
 	*/
 	public function stock_issue_bulk()
 	{
-        $subTitle = "(Vaccine Management) Stock Issue/Dispatch";
+		$subTitle = "(Vaccine Management) Stock Issue/Dispatch";
 		$data['subtitle']=$subTitle;
 		$currwhtype = $this->session->curr_wh_type;
 		$currwhcode = $this->session->curr_wh_code;
-		if($currwhtype=="4"){
-			//$selectedprocode = array("pro_id"=>substr($currwhcode,0,1));
-			$selectedprocode = array("pro_id"=> $this -> session -> Province);
+		if($currwhtype=="4" OR $currwhtype=="2"){
+			$selectedprocode = array("pro_id"=>$this -> session -> Province);
 		}else{
 			$selectedprocode = NULL;
 		}
 		$data['data']["provinces"] = $this->common->fetchall("provinces",NULL,"pro_id as id,province as name",$selectedprocode,NULL,array("by"=>"province","type"=>"asc"));
-		
 		$username = $this->session->userdata("username");
 		$whrarr = array(/* "transaction_number"=>'TEMP', */"created_by"=>$username,"draft"=>1,"transaction_type_id"=>2);
 		$countdrafts = $this->common->count_record("epi_stock_master",$whrarr);
@@ -217,8 +215,8 @@ class Provincial extends CI_Controller {
 	@ Description:   This function will open form to receive stock from store and make transactions accordingly
 	*/
 	public function stock_receive_from_store($issuenum=NULL)
-	{ 
-        $subTitle ="(Vaccine Management) Stock Receive from Store";
+	{
+		$subTitle ="(Vaccine Management) Stock Receive from Store";
 		$data['subtitle']=$subTitle;
 		if($issuenum){}else if($this->input->post("stock_issue_num")){
 			$issuenum = $this->input->post("stock_issue_num");
@@ -230,17 +228,17 @@ class Provincial extends CI_Controller {
 			if($countdrafts){
 				$wh_whrarr = array(
 					"warehouse_type_id"=>$this->session->curr_wh_type
-				
 				);
-                $noncc_whrarr["warehouse_code"] = $this->session->curr_wh_code;
-				$data['data']["nonccloctypes"] = $this->common->fetchall("epi_non_ccm_locations",NULL,"pk_id as id,location_name as name",$wh_whrarr,NULL,array("by"=>"location_name","type"=>"asc"));
+				$noncc_whrarr["warehouse_code"] = $this->session->curr_wh_code;
+				$data['data']["nonccloctypes"] = $this->common->fetchall("epi_non_ccm_locations",NULL,"pk_id as id,location_name as name",$noncc_whrarr,NULL,array("by"=>"location_name","type"=>"asc"));
 				$wh_whrarr_in = array("columname"=>"epi_cc_asset_types.parent_id","valuesarray"=>array(1,21));
                 $wh_whrarr["storecode"]=$this->session->curr_wh_code;
 				$wh_whrarr["get_asset_status(epi_cc_coldchain_main.asset_id) !="]=3;
 				$data['data']["ccloctypes"] = $this->common->fetchall("epi_cc_coldchain_main",array("table"=>"epi_cc_asset_types","tablecol"=>"pk_id","id"=>"ccm_sub_asset_type_id"),"epi_cc_coldchain_main.asset_id as id,epi_cc_coldchain_main.short_name || '('||COALESCE(serial_no, '') ||')' as name",$wh_whrarr,NULL,array("by"=>"asset_id","type"=>"desc"),NULL,$wh_whrarr_in);
 				//$data['data']["ccloctypes"] = $this->common->fetchall("epi_cc_coldchain_main",NULL,"asset_id as id,short_name as name",$wh_whrarr,NULL,array("by"=>"asset_id","type"=>"desc"));
 				//$data['data']["adjsttypes"] = $this->common->fetchall("epi_transaction_types",NULL,"pk_id as id,transaction_type_name as name",array("is_adjustment"=>1),NULL,array("by"=>"transaction_type_name","type"=>"ASC"));
-				$data['data']["adjsttypes"] = $this->common->fetchall("epi_transaction_types",NULL,"pk_id as id,transaction_type_name as name,nature",array("is_adjustment"=>1,"status"=>1),NULL,array("by"=>"transaction_type_name","type"=>"ASC"));
+				//nature column conditon add.for during stock  recieve only negative adjust type show
+				$data['data']["adjsttypes"] = $this->common->fetchall("epi_transaction_types",NULL,"pk_id as id,transaction_type_name as name,nature",array("is_adjustment"=>1,"nature"=>'0',"status"=>1),NULL,array("by"=>"transaction_type_name","type"=>"ASC"));
 				$data['data']["draftdata"]["master"] = $masterdata = $this->common->get_info("epi_stock_master",NULL,NULL,NULL,$whrarr);
 				$data['data']["draftdata"]["batch"] = $this->common->fetchall("epi_stock_batch",array("table"=>"epi_item_pack_sizes","tablecol"=>"pk_id","id"=>"item_pack_size_id"),"epi_stock_batch.*,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose,epi_item_pack_sizes.item_category_id,epi_item_pack_sizes.number_of_doses",array("epi_stock_batch.batch_master_id"=>$masterdata->pk_id,"epi_stock_batch.status !="=>"Finished"),NULL,array("by"=>"pk_id","type"=>"desc"));
 				$data['data']["draftdata"]["detail"] = $this->common->fetchall("epi_stock_detail",array("table"=>"epi_stock_batch","tablecol"=>"pk_id","id"=>"stock_batch_id"),"epi_stock_detail.*,itemunitname(item_unit_id) as item_unit_name",array("stock_master_id"=>$masterdata->pk_id,"epi_stock_batch.status !="=>"Finished"),NULL,array("by"=>"pk_id","type"=>"desc"));
@@ -250,7 +248,6 @@ class Provincial extends CI_Controller {
 		}else{
 			$data['data'] =NULL;
 		}
-		//echo '<pre>';print_r($data['data']["draftdata"]["batch"]);exit;
 		$data['data']['issue_num'] = $issuenum;
 		//echo '<pre>';print_r($data['data']);exit;
 		$data['fileToLoad'] = 'inventory_management/stock_receive_from_store';
@@ -265,10 +262,9 @@ class Provincial extends CI_Controller {
 	*/
 	public function stock_vvm_management()
 	{
-        $subTitle ="(Vaccine Managment) VVM Management";
+		$subTitle ="(Vaccine Managment) VVM Management";
 		$data['subtitle']=$subTitle;
-		createTransactionLog("VVM Management", $subTitle." - Viewed");
-        $data['data'] = "";
+		$data['data'] = "";
 		$data['fileToLoad'] = 'inventory_management/stock_vvm_management';
 		$data['pageTitle'] = 'EPI-MIS | VVm Stage Management';
 		$this->load->view('template/epi_template',$data);
@@ -281,10 +277,9 @@ class Provincial extends CI_Controller {
 	*/
 	public function stock_transfer()
 	{
-        $subTitle ="(Vaccine Managment) Purpose Transfer";
+		$subTitle ="(Vaccine Managment) Purpose Transfer";
 		$data['subtitle']=$subTitle;
-		createTransactionLog("Purpose Transfer", $subTitle." - Viewed");
-        $data['data'] = "";
+		$data['data'] = "";
 		$data['fileToLoad'] = 'inventory_management/stock_transfer';
 		$data['pageTitle'] = 'EPI-MIS | Stock Transfer';
 		$this->load->view('template/epi_template',$data);
@@ -316,7 +311,7 @@ class Provincial extends CI_Controller {
 			$batchdata = $this->common->get_info("epi_stock_batch",NULL,NULL,NULL,array("pk_id"=>$batchpk));
 			$masterdata = $this->common->get_info("epi_stock_master",NULL,NULL,"*",array("pk_id"=>$batchdata->batch_master_id));
 			$recordnumber = 1;
-			$this->db->set("transaction_number","(select 'A' || '".date("ym")."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm0000'))",FALSE);
+			$this->db->set("transaction_number","(select 'A' || '".date("ym")."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm000000'))",FALSE);
 			$datatosave = array(
 				"transaction_date" => $this->input->post("transfer_date"),
 				"transaction_counter" => $recordnumber,
@@ -332,7 +327,7 @@ class Provincial extends CI_Controller {
 				"created_by" => $username,
 				"created_date" => date("Y-m-d H:i:s")
 			);
-			$newmasterrecid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');			
+			$newmasterrecid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');
 			$datatosavebatch = array(
 				"number" => $batchdata->number,
 				"batch_master_id" => $newmasterrecid,
@@ -353,7 +348,7 @@ class Provincial extends CI_Controller {
 				"created_by" => $username,
 				"created_date" => date("Y-m-d H:i:s")
 			);
-			$newbatchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch,'stock_batch_id_seq');			
+			$newbatchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch,'stock_batch_id_seq');
 			$detaildata = $this->common->get_info("epi_stock_detail",NULL,NULL,NULL,array("stock_batch_id"=>$batchpk));
 			$datatosavedetail = array(
 				"quantity" => $this->input->post("quantity"),
@@ -376,11 +371,11 @@ class Provincial extends CI_Controller {
 			if($newquantity<1){
 				$datatoupdatebatch["status"] = 'Finished';
 			}
-			$this->common->update_record("epi_stock_batch",$datatoupdatebatch,array("pk_id"=>$batchpk));			
+			$this->common->update_record("epi_stock_batch",$datatoupdatebatch,array("pk_id"=>$batchpk));
 			//set history
 			$this->save_all_history($newmasterrecid);
-			//For Change Purpose +ve			
-			$this->db->set("transaction_number","(select 'A' || '".date("ym")."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm0000'))",FALSE);
+			//For Change Purpose +ve
+			$this->db->set("transaction_number","(select 'A' || '".date("ym")."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm000000'))",FALSE);
 			$datatosave["transaction_type_id"] = 13;
 			$datatosave["stakeholder_activity_id"] = $this->input->post("activity");
 			$recid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');
@@ -388,7 +383,7 @@ class Provincial extends CI_Controller {
 			$datatosavebatch["item_pack_size_id"] = $this->input->post("toproduct");
 			$datatosavebatch["status"] = 'Stacked';
 			$datatosavebatch["parent_pk_id"] = $newbatchid;
-			$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch,'stock_batch_id_seq');				
+			$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch,'stock_batch_id_seq');
 			$datatosavedetail["stock_master_id"] = $recid;
 			$datatosavedetail["stock_batch_id"] = $batchid;
 			$datatosavedetail["adjustment_type"] = 13;
@@ -403,7 +398,7 @@ class Provincial extends CI_Controller {
 			}
 			else{
 				$msg = "Stock transferred to new activity successfully.";
-                createTransactionLog("Purpose Transfer", $subTitle." - Stock transferred to new activity successfully. ");
+				createTransactionLog("Purpose Transfer", $subTitle." - Stock transferred to new activity successfully. ");
 			}
 		}
 		$this -> session -> set_flashdata('message',$msg);
@@ -430,9 +425,9 @@ class Provincial extends CI_Controller {
 	*/
 	public function stock_adjustment()
 	{
-        $subTitle = "(Vaccine Management) Add Adjustment";
+		$subTitle = "(Vaccine Management) Add Adjustment";
 		$data['subtitle']=$subTitle;
-        $data['data'] = NULL;
+		$data['data'] = NULL;
 		$vvms = $this->common->fetchall("epi_vvm_types",NULL,"pk_id as id,vvm_type_name as name",array("status"=>1),NULL,array("by"=>"list_rank","type"=>"asc"));
 		$data['data']["vvmshtml"] = get_options_html($vvms,true);
 		$data['data']["adjsttypes"] = $this->common->fetchall("epi_transaction_types",NULL,"pk_id as id,transaction_type_name as name,nature",array("is_adjustment"=>1,"status"=>1),NULL,array("by"=>"transaction_type_name","type"=>"ASC"));
@@ -444,7 +439,6 @@ class Provincial extends CI_Controller {
 		$wh_whrarr_in = array("columname"=>"epi_cc_asset_types.parent_id","valuesarray"=>array(1,21));
 		$data['data']["ccloctypes"] = $this->common->fetchall("epi_cc_coldchain_main",array("table"=>"epi_cc_asset_types","tablecol"=>"pk_id","id"=>"ccm_sub_asset_type_id"),"epi_cc_coldchain_main.asset_id as id,epi_cc_coldchain_main.short_name as name",$wh_whrarr,NULL,array("by"=>"asset_id","type"=>"desc"),NULL,$wh_whrarr_in);
 		//$data['data']["ccloctypes"] = $this->common->fetchall("epi_cc_coldchain_main",NULL,"asset_id as id,short_name as name",$wh_whrarr,NULL,array("by"=>"asset_id","type"=>"desc"));
-        createTransactionLog("Add Adjustment", $subTitle. " - Viewed");
 		$data['fileToLoad'] = 'inventory_management/stock_adjustment';
 		$data['pageTitle'] = 'EPI-MIS | Adjustsment Management';
 		$this->load->view('template/epi_template',$data);
@@ -470,10 +464,9 @@ class Provincial extends CI_Controller {
 	*/
 	public function stock_batch_management()
 	{
-        $subTitle ="(Vaccine Managment) Batch Management";
+		$subTitle ="(Vaccine Managment) Batch Management";
 		$data['subtitle']=$subTitle;
-		createTransactionLog("Batch Management", $subTitle." - Viewed");
-        $data['data']['exportIcons']=exportIcons($_REQUEST,NULL,'excel');
+		$data['data']['exportIcons']=exportIcons($_REQUEST,NULL,'excel');
 		$data['fileToLoad'] = 'inventory_management/stock_batch_management';
 		$data['pageTitle'] = 'EPI-MIS | Batch Management';
 		$this->load->view('template/epi_template',$data);
@@ -498,9 +491,9 @@ class Provincial extends CI_Controller {
 	@ Description:   This function will save stock receive from supplier information into database and make transactions accordingly
 	*/
 	public function set_invn_supp_receive(){
-        $subTitle = "(Vaccine Management) Stock Receive From Supplier";
+		$subTitle = "(Vaccine Management) Stock Receive From Supplier";
 		$data['subtitle']=$subTitle;
-        $username = $this->session->userdata("username");
+		$username = $this->session->userdata("username");
 		$whrarr = array("transaction_number"=>'TEMP',"created_by"=>$username,"draft"=>1,"transaction_type_id"=>1);
 		$countdrafts = $this->common->count_record("epi_stock_master",$whrarr);
 		if($countdrafts){}else{
@@ -516,7 +509,7 @@ class Provincial extends CI_Controller {
 		$this->form_validation->set_rules('unit_price','Unit Price (PKR)','trim|required|decimal|greater_than[0.00]');
 		$this->form_validation->set_rules('quantity','Quantity','trim|required|is_natural|greater_than[0]');
 		$this->form_validation->set_rules('vvm_type','VVM Type','trim|required|is_natural|greater_than[0]');
-		$this->form_validation->set_rules('location','Placement Location','trim|required');		
+		$this->form_validation->set_rules('location','Placement Location','trim|required');
 		if ($this->form_validation->run() == FALSE)
 		{
 			$response["result"] = "false";
@@ -549,8 +542,8 @@ class Provincial extends CI_Controller {
 					"transaction_type_id" => 1, // Receive
 					"from_warehouse_type_id" => 7, //Funding Source
 					"from_warehouse_code" => $this->input->post("from_warehouse"),
-					"to_warehouse_type_id" => 2, //Provincial
-					"to_warehouse_code" => $_SESSION["Province"], //For Province KP
+					"to_warehouse_type_id" => $this->session->curr_wh_type,//2, //Provincial
+					"to_warehouse_code" => $this->session->curr_wh_code,//$_SESSION["Province"], //For Province KP
 					"stakeholder_activity_id" => $this->input->post("activity"),
 					"created_by" => $username,
 					"created_date" => date("Y-m-d H:i:s")
@@ -570,8 +563,8 @@ class Provincial extends CI_Controller {
 				"vvm_type_id" => $this->input->post("vvm_type"),
 				"stakeholder_id" => $this->input->post("manufacturer"),
 				$this->input->post("location_type") => $this->input->post("location"),
-				"warehouse_type_id" => 2, //Provincial
-				"code" => $_SESSION["Province"], //For Province KP
+				"warehouse_type_id" => $this->session->curr_wh_type,//2, //Provincial
+				"code" => $this->session->curr_wh_code, //For Province KP
 				"created_by" => $username,
 				"created_date" => date("Y-m-d H:i:s")
 			);
@@ -607,7 +600,7 @@ class Provincial extends CI_Controller {
 			}
 		}
 		echo json_encode($response,true);
-        createTransactionLog("Stock Receive From Supplier", $subTitle. " - Add Stock Receive ");
+		createTransactionLog("Stock Receive From Supplier", $subTitle. " - Add Stock Receive ");
 	}
 	/*
 	@ Author:        Raja Imran Qamer
@@ -616,16 +609,16 @@ class Provincial extends CI_Controller {
 	@ Description:   This function will update stock receive from supplier information and set draft 0 into database
 	*/
 	public function save_invn_supp_receive(){
-        $subTitle = "(Vaccine Management) Stock Receive From Supplier";
+		$subTitle = "(Vaccine Management) Stock Receive From Supplier";
 		$data['subtitle']=$subTitle;
-        $username = $this->session->userdata("username");
+		$username = $this->session->userdata("username");
 		$whrarr = array("transaction_number"=>'TEMP',"created_by"=>$username,"draft"=>1,"transaction_type_id"=>1);
 		$resultrow = $this->common->get_info("epi_stock_master",NULL,NULL,"pk_id as id,to_char(transaction_date,'YYMM') as tdate",$whrarr);
 		if(isset($resultrow) && ($resultrow->id >0)){
 			$date=$resultrow->tdate;
 			$this->db->trans_start();
 			//draft already exist, update draft then items will be available for stock issuance nd usage
-			$this->db->set("transaction_number","(select 'R' || '".$date."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm0000'))",FALSE);
+			$this->db->set("transaction_number","(select 'R' || '".$date."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm000000'))",FALSE);
 			$datatoupdate = array(
 				"comments" => $this->input->post("comments"),
 				"draft" => 0,
@@ -644,13 +637,12 @@ class Provincial extends CI_Controller {
 				$rowdata = $this->common->get_info("epi_stock_master",NULL,NULL,"transaction_number",array("pk_id"=>$masterpk));
 				$trans_number=$rowdata->transaction_number;
 				$msg = "Transaction Completed Successfully, Stocks received, Transaction Number is <a target='_blank' href='".base_url()."stockReceiveFromSupplierRecNo?tno=".$trans_number."'>".$trans_number."</a>!!";
-		
 			}
 		}
 		else{
 			$msg = "There is nothing in receive list, Please check and try again!!!";
 		}
-        createTransactionLog("Add Stock Save Button", $subTitle. " - Add Stock Button after Save result (Stock Receive From SupplierRec No ($trans_number))");
+		createTransactionLog("Add Stock Save Button", $subTitle. " - Add Stock Button after Save result (Stock Receive From SupplierRec No ($trans_number))");
 		$this -> session -> set_flashdata('message',$msg);
 		redirect('StockReceivefromSupplier');
 	}
@@ -701,199 +693,222 @@ class Provincial extends CI_Controller {
 	public function save_invn_store_receive(){
 		$subTitle ="(Vaccine Managment) Stock Receive (Store)";
 		$data['subtitle']=$subTitle;
-		//echo "here";exit;
 		$msg = "";
-		$username = $this->session->userdata("username");
+		$username = ($this->session->userdata("username"))?$this->session->userdata("username"):$this -> input -> post('curr_wh_code');
 		$allchecked = $this->input->post("addit");
 		$searchednum = $this->input->post("searchedissuenum");
 		$resultrowmaster = $this->common->get_info("epi_stock_master",NULL,NULL,NULL,array("transaction_number"=>$searchednum));
-		foreach($allchecked as $key=>$index){
-			$this->form_validation->set_rules("location[$index]", "Store Location ", 'trim|required|is_natural|greater_than[0]');
-		}
-		if ($this->form_validation->run() == FALSE)
-		{
-			//echo validation_errors();exit;
-			$this -> session -> set_flashdata('message',validation_errors());
-			$this->stock_receive_from_store($searchednum);
-		}
-		else if(($resultrowmaster->to_warehouse_type_id==$this->session->curr_wh_type) && ($resultrowmaster->to_warehouse_code==$this->session->curr_wh_code))
-		{
-			$saveAdjust=false;
-			//echo $saveAdjust;exit;
-			$this->db->trans_start();
-			$recordnumber = count($allchecked);
-			$date= $this->input->post("receive_date");
-			//to_char(transaction_date,'YYMM');
-			$this->db->set("transaction_number","(select 'R' || '".date("ym", strtotime($date))."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm0000'))",FALSE);
-			$datatosave = array(
-				"transaction_date" => $this->input->post("receive_date"),
-				"transaction_counter" => $recordnumber,
-				"transaction_reference" => $this->input->post("receive_ref"),
-				"draft" => 0,
-				"comments" => $this->input->post("receive_remarks"),
-				"transaction_type_id" => 1, // Receive
-				"from_warehouse_type_id" => $resultrowmaster->from_warehouse_type_id,
-				"from_warehouse_code" => $resultrowmaster->from_warehouse_code,
-				"to_warehouse_type_id" => $resultrowmaster->to_warehouse_type_id,
-				"to_warehouse_code" => $resultrowmaster->to_warehouse_code,
-				"stakeholder_activity_id" => $resultrowmaster->stakeholder_activity_id,
-				"created_by" => $username,
-				"created_date" => date("Y-m-d H:i:s")
-			);
-			//
-			
-			//print_r($allchecked);
-			//print_r($_POST);
-			
-			//exit;
-			$recid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');
+		$unfinishedbatches = $this->common->count_record("epi_stock_batch",array("batch_master_id"=>$resultrowmaster->pk_id,"status !="=>"Finished"));
+		if($unfinishedbatches > 0){
 			foreach($allchecked as $key=>$index){
-				
-				$batchpk = $this->input->post("batchid")[$index];
-				$batchdata = $this->common->get_info("epi_stock_batch",NULL,NULL,NULL,array("pk_id"=>$batchpk));
-				if($this->input->post("transactionnature")[$index] !=""){
-					$saveAdjust=true;
-				$newquantity = ($this->input->post("transactionnature")[$index]=="1")?($batchdata->quantity)+(isset($this->input->post("vials")[$index])?$this->input->post("vials")[$index]:0):($batchdata->quantity)-(isset($this->input->post("vials")[$index])?$this->input->post("vials")[$index]:0);
+				$this->form_validation->set_rules("location[$index]", "Store Location ", 'trim|required|is_natural|greater_than[0]');
+			}
+			$curr_wh_code = (isset($this->session->curr_wh_code))?$this->session->curr_wh_code:$this->input->post('curr_wh_code');
+			$curr_wh_type = (isset($this->session->curr_wh_type))?$this->session->curr_wh_type:$this->input->post('curr_wh_type');
+			if ($this->form_validation->run() == FALSE)
+			{
+				if($this -> input -> post('token')){
+					$this->output->set_content_type('application/json');
+					return $this->output->set_output(json_encode(array('success'=>false, 'message'=>validation_errors())));exit;
 				}
-				else
-				{
-					
-					$saveAdjust=false;
-					$newquantity=$batchdata->quantity;
-				}
-				//echo $this->input->post("transactionnature")[$index] ;//echo $saveAdjust;exit;
-				$datatosavebatch = array(
-					"number" => $batchdata->number,
-					"batch_master_id" => $recid,
-					"expiry_date" => $batchdata->expiry_date,
-					"quantity" =>$newquantity,
-					"unit_price" => $batchdata->unit_price,
-					"production_date" => $batchdata->production_date,
-					"last_update" => date("Y-m-d H:i:s"),
-					"item_pack_size_id" => $batchdata->item_pack_size_id,
-					"status" => 'Stacked',
-					"vvm_type_id" => $batchdata->vvm_type_id,
-					"stakeholder_id" => $batchdata->stakeholder_id,
-					$this->input->post("location_type")[$index] => $this->input->post("location")[$index],
-					"warehouse_type_id" => $this->session->curr_wh_type,
-					"code" => $this->session->curr_wh_code,
-					"created_by" => $username,
-					"created_date" => date("Y-m-d H:i:s"),
-					"parent_pk_id" => $batchpk
-				);
-				$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch);
-				$detaildata = $this->common->get_info("epi_stock_detail",NULL,NULL,NULL,array("stock_batch_id"=>$batchpk));
-				$vvm_stage = $this->input->post("vvm_stage");
-				$reason = $this->input->post("reason");
-				$datatosavedetail = array(
-					"quantity" => $datatosavebatch["quantity"],
-					"vvm_stage" => isset($vvm_stage[$index])?$vvm_stage[$index]:$detaildata->vvm_stage,
-					"is_received" => 1,
-					"adjustment_type" => (isset($reason[$index]) && $reason[$index]!='')?$reason[$index]:((isset($detaildata->adjustment_type) && $detaildata->adjustment_type!='')?$detaildata->adjustment_type:NULL),
-					"stock_master_id" => $recid,
-					"stock_batch_id" => $batchid,
-					"item_unit_id" => $detaildata->item_unit_id,
+				//echo validation_errors();exit;
+				$this -> session -> set_flashdata('message',validation_errors());
+				$this->stock_receive_from_store($searchednum);
+			}
+			else if(($resultrowmaster->to_warehouse_type_id==$curr_wh_type) && ($resultrowmaster->to_warehouse_code==$curr_wh_code))
+			{
+				$saveAdjust=false;
+				//echo $saveAdjust;exit;
+				$this->db->trans_start();
+				$recordnumber = count($allchecked);
+				$date= $this->input->post("receive_date");
+				//to_char(transaction_date,'YYMM');
+				$this->db->set("transaction_number","(select 'R' || '".date("ym", strtotime($date))."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm000000'))",FALSE);
+				$datatosave = array(
+					"transaction_date" => $this->input->post("receive_date"),
+					"transaction_counter" => $recordnumber,
+					"transaction_reference" => $this->input->post("receive_ref"),
+					"draft" => 0,
+					"comments" => $this->input->post("receive_remarks"),
+					"transaction_type_id" => 1, // Receive
+					"from_warehouse_type_id" => $resultrowmaster->from_warehouse_type_id,
+					"from_warehouse_code" => $resultrowmaster->from_warehouse_code,
+					"to_warehouse_type_id" => $resultrowmaster->to_warehouse_type_id,
+					"to_warehouse_code" => $resultrowmaster->to_warehouse_code,
+					"stakeholder_activity_id" => $resultrowmaster->stakeholder_activity_id,
 					"created_by" => $username,
 					"created_date" => date("Y-m-d H:i:s")
 				);
-				$detailid = $this->common->insert_record("epi_stock_detail",$datatosavedetail);
-				//update quantity in old batch and detail
-				$datatoupdatebatch = array(
-					"status" => 'Finished',
-					"last_update" => date("Y-m-d H:i:s")
-				);
-				$this->common->update_record("epi_stock_batch",$datatoupdatebatch,array("pk_id"=>$batchpk));
-				//echo "yes.";/working on it 
-            /***For saving Adjustment record ***/
-				if($saveAdjust)
-				{
-					$date= $this->input->post("receive_date");
-					//to_char(transaction_date,'YYMM');
-					$this->db->set("transaction_number","(select 'A' || '".date("ym", strtotime($date))."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm0000'))",FALSE);
-					$datatoadjust = array(
-						"transaction_date" => $this->input->post("receive_date"),
-						"transaction_counter" => 1,
-						"transaction_reference" => $this->input->post("receive_ref"),
-						"draft" => 0,
-						"comments" => $this->input->post("receive_remarks"),
-						"transaction_type_id" => $reason[$index], // Adjustment
-						"from_warehouse_type_id" => $resultrowmaster->from_warehouse_type_id,
-						"from_warehouse_code" => $resultrowmaster->from_warehouse_code,
-						"to_warehouse_type_id" => $resultrowmaster->to_warehouse_type_id,
-						"to_warehouse_code" => $resultrowmaster->to_warehouse_code,
-						"stakeholder_activity_id" => $resultrowmaster->stakeholder_activity_id,
+				$recid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');
+				foreach($allchecked as $key=>$index){
+					$batchpk = $this->input->post("batchid")[$index];
+					$batchdata = $this->common->get_info("epi_stock_batch",NULL,NULL,NULL,array("pk_id"=>$batchpk));
+					if($this->input->post("transactionnature")[$index] !=""){
+						$saveAdjust=true;
+					$newquantity = ($this->input->post("transactionnature")[$index]=="1")?($batchdata->quantity)+(isset($this->input->post("vials")[$index])?$this->input->post("vials")[$index]:0):($batchdata->quantity)-(isset($this->input->post("vials")[$index])?$this->input->post("vials")[$index]:0);
+					}
+					else
+					{
+						$saveAdjust=false;
+						$newquantity=$batchdata->quantity;
+					}
+					//echo $this->input->post("transactionnature")[$index] ;//echo $saveAdjust;exit;
+					$datatosavebatch = array(
+						"number" => $batchdata->number,
+						"batch_master_id" => $recid,
+						"expiry_date" => $batchdata->expiry_date,
+						"quantity" =>$newquantity,
+						"unit_price" => $batchdata->unit_price,
+						"production_date" => $batchdata->production_date,
+						"last_update" => date("Y-m-d H:i:s"),
+						"item_pack_size_id" => $batchdata->item_pack_size_id,
+						"status" => 'Stacked',
+						"vvm_type_id" => $batchdata->vvm_type_id,
+						"stakeholder_id" => $batchdata->stakeholder_id,
+						$this->input->post("location_type")[$index] => $this->input->post("location")[$index],
+						"warehouse_type_id" => $curr_wh_type,
+						"code" => $curr_wh_code,
 						"created_by" => $username,
-						"created_date" => date("Y-m-d H:i:s")
-						);
-						//adjustemnt master id
-					$adjustid = $this->common->insert_record("epi_stock_master",$datatoadjust,'stock_master_id_seq');
-					// echo "ehre";
-					//$batchpk = $this->input->post("batchid")[$index];
-					  //$adjustQty=round((isset($this->input->post("vials")[$index]));
-					$adjustQty=isset($this->input->post("vials")[$index])?$this->input->post("vials")[$index]:0;
-					$datatoadjustbatch = array(
-					"number" => $batchdata->number,
-					"batch_master_id" => $adjustid,
-					"expiry_date" => $batchdata->expiry_date, 
-					"quantity" =>round($adjustQty),
-					"unit_price" => $batchdata->unit_price,
-					"production_date" => $batchdata->production_date,
-					"last_update" => date("Y-m-d H:i:s"),
-					"item_pack_size_id" => $batchdata->item_pack_size_id,
-					"status" =>$status=($this->input->post("transactionnature")[$index]=="1")?'Stacked':'Finished',
-					"vvm_type_id" => $batchdata->vvm_type_id,
-					"stakeholder_id" => $batchdata->stakeholder_id,
-					$this->input->post("location_type")[$index] => $this->input->post("location")[$index],
-					"warehouse_type_id" => $this->session->curr_wh_type,
-					"code" => $this->session->curr_wh_code,
-					"created_by" => $username,
-					"created_date" => date("Y-m-d H:i:s"),
-					"parent_pk_id" => $batchid
+						"created_date" => date("Y-m-d H:i:s"),
+						"parent_pk_id" => $batchpk
 					);
-					$adjustbatchid = $this->common->insert_record("epi_stock_batch",$datatoadjustbatch);
-					//print_r($datatoadjustbatch);echo "--";echo '<br>';
+					$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch);
+					$detaildata = $this->common->get_info("epi_stock_detail",NULL,NULL,NULL,array("stock_batch_id"=>$batchpk));
 					$vvm_stage = $this->input->post("vvm_stage");
 					$reason = $this->input->post("reason");
-					$datatoadjustdetail = array(
-						"quantity" => $datatoadjustbatch["quantity"],
+					$datatosavedetail = array(
+						"quantity" => $datatosavebatch["quantity"],
 						"vvm_stage" => isset($vvm_stage[$index])?$vvm_stage[$index]:$detaildata->vvm_stage,
-						"is_received" => 0,//chk adjustment type conditon test
+						"is_received" => 1,
 						"adjustment_type" => (isset($reason[$index]) && $reason[$index]!='')?$reason[$index]:((isset($detaildata->adjustment_type) && $detaildata->adjustment_type!='')?$detaildata->adjustment_type:NULL),
-						"stock_master_id" =>$adjustid,
-						"stock_batch_id" => $adjustbatchid,
+						"stock_master_id" => $recid,
+						"stock_batch_id" => $batchid,
 						"item_unit_id" => $detaildata->item_unit_id,
-						"rec_adjustment" =>1, //for adjustment during receive
 						"created_by" => $username,
 						"created_date" => date("Y-m-d H:i:s")
 					);
-					$detailid = $this->common->insert_record("epi_stock_detail",$datatoadjustdetail);
-					//set adjustment history
-					$this->save_all_history($adjustid);
-					createTransactionLog("StockAdjustment from Stock Receive Store","stock master id".$adjustid);
+					$detailid = $this->common->insert_record("epi_stock_detail",$datatosavedetail);
+					//update quantity in old batch and detail
+					$datatoupdatebatch = array(
+						"status" => 'Finished',
+						"last_update" => date("Y-m-d H:i:s")
+					);
+					$this->common->update_record("epi_stock_batch",$datatoupdatebatch,array("pk_id"=>$batchpk));
+					//echo "yes.";/working on it
+					/***For saving Adjustment record ***/
+					if($saveAdjust)
+					{
+						$date= $this->input->post("receive_date");
+						//to_char(transaction_date,'YYMM');
+						$this->db->set("transaction_number","(select 'A' || '".date("ym", strtotime($date))."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm000000'))",FALSE);
+						$datatoadjust = array(
+							"transaction_date" => $this->input->post("receive_date"),
+							"transaction_counter" => 1,
+							"transaction_reference" => $this->input->post("receive_ref"),
+							"draft" => 0,
+							"comments" => $this->input->post("receive_remarks"),
+							"transaction_type_id" => $reason[$index], // Adjustment
+							"from_warehouse_type_id" => $resultrowmaster->from_warehouse_type_id,
+							"from_warehouse_code" => $resultrowmaster->from_warehouse_code,
+							"to_warehouse_type_id" => $resultrowmaster->to_warehouse_type_id,
+							"to_warehouse_code" => $resultrowmaster->to_warehouse_code,
+							"stakeholder_activity_id" => $resultrowmaster->stakeholder_activity_id,
+							"created_by" => $username,
+							"created_date" => date("Y-m-d H:i:s")
+							);
+							//adjustemnt master id
+						$adjustid = $this->common->insert_record("epi_stock_master",$datatoadjust,'stock_master_id_seq');
+						// echo "ehre";
+						//$batchpk = $this->input->post("batchid")[$index];
+						//$adjustQty=round((isset($this->input->post("vials")[$index]));
+						$adjustQty=isset($this->input->post("vials")[$index])?$this->input->post("vials")[$index]:0;
+						$datatoadjustbatch = array(
+						"number" => $batchdata->number,
+						"batch_master_id" => $adjustid,
+						"expiry_date" => $batchdata->expiry_date,
+						"quantity" =>round($adjustQty),
+						"unit_price" => $batchdata->unit_price,
+						"production_date" => $batchdata->production_date,
+						"last_update" => date("Y-m-d H:i:s"),
+						"item_pack_size_id" => $batchdata->item_pack_size_id,
+						"status" =>$status=($this->input->post("transactionnature")[$index]=="1")?'Stacked':'Finished',
+						"vvm_type_id" => $batchdata->vvm_type_id,
+						"stakeholder_id" => $batchdata->stakeholder_id,
+						$this->input->post("location_type")[$index] => $this->input->post("location")[$index],
+						"warehouse_type_id" => $curr_wh_type,
+						"code" => $curr_wh_code,
+						"created_by" => $username,
+						"created_date" => date("Y-m-d H:i:s"),
+						"parent_pk_id" => $batchid
+						);
+						$adjustbatchid = $this->common->insert_record("epi_stock_batch",$datatoadjustbatch);
+						//print_r($datatoadjustbatch);echo "--";echo '<br>';
+						$vvm_stage = $this->input->post("vvm_stage");
+						$reason = $this->input->post("reason");
+						$datatoadjustdetail = array(
+							"quantity" => $datatoadjustbatch["quantity"],
+							"vvm_stage" => isset($vvm_stage[$index])?$vvm_stage[$index]:$detaildata->vvm_stage,
+							"is_received" => 0,//chk adjustment type conditon test
+							"adjustment_type" => (isset($reason[$index]) && $reason[$index]!='')?$reason[$index]:((isset($detaildata->adjustment_type) && $detaildata->adjustment_type!='')?$detaildata->adjustment_type:NULL),
+							"stock_master_id" =>$adjustid,
+							"stock_batch_id" => $adjustbatchid,
+							"item_unit_id" => $detaildata->item_unit_id,
+							"rec_adjustment" =>1, //for adjustment during receive
+							"created_by" => $username,
+							"created_date" => date("Y-m-d H:i:s")
+						);
+						$detailid = $this->common->insert_record("epi_stock_detail",$datatoadjustdetail);
+						//set adjustment history
+						$this->save_all_history($adjustid);
+						if($this -> input -> post('token')){
+							createTransactionLog("StockAdjustment from Stock Receive Store","stock master id".$adjustid, $username, '6', 'DEO');
+						}else{
+							createTransactionLog("StockAdjustment from Stock Receive Store","stock master id".$adjustid);
+						}
+					}
+					/***-------------------END-----------------***/
 				}
-		   /***-------------------END-----------------***/	
-		}	
-		
-			//set history
-			$masterpk = $recid;
-			$this->save_all_history($masterpk);		
-			$this->db->trans_complete();
-			if ($this->db->trans_status() === FALSE)
-			{
-				$msg = "Some error exist, DB Query Fails.";
+				//set history
+				$masterpk = $recid;
+				$this->save_all_history($masterpk);
+				$this->db->trans_complete();
+				if ($this->db->trans_status() === FALSE)
+				{
+					$msg = "Some error exist, DB Query Fails.";
+				}
+				else{
+					$msg = "Stock received Successfully.";
+					if($this -> input -> post('token')){
+							createTransactionLog("Stock Receive from Store", $subTitle." - Viewed, Issue No ($searchednum) Receive No ()", $username, '6', 'DEO');
+					}else{
+						createTransactionLog("Stock Receive from Store", $subTitle." - Viewed, Issue No ($searchednum) Receive No ()");
+					}
+					if($this -> input -> post('token')){
+						$this->output->set_content_type('application/json');
+						return $this->output->set_output(json_encode(array('success'=>true, 'message'=>'Voucher Received Successfully')));exit;
+					}
+					$searchednum = NULL;
+				}
+			}else{
+				$msg = "You are not authorized to receive this voucher.";
 			}
-			else{
-				$msg = "Stock received Successfully.";
-				createTransactionLog("Stock Receive from Store", $subTitle." - Viewed, Issue No ($searchednum) Receive No ()");
-				$searchednum = NULL;
+			//echo $msg;exit;
+			//$this -> session -> keep_flashdata('message',$msg);
+			if($this -> input -> post('token')){
+				$this->output->set_content_type('application/json');
+				return $this->output->set_output(json_encode(array('success'=>true, 'message'=>$msg)));exit;
 			}
+			$this -> session -> set_flashdata('message',$msg);
+			redirect(base_url().'StockReceivefromStore/'.$searchednum);
 		}else{
-			$msg = "You are not authorized to receive this voucher.";
+			if($this -> input -> post('token')){
+				$this->output->set_content_type('application/json');
+				return $this->output->set_output(json_encode(array('success'=>true, 'message'=>'Stock Already Received Successfully.')));exit;
+			}else{
+				$this -> session -> set_flashdata('message',"Stock Already Received Successfully.");
+				redirect(base_url().'StockReceivefromStore/'.$searchednum);
+			}
 		}
-		//echo $msg;exit;
-		//$this -> session -> keep_flashdata('message',$msg);
-		$this -> session -> set_flashdata('message',$msg);
-		redirect(base_url().'StockReceivefromStore/'.$searchednum);
 	}
 	/*
 	@ Author:        Raja Imran Qamer
@@ -910,11 +925,11 @@ class Provincial extends CI_Controller {
 			$this->form_validation->set_rules('code', 'Store Location', 'trim|required|is_natural|greater_than[0]');
 			$this->form_validation->set_rules('activity', 'Purpose', 'trim|required|is_natural|greater_than[0]');
 			if($activity==1){
-			$this->form_validation->set_rules('trans_date_time','Issue Time','trim|required|valid_date[Y-m-d H:i:s]|callback_is_consumption_filled');
+				$this->form_validation->set_rules('trans_date_time','Issue Time','trim|required|valid_date[Y-m-d H:i:s]|callback_is_consumption_filled');
 			}
-		else{	
-		$this->form_validation->set_rules('trans_date_time','Issue Time','trim|required|valid_date[Y-m-d H:i:s]');
-		}
+			else{
+				$this->form_validation->set_rules('trans_date_time','Issue Time','trim|required|valid_date[Y-m-d H:i:s]');
+			}
 		}
 		$this->form_validation->set_rules('product', 'Product', 'trim|required|is_natural|greater_than[0]');
 		$this->form_validation->set_rules('batch', 'Manufacturer |Batch | Quantity | Priority','trim|required|is_natural|greater_than[0]');
@@ -1003,7 +1018,7 @@ class Provincial extends CI_Controller {
 				"last_update" => date("Y-m-d H:i:s")
 			);
 			if($updateQty < 1 )
-				$datatoupdatebatch['status']='Finished'; 
+				$datatoupdatebatch['status']='Finished';
 			$this->common->update_record("epi_stock_batch",$datatoupdatebatch,array("pk_id"=>$batchpk));
 			$datatoupdatedetail = array(
 				"quantity" => ($detaildata->quantity)-($this->input->post("quantity"))
@@ -1041,7 +1056,7 @@ class Provincial extends CI_Controller {
 			$totrep = $this->common->count_record("epi_consumption_master",array("fmonth >="=>$fmonth,"facode"=>$whcode));
 			if($totrep>0){
 				$this->form_validation->set_message('is_consumption_filled', 'Consumption report already exist for respective month against this facility, please change your transaction date.');
-				return FALSE; 
+				return FALSE;
 			}else
 			{
 				return TRUE;
@@ -1071,7 +1086,7 @@ class Provincial extends CI_Controller {
 	@ Email:         rajaimranqamer@gmail.com
 	@ Function:      save_invn_supp_issue
 	@ Description:   This function will update stock issue from supplier information and set draft 0 into database
-	*/
+	*/	
 	public function save_invn_supp_issue(){
 		$subTitle = "(Vaccine Management) Stock Issue/Dispatch";
 		$data['subtitle']=$subTitle;
@@ -1086,14 +1101,14 @@ class Provincial extends CI_Controller {
 			$this->db->trans_start();
 			//draft already exist with id TEMP, update draft then items will be available for receiving from store
 			if($resultrow->transaction_number=='TEMP'){
-			$row=$this->db->query("SELECT nextval('stock_master_trans_num_seq'::regclass) as val")->row();	
-			//incremntend value by 
-			$maxval=$row->val; 
+			$row=$this->db->query("SELECT nextval('stock_master_trans_num_seq'::regclass) as val")->row();
+			//incremntend value by
+			$maxval=$row->val;
 			$datemaxnumber=$this->db->query("SELECT max(transaction_number) as number FROM epi_stock_master where transaction_number like 'I$date%' ")->row();
 			$transno=$datemaxnumber->number;
 			$transno=substr($transno,5);
 			/* IF IF max(tranNo) is greater/equal than latest sequence value (maxval) */
-			if($transno >= $maxval && $transno!='9999')
+			if($transno >= $maxval && $transno!='999999')
 			{
 				$transno=$transno+1;
 			}
@@ -1102,15 +1117,15 @@ class Provincial extends CI_Controller {
 				/*using incremented sequence value. */
 				$transno=$maxval;
 			}
-			//fucntion call to check whether incremented value match or not	
-			$transno=str_pad ($transno ,4,0,STR_PAD_LEFT) ;
+			//fucntion call to check whether incremented value match or not
+			$transno=str_pad ($transno ,6,0,STR_PAD_LEFT) ;
 			$voucher='I'.$date."".$transno;
-			for($i=1;$i<=9999;$i++){
+			for($i=1;$i<=999999;$i++){
 				$newtransno=check_Voucher_No($voucher);
 				if($newtransno==true){
-					$row=$this->db->query("SELECT nextval('stock_master_trans_num_seq'::regclass) as val")->row();	
+					$row=$this->db->query("SELECT nextval('stock_master_trans_num_seq'::regclass) as val")->row();
 					$maxval=$row->val;
-					$maxval=str_pad ($maxval ,4,0,STR_PAD_LEFT) ;
+					$maxval=str_pad ($maxval ,6,0,STR_PAD_LEFT) ;
 					$tno='I'.$date.''.$maxval;
 					$voucher=$tno;
 				}
@@ -1118,16 +1133,15 @@ class Provincial extends CI_Controller {
 					//if no match then break the loop
 					break;
 				}
-			}	
+			}
 			$TranNo=substr($voucher,5);
-			$data=$this->db->set("transaction_number","(select 'I' || '".$date."' || to_char($TranNo,'fm0000'))",FALSE);
+			$data=$this->db->set("transaction_number","(select 'I' || '".$date."' || to_char($TranNo,'fm000000'))",FALSE);
 		}
 			$datatoupdate = array(
 				"comments" => $this->input->post("comments"),
 				"draft" => 0,
 				"updated_date" => date("Y-m-d H:i:s")
 			);
-			
 			$this->common->update_record("epi_stock_master",$datatoupdate,$whrarr);
 			//set history
 			$masterpk = $resultrow->id;
@@ -1151,7 +1165,6 @@ class Provincial extends CI_Controller {
 		$this -> session -> set_flashdata('message',$msg);
 		redirect('StockIssue');
 	}
-	
 	/*
 	@ Author:        Omer Butt
 	@ Email:         omerbutt2521@gmail.com
@@ -1176,7 +1189,6 @@ class Provincial extends CI_Controller {
 	public function del_invn_issue(){
 		$subTitle = "(Vaccine Management) Stock issue/Dispatch";
 		$data['subtitle']=$subTitle;
-		
 		$batchid = $this->input->post("batch");
 		$masterid = $this->input->post("master");
 		$batchnum = $this->input->post("batchnum");
@@ -1234,9 +1246,9 @@ class Provincial extends CI_Controller {
 	@ Description:   This function will allow user to edit voucher/items those are not completely received by other end yet.
 	*/
 	public function edit_invn_issue($masterid){
-        $subTitle = "(Vaccine Management) Stock Issue/Dispatch";
-		$data['subtitle']=$subTitle;	
-        $masterid = (int)($masterid)?$masterid:$this->input->Request("master");
+		$subTitle = "(Vaccine Management) Stock Issue/Dispatch";
+		$data['subtitle']=$subTitle;
+		$masterid = (int)($masterid)?$masterid:$this->input->Request("master");
 		$currwhtype = $this->session->curr_wh_type;
 		$currwhcode = $this->session->curr_wh_code;
 		$username = $this->session->userdata("username");
@@ -1278,8 +1290,8 @@ class Provincial extends CI_Controller {
 		}else{
 			//message wrong voucher
 			$msg = "You have entered wrong voucher number, Please try again.";
-		}						
-        createTransactionLog("Stock Issue Edited", $subTitle. " - Stock Issue Edited Voucher list, Master Pk_id ($masterid)");
+		}
+		createTransactionLog("Stock Issue Edited", $subTitle. " - Stock Issue Edited Voucher list, Master Pk_id ($masterid)");
 		//redirect back to list page
 		$this -> session -> set_flashdata('message',$msg);
 		$this->stock_issue();
@@ -1333,11 +1345,11 @@ class Provincial extends CI_Controller {
 				$fromwhcode = $this->session->curr_wh_code;
 				$activity = $this->input->post("activity");
 				$updatebatch = true;
-			}	
-				//print_r($updatebatch);exit;
+			}
+			//print_r($updatebatch);exit;
 			$date=date("ym", strtotime($this->input->post("adjust_date")));
 			$recordnumber = 1;
-			$this->db->set("transaction_number","(select 'A' || '".$date."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm0000'))",FALSE);
+			$this->db->set("transaction_number","(select 'A' || '".$date."' || to_char(nextval('stock_master_trans_num_seq'::regclass),'fm000000'))",FALSE);
 			$datatosave = array(
 				"transaction_date" => $this->input->post("adjust_date"),
 				"transaction_counter" => $recordnumber,
@@ -1387,7 +1399,7 @@ class Provincial extends CI_Controller {
 				$batchid = $batchpk;
 			}else{
 				
-				$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch);				
+				$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch);
 			}
 			$detaildata = $this->common->get_info("epi_stock_detail",NULL,NULL,NULL,array("stock_batch_id"=>$batchpk));
 			if(!empty($detaildata)){
@@ -1415,7 +1427,7 @@ class Provincial extends CI_Controller {
 			$datatoupdatebatch = array(
 				"quantity" => $newquantity,
 				"last_update" => date("Y-m-d H:i:s")
-			); 
+			);
 			if($newquantity < 1)
 				$datatoupdatebatch['status']='Finished';
 			$this->common->update_record("epi_stock_batch",$datatoupdatebatch,array("pk_id"=>$batchpk));
@@ -1437,7 +1449,7 @@ class Provincial extends CI_Controller {
 			createTransactionLog("Add Adjustment Save", $subTitle. " - Save Detail of Add Adjustment, ($msg)");
 			$this -> session -> set_flashdata('message',$msg);
 			redirect(base_url("stockAdjustment"));
-		}		
+		}
 	}
 	/*
 	@ Author:        Raja Imran Qamer
@@ -1523,8 +1535,8 @@ class Provincial extends CI_Controller {
 		$checkadjustment = $this->common->get_info("epi_stock_detail",NULL,NULL,"rec_adjustment",array("stock_batch_id"=>$batchid,"stock_master_id" => $masterid));
 		//here for call save delete_record_hsitory func for save del record in DB.
 		$array_ids=array('master_id'=>$masterid,'batch_id'=>$batchid);
-		$this->Save_delete_record_hsitory($array_ids); 
-		if(isset($quantitytoupdate->parent_pk_id)){			
+		$this->Save_delete_record_hsitory($array_ids);
+		if(isset($quantitytoupdate->parent_pk_id)){
 			$parentbatch = $this->common->get_info("epi_stock_batch",NULL,NULL,NULL,array("pk_id"=>$quantitytoupdate->parent_pk_id));
 			$nature = $transactioninfo->nature;
 			//update quantity in old batch and detail
@@ -1532,7 +1544,7 @@ class Provincial extends CI_Controller {
 				$newquantity = ($parentbatch->quantity)+($quantitytoupdate->quantity);
 			}else{
 				$newquantity = ($parentbatch->quantity)/* -($quantitytoupdate->quantity) */;
-			}			
+			}
 			$datatoupdatebatch = array(
 				"quantity" => $newquantity,
 				"last_update" => date("Y-m-d H:i:s"),
@@ -1545,12 +1557,12 @@ class Provincial extends CI_Controller {
 			$this->common->update_record("epi_stock_detail",$datatoupdatedetail,array("stock_batch_id"=>$quantitytoupdate->parent_pk_id));
 			if($checkadjustment->rec_adjustment==1)
 			{
-				//working here to update batch history and detail table QTy on base of batch_id=parent_pk_id 
+				//working here to update batch history and detail table QTy on base of batch_id=parent_pk_id
 				$datatoupdatebatchhistory = array( "last_update" => date("Y-m-d H:i:s"));
 				$this->db->set('quantity', 'quantity+'.$quantitytoupdate->quantity,FALSE);
 				$this->db->where('batch_id',$quantitytoupdate->parent_pk_id);
 				$this->db->update('epi_stock_batch_history',$datatoupdatebatchhistory);
-				//fro detail history 
+				//fro detail history
 				$this->db->set('quantity', 'quantity+'.$quantitytoupdate->quantity,FALSE);
 				$this->db->where('stock_batch_id',$quantitytoupdate->parent_pk_id);
 				$this->db->update('epi_stock_detail_history');
@@ -1682,7 +1694,7 @@ class Provincial extends CI_Controller {
 					}
 					else{
 						$msg = "VVM Stage of provided quantity has been changed successfully!";
-                        createTransactionLog("VVM Management", $subTitle." - ($msg)");
+						createTransactionLog("VVM Management", $subTitle." - ($msg)");
 					}
 				}else{
 					$msg = "Quantity not Available!!";
@@ -1721,27 +1733,14 @@ class Provincial extends CI_Controller {
 				if($sessionwhtype==4){
 					$whr["distcode"] = $this->session->District;
 				}
-				if($sessionwhtype==5){
+				/* if($sessionwhtype==5){
 					$whr["distcode"] = $this->session->District;
-				}
+				} */
 				$districts= $this->common->fetchall("districts",NULL,"distcode as id,'District ' || district || ' Store' as name",$whr/* array("province"=>$warehouse_procode) */,NULL,array("by"=>"district","type"=>"asc"));
 				$html = get_options_html($districts,true);
 				break;
 			case 5:
-				$sessionwhtype = $this->session->curr_wh_type;
-				$whr["procode"] = $warehouse_procode;
-				if($sessionwhtype==4){
-					$whr["distcode"] = $this->session->curr_wh_code;
-				}
-				if($sessionwhtype==5){
-					$whr["distcode"] = $this->session->District;
-				}
-				if($this -> session -> UserLevel==4){
-				$tehsils= $this->common->fetchall("tehsil",NULL,"tcode as id,'Tehsil ' || tehsil || ' Store' as name",array("tcode"=>$this->session->Tehsil),NULL,array("by"=>"tehsil","type"=>"asc"));
-				}else{
-				$tehsils= $this->common->fetchall("tehsil",NULL,"tcode as id,'Tehsil ' || tehsil || ' Store' as name",$whr,NULL,array("by"=>"tehsil","type"=>"asc"));	
-				}
-				$html = get_options_html($tehsils,true);
+				echo '';
 				break;
 			case 6:
 				$sessionwhtype = $this->session->curr_wh_type;
@@ -1793,9 +1792,9 @@ class Provincial extends CI_Controller {
 	@ Description:   Returns Products(item_name) from epi_item_pack_sizes depending upon activity type id and product to check same group item
 	*/
 	public function get_invn_related_products(){
-        $subTitle ="(Vaccine Managment) Purpose Transfer";
+		$subTitle ="(Vaccine Managment) Purpose Transfer";
 		$data['subtitle']=$subTitle;
-        $activityid = $this->input->post("activity");
+		$activityid = $this->input->post("activity");
 		$byproduct = $this->input->post("product");
 		$createoptions = ($this->input->post("createoptions"))?$this->input->post("createoptions"):false;
 		$resultarr = array();
@@ -1808,7 +1807,7 @@ class Provincial extends CI_Controller {
 				$resultarr = $datafromdb;
 			}
 		}
-        createTransactionLog("Purpose Transfer", $subTitle." - Update purpose File");
+		createTransactionLog("Purpose Transfer", $subTitle." - Update purpose File");
 		echo json_encode($resultarr);
 	}
 	/*
@@ -1869,9 +1868,9 @@ class Provincial extends CI_Controller {
 	@ Description:   Returns vvm Stages of product depending upon product id posted
 	*/
 	public function get_invn_vvmStage(){
-        $subTitle ="(Vaccine Managment) VVM Management";
+		$subTitle ="(Vaccine Managment) VVM Management";
 		$data['subtitle']=$subTitle;
-        $productid = $this->input->post("product");
+		$productid = $this->input->post("product");
 		$createoptions = ($this->input->post("createoptions"))?$this->input->post("createoptions"):false;
 		$resultarr = $datafromdb = array();
 		if($productid>0){
@@ -1898,7 +1897,7 @@ class Provincial extends CI_Controller {
 				$resultarr = $datafromdb;
 			}
 		}
-        createTransactionLog("VVM Management", $subTitle." - Update VVm Stage, Product Id ($productid)");
+		createTransactionLog("VVM Management", $subTitle." - Update VVm Stage, Product Id ($productid)");
 		echo json_encode($resultarr);
 	}
 	/*
@@ -1920,7 +1919,7 @@ class Provincial extends CI_Controller {
 		foreach($batchdata as $onebatch){
 			$onebatch["batch_id"] = $onebatch["pk_id"];unset($onebatch["pk_id"]);
 			$this->common->insert_record("epi_stock_batch_history",$onebatch);
-		}		
+		}
 		//into detail history tables
 		$detaildata = $this->common->fetchall("epi_stock_detail",NULL,"*",array("stock_master_id"=>$masterid));
 		foreach($detaildata as $onedetail){
@@ -1951,7 +1950,7 @@ class Provincial extends CI_Controller {
 			//idelete from detail history tables
 			$this->common->delete_record("epi_stock_detail_history", $masterid, "stock_master_id");
 			//end
-		}		
+		}
 	}
 	public function get_fac_store_locations(){
 		$warehouse_uccode = $this->input->post("warehouse_uccode");
@@ -1962,14 +1961,14 @@ class Provincial extends CI_Controller {
 			if($sessionwhtype==4){
 				$whr["distcode"] = $this->session->curr_wh_code;
 			}
-			$whr["hf_type"] ='e'; 
+			$whr["hf_type"] ='e';
 			$facilities= $this->common->fetchall("facilities",NULL,"facode as id,'Facility ' || fac_name || ' Store' as name",$whr,NULL,array("by"=>"fac_name","type"=>"asc"));
 			//print_r($this->db->last_query());exit;
 			$html = get_options_html($facilities,true);
 		}
 		//print_r($this->db->last_query());exit;
 		$resultarr["optionshtml"] = $html;
-		echo json_encode($resultarr); 
+		echo json_encode($resultarr);
 	}
 	public function get_batch_location()
 	{
@@ -2007,6 +2006,14 @@ class Provincial extends CI_Controller {
 			$detaildata->created_date=date("Y-m-d H:i:s");
 			$this->db->insert('delete_epi_stock_detail',$detaildata);
 			//end/
+	}
+	public function stock_receive_from_supplier_list(){
+		$transac_id_type=1;
+		$data['data']['supplierStock'] =$this -> invn -> get_received_stock_list_for_supplier($transac_id_type);
+		//print_r($data['data']['supplierStock']);exit;
+		$data['fileToLoad'] = 'inventory_management/stock_receive_from_supplier_list';
+		$data['pageTitle'] = 'EPI-MIS | Stock Receive List (Supplier)';
+		$this->load->view('template/epi_template',$data);
 	}
 }
 ?>

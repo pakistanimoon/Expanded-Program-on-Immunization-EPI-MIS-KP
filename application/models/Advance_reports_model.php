@@ -1,5 +1,4 @@
 <?php
-//kp
 class Advance_reports_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
@@ -10,7 +9,7 @@ class Advance_reports_model extends CI_Model {
 	//--------------------------------------------------------------------------------//
 	//======= Function to Create Filters for Sepecific Reports Starts Here ===========//
 	function HFMVRF_Advance_Report($data,$title){
-		// print_r($data);exit;
+		//print_r($data);exit;
 		$wc = $data;
 		if($this -> input -> post('export_excel')){
 		unset($wc['_ga']);
@@ -125,31 +124,28 @@ class Advance_reports_model extends CI_Model {
 	} 
 	
 	function HFCR_Advance_Report($data,$title){
-		//print_r($data);exit; 
 		/* print_r(
 		$this->db->limit('50')->get('form_b_cr')->result_array());exit; */
-		/* $value['item_id']=$data['product'];
-		//print_r($value); exit;
-		//$value=$data['vacc_ind'];
-		if($value==''){
-			$item_id=null;
-		}
-		else{
-		$str_value = implode(",",$value);
-		$item_id='item_id IN (';
-		$item_id.= $str_value.')';	
-		} */
 		$value=$data['product'];
 		//print_r($value); exit;
 		unset($data['product']); 
 		$wc = $data;
-	
+		
+		if($this -> input -> post('export_excel'))
+		{
+			//echo "danish";exit;
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=Advance Report for Consumption and Requisition.xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
+		}
 		$reportId = $data['report_id'];
 		$this -> db -> select('report_title');
 		$this -> db -> where(array('report_id'=>$reportId,'module_id'=>'7'));
 		$repTitleName = $this -> db -> get('adv_reports') -> row();
 		$repTitleName   =  $repTitleName -> report_title;
-		//print_r($repTitleName); exit;
 		
 		$this -> db -> select('adv_report_fields.*,epifieldstitle.description');
 		$this -> db -> where(array('report_id'=>$reportId,'epifieldstitle.module_id'=>'7'));
@@ -194,36 +190,25 @@ class Advance_reports_model extends CI_Model {
 			if ($data['typewise']=='fac'){
 			$this -> db -> select('facode as "Facode", facilityname(facode) as "Facility Name", '.$fields);
 			$this -> db -> group_by('facode');
-			$this -> db -> order_by('facilityname(facode)');
+			$this -> db -> order_by('facode');
 		}
 		else{
 				//echo "uc";exit;
 				$this -> db -> select('uncode as "Uncode", unname(uncode) as "UnionCouncil Name", '.$fields);
 				$this -> db -> group_by('uncode');
-		    } 
-		}		
+		    }
+		}
 		else{
 			$this -> db -> select('distcode as "Distcode", districtname(distcode) as "District Name", '.$fields);
 			$this -> db -> group_by('distcode');
 		}
+		
 		$this -> db -> where($wc);
+		$this->db->where("epi_consumption_master.is_compiled",1);
 		$this -> db -> where("item_id",$value);
-		$this -> db -> where("epi_consumption_master.is_compiled",1);
 		$this -> db -> join('epi_consumption_detail','epi_consumption_detail.main_id=epi_consumption_master.pk_id','left');
 		//$this -> db -> join('epi_item_pack_sizes','epi_item_pack_sizes.pk_id=epi_consumption_detail.item_id','left');
 		$allData = $this -> db -> get ($report_table) -> result_array();
-		//$str = $this->db->last_query();
-		//print_r($str); exit;
-		if($this -> input -> post('export_excel'))
-		{
-			//echo "danish";exit;
-			//if request is from excel
-			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename= HR Custom Report.xls");
-			header("Pragma: no-cache");
-			header("Expires: 0");
-			//Excel Ending here
-		}
 		$data['product']=$value;
 		$data['htmlData'] = getListingReportTable($allData,'');
 		$data['TopInfo'] = reportsTopInfo($title, $data);
@@ -257,9 +242,10 @@ class Advance_reports_model extends CI_Model {
 		//print_r($where); exit();
 		if($this -> input -> post('export_excel'))
 		{
+			//echo "danish";exit;
 			//if request is from excel
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=".str_replace(" ","_",$subTitle)."_".($data['year'])?$data['year']:""."-".($data['month'])?$data['month']:"".".xls");
+			header("Content-Disposition: attachment; filename=HR Custom Report.xls");
 			header("Pragma: no-cache");
 			header("Expires: 0");
 			//Excel Ending here
@@ -299,94 +285,22 @@ class Advance_reports_model extends CI_Model {
 			}
 		}
 		$fields = rtrim($fields,',');
-		
-		//$groupBy = '';
-		// Change Fmonth syntax from 02-2015 to 2015-02
-		/* $fmonthFrom = $data['monthfrom'];
-		$fmonthFrom = explode('-',$fmonthFrom);
-		$month = $fmonthFrom[0];
-		$year = $fmonthFrom[1];
-		$fmonthFrom = $year.'-'.$month;
-		$fmonthTo = $data['monthto'];
-		$fmonthTo = explode('-',$fmonthTo);
-		$month = $fmonthTo[0];
-		$year = $fmonthTo[1];
-		$fmonthTo = $year.'-'.$month; */
-		// remove fmonthFrom and fmonthTo from wc and add new ones
-		/* unset($wc['monthfrom']);unset($wc['monthto']);unset($wc['report_id']);
-		$wc['fmonth <='] = $fmonthTo;
-		$wc['fmonth >='] = $fmonthFrom;
-		unset($wc['typewise']); */
-		//$report_table = "form_b_cr";
-		
-		//HRAdvancereport
-	/* 	if($data['hr_type']=='sl'){
-			$report_table="supervisordb";
-			$name="supervisorname";
-		}
-		else if($data['hr_type']=='dso'){
-			$report_table="dsodb";
-			$name="dsoname";
-		}
-		else if($data['hr_type']=='co'){
-			$report_table="codb";
-			$name="coname";
-		}
-		else if($data['hr_type']=='hf'){
-			$report_table="med_techniciandb";
-			$name="technicianname";
-		}
-		else if($data['hr_type']=='sk'){
-			$report_table="skdb";
-			$name="skname";
-		}
-		else if($data['hr_type']=='epit'){
-			$report_table="techniciandb";
-			$name="technicianname";
-		}
-		else if($data['hr_type']=='cct'){
-			$report_table="cc_techniciandb";
-			//$bank="bankinfo";
-			$name="cc_technicianname";
-		}
-		else if($data['hr_type']=='cco'){
-			$report_table="cco_db";
-			$name="cco_name";
-		}
-		else if($data['hr_type']=='go'){
-			$report_table="go_db";
-			$name="go_name";
-		}
-		else if($data['hr_type']=='ccm'){
-			$report_table="cc_mechanic";
-			$name="ccm_name";
-		}
-		else if($data['hr_type']=='dd'){
-			$report_table="driverdb";
-			$name="drivername";
-		}   */
 		$report_table="hr_db_history";
 		$name="name"; 
 		
 		if(array_key_exists("distcode", $data) && $data['distcode'] > 0)
-		{   //echo 'aa';
-			//$case1=" pre_distcode = '".$data['distcode']."' and post_distcode <> '".$data['distcode']."'";
-			//$case2=" post_distcode ='".$data['distcode']."' and pre_distcode <> '".$data['distcode']."'";
-			//$this -> db -> select(''.$name.' as "Name", '.$fields);
+		{   
 			$query = 'SELECT codee as "HR Code",'.$name.' as "HR Name",getsubtypename(post_hr_sub_type_id) as "HR Type", '.$fields.', post_status  as "Status"
 			FROM(SELECT DISTINCT ON (code) code  as codee, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery
 			'.$where.'';
 		}
 		if(isset($procode))
-		{   // echo 'bb';
+		{   
 			if(isset($data['distcode']) > 0){
-				//$case1=" pre_distcode = '".$data['distcode']."' and post_distcode <> '".$data['distcode']."'";
-				//$case2=" post_distcode ='".$data['distcode']."' and pre_distcode <> '".$data['distcode']."'";
 				$query = 'SELECT codee as "HR Code",'.$name.' as "HR Name",getsubtypename(post_hr_sub_type_id) as "HR Type", '.$fields.',post_status  as "Status"
 				FROM(SELECT DISTINCT ON (code) code  as codee, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery
 				'.$where.'';
 			}else{
-				//$this -> db -> select(''.$name.' as "Name", '.$fields);
 				$query = 'SELECT post_distcode as "Distcode",districtname(post_distcode) as "District Name",codee as "HR Code",'.$name.' as "HR Name",getsubtypename(post_hr_sub_type_id) as "HR Type", '.$fields.',post_status as "Status"
 				FROM(SELECT DISTINCT ON (code) code  as codee, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery
 				'.$where.'';
@@ -411,23 +325,25 @@ class Advance_reports_model extends CI_Model {
 		$data['exportIcons']= exportIcons($_REQUEST);
 		return $data;
 	} 
+	 
 	
 	//DSAdvanceReport
 	function Disease_Surveillance_Advance_Report($data,$title){
-		//print_r($data); exit;;
+		//print_r($data); exit;
+		$wc = $data;
 		/* $procode=$this->session->Province;
 		if(isset($data['distcode']) > 0){
         $wc = " distcode = '".$data['distcode']."' ";
         }else{
         $wc = " procode = '".$procode."' ";
-        } */
-		$wc = $data;
+         }
+		$wc = " year = '".$data['year']."' "; */
 		if($this -> input -> post('export_excel'))
 		{
 			//echo "danish";exit;
 			//if request is from excel
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename= Disease Surveillance Custom Report.xls");
+			header("Content-Disposition: attachment; filename=Disease Surveillance Custom Report.xls");
 			header("Pragma: no-cache");
 			header("Expires: 0");
 			//Excel Ending here
@@ -494,34 +410,11 @@ class Advance_reports_model extends CI_Model {
 			}
 		}
 		$fields = rtrim($fields,',');
-		
-		
-		
-		
-		//print_r($fields); exit;
-		
-		/* $groupBy = '';
-		// Change Fmonth syntax from 02-2015 to 2015-02
-		$fmonthFrom = $data['monthfrom'];
-		$fmonthFrom = explode('-',$fmonthFrom);
-		$month = $fmonthFrom[0];
-		$year = $fmonthFrom[1];
-		$fmonthFrom = $year.'-'.$month;
-		$fmonthTo = $data['monthto'];
-		$fmonthTo = explode('-',$fmonthTo);
-		$month = $fmonthTo[0];
-		$year = $fmonthTo[1];
-		$fmonthTo = $year.'-'.$month;
-		// remove fmonthFrom and fmonthTo from wc and add new ones
-		unset($wc['monthfrom']);unset($wc['monthto']);unset($wc['report_id']);
-		$wc['fmonth <='] = $fmonthTo;
-		$wc['fmonth >='] = $fmonthFrom;
-		unset($wc['typewise']);*/
 		unset($wc['from_week']);
 		unset($wc['datefrom']);
 		unset($wc['to_week']);
 		unset($wc['dateto']);
-		unset($wc['report_id']);
+		unset($wc['report_id']); 
 		
 		
 		if($value=='Measles'){
@@ -545,7 +438,7 @@ class Advance_reports_model extends CI_Model {
 		{
 			$this -> db -> select(''.$name.' as "Name", '.$fields);
 		}
-		if(isset($procode))
+				if(isset($procode))
 		{
 			$this -> db -> select(''.$name.' as "Name", '.$fields);
 		}
@@ -558,8 +451,6 @@ class Advance_reports_model extends CI_Model {
 		$this -> db -> where($wc);
 		$allData = $this -> db -> get ($report_table) -> result_array();
 		//print_r($allData); exit;
-		//$str = $this->db->last_query();
-		//print_r($str); exit;
 	    $data['htmlData'] = getListingReportTable($allData,'','NO');
 		$data['TopInfo'] = reportsTopInfo($title, $data);
 		$data['exportIcons']= exportIcons($_REQUEST);

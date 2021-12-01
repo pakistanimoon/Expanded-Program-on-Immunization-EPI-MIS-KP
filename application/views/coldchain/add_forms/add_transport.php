@@ -38,9 +38,9 @@
 										
 									</select>							
 									</div>
-									<div class="col-md-2">
-									<!--<button type="button" id='modalid' class="btn btn-success btn-md" title="Add Make and Modal" style="position:relative"> <i class="fa fa-plus"></i> </button>-->
-									</div>
+									<!--<div class="col-md-2">
+									<button type="button" id='modalid' class="btn btn-success btn-md" title="Add Make and Modal" style="position:relative"> <i class="fa fa-plus"></i> </button>
+									</div>-->
 									
 								</div>
 						</div>
@@ -56,9 +56,9 @@
 										<option>--select--</option>
 									</select>
 									</div>
-									<div class="col-md-2">
-									<!--<button type="button" id='modalid1' class="btn btn-success btn-md" title="Add Modal" style="position:relative"> <i class="fa fa-plus"></i> </button>-->
-									</div>
+									<!--<div class="col-md-2">
+									<button type="button" id='modalid1' class="btn btn-success btn-md" title="Add Modal" style="position:relative"> <i class="fa fa-plus"></i> </button>
+									</div>-->
 								</div>
 						</div>
 					
@@ -165,7 +165,7 @@
 									<label for="Fuel Type">Fuel Type<span style="color:red;">*</span></label>
 									</div>
 									<div class="col-md-8">
-									<select  class="form-control" name="fuel_type_id" required>
+									<select  class="form-control" name="fuel_type_id">
 										<?php echo getPowerSource(NULL,FALSE,25); ?>
 									</select>						
 									</div>

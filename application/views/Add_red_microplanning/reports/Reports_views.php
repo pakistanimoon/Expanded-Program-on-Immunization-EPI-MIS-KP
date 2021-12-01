@@ -11,8 +11,11 @@
 </style>
 <div class="container bodycontainer">
 	<?php
+	//print_r($data['data']);exit;
 		echo $TopInfo;
-	?>
+		
+	
+	 ?>
 	 <!--table for mention colour mening-->
 				<table data-filter="#filter" data-filter-text-only="true" style="margin-bottom: 5px;" class="table  table-hover table-striped footable table-vcenter tbl-listing footable-loaded">
 					<thead>
@@ -41,7 +44,8 @@
 					</tr>
 				</thead>
 				<tbody>
-				
+					<input type='text' hidden value="<?php echo $year;  ?>" id='year'>
+					<input type='text' hidden value="<?php echo $quarter;  ?>" id='quarter'>
 				    <?php
 				   	if(empty($data)){
 	                   echo '<tr><td colspan="25"> <B>Data not available ! </B></td> </tr>';exit;
@@ -53,8 +57,8 @@
 					$currentuc = 0;
 					$prevucrowspan = 0;
 					$currenttc = 0;
-					$facode=0;
 					$techcode=0;
+					$facode=0;
 					$prevucname = '';
 					$prevtechniciancode = '';
 					$monthsofqtr = array(
@@ -70,7 +74,7 @@
 									echo '<tr class="DrillDownRow" data-facode="'.$facode.'" data-techcode="'.$techcode.'"><td  class="uc" data-ucode="'.$prevuccode.'">'.$prevucname.'</td>';
 									if(($key+1)==1){
 										echo '<td rowspan="3">'.$prevtechniciancode.'</td>';
-									}									
+									}
 									echo '<td>'.$months.'</td> <td><label  class="disabled" for="u">Session Type</label><br><label  class="disabled" for="u">Session Site</label> <br><label  class="disabled" for="u">Area Name</label> </td>'.implode('',${"htmlofm".($key+1)}).' </tr>';
 									${"htmlofm".($key+1)} = array();
 								}
@@ -80,14 +84,16 @@
 								$htmlofm1[$day] = $htmlofm2[$day] = $htmlofm3[$day] = '<td><label class="blank_label"><span></span></label><br><label class="blank_label"><span></span></label><br><label class="blank_label"><span></span></label></td>';
 							}
 							$currentuc = $val["uncode"];
-							$facode=$val["facode"];
 							$currenttc = $val["techniciancode"];
 							$prevuccode = $val["uncode"];
+							$facode=$val["facode"];
+							$techcode=$val["techniciancode"];
 							$prevucname = $val["ucname"];
 							$prevtechniciancode = $val["technicianname"];
-							$techcode=$val["techniciancode"];
 						}
+						
 						foreach($monthsofqtr[$val['quarter']] as $key=>$months){
+						
 							$sdate1 =$val['area_dateschedule_m1'];
 							$sdate2 =$val['area_dateschedule_m2'];
 							$sdate3 =$val['area_dateschedule_m3'];
@@ -115,26 +121,27 @@
 							}else{
 								$colour ='style="background: lightcoral; width:100%;white-space: nowrap;"';
 							}/////////////////////////
-							${"htmlofm".($key+1)}[${"daym".($key+1)}] = '<td>
-							<label  '.$colour.'>'. $val['session_type'] .'</label><br> 
-							<label  '.$colour.'>'.$val['sitename'].'</label><br>
-							<label  '.$colour.'>'. get_Village_Name ($val['area_code']).'</label></td>';
+							if($sdate1 != NULL){
+								${"htmlofm".($key+1)}[${"daym".($key+1)}] = '<td>
+								<label  '.$colour.'>'. $val['session_type'] .'</label><br> 
+								<label  '.$colour.'>'.$val['sitename'].'</label><br>
+								<label  '.$colour.'>'. get_Village_Name ($val['area_code']).'</label></td>';
+							}else{
+								${"htmlofm".($key+1)}[${"daym".($key+1)}] = '<td><label></label><br><label></label><br><label></label></td>';
+							}
 						}					
 					}
 					foreach($monthsofqtr[$val['quarter']] as $key=>$months){
 						if($currentuc==0){}else{
 							echo '<tr class="DrillDownRow" data-facode="'.$facode.'" data-techcode="'.$techcode.'" ><td class="uc" data-ucode="'.$prevuccode.'">'.$prevucname.'</td>';
 							if(($key+1)==1){
-								echo '<td   rowspan="3"> '.$prevtechniciancode.'</td>';								
+								echo '<td rowspan="3">'.$prevtechniciancode.'</td>';
 							}
 							echo '<td>'.$months.'</td><td><label  class="disabled" for="u">Session Type</label><br><label  class="disabled" for="u">Session Site</label><br><label  class="disabled" for="u">Area Name</label></td>'.implode('',${"htmlofm".($key+1)}).'</tr>';
-							
 						}
-					} 
+					}
 					   ?>
-				</tbody>		
-				<input type='text' hidden value="<?php echo $year;  ?>" id='year'>
-				<input type='text' hidden value="<?php echo $quarter;  ?>" id='quarter'>
+				</tbody>
 			</table>
 	</div>
 </div><!--End of page content or body-->
@@ -169,23 +176,24 @@
   	$('.DrillDownRow').on('click', function(){
 		var year = $('#year').val();		
 		var quarter = $('#quarter').val();		
-		var filter_view=2;
-		var code = $(this).data('techcode');
-		var facode = $(this).data('facode');
-		if(code.toString().length == 9){
-				//url = "<?php echo base_url();?>red_rec_microplan/Facility_quarterplan/situation_analysis_view/"+facode+"/"+year+"/"+quarter+"/"+techcode+"/"+filter_view;
-				url = "<?php echo base_url();?>red_rec_microplan/Situation_analysis/situation_analysis_view/"+code+"/"+year+"/"+filter_view;
-				var win = window.open(url,'_self');
+		 var filter_view=2;
+		 var techcode = $(this).data('techcode');
+		 var facode = $(this).data('facode');
+			if(techcode.toString().length == 9){
+			//url = "<?php echo base_url();?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_view/"+facode+"/"+year+"/"+quarter+"/"+techcode+"/"+filter_view;
+			url = "<?php echo base_url();?>red_rec_microplan/Situation_analysis/situation_analysis_view/"+techcode+"/"+year+"/"+filter_view;
+			var win = window.open(url,'_self');
 			if(win){
 				win.focus();
-			}else{	//Broswer has blocked it
-			alert('Please allow popups for this site');
+			}else{
+				//Broswer has blocked it
+				alert('Please allow popups for this site');
 			}
 		}	   
 	});
 	
 </script>
-<!-- Script for empty Label> -->
+<!-- Script for empty Label -->
 <script>
 $( "span:empty" )
   .text( "null" )

@@ -118,18 +118,15 @@ $style = "";
 				<option value="2">Provincial</option>
 			<?php }else{ ?>
 				<option value="0">Select</option>
-			<?php
-			if($this -> session -> Tehsil){ ?>
-				<option value="5">Tehsil-Taluka</option>
-				<option value="6">Union Council</option>
-			<?php
-			}else if($this -> session -> District){ ?>
+				<?php
+				if($this -> session -> District){ ?>
 				<option value="4">District</option>
 				<option value="5">Tehsil-Taluka</option>
 				<option value="6">Union Council</option>
-			<?php } else { ?>
-			  <option value="2">Provincial</option>
-			<?php }?>
+				<?php
+				}else{ ?>
+				<option value="2">Provincial</option>
+				<?php } ?>
 			<?php } ?>
 			</select>
 		</div>
@@ -832,8 +829,8 @@ $(function () {
 		todayHighlight : true,
 		todayBtn : true
 	});
-});			
+});				
 $(".readonly").keydown(function(e){
-   e.preventDefault();
+	e.preventDefault();
 });
 </script>

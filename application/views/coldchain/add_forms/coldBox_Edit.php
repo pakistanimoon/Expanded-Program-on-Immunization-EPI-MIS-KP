@@ -126,18 +126,15 @@ $style = "";
 				<option value="2">Provincial</option>
 			<?php }else{ ?>
 				<option value="0">Select</option>
-			<?php
-			if($this -> session -> Tehsil){ ?>
-				<option value="5">Tehsil-Taluka</option>
-				<option value="6">Union Council</option>
-			<?php
-			}else if($this -> session -> District){ ?>
+				<?php
+				if($this -> session -> District){ ?>
 				<option value="4">District</option>
 				<option value="5">Tehsil-Taluka</option>
 				<option value="6">Union Council</option>
-			<?php } else { ?>
-			  <option value="2">Provincial</option>
-			<?php }?>
+				<?php
+				}else{ ?>
+				<option value="2">Provincial</option>
+				<?php } ?>
 			<?php } ?>
 			</select>
 		</div>
@@ -186,7 +183,7 @@ $style = "";
 									</select>
 								</div>
 							</div>
-							<!--<div class="col-md-1"> 
+							<!--<div class="col-md-1">
 								<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" style="margin-top: 23px;float:right"> <i class="fa fa-plus"></i> </button>
 							</div>-->
 							<div class="col-md-4">
@@ -831,6 +828,6 @@ $(function () {
 	});
 });	
 $(".readonly").keydown(function(e){
-   e.preventDefault();
+	e.preventDefault();
 });
 </script>

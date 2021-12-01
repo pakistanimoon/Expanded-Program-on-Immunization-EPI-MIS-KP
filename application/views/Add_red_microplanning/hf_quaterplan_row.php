@@ -2,7 +2,7 @@
 <?php 
 	date_default_timezone_set('Asia/Karachi'); // CDT
 	$current_date = date('Y-m-d');
-    //print_r($row);exit;
+	//print_r($row);exit
 ?>
    <?php  foreach($row as $key => $val){
 			 $numarea = $key+1;
@@ -358,13 +358,6 @@
 				<input type="text" id="sh_Mobile_m3"   name="sh_Mobile_m3"   value="0" placeholder="Mobile"  class="form-control text-center numberclass">
 			</td>
 		</tr>
-		
-	
-	
-	
-	
-	
-
 	<script type="text/javascript">
 	/* $('.test').on('keyup' , function (){
 			 
@@ -380,57 +373,59 @@
 				var dd = today.getDate();
 				var mm = today.getMonth()+1; //January is 0!
 				var quarter = this.value;
-				//alert(quarter);
 				var year = $('#year').val();
 				var month1 = $('#m1').attr('month');
 				var month2 = $('#m2').attr('month');
 				var month3 = $('#m3').attr('month');
 				if(month1 != 0 ){
-					var minDate = new Date(year, month1-1, 1);
-					var maxDate = new Date(year, month1, 0);
-					$('.calendar1').each(function(){	 
-					  $(this).datepicker('setStartDate', minDate); 
-					});
-					$('.calendar1').each(function(){
+					 var minDate = new Date(year, month1-1, 1);
+				     var maxDate = new Date(year, month1, 0);
+					   $('.calendar1').each(function(){	 
+						  $(this).datepicker('setStartDate', minDate); 
+					  });
+				     $('.calendar1').each(function(){
 						$(this).datepicker('setEndDate', maxDate);
-					}); 
+					 }); 
+					 
+					 
 				}
 				if(month2 != 0 ){
-					var minDate = new Date(year, month2-1, 1);
-					var maxDate = new Date(year, month2, 0);
-					$('.calendar2').each(function(){ 
-						$(this).datepicker('setStartDate', minDate);
-					});	  
-					$('.calendar2').each(function(){
+					 var minDate = new Date(year, month2-1, 1);
+				     var maxDate = new Date(year, month2, 0);
+					  $('.calendar2').each(function(){ 
+						  $(this).datepicker('setStartDate', minDate);
+					  });	  
+					  $('.calendar2').each(function(){
 						$(this).datepicker('setEndDate', maxDate);
-					});
+				      });
 				}
 				if(month3 != 0 ){
-					var minDate = new Date(year, month3-1, 1);
-					var maxDate = new Date(year, month3, 0);
-					$('.calendar3').each(function(){
+					 var minDate =new Date(year, month3-1, 1);
+				     var maxDate =new Date(year, month3, 0);
+					 $('.calendar3').each(function(){
 						$(this).datepicker('setStartDate', minDate);
-					});	  
-					$('.calendar3').each(function(){
-						$(this).datepicker('setEndDate', maxDate);
-					});
+					 });	  
+				     $('.calendar3').each(function(){
+						 $(this).datepicker('setEndDate', maxDate);
+				   	 });
 				} 
+			
 		 }); 
-				////////////final //////////////////	
+				////////////final //////////////////
 ///////////////this Ready function for 1st time page load datepicker////////////////////
 	$(document).ready(function(){
 					 var today = new Date();
 					 var dd = today.getDate();
 					 var mm = today.getMonth()+1; //January is 0!
+					// alert(dd);
+					 //alert(mm);
 					 var year = $('#year').val();
-					 
-					 /* function quarter_of_the_year(date){
+					/*  function quarter_of_the_year(date){
 							var month = date.getMonth() + 1;
 							return (Math.ceil(month / 3));
-					} */
-					//var  qua = '0'+quarter_of_the_year(new Date());
-					var qua= <?php  echo $quarter ;?>;
-					//alert(qua);
+					}
+					var  qua = '0'+quarter_of_the_year(new Date()); */
+					var  qua = <?php print_r($quarter);?>;
 					if(qua == 1){
 							var month1 = '01';
 							var month2 = '02';
@@ -445,12 +440,13 @@
 							var month1 = '07';
 							var month2 = '08';
 							var month3 = '09';
-					}
-					else if(qua == 4){
+				   }
+				   else if(qua == 4){
 							var month1 = '10';
 							var month2 = '11';
 							var month3 = '12';
 				   }
+				   
 				   if(month1 != 0 ){
 						var minDate = new Date(year, month1-1, 1);
 						var maxDate = new Date(year, month1, 0);
@@ -460,18 +456,20 @@
 						$('.calendar1').each(function(){
 							$(this).datepicker('setEndDate', maxDate);
 						}); 	 
-					}
-					if(month2 != 0 ){
-						var minDate = new Date(year, month2-1, 1);
-						var maxDate = new Date(year, month2, 0);
-						$('.calendar2').each(function(){ 
+				  }
+			   if(month2 != 0 ){
+					
+					 var minDate = new Date(year, month2-1, 1);
+				     var maxDate = new Date(year, month2, 0);
+					  $('.calendar2').each(function(){ 
 						  $(this).datepicker('setStartDate', minDate);
-						});	  
-						$('.calendar2').each(function(){
-							$(this).datepicker('setEndDate', maxDate);
-						});
-					}
+					  });	  
+					  $('.calendar2').each(function(){
+						$(this).datepicker('setEndDate', maxDate);
+				      });
+				}
 				if(month3 != 0 ){
+					
 					 var minDate = new Date(year, month3-1, 1);
 				     var maxDate = new Date(year, month3, 0);
 					 $('.calendar3').each(function(){
@@ -481,9 +479,8 @@
 						 $(this).datepicker('setEndDate', maxDate);
 				   	 });
 				}
-	});
 ///////////////this Ready function for 1st time page load datepicker////////////////////	
-	
+	});
 	
 ///////////for date shedule count for m1/////////////			
 					
@@ -706,6 +703,7 @@
 					    }); 
                     });
 					
-//////////for date shedule count end /////////////	
+//////////for date shedule count end /////////////
+				
 							
 	</script>

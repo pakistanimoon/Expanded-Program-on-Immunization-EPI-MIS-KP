@@ -184,6 +184,23 @@
                   
                </div>
 			   
+			   <div class="row">
+                  <div class="col-xs-2 col-xs-offset-1">
+                <label class="control-label"  for = "lhscode" > 
+                <th class="text-center Heading">Posted As</th> </label>
+                </div>
+                <div class="col-xs-2 col-xs-offset-2 cmargin5">
+				
+				<?php if($skdata['previous_code']==NULL){?>
+					<span> c<?php echo $skdata['previous_code'];?> </span>
+					<?php } else { ?>	
+					<span>Not Posted </span>
+					<?php } ?>
+                 
+                </div>
+                  
+               </div>
+			   
             </div>
               <div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Banking Details</div>
              <div class="form-group">

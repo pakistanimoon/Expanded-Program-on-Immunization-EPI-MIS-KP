@@ -97,7 +97,13 @@
 								</a>
 								<div class="panel-body p-0 pl-5">			
 									<div id="collapseOne1" class="panel-collapse collapse">
-										
+										<a href="<?php echo $assetsPath; ?>files/epi_vaccination/HF Monthly Reporting Form.xlsx">- HF Monthly Reporting Form </a>
+										<span class="checklists">
+											<a href="<?php echo $assetsPath; ?>files/epi_vaccination/HF Monthly Reporting Form.xlsx">
+											<img src="<?php echo $assetsPath; ?>images/excel.png" style="height:25px;"></a>
+											<!-- <a href="<?php echo $assetsPath; ?>files/vaccine_management/HF Consumption and Requisition Form (Others).pdf" target="_blank">
+											<img src="<?php echo $assetsPath; ?>images/pdf.png" style="height:20px;"></a> -->
+										</span><br>										
 									</div>									
 		  						</div>
 		  						<a class="accordion-toggle a-link" data-toggle="collapse" data-parent="#collapseOne" href="#collapseguidelines1">

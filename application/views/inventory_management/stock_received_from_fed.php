@@ -74,7 +74,7 @@
 		</form>
 	</div>
 </div>
-<!------VoucherDeletepopup-------->	
+<!------VoucherDeletepopup-------->
 <script type="text/javascript">
 	$(document).ready(function(){
 		$("#fetchnewvoucherbtn").click(function(){

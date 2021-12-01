@@ -1088,8 +1088,8 @@
 				$('#complication').val("0");
 				$('#death_date').val('');
 			}
-		});	
-			
+		});
+		
 		selecteduncode = '<?php echo isset($coronavirus_Result)?$coronavirus_Result->uncode:0; ?>';
 		if($('#patient_dob').val() != ''){
 			var fromdate = $('#patient_dob').val();
@@ -2269,6 +2269,6 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 			$('#departed_date').attr('required','required');
 			$('.hadTravelledAbroad').removeClass('hide');
 		}
-	});
+	});	
 	$("#cnic").inputmask("99999-9999999-9");
 </script>

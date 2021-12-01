@@ -140,17 +140,15 @@ $style = "";
 				<option value="2">Provincial</option>
 			<?php }else{ ?>
 				<option value="0">Select</option>
-			<?php
-			if($this -> session -> Tehsil){ ?>
-				<option value="6">Union Council</option>
-			<?php
-			}else if($this -> session -> District){ ?>
+				<?php
+				if($this -> session -> District){ ?>
 				<option value="4">District</option>
 				<option value="5">Tehsil-Taluka</option>
 				<option value="6">Union Council</option>
-			<?php } else { ?>
-			  <option value="2">Provincial</option>
-			<?php }?>
+				<?php
+				}else{ ?>
+				<option value="2">Provincial</option>
+				<?php } ?>
 			<?php } ?>
 			</select>
 		</div>
@@ -222,15 +220,15 @@ $style = "";
 								<label for="System">Number of cooling system</label> 
 								<input type="text" id="cooling_system" name="cooling_system" class="form-control" value="<?php echo $data['cooling_system'];?>" required>
 							</div>
-						</div>-->
-						<!--<div class="col-md-4">
+						</div>
+						<div class="col-md-4">
 							<div class="form-group">
 								<label for="System">Has working backup generator<span style="color:red;">*</span></label> 
 								<select class="form-control" name="backup_generator" required>
 												<?php echo getBackupGenerator($data['backup_generator']); ?>
 													</select>
-							</div>
-						</div>-->
+							</div>-->
+						</div>
 						</div>
 						<div class="row">
 						  <!--<div class="col-md-4">
@@ -259,11 +257,11 @@ $style = "";
 										</select>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<!--<div class="col-md-3">
 									<div class="form-group">
-										<!--<button type="button" style="position:Relative;top:23px" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" > <i class="fa fa-plus"></i></button>-->
+										<button type="button" style="position:Relative;top:23px" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" > <i class="fa fa-plus"></i></button>
 									</div>
-								</div>
+								</div>-->
 							</div>
 							<!-- just to show the modal values uses slides up -->
 							<div id="modelHide" style="display: none;">
@@ -992,6 +990,6 @@ $('#cancel').on('click', function(e) {
 	window.location.href=url;
 });
 $(".readonly").keydown(function(e){
-   e.preventDefault();
+	e.preventDefault();
 });
 </script>

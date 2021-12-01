@@ -9,7 +9,7 @@ function createMoonMenu(){
 	$menuhtml .= fetchMenuItems($menuarr);		
 	$menuhtml .='
 			</section>
-			<!-- /.sidebar -->
+			<!-- /.sidebar -->        
 		</aside>
 	';
 	echo $menuhtml;
@@ -40,7 +40,7 @@ function fetchMenuItems($menuarr,$key=NULL){
 				$icon = isset($singlearr["icon"])?$singlearr["icon"]:"";
 				$innerarr = fetchmenuitemsfromdb($id);
 				$allitems .= '<li class="parent-uk '.(is_array($innerarr)?'treeview':'').'">';
-				 if($id==149 || $id==9){
+				 if($id==149 || $id==150  || $id==9 || $id==38){
 					$allitems .= '<a '.(is_array($innerarr)?'class="anchor-uk"':'').' target="_blank" href="'.(is_array($innerarr)?base_url($url):'#').'"> '.(is_array($innerarr)?$icon:'').' '.(is_array($innerarr)?'<span>'.$key1.'</span>':$key1).' '.(($singlearr["url"]=='#')?'<i class="fa fa-angle-left pull-right"></i>':'').'</a>'; 
 				 }else{
 					$allitems .= '<a '.(is_array($innerarr)?'class="anchor-uk"':'').' href="'.(is_array($innerarr)?base_url($url):'#').'"> '.(is_array($innerarr)?$icon:'').' '.(is_array($innerarr)?'<span>'.$key1.'</span>':$key1).' '.(($singlearr["url"]=='#')?'<i class="fa fa-angle-left pull-right"></i>':'').'</a>';
@@ -67,7 +67,7 @@ function fetchmenuitemsfromdb($parentid = NULL){
 	}
 	$query="select menu.id,menu.menu_item as name,menu.menu_url as url,menu.icon,menu.parent_id from roles_menu join menu on roles_menu.menu_id=menu.id 
 		join user_roles on roles_menu.role_id=user_roles.id join user_types_db on user_roles.type=user_types_db.id 
-		where user_types_db.usertype='$utype' and user_roles.level='$ulevel' and template='main' and roles_menu.active='1' $whrpostfix ORDER BY menu.id";
+		where user_types_db.usertype='$utype' and user_roles.level='$ulevel' and roles_menu.active='1'  and template='main' $whrpostfix ORDER BY menu.id";
 	$result = $CI -> db -> query($query);	
 	return $result-> result_array();
 }

@@ -129,7 +129,7 @@
 							<th class="text-center Heading">Date</th>
 							<th class="text-center Heading">Form Status</th>
 							<th class="text-center Heading">
-								<a href="<?php echo base_url(); ?>AEFI-CIF/Add" data-toggle="tooltip" title="">
+								<a href="<?php echo base_url(); ?>AEFI-CIF/Add" data-toggle="tooltip" title="Adverse Events Following Immunisation (AEFI) Report">
                                     <button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
                                 </a>
 							</th>
@@ -179,27 +179,28 @@
 
 <script type="text/javascript">
  
-	// function search(){
-	// 	// var searchParam = term;     
-	// 	$('#tbody').html('');
-	// 	$('#tbody').html('<h1><td colspan="10" class="text-center" ><img src="<?php echo base_url(); ?>includes/images/ajax-loader_blue.gif"> loading...</td></h1>');
- //        //var page = $(this).attr("id"); //get page number from link
- //        $.ajax({
-	// 		type: "POST",
-	// 		data: $("#filter-form").serialize(),//"searchParam="+searchParam,
-	// 		url: "<?php echo base_url(); ?>Ajax_calls/aefiSearch", 
-	// 		dataType: "json",
-	// 		success: function(result){
-	// 			$('#tbody').html('');
-	// 			if(result != null){
-	// 				$('#tbody').html(result.tbody);
-	// 				$('#paging').html(result.paging);
-	// 			}
-	// 		}
- //        });
- //    }
+	function search(){
+		// var searchParam = term;
+     
+		$('#tbody').html('');
+		$('#tbody').html('<h1><td colspan="10" class="text-center" ><img src="<?php echo base_url(); ?>includes/images/ajax-loader_blue.gif"> loading...</td></h1>');
+        //var page = $(this).attr("id"); //get page number from link
+        $.ajax({
+			type: "POST",
+			data: $("#filter-form").serialize(),//"searchParam="+searchParam,
+			url: "<?php echo base_url(); ?>Ajax_calls/aefiSearch", 
+			dataType: "json",
+			success: function(result){
+				$('#tbody').html('');
+				if(result != null){
+					$('#tbody').html(result.tbody);
+					$('#paging').html(result.paging);
+				}
+			}
+        });
+    }
 
-    
+    /*
     $(document).ready(function() {
 		//executes code below when user click on pagination links
 		$(document).on("click",".paginateMe",  function (e){
@@ -212,7 +213,7 @@
 				type: "GET",
 				data: $('#filter-form').serialize(),
 				dataType:"json",
-				url: "<?php echo base_url(); ?>Ajax_red_rec/aefi_filter?page="+page,
+				url: "<?php echo base_url(); ?>Ajax_calls/aefi_filter?page="+page,
 				success: function(result){
 					console.log(result);
 					$('#tbody').html(result.tbody);
@@ -228,7 +229,7 @@
         $.ajax({
 			type: "GET",
 			data: $('#filter-form').serialize(),
-			url: "<?php echo base_url(); ?>Ajax_red_rec/aefi_filter",
+			url: "<?php echo base_url(); ?>Ajax_calls/aefi_filter",
 			dataType: "json",
 			success: function(result){
 				console.log(result);
@@ -239,6 +240,6 @@
 				}
             }
         });
-    }); 
+    }); */
 	
 </script>

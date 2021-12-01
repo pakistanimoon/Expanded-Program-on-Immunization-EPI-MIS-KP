@@ -659,7 +659,7 @@ class ThematicCountEPID extends CI_Controller {
 		$arrData = $dataSeries= array();
 		$i=0;
 		foreach ($result as $value) {
-			$arrData[$i]['label'] = $value->fweek;
+			$arrData[$i]['lable'] = $value->fweek;
 			$arrData[$i]['value'] = $value->DiseasesCount;
 			$arrData[$i]['link'] = "JavaScript:drilldownfun('{$caseType}','{$value->code}','{$value->year}','{$value->week}')";
 			$arrData[$i]['color'] = "{$color}";

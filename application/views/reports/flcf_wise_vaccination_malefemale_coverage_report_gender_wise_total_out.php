@@ -61,6 +61,8 @@
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total</th>
 					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Total</th>
+					
+
 				</tr>
 			</thead>
 			<tbody>  

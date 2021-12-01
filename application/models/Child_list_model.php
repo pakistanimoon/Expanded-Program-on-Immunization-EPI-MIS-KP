@@ -1,5 +1,4 @@
 <?php
-//local
 class Child_list_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
@@ -15,19 +14,20 @@ class Child_list_model extends CI_Model {
 	//--------------------------------------------------------------------------------//
 	//===== Function to Create Filters for Sepecific Reports Starts Here ===========//
 	function Child_list($per_page,$startpoint){
+		
 		$this -> breadcrumbs -> push('Home', '/');
 		//$this -> breadcrumbs -> push('Manage Child', '/childs/Child_list');
         //$wc = getWC();//helper function
-	    $query="select recno,cardno as childcode,nameofchild as name_of_child,villagemohallah,dateofbirth as date_of_birth,fathername as fname, housestreet as address,coalesce(unname(uncode),'') as unioncouncil,coalesce(districtname(distcode),'') as district, coalesce(tehsilname(tcode),'') as tehsil,procode as province from cerv_child_registration where deleted_at IS NULL order by recno Desc LIMIT {$per_page} OFFSET {$startpoint}";
+	    $query="select recno,cardno as childcode,nameofchild as name_of_child,villagemohallah,dateofbirth as date_of_birth,fathername as fname, housestreet as address,coalesce(unname(uncode),'') as unioncouncil,coalesce(districtname(distcode),'') as district, coalesce(tehsilname(tcode),'') as tehsil,procode as province from cerv_child_registration where deleted_at IS NULL order by submitteddate ASC LIMIT {$per_page} OFFSET {$startpoint}";
 		$results = $this -> db -> query($query);
 		$data['results'] = $results -> result_array();
-		//echo '<pre>';print_r($data['results']);exit(); 
+		//echo '<pre>';print_r($data['results']);exit();
 		return $data;
 	}
 	
 	// start  code 
 	
-	public function child_search($childname,$childcardnbr,$fathername,$mobilenbr,$bcg,$cnicnbr,$dateofbirth,$gender,$tcode,$uncode,$facode,$village,$techniciancode,$per_page,$startpoint){
+	public function child_search($childname,$childcardnbr,$fathername,$mobilenbr,$bcg,$cnicnbr,$dateofbirth,$gender,$tcode,$uncode,$facode,$village,$techniciancode){
 		
 		//print_r($bcg);exit;
 		/* $this -> db -> select('techniciancode,technicianname');
@@ -109,7 +109,8 @@ class Child_list_model extends CI_Model {
 			
 		}
 		if($facode != "" AND $facode > 0){
-			$wc .= " reg_facode	 = '" . $facode . "'  And";
+			$wc .= " reg_facode = '" . $facode . "'  And";
+			//$wc .= " reg_facode	 = '" . $facode . "'  And";
 			//$wc = " dateofbirth = '$dateofbirth' ";
 			
 		}
@@ -125,8 +126,9 @@ class Child_list_model extends CI_Model {
 		}
 		
 		$wc = rtrim($wc,'And');
-		 
-		 $query = "SELECT recno,cardno,nameofchild,dateofbirth,fathername,distcode,tcode,uncode,address from cerv_child_registration Where $wc LIMIT {$per_page} OFFSET {$startpoint}";
+		
+		
+		$query = "SELECT recno,cardno,nameofchild,dateofbirth,fathername,distcode,tehsilname(tcode),unname(uncode),address from cerv_child_registration Where $wc LIMIT 30 OFFSET 0 ";
 		//print_r($query );
 		$result = $this-> db-> query($query);		
 		$data['row'] = $result-> result_array();
@@ -134,63 +136,15 @@ class Child_list_model extends CI_Model {
 	}
 	
 	
-	public function child_search_by_form($wc,$per_page,$startpoint){
-		//echo $childname;exit;
-		//print_r($childname);exit;
-		/* $wc = '';
-		if ($childname != "") {
-			$wc .= " nameofchild = '" . $childname . "'  And";
-		}
-		if ($fathername != "") {
-			$wc .= " fathername = '" . $fathername . "'  And";
-		} 
-		 if ($mobilenbr != "") {
-			$wc .= " contactno = '" . $mobilenbr . "'  And";
-		}  
-		if($cnicnbr != ""){
-			$wc .= " mothercnic = '" . $cnicnbr . "'  And";
-		}
-		if($childcardnbr != ""){
-			$wc .= " cardno = '" . $childcardnbr . "'  And";
-		}
-		if($bcg != ""){
-			$wc .= " bcg = '" . $bcg . "'  And";
-		}
-		if($dateofbirth != ""){
-			$wc .= " dateofbirth = '" . $dateofbirth . "'  And";
-		}
-		if($gender != ""){
-			$wc .= " gender = '" . $gender . "'  And";
-		}
-		if($tcode != "" AND $tcode > 0){
-			$wc .= " tcode = '" . $tcode . "'  And";
-		}
-		if($uncode != "" AND $uncode > 0){
-			$wc .= " uncode = '" . $uncode . "'  And";
-		}
-		if($facode != "" AND $facode > 0){
-			$wc .= " reg_facode	 = '" . $facode . "'  And"; 
-		}
-		if($village != "" AND $village > 0){
-			$wc .= " villagemohallah = '" . $village . "'  And";
-		}
-		if($techniciancode != "" AND $techniciancode > 0){
-			$wc .= " techniciancode = '" . $techniciancode . "'  And";
-		}
-		$wc = rtrim($wc,'And'); */
-		
-		
-		//$query = "SELECT recno,cardno,nameofchild,dateofbirth,fathername,distcode,tcode,uncode,address from cerv_child_registration Where $wc LIMIT {$per_page} OFFSET {$startpoint}";
-		
-		
-		 $query = "SELECT recno,cardno,nameofchild,dateofbirth,fathername,distcode,tcode,uncode,address from cerv_child_registration" . (empty($wc) ? '' : ' where ' .  $wc) . " LIMIT {$per_page} OFFSET {$startpoint} ";
-		
-		//print_r($query);exit;
-		$result = $this-> db-> query($query);		
-		$data['row'] = $result-> result_array();
-		return $data['row'];
-	}
+	// End   code 
 	
+		public function child_view($id){
+		
+		return $this -> db 
+					-> select('*')
+					-> where('recno',$id)
+					-> get('cerv_child_registration') -> row_array();
+	}
 	public function Child_edit($recno){
 		
 		//////////////////////ADDING BREADCRUMS//////////////////////////
@@ -202,15 +156,7 @@ class Child_list_model extends CI_Model {
 		$result = $this -> db -> query($query);
 		$data['childData'] = $result -> result_array();
 		return $data;
-	}
-	//recno,cardno,nameofchild,husband_name,provincename(procode) as province,districtname(distcode) as district,tehsilname(tcode) as tehsil,unname(uncode) as uc,facilityname(reg_facode) as facility,technicianname(techniciancode) as technician,mother_age,mother_cnic,contactno,villagename(village) as village,house,tt1,tt2,tt3,tt4,tt5
-	
-	public function child_view($id){
 		
-		return $this -> db 
-					-> select('*')
-					-> where('recno',$id)
-					-> get('cerv_child_registration') -> row_array();
 	}
 	
 	public function Child_add($code){
@@ -220,8 +166,7 @@ class Child_list_model extends CI_Model {
 		$query="select procode from provinces where procode = '$code'";
 		$result = $this -> db -> query($query);
 		$data['childData'] = $result -> result_array();
-		return $data;		
-		
+		return $data;	
 	}
 	
 	public function Child_update($childData,$recno){
@@ -235,29 +180,8 @@ class Child_list_model extends CI_Model {
 			return true;
 		else
 			return false;
-	}
-	
-	public function Child_migrate($code){
-		//////////////////////ADDING BREADCRUMS//////////////////////////
-		$this->breadcrumbs->push('Home','/');
-		//////////////////////////////////////////////////////////////////
-		$query="select procode from provinces where procode = '$code'";
-		$result = $this -> db -> query($query);
-		$data['childData'] = $result -> result_array();
-		return $data;		
-		
-	}
-	public function Dublicate_child_migrated($migrated_child_registration_no,$migrated_recno){
-		$this -> db -> select('*');
-		$this -> db -> from('cerv_child_registration');
-		$this -> db -> where(array('child_registration_no'=>$migrated_child_registration_no,'recno'=>$migrated_recno));
-		$data['orignal'] = $this -> db -> get() -> result_array();
-		$this->db->insert('cerv_child_registration_migrated', $data['orignal'][0]);
-		exit();
-	}
-	public function Transaction_child_migrated($migrated_child_registration_no){
-		$this->db->insert('cerv_child_registration_transaction',$migrated_child_registration_no);
-	}
+	 }
+	 
 	public function child_add_save_model($childData){
 		 //print_r($childData); exit;
 				$this->db->insert('cerv_child_registration',$childData);
@@ -267,9 +191,9 @@ class Child_list_model extends CI_Model {
 				$message="Record Add for Child Registeration";
 				$this -> session -> set_flashdata('message',$message);
 				redirect($location);
-
 		exit();
-}
+	}
+	
 	public function Mother_list($per_page, $startpoint){
 	    $this -> breadcrumbs -> push('Home', '/');
 	    $query="select recno,cardno as mothercode,mother_name as name_of_mother,village,husband_name as hname, house as address,coalesce(unname(uncode),'') as unioncouncil,coalesce(districtname(distcode),'') as district, coalesce(tehsilname(tcode),'') as tehsil,procode as province from cerv_mother_registration order by submitted_date ASC  LIMIT {$per_page} OFFSET {$startpoint}";
@@ -309,7 +233,7 @@ class Child_list_model extends CI_Model {
 		//$this->breadcrumbs->push('Manage Child', '/childs/Child_list');
 		//$this->breadcrumbs->push('Update Child', '/childs/cild_edit');
 		//////////////////////////////////////////////////////////////////
-	    	$query="select *,recno,cardno, mother_name, mother_age,village,husband_name,uncode,reg_facode,distcode,procode,tcode from cerv_mother_registration where recno = '$recno'";
+	    	$query="select *,recno,cardno, mother_name, mother_age,village,husband_name,uncode,distcode,procode,tcode from cerv_mother_registration where recno = '$recno'";
 		    $result = $this -> db -> query($query);
 		    $data['childData'] = $result -> result_array();
             return $data;		

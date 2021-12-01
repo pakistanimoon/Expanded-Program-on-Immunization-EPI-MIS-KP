@@ -165,15 +165,14 @@
 						<option value="Contingent" <?php if($supervisordata['employee_type'] == 'Contingent') { echo 'selected="selected"'; }else echo ''; ?>  <?php echo set_select('employee_type', 'Contingent'); ?>>Contingent </option>
 					</select>
 					</div>
-				
-				</div>
-                      <div class="row">
-                      <label class="col-xs-2 col-xs-offset-1 control-label"  for = "status" > Status </label>
+					
+		   <label class="col-xs-2  control-label"  for = "status" > Status </label>
                       <div class="col-xs-3">
                         <select id="status" name="status" class="form-control" size="1" >
 					 
                       <option <?php if($supervisordata['status'] == 'Active') { echo 'selected="selected"'; }else echo ''; ?> value="Active">Active</option>
                         <option <?php if($supervisordata['status'] == 'Terminated') { echo 'selected="selected"'; }else echo ''; ?>  value="Terminated">Terminated</option>
+						<option <?php if($supervisordata['status'] == 'Transfered') { echo 'selected="selected"'; }else echo ''; ?>  value="Transfered">Transfered</option>
                         <option <?php if($supervisordata['status'] == 'Died') { echo 'selected="selected"'; }else echo ''; ?>  value="Died">Died</option>
                         <option <?php if($supervisordata['status'] == 'Retired') { echo 'selected="selected"'; }else echo ''; ?>  value="Retired">Retired</option>
 						<?php if($supervisordata['current_status']=='Temporary-Post'){?>
@@ -181,39 +180,99 @@
 						<?php }else{} ?>
 						
 					 </select>
-                      </div>
+                      </div>		
+				
+				</div>
+				
+				    <div class="row">
+					<div class="newFac" id="newFac" style="display: none;">
+						<label class="col-xs-2 col-xs-offset-1 control-label lbl-search"  for = "facode" >District </label>
+						 <div class="col-xs-3">
+							<select id="new_distcode" name="new_distcode"  class="form-control" size="1" >
+									<option value="">District</option>
+									<?php 
+									foreach($dists as $row){?>
+										<option value="<?php echo $row['distcode'];?>" ><?php echo $row['district'];?></option><?php
+									}?>
+								</select>
+						 </div>
+						<!-- <label class="col-xs-2 control-label" for="status">Tehsil</label>
+						 <div class="col-xs-3">
+							<select id="new_tcode" name="new_tcode" required="required" class="form-control" size="1" >
+									<option value="">Select Tehsil</option>
+									<?php 
+									foreach($resultTeh as $row){?>
+										<option value="<?php echo $row['tcode'];?>" ><?php echo $row['tehsil'];?></option><?php
+									}?>
+								</select>
+						 </div>
+						 <label class="col-xs-2 col-xs-offset-1 control-label" for="status">Union Council</label>
+						 <div class="col-xs-3">
+							<select id="new_uncode" name="new_uncode" required="required" class="form-control" size="1" >
+									<option value="">Select Uc</option>
+									<?php 
+									foreach($resultUnC as $row){?>
+										<option value="<?php echo $row['uncode'];?>" ><?php echo $row['un_name'];?></option><?php
+									}?>
+								</select>
+						 </div>
+							<label class="col-xs-2 control-label" for="status">Facility</label>
+							<div class="col-xs-3">
+								<select id="new_facode" name="new_facode" required="required" class="form-control" size="1" >
+									<option value="">Select Facility</option>
+									<?php 
+									foreach($resultFac as $row){?>
+										<option value="<?php echo $row['facode'];?>" ><?php echo $row['fac_name'];?></option><?php
+									}?>
+								</select>
+							</div>-->
+													 
+						<label class="col-xs-2 control-label"   for = "new_lhwcode" > New Supervisor Code </label>
+						<input type="hidden" name="new_lhwcode" id="new_lhwcode" value="" >
+						<div class="col-xs-1 cmargin18">
+							<input type="text" disabled="disabled"  class="form-control  right" style="text-align: -webkit-right;" id="new_lhwcodef" value="D.Code" />
+						</div>
+						<div class="col-xs-2 cmargin19">
+							<input type="text" style=" text-align: -webkit-left;" name="new_lhwcodel" id="new_lhwcodel" placeholder="code"  class="form-control " value="<?php echo set_value('new_lhwcodel'); ?>"/>
+						</div>
+					</div>
+                </div>
+				
+                      <div class="row">
+                      
 					   <div class="showTerminated" id="showTerminated" style="display: none;">
-                      <label class="col-xs-2 control-label"  for = "date_termination" > Date Termination </label>
+                      <label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Termination </label>
                       <div class="col-xs-3">
                           <input type="text"  name="date_termination" id="date_termination" placeholder="Date Of Termination"  value=" <?php if(validation_errors() != false) { echo set_value('date_termination'); } else { echo isset($supervisordata['date_termination']) ? date('d-m-Y', strtotime($supervisordata['date_termination'])) : ''; } ?>"  class="form-control "/>
                     </div>
                     </div>
 					<div class="showRetired" id="showRetired" style="display: none;">
-					<label class="col-xs-2 control-label"  for = "date_termination" > Date Retired </label>
+					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Retired </label>
 					<div class="col-xs-3">
 						<input  type="text"  name="date_retired" id="date_retired" placeholder="Date Retired"  class="form-control " value=" <?php if(validation_errors() != false) { echo set_value('date_retired'); } else { echo isset($supervisordata['date_retired']) ? date('d-m-Y', strtotime($supervisordata['date_retired'])) : ''; } ?>"/>
 					</div>
 					</div>
 					<div class="showDied" id="showDied" style="display: none;">
-					<label class="col-xs-2 control-label"  for = "date_termination" > Date Died </label>
+					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Died </label>
 					<div class="col-xs-3">
 						<input  type="text"  name="date_died" id="date_died" placeholder="Date Died"  class="form-control " value=" <?php if(validation_errors() != false) { echo set_value('date_died'); } else { echo isset($supervisordata['date_died']) ? date('d-m-Y', strtotime($supervisordata['date_died'])) : ''; } ?>"/>
 					</div>
 					</div>
 					<div class="showTransfer" id="showTransfer" style="display: none;">
-					<label class="col-xs-2 control-label"  for = "date_termination" > Date Transfered </label>
+					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Transfered </label>
 					<div class="col-xs-3">
 						<input  type="text"  name="date_transfer" id="date_transfer" placeholder="Date Transfered"  class="form-control " value=" <?php if(validation_errors() != false) { echo set_value('date_transfer'); } else { echo isset($supervisordata['date_transfer']) ? date('d-m-Y', strtotime($supervisordata['date_transfer'])) : ''; } ?>"/>
 					</div>
 					</div>
 				<div class="showpostoption" id="showpostoption" style="display: none;">
-					<label class="col-xs-2 control-label"  for = "showpostoption" > Posted As</label>
+					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "showpostoption" > Posted As</label>
 					<div class="col-xs-3">
                           <select id="post_type" name="post_type" class=  "form-control" size="1" onchange="suptype(this.value)" >
 						  <option value="select">Select Post</option>
 						  <option value="EpiTechnician">EpiTechnician</option>
 						 <option value="Storekeeper">Storekeeper</option>
 						 <option value="DataEntry">DataEntry Operator</option>
+						 <option value="ComputerOperator">Computer Operator</option>
 					     <?php if($supervisordata['supervisor_type']=='Field Superintendent Vaccinator'):?>
 						 <option value="District Superintendent Vaccinator">DSV</option>
 						 <option value="Tehsil Superintendent Vaccinator">TSV</option>
@@ -228,7 +287,8 @@
 					</div>
 					
 					</div>
-					
+				</div>	
+					<div class="row">
 					 <div class="showTehsil" id="showTehsil" style="display: none;">
                       <label class="col-xs-2 control-label" style="margin-left:94px" for = "showTehsil" >  Tehsil</label>
                       <div class="col-xs-3" >
@@ -242,7 +302,7 @@
 					</div>
 					</div>
 					<div class="showUnc" id="showUnc" style="display: none;">
-                      <label class="col-xs-2 control-label" style="margin-left:0px"   for = "showUnc" >  Union Council</label>
+                      <label class="col-xs-2 col-xs-offset-1 control-label" style="margin-left:0px"   for = "showUnc" >  Union Council</label>
                       <div class="col-xs-3">
                           <select id="newuncode" name="newuncode" class="form-control" size="1">
 						          <option value="select">Select Union Council</option>
@@ -261,7 +321,7 @@
 						  </select>
 					</div>
 					</div>
-  </div>
+    </div>
   </div>
 
 
@@ -404,7 +464,15 @@ $("#status").bind('change', function(){
             $('#showpostoption').css('display', 'none');
             $('#showFacility').css('display', 'none'); 
 			$('#showTehsil').css('display', 'none');
-			$('#showUnc').css('display', 'none'); 			
+			$('#showUnc').css('display', 'none');
+            $('#newFac').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required'); 
+      $('#showpostoption').css('display', 'none');			
 	}
     if (selected == 'Terminated') {  
 			$('#showTerminated').css('display', 'block');
@@ -414,7 +482,15 @@ $("#status").bind('change', function(){
             $('#showpostoption').css('display', 'none');
             $('#showFacility').css('display', 'none'); 
 			$('#showTehsil').css('display', 'none');
-			$('#showUnc').css('display', 'none'); 			
+			$('#showUnc').css('display', 'none');
+            $('#newFac').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required'); 
+      $('#showpostoption').css('display', 'none'); 			
 			}
 	if (selected == 'Died') { 
 			$('#showRetired').css('display', 'none');
@@ -424,7 +500,15 @@ $("#status").bind('change', function(){
             $('#showpostoption').css('display', 'none');
             $('#showFacility').css('display', 'none'); 
 			$('#showTehsil').css('display', 'none');
-			$('#showUnc').css('display', 'none');  			
+			$('#showUnc').css('display', 'none'); 
+  			$('#newFac').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required'); 
+      $('#showpostoption').css('display', 'none');
 	}
 	if (selected == 'Retired') { 
 			$('#showRetired').css('display', 'block');
@@ -435,24 +519,49 @@ $("#status").bind('change', function(){
             $('#showFacility').css('display', 'none'); 
 			$('#showTehsil').css('display', 'none');
 			$('#showUnc').css('display', 'none'); 			
-			
+			$('#newFac').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required'); 
+      $('#showpostoption').css('display', 'none');
 	}
-	if (selected == 'Transfered') { 
+		if (selected == 'Transfered') { 
 			$('#showTransfer').css('display', 'block');
+			$('#newFac').css('display', 'block');
 			$('#showTerminated').css('display', 'none');
 			$('#showRetired').css('display', 'none');
-			$('#showDied').css('display', 'none'); 
-            $('#showpostoption').css('display', 'none'); 				
+			$('#showDied').css('display', 'none');
+ 			$('#showDied').css('display', 'none');
+      $('#new_distcode').attr('required','required');
+      $('#new_tcode').attr('required','required');
+      $('#new_uncode').attr('required','required');
+      $('#new_facode').attr('required','required');
+      $('#new_facode').attr('required','required');
+      $('#date_transfer').attr('required','required'); 
+	   $('#showpostoption').css('display', 'none');
+	    $('#showTehsil').css('display', 'none');
 	}
 	if (selected == 'post') { 
-			$('#showTransfer').css('display', 'none');
-			$('#showTerminated').css('display', 'none');
-			$('#showRetired').css('display', 'none');
-			$('#showDied').css('display', 'none'); 
-            $('#showpostoption').css('display', 'block');
-            $('#showFacility').css('display', 'none'); 
-			$('#showTehsil').css('display', 'none');
-			$('#showUnc').css('display', 'none');  			
+   $('#post_type').css('display', 'block');
+   $('#showTransfer').css('display', 'none');
+   $('#showTerminated').css('display', 'none');
+   $('#showRetired').css('display', 'none');
+   $('#showDied').css('display', 'none'); 
+   $('#showpostoption').css('display', 'block');
+   $('#showFacility').css('display', 'none'); 
+   $('#showTehsil').css('display', 'none');
+   $('#showUnc').css('display', 'none');   
+   $('#newFac').css('display', 'none');
+   $('#showUnc').css('display', 'none');
+   $('#new_distcode').removeAttr('required','required');
+   $('#new_tcode').removeAttr('required','required');
+   $('#new_uncode').removeAttr('required','required');
+   $('#new_facode').removeAttr('required','required');
+   $('#new_facode').removeAttr('required','required');
+   $('#date_transfer').removeAttr('required','required');   			
 	}
 	if (selected == 'Temporary-Post') { 
 			$('#showTransfer').css('display', 'none');
@@ -506,6 +615,130 @@ $("#status").bind('change', function(){
             var tcode = this.value;
             var facode = "";
           });
+	// for transfer
+ /*    $('#new_distcode').on('change' , function(){
+	var dists=this.value;
+	$.ajax({
+		type: "POST",
+		data: "distcode="+dists,
+		url: "<?php echo base_url(); ?>Ajax_calls/getTehsils",
+				success: function(result){
+					$('#new_tcode').html(result);
+					$('#new_lhwcodef').val('');
+					$('#new_lhwcodel').val('');
+	}
+});
+});
+ $('#new_tcode').on('change' , function(){
+	var tcode=this.value;
+	$.ajax({
+		type: "POST",
+		data: "tcode="+tcode,
+		url: "<?php echo base_url(); ?>Ajax_calls/getUnC",
+				success: function(result){
+					$('#new_uncode').html(result);
+					$('#new_lhwcodef').val('');
+					$('#new_lhwcodel').val('');
+	}
+});
+});
+$('#new_uncode').on('change' , function(){
+	var uncode=this.value;
+	$.ajax({
+		type: "POST",
+		data: "uncode="+uncode,
+		url: "<?php echo base_url(); ?>Ajax_calls/getFacilities",
+				success: function(result){
+					$('#new_facode').html(result);
+					$('#new_lhwcodef').val('');
+					$('#new_lhwcodel').val('');
+	}
+});
+});	 */	   
+/* $('#new_facode').on('change' , function (){
+var new_facode = this.value;
+  $('#new_lhwcodel').val('');
+  $('#new_lhwcodef').val(new_facode);
+  $.ajax({
+    type: "GET",
+    data: "facodew="+new_facode,
+    async: false,
+    url: "<?php echo base_url(); ?>Ajax_calls/checkCodes",
+    success: function(result){
+      $('#new_lhwcodel').val(result);
+      var new_lhwcodel  = $('#new_lhwcodel').val();
+      var newVal = new_facode+""+new_lhwcodel;
+	  //alert(newVal);
+      $('#new_lhwcode').val(newVal);
+    }
+  });
+    
+});
+$('#new_lhwcodel').keyup(function (){
+            var new_lhwcodel = $('#new_lhwcodel').val();
+            var new_lhwcodef = +$('#new_lhwcodef').val();
+            var new_facode = "";
+            if(/^\d+$/.test(new_lhwcodel) )
+            {
+              if($('#new_lhwcodef').val().length == 6 && $('#new_lhwcodel').val().length == 3 )
+              {
+                //alert('asdkjhsdja');
+                $('#new_lhwcodel').css('border-color','#dbe1e8');
+                new_facode = $('#new_facode').val();
+                var new_lhwcodel  = $('#new_lhwcodel').val();
+                var newVal = new_facode+""+new_lhwcodel;
+                //alert(newVal);
+                $('#new_lhwcode').val(newVal);
+                //alert($('#lhscode').val());
+                $.ajax({
+                  type: "GET",
+                  data: "new_lhwcode="+newVal,
+                  url: "<?php echo base_url(); ?>Ajax_calls/checkCodes",
+                  success: function(result){
+                    console.log(result);
+                    if(result == "0"){
+                      $('#new_lhwcode').val(newVal);
+                    }else{
+                      alert('The Code '+newVal+' already exists, please try some other code');
+                      $('#new_lhwcodel').val('');
+                      $('#new_lhwcodel').css('border-color','red');
+                    }
+                  }
+                });
+              }else
+              {
+                $('#new_lhwcodel').css('border-color','red');
+              }
+            }
+            else
+            {
+              $('#new_lhwcodel').css('border-color','red');
+            }
+            //alert($('#lhscode').val());
+          });
+	 */
+		  
+	    $('#new_distcode').on('change' , function (){
+	 var districtcodeco=$('#new_distcode').val();;
+     //alert(districtcodeco); exit;
+  $.ajax({
+    type: "GET",
+    data: {"spcode": districtcodeco},
+    url: "<?php echo base_url(); ?>Ajax_calls/checkCodes",
+    success: function(result){
+      $('#new_lhwcodel').val(result);
+      $('#new_lhwcodef').val(districtcodeco);
+     var new_lhwcodel  = $('#new_lhwcodel').val();
+	  //alert(new_lhwcodel); exit;
+     var newVal = districtcodeco+""+new_lhwcodel;
+	 //alert(newVal); exit;
+      $('#new_lhwcode').val(newVal);
+	  
+	
+    }
+  });
+});	  
+		  
         </script> 
         <script type="text/javascript">
           $(function () {
@@ -822,12 +1055,13 @@ $('#newuncode').on('change' , function (){
    /****************code to disable stRTS HERE***********/
 $(document).on('change','#status',function(){
 var status= $('#status').val();
-if(status=='Transfered')
+/* if(status=='Transfered')
 {
 		$('#myCoolForm').prop('disabled', true);
 		$('#save').prop('disabled', true);
-}
-else if(status=='post')
+} */
+//else if(status=='post')
+	if(status=='post')
 {
 		$('#myCoolForm').prop('disabled', true);
 		$('#save').prop('disabled', true);
@@ -850,6 +1084,14 @@ if(post_type=='Storekeeper')
 			$('#showUnc').css('display', 'none');
 }
  else if(post_type=='DataEntry')
+{
+		$('#myCoolForm').prop('disabled', false);
+		$('#save').prop('disabled', false);
+			$('#showTehsil').css('display', 'none'); 
+		    $('#showFacility').css('display', 'none'); 
+			$('#showUnc').css('display', 'none');
+}
+ else if(post_type=='ComputerOperator')
 {
 		$('#myCoolForm').prop('disabled', false);
 		$('#save').prop('disabled', false);

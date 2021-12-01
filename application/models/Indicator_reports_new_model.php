@@ -29,10 +29,7 @@ class Indicator_reports_new_model extends CI_Model {
 		{
 			$whereCondition.=" facode='".$data['facode']."' and";
 		}
-        if($this -> session -> UserLevel==4){
-			$whereCondition.= " tcode ='".$this->session->Tehsil ."' and";
-        } 
-        $indicator = $this -> input -> post('indicator')?$this -> input -> post('indicator'):$data['indicator'];
+		$indicator = $this -> input -> post('indicator')?$this -> input -> post('indicator'):$data['indicator'];
 		if($indicator == '63')
 			$indicator = '63';
 		$query="select indm.* from indicator_main indm where indm.indmain=$indicator";
@@ -45,7 +42,7 @@ class Indicator_reports_new_model extends CI_Model {
 		$indicatorTitle = $arrayData['result_text'];
 		$fullquery=explode('-::-',extract_query($arrayData,$whereFmonth,$data,$whereCondition,$arrayDataC,$table));
 		$query=$fullquery[0];
-		//print_r($query);exit();
+		//print_r($query);exit;
 		$result=$this->db->query($query);
 		$data['allData']=$result->result_array();
 		$all_data_total = array(0 => array());
@@ -108,7 +105,7 @@ class Indicator_reports_new_model extends CI_Model {
 		$dataReturned['monthfrom'] = (isset($data['monthfrom']))?$data['monthfrom']:date('Y-m');
 		$dataReturned['monthto'] = (isset($data['monthto']))?$data['monthto']:date('Y-m');
 		$dataReturned['indicatorTitle'] = $indicatorTitle;
-        $dataReturned['data'] = $returned_data;
+$dataReturned['data'] = $returned_data;
 		return $dataReturned;
 	}
 	//--------------------------------------------------------------------------------//	

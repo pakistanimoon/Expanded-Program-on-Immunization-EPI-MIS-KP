@@ -152,7 +152,7 @@
 							<label class="control-label" for="power_source">Power Source <span class="hide1" ="hide3"="" style="color:red; visibility:hidden;">*</span></label>
 							<div class="controls">
 								<select name="power_source" id="power_source" class="form-control">
-										<?php echo getPowerSource($data['power_source'],FALSE,1); ?>
+									<?php echo getPowerSource($data['power_source'],FALSE,1); ?>
 								</select>                                
 							</div>
 						</div>

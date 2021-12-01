@@ -1,7 +1,6 @@
 <br>
 <?php echo $listing_filters; 
 $currentYear = date('Y');
-
 ?>
 <script type="text/javascript" src="<?php echo base_url(); ?>/includes/js/bootstrap-datepicker.min.js"></script>
 <script src="<?php echo base_url(); ?>includes/js/bootstrap-multiselect.js" type="text/javascript"></script>
@@ -82,10 +81,7 @@ $currentYear = date('Y');
 			$('#towarehouselevel').val('2');
 			var towarehouselevel = $('#towarehouselevel').val();
 			get_store_locations(towarehouselevel,'to_warehouse_store');
-            $("#towarehouselevel option[value='1']").remove();
-			$("#towarehouselevel option[value='5']").remove();
-			$("#towarehouselevel option[value='6']").remove();
-        }else if(warehouselevel==2){
+		}else if(warehouselevel==2){
 			$('#unioncouncil').css('display','none');
 			$('#union_council-label').css('display','none'); 
 			$('#uc-label').css('display','none');
@@ -94,19 +90,9 @@ $currentYear = date('Y');
 			var towarehouselevel = $('#towarehouselevel').val();
 			get_store_locations(warehouselevel,'warehouse_store');
 			get_store_locations(towarehouselevel,'to_warehouse_store');
-            $("#towarehouselevel option[value='5']").remove();
-			$("#towarehouselevel option[value='6']").remove();
-        }else if(warehouselevel==4){
+		}else if(warehouselevel==4){
 			get_store_locations(warehouselevel,'warehouse_store');
-            //newcode
-			$("#towarehouselevel option[value='5']").remove();
-			$('#towarehouselevel').append('<option value="5">Tehsil</option>');
-			$('#towarehouselevel').val('5');
-			var towarehouselevel1 = $('#towarehouselevel').val();
-			
-			//endcode
-			$("#towarehouselevel option[value='6']").remove();
-            $('#towarehouselevel').append('<option value="6">Union Council</option>');
+			$('#towarehouselevel').append('<option value="6">Union Council</option>');
 			$('#towarehouselevel').val('6');
 			var towarehouselevel = $('#towarehouselevel').val();
 			var level=<?php echo $this -> session -> UserLevel; ?>;
@@ -116,20 +102,8 @@ $currentYear = date('Y');
 			$('#uc').css('display','none');
 			get_store_locations(towarehouselevel,'union_council');
 			$('#unioncouncil').trigger("change",[{fieldname:'to_warehouse_store'}]);
-            $("#towarehouselevel option[value='1']").remove();
-        }//newcode
-		else if(warehouselevel==5){
-			$('#unioncouncil').css('display','none');
-			$('#union_council-label').css('display','none'); 
-			$('#uc-label').css('display','none');
-			$('#uc').css('display','none');
-			$('#towarehouselevel').val('5');
-			var towarehouselevel = $('#towarehouselevel').val();
-			get_store_locations(warehouselevel,'warehouse_store');
-			get_store_locations(towarehouselevel,'to_warehouse_store');
-		}//endcode
-		else{
-            $('#uc-label').css('display','');
+		}else{
+			$('#uc-label').css('display','');
 			$('#uc').css('display','');
 			get_store_locations(warehouselevel,'uc');
 			$('#uc').trigger("change",[{fieldname:'warehouse_store'}]);
@@ -150,26 +124,9 @@ $currentYear = date('Y');
 			get_store_locations(warehouselevel,'to_warehouse_store');
 			$('#union_council-label').css('display','none');
 			$('#unioncouncil').css('display','none')
-			//$("#towarehouselevel option[value='6']").remove();
-		}//newcode
-		else if(warehouselevel==5){
-			get_store_locations(warehouselevel,'to_warehouse_store');
-			$('#union_council-label').css('display','none');
-			$('#unioncouncil').css('display','none')
-			//$("#towarehouselevel option[value='5']").remove();
-		} 
-		else{
-			var towarehouselevel = $('#towarehouselevel').val();
-			var level=<?php echo $this -> session -> UserLevel; ?>;
-			$('#union_council-label').css('display','');
-			$('#unioncouncil').css('display','');
-			$('#uc-label').css('display','none');
-			$('#uc').css('display','none');
-			get_store_locations(towarehouselevel,'union_council');
-			$('#unioncouncil').trigger("change",[{fieldname:'to_warehouse_store'}]);
-		} //endcode
-
-});
+			$("#towarehouselevel option[value='6']").remove();
+		}
+	});
 	$(document).ready(function(){
 		if((isExists('monthto') && isExists('monthfrom'))){
 			//$('#pre-btn').prop('disabled', true);
@@ -191,13 +148,7 @@ $currentYear = date('Y');
 				}
 			});
 		}
-       <?php if($this -> session -> UserLevel==4){ ?>
-	    var tcode= <?php echo $this->session->Tehsil; ?>;
-		$('#tcode').val(tcode);
-		$('#tcode').trigger("change");
-		<?php } ?>
-		
-/* if($('input[name=report_type]:checked').val() == "yearly"){
+		/* if($('input[name=report_type]:checked').val() == "yearly"){
 			$('#month').val('');
 			$('#month').removeAttr('required','required');
 		}
@@ -328,7 +279,7 @@ $currentYear = date('Y');
 				}
 				});
 	});
-    <?php if(isset($data['type'])): ?>
+	<?php if(isset($data['type'])): ?>
 	var type = '<?php echo $data['type']; ?>';
 	if( type == "current_stock")
 	{
@@ -415,4 +366,5 @@ $currentYear = date('Y');
 		$("#act_purpose").multiselect('selectAll', false);
 		$('#act_purpose').multiselect('rebuild'); 
 	};
+
 </script>

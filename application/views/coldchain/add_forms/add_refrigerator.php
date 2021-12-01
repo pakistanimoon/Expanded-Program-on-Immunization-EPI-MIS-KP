@@ -123,9 +123,9 @@
 										}?>
 								</select>
 							</div>
-							<div class="col-md-2">
-							<!--<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make and Modal" data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>-->
-							</div>
+							<!--<div class="col-md-2">
+							<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" title="Add Make and Modal" data-target="#myModal" style="position:relative"> <i class="fa fa-plus"></i></button>
+							</div>-->
 						</div>
 						</div>
 						<!--<div class="col-md-4">
@@ -325,7 +325,7 @@
 						
 								<div class="row radio-row">
 									<div class="col-md-6 ">
-										<label class="control-label" for="dimensions">Dimensions Feet<span class="hide1" style="color:red; visibility:hidden;">*</span><small class="text-success"> (Length x Width x Height)</small></label>
+										<label class="control-label" for="dimensions">Dimensions Inches<span class="hide1" style="color:red; visibility:hidden;">*</span><small class="text-success"> (Length x Width x Height)</small></label>
 									</div>
 									<div class="col-md-6">
 										<div class="row">	

@@ -7,12 +7,6 @@
 
 	$(document).ready(function(){
 		
-	    <?php if($this -> session -> UserLevel==4){ ?>
-	    var tcode= <?php echo $this->session->Tehsil; ?>;
-		$('#tcode').val(tcode);
-		$('#tcode').trigger("change");
-		<?php } ?>
-		
 		if((isExists('monthto') && isExists('monthfrom'))){
 			$('#pre-btn').prop('disabled', true);
 			$(document).on('change','.dp-my',function(){

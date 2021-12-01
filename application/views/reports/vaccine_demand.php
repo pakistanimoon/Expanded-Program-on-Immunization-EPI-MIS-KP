@@ -1,6 +1,5 @@
 
-
-<!--start of page content or body kp-->
+<!--start of page content or body-->
  <div class="container bodycontainer">
 	<div class="row">
 		<?php 
@@ -35,10 +34,11 @@
 		var typewise= "facility";
         if(codeLength == 3)
         {
+			//alert('aa');
 			url = "<?php echo base_url();?>Reports/vaccine_demand/"+code+"/"+vaccine+"/"+demand_type+"/"+monthfrom+"/"+monthto+"/"+typewise;
         }
 
-        var win = window.open(url,'_self');
+        var win = window.open(url,'_blank');
         if(win)
         {
 			//Browser has allowed it to be opened

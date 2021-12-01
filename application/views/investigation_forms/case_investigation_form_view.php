@@ -128,7 +128,7 @@
       <tr>
 			<td><p>Year</p></td>
               <td><?php if(isset($a)){ echo $a -> year;} ?></td>
-              <td><p>EPI Week No</p></td>
+              <td><p>Epid Week No</p></td>
               <td><?php if(isset($a)){ echo $a -> week;} ?></td>
 			</tr>
 			<tr>
@@ -710,10 +710,6 @@
 			  } ?>
               <a href="<?php echo base_url(); ?>Case_investigation/case_investigation_list" style="background:#008d4c none repeat scroll 0% 0%;" class="btn btn-primary btn-md"><i class="fa fa-arrow-left"></i> Back </a>
             </div>
-		 <?php } else{?>
-			 <div style="text-align: right;" class="col-md-4 col-md-offset-8">
-				 <a href="<?php echo base_url(); ?>Case_investigation/case_investigation_list" style="background:#008d4c none repeat scroll 0% 0%;" class="btn btn-primary btn-md"><i class="fa fa-arrow-left"></i> Back </a>
-			 </div>
 		 <?php } ?>
         </div>
          

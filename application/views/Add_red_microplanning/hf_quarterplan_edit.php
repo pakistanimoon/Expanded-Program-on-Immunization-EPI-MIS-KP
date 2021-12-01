@@ -48,7 +48,7 @@
 							<label>Technician:</label>
 						</div>
 						<div class="col-md-3">
-							<?php if($data[0]['year']=='2019' || $data[0]['year']=='2018'){ ?>
+						<?php if($data[0]['year']=='2019' || $data[0]['year']=='2018'){ ?>
 							<p><?php echo get_Technician_Name($data[0]['techniciancode']); ?></p>
 							<?php }else{ ?>
 							<p><?php echo get_Hr_Name($data[0]['techniciancode'],'01'); ?></p>

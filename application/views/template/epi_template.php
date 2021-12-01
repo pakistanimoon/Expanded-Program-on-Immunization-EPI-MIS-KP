@@ -49,7 +49,8 @@
 					<span id="loading" class="spinner-border spinner-border-sm">
 					Please Wait! It may take some time</span>
 				</button>
-			</div><?php
+			</div>
+			<?php
 			$this -> load -> view('template/main_menu');
 } ?>
 			<div class="content-wrapper">
@@ -64,9 +65,9 @@
 			$this->load->view('template/main_footer');
 			?>
 		</div>
-		<!--./wrapper -->
+		<!-- ./wrapper -->
 			<?php
-		}	?>
+		} ?>
 		<?php 
 		if(!isset($_REQUEST['export_excel']) AND !isset($export_excel) ){
 			if(isset($data['edit'])){
@@ -74,7 +75,6 @@
 			}else{
 				$this->load->view('template/script');
 			}
-		}
-		?>
+		} ?>
 	</body>
 </html>

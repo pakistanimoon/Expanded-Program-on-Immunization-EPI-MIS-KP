@@ -8,28 +8,38 @@ class Communication extends CI_Controller
 	}	
 	public function consumption()
 	{
-		$month = sprintf("%02d", $this -> input -> get('month'));
-		$year = $this -> input -> get('year');
+		$date = $this -> input -> get('date');
+		//$month = sprintf("%02d", $this -> input -> get('month'));
+		//$year = $this -> input -> get('year');
 		$distcode = $this -> input -> get('district_code');
 		$vlmisToken = $this -> input -> get('token');
-		if($month AND $year AND $distcode AND $vlmisToken){}else{
+		if(/* $month AND $year */ $date AND $distcode AND $vlmisToken){}else{
 			echo json_encode(array('success'=>false,'message'=>'Request need all required parameters!'));exit;
 		}
 		$epiToken = sha1(md5("epivlmis#,0%$#communication".date("Y-m-d")));
 		if($vlmisToken == $epiToken){}else{
 			echo json_encode(array('success'=>false,'message'=>'This is not a valid request!'));exit;
 		}
-		$fmonth = $year."-".$month;
-		$result = array();
-		$products = $this -> communication -> getAllProducts();
-		foreach($products as $product){
-			$result[] = $this -> communication -> getConsumption($fmonth,$distcode,$product['id'],$product['item_pack_size_id']);
+		$this->form_validation->set_data(array("date"=>$date));
+		$this->form_validation->set_rules('date','Transaction Date','trim|required|valid_date[Y-m-d]');
+		if ($this->form_validation->run() == FALSE)
+		{
+			echo json_encode(array('success'=>false,'message'=>'This is not a Valid Date!'));exit;
 		}
-		//echo $this->db->last_query();exit;
-		if($result){
-			echo json_encode(array('success'=>true,'message'=>'Successful Response!','data'=>$result));exit;
-		}else{
-			echo json_encode(array('success'=>true,'message'=>'No data found','data'=>$result));exit;
+		else
+		{
+			//$fmonth = $year."-".$month;
+			$result = array();
+			$products = $this -> communication -> getAllProducts();
+			foreach($products as $product){
+				$result[] = $this -> communication -> getConsumption(/* $fmonth */ $date,$distcode,$product['id'],$product['item_pack_size_id']);
+			}
+			//echo $this->db->last_query();exit;
+			if($result){
+				echo json_encode(array('success'=>true,'message'=>'Successful Response!','hash'=>md5(json_encode($result)),'data'=>$result));exit;
+			}else{
+				echo json_encode(array('success'=>true,'message'=>'No data found','data'=>$result));exit;
+			}
 		}
 	}
 	public function getIssuance()

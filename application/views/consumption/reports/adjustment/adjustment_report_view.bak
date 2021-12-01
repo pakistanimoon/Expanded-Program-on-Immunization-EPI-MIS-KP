@@ -1,0 +1,93 @@
+<?php 
+
+//echo "<pre>"; print_r($searchResult);exit;
+
+$store = ''; ?>
+<!--start of page content or body-->
+ <div class="container bodycontainer">
+  <?php 	if (!$this -> input -> post('export_excel')) {?>
+<div class="row">
+ <div class="panel panel-primary">
+   <div class="panel-heading">Vaccine Adjustment Report at <?php if(isset($wh_code)){
+	   if($wh_code=="all"){
+	   echo $store ="All Districts";
+	   }
+	   else{
+	   echo $store = get_store_name(TRUE,$wh_type,$wh_code);} } ?> for (<?php if(isset($monthfrom)){ echo $monthfrom; } ?>) to (<?php if(isset($monthto)){ echo $monthto; } ?>) - Vials</div>
+	   
+
+     <div class="panel-body">
+       <form class="form-horizontal"> 
+        <table class="table table-bordered   table-striped table-hover  mytable">
+			<tr>
+				<td><label>District</label></td> 
+				<td><?php if(isset($distcode)){ echo DistrictName($distcode); }   ?></td>
+				<td><label>Tehsil</label></td>
+				<td><?php if(isset($tcode)){ echo get_Tehsil_Name($tcode); } ?></td>
+				<td><label>Union Council</label></td>
+				<td><?php if(isset($uncode)){ echo get_UC_Name($uncode); } ?></td>
+			</tr>
+			<tr>
+				<td><label>Facility</label></td>
+				<td><?php if(isset($facode)){ echo get_Facility_Name($facode); } ?></td>
+				<td><label>Month From</label></td>
+				<td><?php if(isset($monthfrom)){ echo $monthfrom; } ?></td>
+				<td><label>Month To</label></td>
+				<td><?php if(isset($monthto)){ echo $monthto; } ?></td>
+			</tr>
+		</table>
+  <?php }?>
+  <table class="table table-bordered table-condensed table-striped table-hover mytable" border="1">
+	<thead>
+		<tr>				
+			<th rowspan="2" ><label>Sr #</label></th>	
+			<th rowspan="2" ><label>District Code</label></th>	
+			<th rowspan="2" ><label>District Name</label></th>	
+			<th rowspan="2" ><label>Tehsil Code</label></th>	
+			<th rowspan="2" ><label>Tehsil Name</label></th>	
+			<th rowspan="2" ><label>UC Code</label></th>		
+			<th rowspan="2" ><label>UC Name</label></th>
+			<th rowspan="2" ><label>Far.Code</label></th>
+			<th rowspan="2" ><label>Facility Name</label></th>
+			<th rowspan="2" ><label>Facility Month</label></th>
+			<th rowspan="2" ><label>Item Name</label></th>
+			<th rowspan="2" ><label>Batch Number</label></th>
+			<th rowspan="2" ><label>Adjustment Name</label></th>
+			<th rowspan="2" ><label>Adjustment Quantity vials</label></th>
+			<th rowspan="2" ><label>Adjustment Quantity Doses</label></th>
+			<tbody>
+		<?php 
+		$i = 1;
+		
+		foreach($searchResult as $key=>$row){
+			
+			     echo   '<td>'.$i.'</td>';
+			     echo   '<td>'.$row['distcode'].'</td>';
+			     echo   '<td>'.$row['distname'].'</td>';
+			     echo   '<td>'.$row['tcode'].'</td>';
+			     echo   '<td>'.$row['tehsilnam'].'</td>';
+			     echo   '<td>'.$row['uncode'].'</td>';
+			     echo   '<td>'.$row['unname'].'</td>';
+			     echo   '<td>'.$row['facode'].'</td>';
+			     echo   '<td>'.$row['facilityname'].'</td>';
+			     echo   '<td>'.$row['fmonth'].'</td>';
+			     echo   '<td>'.$row['item_name'].'</td>';
+			     echo   '<td>'.$row['batch_number'].'</td>';
+			     echo   '<td>'.$row['adjustmentname'].'</td>';
+			     echo   '<td>'.$row['adjustment_quantity_vials'].'</td>';
+			     echo   '<td>'.$row['adjustment_quantity_doses'].'</td>';
+			$i++;
+		?>
+		</tr>
+		
+		<?php } ?>
+		</tbody>
+  </thead>
+  </table>
+  
+		<?php 	if (!$this -> input -> post('export_excel')) {?>
+</form>
+    </div> <!--end of panel body-->
+ </div> <!--end of panel panel-primary-->
+</div><!--end of row-->
+<?php }?> 

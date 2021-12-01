@@ -1,8 +1,10 @@
-<?php class Micro_plan_model extends CI_Model {
+<?php
+//live
+ class Micro_plan_model extends CI_Model {
 	public function __construct() {
 		parent::__construct();
 		$this -> load -> model('Common_model');
-		$this -> load -> helper('epi_functions_helper'); 
+		$this -> load -> helper('epi_functions_helper');
 		$this -> load -> helper('epi_reports_helper');
 	}
 	public function supervisory_plan_edit($supervisorcode,$quarter,$fmonth){
@@ -34,7 +36,7 @@
 		//return $data['m3'];
 		return $data;
 	}
-	public function supervisory_plan_conducted($supervisorcode,$quarter,$fmonth){
+	public function supervisory_plan_conducted($supervisorcode,$quarter,$fmonth){	
         $fmonths=getMonthQuater($quarter);
 		//print_r($fmonths); exit;
 		$month1=$fmonths['monthm1'];
@@ -60,15 +62,9 @@
 		//return $data['m3'];
 		return $data;		
 	}
-	public function supervisory_plan(){
+	public function supervisory_plan(){	
 	    $distcode = $this-> session->District;
-		$tcode = $this-> session->Tehsil;
-		if($this-> session->Tehsil){
-			$tcode = "and tcode='$tcode'";
-		}else{
-			$tcode='';
-		}
-		$query = "select substring(fmonth,1,4) as year,supervisorcode,designation,quarter,status,CASE WHEN quarter='01' then 'Quarter 1' WHEN quarter ='02' then 'Quarter 2' WHEN  quarter='03' then 'Quarter 3' WHEN  quarter='04' then 'Quarter 4' ELSE '' END from supervisory_plan where distcode='$distcode' $tcode group by substring(supervisory_plan.fmonth,1,4),supervisorcode,quarter,designation,status order by supervisorcode asc";
+		$query = "select substring(fmonth,1,4) as year,supervisorcode,designation,quarter,status,CASE WHEN quarter='01' then 'Quarter 1' WHEN quarter ='02' then 'Quarter 2' WHEN  quarter='03' then 'Quarter 3' WHEN  quarter='04' then 'Quarter 4' ELSE '' END from supervisory_plan where distcode='$distcode' group by substring(supervisory_plan.fmonth,1,4),supervisorcode,quarter,designation,status order by supervisorcode asc";
 		$result = $this->db->query($query);
 		$data['data'] =	$result->result_array();
 		$query = "SELECT distinct designation from supervisory_plan order by designation ASC";

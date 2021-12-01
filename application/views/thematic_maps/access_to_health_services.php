@@ -30,7 +30,11 @@
 ?>
 <!--Content area--> 
 <div class="flypanels-main">
-    <div class="flypanels-topbar"> <a class="flypanels-button-left icon-menu" data-panel="treemenu" href="#"><i class="fa fa-bars"></i></a> <h2 class="topbar-heading">Expanded Program on Immunization Thematic Maps Dashboard</h2> </div>
+    <div class="flypanels-topbar"> 
+		<a class="flypanels-button-left icon-menu" data-panel="treemenu" href="#"><i class="fa fa-bars"></i></a>
+		<h5 class="h5-heading">EPI Dashboard</h5>
+		<h2 class="topbar-heading">Expanded Program on Immunization Thematic Maps Dashboard</h2>
+	</div>
     <div class="header_profilewraper">
 		<div class="profile_dropdown">
 			<div class="dropdown">

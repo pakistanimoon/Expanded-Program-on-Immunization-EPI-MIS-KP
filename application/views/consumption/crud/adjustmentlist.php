@@ -124,7 +124,7 @@ foreach($tabledata as $row){
 				type: "GET",
 				data: $('#filter-form').serialize(),
 				dataType:"json",
-				url: "<?php echo base_url(); ?>Ajax_calls/form_b_consumption_filter?page="+page,
+				url: "<?php echo base_url(); ?>Ajax_calls/form_b_adjustment_filter?page="+page,
 				success: function(result){
 					$('#tbody').html(result.tbody);
 					$('#paging').html(result.paging);
@@ -138,7 +138,7 @@ foreach($tabledata as $row){
 		$.ajax({
 			type: "GET",
 			data: $('#filter-form').serialize(),
-			url: "<?php echo base_url(); ?>Ajax_calls/form_b_consumption_filter",
+			url: "<?php echo base_url(); ?>Ajax_calls/form_b_adjustment_filter",
 			dataType: "json",
 			success: function(result){
 				$('#tbody').html('');

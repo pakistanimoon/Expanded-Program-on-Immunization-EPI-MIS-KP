@@ -340,18 +340,11 @@ $(document).on('change','#dashyear',function(){
 		$("#"+divId).slideDown(1000);
 		
 	}
-	function hrReportData(distcode,type){
+		function hrReportData(distcode,type){
 		//var url = '<?php echo base_url(); ?>HR_Reports/HR_Summary_Report_Detail/'+distcode+'/'+type;
 		 var listing_name='hr';
 		 var status='Active';
 		url = "<?php echo base_url();?>setup_listing/"+listing_name+"_listing?distcode="+distcode+"&status="+status+"&sup_type="+type;
-		window.open(url, '_blank');
-	}
-	function hrReportData_tehsil(tcode,type){
-		//var url = '<?php echo base_url(); ?>HR_Reports/HR_Summary_Report_Detail/'+distcode+'/'+type;
-		 var listing_name='hr';
-		 var status='Active';
-		url = "<?php echo base_url();?>setup_listing/"+listing_name+"_listing?tcode="+tcode+"&status="+status+"&sup_type="+type;
 		window.open(url, '_blank');
 	}
 </script>

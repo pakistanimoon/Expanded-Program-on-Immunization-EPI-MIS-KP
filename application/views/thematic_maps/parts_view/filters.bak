@@ -8,7 +8,7 @@
 		?>
 	<form class="" method="post" action="<?php echo base_url(); ?>thematic_maps/<?php echo $link; ?>">
 		<?php
-		if(isset($data)){
+		if(isset($data)){			
 		    $reportType = $data['reportType'];
 			$vaccineId = $data['vaccineId'];
 			$quarter = $data['quarter'];
@@ -42,6 +42,13 @@
 				<?php getAllYearsOptions(false,$year); ?>
 			</select>
 		</div>
+		<!--<div class="form-group">
+			<input type="text" name="monthfrom" type="date" value="" id="monthfrom" class="form-control dp-my" required="required" data-date-end-date='-1d' >
+		</div>
+		<div class="form-group">
+			<input type = "text" class="form-control dp-my" name="monthto">
+		</div>-->
+		
 		<div class="form-group" id="monthDiv">
 			<select name="month" id="month" class="form-control" required="required">
 				<?php if(isset($month)) { getAllMonthsOptionsNew(false,$year,$month);} ?>
@@ -62,6 +69,24 @@
 				<option <?php echo (isset($biyear) && ($biyear == "02" || $biyear == "2"))?'selected="selected"':''; ?> value="2">Second Half</option>
 			</select>
 		</div>
+	<?php if($this -> session -> District) { ?>
+		<div class="form-group" id="coverageDistrictDiv">
+			<select name="in_out_coverage" id="in_out_coverage" class="form-control">
+				<option <?php echo (isset($in_out_coverage) && ($in_out_coverage == "in_uc"))?'selected="selected"':''; ?> value="in_uc" >Inside UC</option>
+				<option <?php echo (isset($in_out_coverage) && ($in_out_coverage == "out_uc"))?'selected="selected"':''; ?> value="out_uc" >Outside UC</option>
+				<option <?php echo (isset($in_out_coverage) && ($in_out_coverage == "total_ucs"))?'selected="selected"':''; ?> value="total_ucs" >Inside UC + Outside UC</option>
+				
+			</select>
+		</div>
+	<?php } else { ?>
+		<div class="form-group" id="coverageProvinceDiv">
+			<select name="in_out_coverage" id="in_out_coverage" class="form-control">
+				<option <?php echo (isset($in_out_coverage) && ($in_out_coverage == "in_district"))?'selected="selected"':''; ?> value="in_district" >Inside District</option>
+				<option <?php echo (isset($in_out_coverage) && ($in_out_coverage == "out_district"))?'selected="selected"':''; ?> value="out_district" >Outside District</option>
+				<option <?php echo (isset($in_out_coverage) && ($in_out_coverage == "total_districts"))?'selected="selected"':''; ?> value="total_districts" >Inside District + Outside District</option>				
+			</select>
+		</div>
+	<?php } ?>
 		<div class="form-group" id="vaccineDiv">
 		<?php if(! $dropout){ ?>
 			<select name="vaccineId" id="vaccineId" class="form-control" required="required">
@@ -292,14 +317,14 @@
 		</div>
 		<div class="form-group">
 			<select name="indicator" id="vaccineindicator" class="form-control">
-				<option <?php echo (isset($indicator) && $indicator=="54")?'selected="selected"':''; ?> value="54">Opened Vial Wastage Rate</option>
-				<option <?php echo (isset($indicator) && $indicator=="53")?'selected="selected"':''; ?> value="53">Closed Vial Wastage Rate</option>
-				<option <?php echo (isset($indicator) && $indicator=="55")?'selected="selected"':''; ?> value="55">Vaccine Wastage Rate (Closed & Open Vial)</option>				
+				<option <?php echo (isset($indicator) && $indicator=="66")?'selected="selected"':''; ?> value="66">Opened Vial Wastage Rate</option>
+				<option <?php echo (isset($indicator) && $indicator=="67")?'selected="selected"':''; ?> value="67">Closed Vial Wastage Rate</option>
+				<!--<option <?php echo (isset($indicator) && $indicator=="55")?'selected="selected"':''; ?> value="55">Vaccine Wastage Rate (Closed & Open Vial)</option>	-->			
 			</select>
 		</div>
 		<div id="StockoutRate" class="form-group">
 			<select class="form-control" name="vacc_ind" id="vacc_ind">
-				<?php echo getActiveVaccinesOptions($vacc_ind,$indicator); ?>
+				<?php echo getVaccines_options(true,1,FALSE,array(1),$vacc_ind); ?>
 				<!--<option <?php echo (isset($vacc_ind) && $vacc_ind=="cr_r1_f6")?'selected="selected"':''; ?> value="cr_r1_f6">BCG</option>
 				<option <?php echo (isset($vacc_ind) && $vacc_ind=="cr_r2_f6")?'selected="selected"':''; ?> value="cr_r2_f6">DIL BCG</option>
 				<option <?php echo (isset($vacc_ind) && $vacc_ind=="cr_r3_f6")?'selected="selected"':''; ?> value="cr_r3_f6">bOPV</option>
@@ -553,30 +578,22 @@
 	</form>
 <?php } ?>
 <?php if($filter == 'thematicaccessutilization'){ ?>
-	<form class="" method="post" action="<?php echo base_url(); ?>thematic_maps/ThematicAccessUtilization">
-		<!--<div class="form-group" id="reportTypeDiv">
-			<select name="reportType" id="reportType" class="form-control">
-				<option value="">Select Report Type</option>
-				<option <?php echo (isset($reportType) && $reportType=="yearly")?'selected="selected"':''; ?> value="yearly">Yearly</option>
-				<option <?php echo (isset($reportType) && $reportType=="biyearly")?'selected="selected"':''; ?> value="biyearly">Bi-Yearly</option>
-				<option <?php echo (isset($reportType) && $reportType=="quarterly")?'selected="selected"':''; ?> value="quarterly">Quarterly</option>
-				<option <?php echo (isset($reportType) && $reportType=="monthly")?'selected="selected"':''; ?> value="monthly">Monthly</option>
-			</select>
-		</div>-->
-		<div class="form-group" id="yearDiv">
-			<select name="year" id="year" class="form-control" required="required">
-				<?php getAllYearsOptions(false,$year); ?>
-			</select>
-		</div>
-		<div class="form-group" id="monthDiv">
-			<select name="month" id="month" class="form-control" required="required">
-				<?php if(isset($month)) { getAllMonthsOptionsNew(false,$year,$month);} ?>
-			</select>
-		</div>
-		<div class="filter_btn">
-			<button type="submit" class="formfilterbtn"> Preview </button>
-		</div>
-	</form>
+		<form class="" method="post" action="<?php echo base_url(); ?>thematic_maps/ThematicAccessUtilization">
+			<?php if(isset($data['id'])){
+			$id = $data['id'];?>
+			<input type="hidden" name="id" value="<?php echo $id;?>">
+			<?php
+			} ?>
+			<div class="form-group">
+				<input type="text" name="monthfrom" value="<?php echo (isset($fmonthfrom)?$fmonthfrom:'') ?>" id="monthfrom" class="form-control filter-status dp-my " placeholder="Period From" required="required" data-date-end-date='-1d' >
+			</div>
+			<div class="form-group">
+				<input type="text" name="monthto" value="<?php echo (isset($fmonthto)?$fmonthto:'') ?>" id="monthto" class="form-control filter-status dp-my " placeholder="Period To" required="required" data-date-end-date='-1d' >
+			</div>
+			<div class="filter_btn">
+				<button type="submit" class="formfilterbtn"> Preview </button>
+			</div>
+		</form>
 <?php } ?>
 <?php if($filter == 'Morbidity'){
 		if(isset($data)){
@@ -660,7 +677,51 @@
 		<div class="filter_btn">
 			<button type="submit" class="formfilterbtn"> Preview </button>
 		</div>
+		
 	</form>
+<?php } ?>
+<?php if($filter == 'outbreak'){
+		if(isset($data)){
+		    $disease = $data['disease'];
+			}?>
+		<form class="" method="post" action="<?php echo base_url(); ?>thematic_maps/ThematicOutbreak">
+		<?php 
+			if(isset($data['id'])){
+					$id = $data['id'];?>
+					<input type="hidden" name="id" value="<?php echo $id;?>">
+		<?php	} ?>
+			<div class="form-group">
+				<select name="year" id="year" class="form-control" required="required">
+					<?php getAllYearsOptionsIncludingCurrent(false); ?>
+				</select>
+			</div>
+			<div class="form-group">
+			<select name="from_week" id="from_week" class="filter-status  form-control">
+				<option value="0">--From Week--</option>
+			</select>
+			</div>
+			<div class="form-group">
+			<select name="to_week" id="to_week" class="filter-status  form-control">
+				<option value="0">--To Week--</option>
+			</select>
+		</div>
+		<div class="form-group">
+			<select name="disease" id="disease" class="form-control">
+				<!-- <option <?php //echo (isset($disease) && $disease=="all")?'selected="selected"':''; ?> value="all">All Diseases</option>-->
+				<option <?php echo (isset($disease) && $disease=="measles")?'selected="selected"':''; ?> value="measles">Measles</option>
+				<option <?php echo (isset($disease) && $disease=="afp")?'selected="selected"':''; ?> value="afp">Acute Flacid Pralysis</option>
+				<option <?php echo (isset($disease) && $disease=="diphtheria")?'selected="selected"':''; ?> value="diphtheria">Diphtheria</option>
+				<option <?php echo (isset($disease) && $disease=="pertussis")?'selected="selected"':''; ?> value="pertussis">Pertussis</option>
+				<option <?php echo (isset($disease) && $disease=="pneumonia")?'selected="selected"':''; ?> value="pneumonia">Pneumonia</option>
+				<option <?php echo (isset($disease) && $disease=="childhood tb")?'selected="selected"':''; ?> value="childhood tb">Childhood TB</option>
+				<option <?php echo (isset($disease) && $disease=="meningitis")?'selected="selected"':''; ?> value="meningitis">Meningitis</option>
+				<option <?php echo (isset($disease) && $disease=="hepatitis")?'selected="selected"':''; ?> value="meningitis">Hepatitis</option>
+			</select>
+		</div>
+		<div class="filter_btn">
+			<button type="submit" class="formfilterbtn"> Preview </button>
+		</div>
+	</form>	
 <?php } ?>
 
 <script type="text/javascript">
@@ -702,6 +763,28 @@
 				}
 			});
 		}
+		
+		$(".dp-my").datepicker({
+			autoclose: true,
+			format: "yyyy-mm",
+			startDate: '2016-01',
+			viewMode: "months", 
+			minViewMode: "months",
+			endDate: new Date()
+		});
+		$("#monthfrom").datepicker({
+		}).on('changeDate', function (selected) {
+		
+			var fromDate = new Date(selected.date.valueOf());
+			var toDate = new Date($("#monthto").val());
+			if(toDate < fromDate){
+				$('#monthto').datepicker('setStartDate', fromDate);
+				$("#monthto").val('');
+			}
+			else if(toDate.toString()  == 'Invalid Date' ){
+				$('#monthto').datepicker('setStartDate', fromDate);
+			}
+		});
 	});
 	$(document).on('change','#from_week',function(){
 		var from_week= $("#from_week option:selected").val();

@@ -16,8 +16,9 @@
 								<th rowspan="2" class="Heading text-center">S#</th>
 								<th rowspan="2" class="Heading text-center">Code</th>
 								<th rowspan="2" class="Heading text-center">Health Facility Name</th>
+								<th rowspan="2" class="Heading text-center">Union Council</th>
+								<th rowspan="2" class="Heading text-center">Tehsil</th>							
 								<th rowspan="2" class="Heading text-center">District</th>
-								<th rowspan="2" class="Heading text-center">Tehsil</th>
 								<th rowspan="2" class="Heading text-center">Type</th>
 								<th rowspan="2" class="Heading text-center">Total Population</th>
 								<th rowspan="2" class="Heading text-center">EPI Technician Attached</th>
@@ -38,8 +39,9 @@
 								<td class="text-center"><?php echo $i; ?></td>
 								<td class="text-center"><?php echo $row['facode']?></td>
 								<td class="text-center"><?php echo $row['fac_name']?></td>
-								<td class="text-center"><?php echo $row['district']?></td>
+								<td class="text-center"><?php echo $row['unioncouncil']?></td>
 								<td class="text-center"><?php echo $row['tehsil']?></td>
+								<td class="text-center"><?php echo $row['district']?></td>
 								<td class="text-center"><?php echo $row['fatype']?></td>
 								<td class="text-center"><?php echo $row['catchment_area_pop']?></td>
 								<td class="text-center"></td>

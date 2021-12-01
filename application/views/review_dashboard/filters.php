@@ -10,6 +10,7 @@
 						<input type="radio" <?php echo (isset($period) && $period=='quarterly')?'checked':''; ?> class="cst-radio-filter" id="quarterly" value="quarterly" name="filter">
 						<label for="quarterly">Quarterly</label>
 						<input type="radio" <?php echo (isset($period) && $period=='monthly')?'checked':''; ?> class="cst-radio-filter" id="monthly" value="monthly" name="filter">
+						<input type="hidden" value="<?php if(isset($distcode)){ echo $distcode; } ?>" name="code">
 						<label for="monthly">Monthly</label>
 					</div>
 					<div class="col-lg-7">
@@ -20,13 +21,15 @@
 								</select>
 							</div>
 							<div class="col-lg-3">
-								<select class="form-control form-control-cst" disabled id="bi-year" name="biyear">
+								<select class="form-control form-control-cst" disabled id="bi-year" name="biyear" required>
+									<option value="">--Select Bi-Yearly--</option>
 									<option <?php echo (isset($biyear) && $biyear==1)?'selected="selected"':''; ?> value="1">First Half</option>
 									<option <?php echo (isset($biyear) && $biyear==2)?'selected="selected"':''; ?> value="2">Second Half</option>
 								</select>
 							</div>
 							<div class="col-lg-3">
-								<select class="form-control form-control-cst" disabled id="quarter" name="quarter">
+								<select class="form-control form-control-cst" disabled id="quarter" name="quarter" required>
+									<option value="">--Select Quarter--</option>
 									<option <?php echo (isset($quarter) && $quarter==1)?'selected="selected"':''; ?> value="1">Quarter 1</option>
 									<option <?php echo (isset($quarter) && $quarter==2)?'selected="selected"':''; ?> value="2">Quarter 2</option>
 									<option <?php echo (isset($quarter) && $quarter==3)?'selected="selected"':''; ?> value="3">Quarter 3</option>
@@ -34,7 +37,7 @@
 								</select> 
 							</div>
 							<div class="col-lg-3">
-								<select class="form-control form-control-cst" disabled id="month" name="month">
+								<select class="form-control form-control-cst" disabled id="month" name="month" required>
 									<?php echo getAllMonthsOptions(); ?>
 								</select>
 							</div>

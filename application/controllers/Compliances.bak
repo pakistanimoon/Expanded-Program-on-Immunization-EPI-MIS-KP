@@ -8,6 +8,28 @@ class Compliances extends CI_Controller {
 		$this -> load -> model('Compliances_model');
 		$this -> load -> helper('epi_functions_helper');
 		date_default_timezone_set("Asia/Karachi");
+		$code = md5(date("Y-n-d"));
+		if($this-> uri-> segment(5) != '' &&  $this-> uri-> segment(5) == $code){
+			$provinceCode = $this->uri->segment(3); // procode during drilldown from Federal EPI
+			$provinceName = get_Province_Name($provinceCode); // province name based on procode
+			$sessionData = array(
+				'username'  => "EPI Manager",
+				'User_Name' => "EPI Manager",
+				'federaluser' => true,
+				'UserAuth'  => "Yes",
+				'UserLevel' => '2',
+				'UserType' => 'Manager',
+				'utype' => 'Manager',
+				'provincename' => $provinceName,
+				'Province' => $provinceCode,
+				'loginfrom' => "Pakistan EPI"
+			);
+			$this -> session -> set_userdata($sessionData);
+		}else{
+			if($this -> session -> UserAuth == 'Yes'){}else{
+				authentication();
+			}
+		}
 	}
 	//============================ Constructor Function Ends ============================//
 	public function compliancesFilters(){
@@ -91,18 +113,26 @@ class Compliances extends CI_Controller {
 			$data = array("distcode"=>$distcode, "year"=>$year);
 		}else{			
 			$data = $this -> getPostedData();
-		}		
+		}
+	if($this-> uri-> segment(5) != ''){
+			$data['year'] = $year = $this-> uri-> segment(4);
+			unset($data['distcode']);
+		}			
 		$dataHFMVRF['pageTitle']='Health Facility Monthly Report Compliance';
 		$dataHFMVRF['data'] = $this -> Compliances_model -> HFMVRF($data,$dataHFMVRF['pageTitle']);
 		$dataHFMVRF['fileToLoad'] = 'compliances/hfmvrf';		
 		$this -> load -> view('template/reports_template',$dataHFMVRF);
 	}
 	function HF_Consumption_Requisition($distcode=NULL, $year=NULL){
-		if($distcode && $year){
+				if($distcode && $year){
 			$data = array("distcode"=>$distcode, "year"=>$year);
 		}else{
 			$data = $this -> getPostedData();
-		}		
+		}
+		if($this-> uri-> segment(5) != ''){
+			$data['year'] = $year = $this-> uri-> segment(4);
+			unset($data['distcode']);
+		}			
 		$dataHFCRC['pageTitle']='HF Consumption & Requisition Compliance';
 		$dataHFCRC['data'] = $this -> Compliances_model -> HF_Consumption_Requisition($data,$dataHFCRC['pageTitle']);
 		$dataHFCRC['fileToLoad'] = 'compliances/hf_consumption_requisition';
@@ -195,6 +225,11 @@ class Compliances extends CI_Controller {
 			$data = array("distcode"=>$distcode, "year"=>$year);
 		}else{
 			$data = $this -> getPostedData();
+		}
+		if($this-> uri-> segment(5) != ''){
+			$data['procode'] = $procode = $this-> uri-> segment(3);
+			$data['year'] = $year = $this-> uri-> segment(4);
+			unset($data['distcode']);
 		}	
 		$dataZRFWC['pageTitle'] = 'Zero Reporting Weekly Compliance';
 		$dataZRFWC['data'] = $this -> Compliances_model -> Zero_Compliance($data,$dataZRFWC['pageTitle']);
@@ -213,6 +248,32 @@ class Compliances extends CI_Controller {
 		//template_loader('compliances/zero_reporting_compliance', $dataZRFWC, array($this->_module), 'reports');
 		
 		$dataZRFWC['fileToLoad'] = 'compliances/zero_reporting_compliance';
+		$this -> load -> view('template/reports_template',$dataZRFWC);
+	}
+	function Zero_Compliance_query($distcode=NULL, $year=NULL){
+			
+		if($distcode && $year){
+			$data = array("distcode"=>$distcode, "year"=>$year);
+		}else{
+			$data = $this -> getPostedData();
+		}	
+		$dataZRFWC['pageTitle'] = 'Zero Reporting Weekly Compliance';
+		$dataZRFWC['data'] = $this -> Compliances_model -> Zero_Compliance($data,$dataZRFWC['pageTitle']);
+		
+		if(array_key_exists("distcode", $data) && $data['distcode'] > 0){
+			$dataZRFWC['data']["district_data"] = TRUE;
+			$table = $dataZRFWC['data']["tableData"];
+			$table = str_replace('<div id="parent" style="overflow: auto;">', "", $table);
+			$table = str_replace('</div>', "", $table);
+			$table = str_replace('<img style="width:20px;" title="Timely" src="http://epimis.kphealth.pk/includes/images/timely.png">', "&#x2609;", $table);
+			$table = str_replace('<i class="fa fa-times"></i>', "&#10006;", $table);
+			$this->session->set_userdata("moonzerocomp",$table);
+		}else{
+			$dataZRFWC['data']["district_data"] = FALSE;
+		}
+		//template_loader('compliances/zero_reporting_compliance', $dataZRFWC, array($this->_module), 'reports');
+		
+		$dataZRFWC['fileToLoad'] = 'compliances/zero_reporting_compliance_query';
 		$this -> load -> view('template/reports_template',$dataZRFWC);
 	}
 	function getPostedData(){

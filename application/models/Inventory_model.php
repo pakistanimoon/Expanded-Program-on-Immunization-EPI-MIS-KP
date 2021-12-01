@@ -51,8 +51,6 @@ class Inventory_model extends CI_Model {
 		//end
 		$this->db->order_by("btch.pk_id","ASC");
 		$result = $this->db->get()->result_array();
-		//$str = $this->db->last_query();
-		//print_r($str); exit;
 	    return $result; 
     }
 	/*
@@ -101,14 +99,17 @@ class Inventory_model extends CI_Model {
 		$whereCondition['master.transaction_type_id'] = 1;
 		//draft zero condition Stock master
 		$whereCondition['master.draft'] =0;
-		if(($from_warehouse_type_id) && $from_warehouse_type_id > 0)
+		if(($from_warehouse_type_id) && $from_warehouse_type_id > 0){
 			$data['data']['from_warehouse_type_id'] = $whereCondition['master.from_warehouse_type_id'] = $from_warehouse_type_id;
+		}
 		$whereCondition['master.to_warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$whereCondition['master.to_warehouse_code'] = $this -> session -> curr_wh_code;
-		if(($activity) && $activity > 0)
+		if(($activity) && $activity > 0){
 			$data['data']['activity'] = $whereCondition['master.stakeholder_activity_id'] = $activity;
-		if(($product) && $product > 0)
+		}
+		if(($product) && $product > 0){
 			$data['data']['product'] = $whereCondition['batch.item_pack_size_id'] = $product;
+		}
 		if(($search_type) && $search_type != ''){
 			$data['data']['search_type'] = $search_type;
 			$data['data']['search_key'] = $search_key;
@@ -335,7 +336,6 @@ class Inventory_model extends CI_Model {
 		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,COUNT(distinct batch.number) as batch,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose");
 		$whereCondition['master.draft'] =0;
 		$whereCondition['batch.status!=']='Finished';
-		
 		$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$whereCondition['batch.code'] = $this -> session -> curr_wh_code;
 		$this -> db -> where($whereCondition);
@@ -360,13 +360,9 @@ class Inventory_model extends CI_Model {
 		//print_r($this->db->last_query());
 		return   $this -> db -> get() -> result_array();
 	//echo "<pre>";	print_r($this->db->last_query());
-}
-
-
-
-
-		public function product_summary_report($distcode, $tcode , $purpose, $type)
-	{   //print_r($_POST); exit();
+	}
+	public function product_summary_report($distcode, $purpose, $type)
+	{
 		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,COUNT(distinct batch.number) as batch,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose");
 		$whereCondition['master.draft'] =0;
 		$whereCondition['batch.status!=']='Finished';
@@ -378,23 +374,20 @@ class Inventory_model extends CI_Model {
 		$this -> db -> where("epi_item_pack_sizes.activity_type_id  IN ({$purpose})", NULL, FALSE);
 		$this -> db -> where("batch.status!='Finished'");
 		$this -> db -> where("batch.quantity > 0");
-		
-		$this->db->where("tt.nature",'1'); 
-		//change according to session
-		if (isset($distcode) != '0')
-		{
-			$this->db->where("master.to_warehouse_type_id",'4');
-			$this->db->where("master.to_warehouse_code = '$distcode'");
-		}else if (isset($tcode) != '0'){
-			$this->db->where("master.to_warehouse_type_id",'5');
-			$this->db->where("master.to_warehouse_code = '$tcode'");
-		}else{
-			$this->db->where("master.to_warehouse_type_id",'2');
-			$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
-		}
-		//abhi
-		$this -> db -> where("batch.expiry_date >",date('Y-m-d'));
 		$this -> db -> from('epi_stock_master master');
+		$this->db->where("tt.nature",'1');
+		//change according to session
+		if($distcode != '0')
+		{
+		$this->db->where("master.to_warehouse_type_id",'4');
+		$this->db->where("master.to_warehouse_code = '$distcode'");
+		}
+		else
+		{
+		$this->db->where("master.to_warehouse_type_id",'2');
+		$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
+		}
+		$this -> db -> where("batch.expiry_date >",date('Y-m-d'));
 		$this -> db -> join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
 		
 		$this->db->join("epi_transaction_types tt","tt.pk_id = master.transaction_type_id");
@@ -405,10 +398,10 @@ class Inventory_model extends CI_Model {
 		//$this->db->group_by('batch.number');
 		$this->db->order_by('batch.item_pack_size_id','asc');
 		$this->db->group_by('batch.item_pack_size_id,epi_item_pack_sizes.activity_type_id');
-	   //echo $this->db->last_query(); exit;
+//	echo $this->db->last_query();
 		//print_r($this->db->last_query());
 		//echo $this->db->last_query(); exit;
-		return $this -> db -> get() -> result_array(); 
+		return $this -> db -> get() -> result_array();
 		//echo $this->db->last_query(); exit;
 	//echo "<pre>";	print_r($this->db->last_query());
 	} 
@@ -423,7 +416,6 @@ class Inventory_model extends CI_Model {
 		$this -> db -> where($whereCondition);
 		$this -> db -> where("epi_item_pack_sizes.item_category_id  IN ({$type})", NULL, FALSE);
 		$this -> db -> where("batch.status!='Finished'");
-		
 		$this -> db -> from('epi_stock_master master');
 		$this -> db -> join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
 		$this -> db -> join('epi_stock_detail detail','batch.pk_id = detail.stock_batch_id','left');
@@ -437,7 +429,7 @@ class Inventory_model extends CI_Model {
 		return $this -> db -> get() -> result_array();
 //echo "<pre>";	print_r($this->db->last_query());
 	}
-		public function batch_summary_report($distcode,$tcode, $purpose, $type)
+		public function batch_summary_report($distcode, $purpose, $type)
 	{
 		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,batch.number as batch,stackholdername(batch.stakeholder_id) as manufacturer,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose,batch.expiry_date as exp_date,batch.vvm_type_id as vvm_type,vvm_stages.name as vvm_name,(case when batch.ccm_id IS NOT NULL then getccmshortname (ccm_id) else noncclocationname(batch.non_ccm_id) end) as placment,getpriority(batch.expiry_date,detail.vvm_stage) as priority"); 
 		$whereCondition['master.draft'] =0;
@@ -445,32 +437,30 @@ class Inventory_model extends CI_Model {
 		
 		//$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$curr_warehoue = $this -> session -> curr_wh_code;
-		if (isset($distcode) != '0')
+		if($distcode != '0')
 		{
-			$this->db->where("master.to_warehouse_type_id",'4');
-			$this->db->where("master.to_warehouse_code = '$distcode'");
-		}else if (isset($tcode) != '0'){
-			$this->db->where("master.to_warehouse_type_id",'5');
-			$this->db->where("master.to_warehouse_code = '$tcode'");
-		}else{
-			$this->db->where("master.to_warehouse_type_id",'2');
-			$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
+		$this->db->where("master.to_warehouse_type_id",'4');
+		$this->db->where("master.to_warehouse_code = '$distcode'");
+		}
+		else
+		{
+		$this->db->where("master.to_warehouse_type_id",'2');
+		$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
 		}
 		//$this -> db -> where($whereCondition);
-		//abhi
-		$this -> db -> where("batch.expiry_date >",date('Y-m-d'));
 		$this -> db -> where("epi_item_pack_sizes.item_category_id  IN ({$type})", NULL, FALSE);
 		$this -> db -> where("epi_item_pack_sizes.activity_type_id  IN ({$purpose})", NULL, FALSE);
 		$this -> db -> where("batch.status!='Finished'");
 		$this -> db -> from('epi_stock_master master');
 		$this -> db -> join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
+		$this -> db -> where("batch.expiry_date >",date('Y-m-d'));
 		$this -> db -> join('epi_stock_detail detail','batch.pk_id = detail.stock_batch_id','left');
 		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = batch.item_pack_size_id","LEFT OUTER");
         $this->db->join("vvm_stages","vvm_stages.type = epi_item_pack_sizes.vvm_stage_type and vvm_stages.value = detail.vvm_stage","LEFT OUTER");
 		//$this->db->group_by('batch.number');
 		$this->db->order_by('batch.item_pack_size_id','asc');
 		$this->db->group_by('batch.number,epi_item_pack_sizes.activity_type_id,batch.item_pack_size_id,batch.stakeholder_id,batch.expiry_date,batch.vvm_type_id,vvm_stages.name,batch.ccm_id,batch.non_ccm_id,detail.vvm_stage');
-	    //echo $this->db->last_query(); exit;
+//	echo $this->db->last_query();
 		//print_r($this->db->last_query());
 		return $this -> db -> get() -> result_array();
 //echo "<pre>";	print_r($this->db->last_query());
@@ -518,26 +508,24 @@ class Inventory_model extends CI_Model {
 		return $this -> db -> get() -> result_array();
 		//echo $this->db->last_query();
 	}
-	public function manufacturer_summary_report($distcode,$tcode, $purpose, $type) 
+	public function manufacturer_summary_report($distcode, $purpose, $type) 
 	{
 		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses, Count(distinct batch.number) as batch,stackholdername(batch.stakeholder_id) as manufacturer,sum(batch.quantity) as quantity");
 		$whereCondition['master.draft'] =0;
 		//$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$curr_warehoue = $this -> session -> curr_wh_code;
 		//$this -> db -> where($whereCondition);
-		if (isset($distcode) != '0')
-		{ 
-			$this->db->where("master.to_warehouse_type_id",'4');
-			$this->db->where("master.to_warehouse_code = '$distcode'");
-		}else if (isset($tcode) != '0'){
-			$this->db->where("master.to_warehouse_type_id",'5');
-			$this->db->where("master.to_warehouse_code = '$tcode'");
-		}else{
-			$this->db->where("master.to_warehouse_type_id",'2');
-			$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
+		if($distcode != '0')
+		{
+		$this->db->where("master.to_warehouse_type_id",'4');
+		$this->db->where("master.to_warehouse_code = '$distcode'");
+		}
+		else
+		{
+		$this->db->where("master.to_warehouse_type_id",'2');
+		$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
 		}
 		$this -> db -> where("batch.status!='Finished'");
-		//abhi
 		$this -> db -> where("batch.expiry_date >",date('Y-m-d'));
 		$this -> db -> where("epi_item_pack_sizes.item_category_id  IN ({$type})", NULL, FALSE);
 		$this -> db -> where("epi_item_pack_sizes.activity_type_id  IN ({$purpose})", NULL, FALSE);
@@ -592,7 +580,7 @@ class Inventory_model extends CI_Model {
 	// return $this -> db -> get() -> result_array();
 	}
 	
-	public function get_issued_vouchers_list($fromwhtype,$fromwhcode,$limit,$offset,$page) 
+	public function get_issued_vouchers_list($fromwhtype,$fromwhcode,$limit,$offset,$page)
 	{
 		$offset = 50*$page;
 		$username = $this->session->userdata("username");
@@ -625,10 +613,10 @@ class Inventory_model extends CI_Model {
 		");
 		$this -> db -> from('epi_stock_master master');
 		$this -> db -> join("(select batch_master_id,count(*) as totfinish from epi_stock_batch where status = 'Finished' group by batch_master_id) as viewtbl","viewtbl.batch_master_id = master.pk_id","LEFT OUTER");
-		$this->db->order_by('transaction_number',"DESC");
+		//$this->db->order_by('transaction_number',"DESC");
+		$this->db->order_by('master.created_date',"DESC");
 		//$this->db->limit("200");
 		$this->db->limit($limit,$offset);
-		
 		return $this -> db -> get() -> result_array();
 	}
 	public function get_issued_voucher_status($vouchernum)
@@ -681,27 +669,25 @@ class Inventory_model extends CI_Model {
 		//echo $this->db->last_query();
 		return $this -> db -> get() -> result_array();
 	}
-	public function priority_summary_report($distcode, $tcode, $purpose, $type) 
+	public function priority_summary_report($distcode, $purpose, $type) 
 	{
 		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,getpriority(batch.expiry_date,detail.vvm_stage) as priority, COUNT(distinct batch.number) as batch,sum(batch.quantity),get_activity_name(epi_item_pack_sizes.activity_type_id) as activity_type_id");
 		$whereCondition['master.draft'] =0;
 		//$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$curr_warehoue = $this -> session -> curr_wh_code;
-		if (isset($distcode) != '0')
+		if($distcode != '0')
 		{
-			$this->db->where("master.to_warehouse_type_id",'4');
-			$this->db->where("master.to_warehouse_code = '$distcode'");
-		}else if (isset($tcode) != '0'){
-			$this->db->where("master.to_warehouse_type_id",'5');
-			$this->db->where("master.to_warehouse_code = '$tcode'");
-		}else{
-			$this->db->where("master.to_warehouse_type_id",'2');
-			$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
+		$this->db->where("master.to_warehouse_type_id",'4');
+		$this->db->where("master.to_warehouse_code = '$distcode'");
+		}
+		else
+		{
+		$this->db->where("master.to_warehouse_type_id",'2');
+		$this->db->where("master.to_warehouse_code = '$curr_warehoue'");
 		}
 		//$this -> db -> where($whereCondition);
 		//$this -> db -> order_by('batch.expiry_date','asc');
 		//$this -> db -> order_by('batch.item_pack_size_id','asc');
-		//abhi
 		$this -> db -> where("batch.expiry_date >",date('Y-m-d'));		
 		$this -> db -> order_by('epi_item_pack_sizes.activity_type_id','asc');
 		$this -> db -> where("epi_item_pack_sizes.item_category_id  IN ({$type})", NULL, FALSE);
@@ -744,8 +730,7 @@ class Inventory_model extends CI_Model {
 			LEFT OUTER JOIN epi_stock_detail dtl ON dtl.stock_batch_id= epi_stock_batch.pk_id
 			LEFT OUTER JOIN epi_item_pack_sizes ON epi_item_pack_sizes.pk_id= epi_stock_batch.item_pack_size_id
 			LEFT OUTER JOIN vvm_stages ON  vvm_stages.type = epi_item_pack_sizes.vvm_stage_type and vvm_stages.value = dtl.vvm_stage where (epi_stock_master.draft is NULL or epi_stock_master.draft='0') and (epi_stock_batch.code='$whcode' and epi_stock_batch.warehouse_type_id='$whtype' and epi_stock_batch.item_pack_size_id='$productid' and epi_stock_batch.status!='Finished' ) AND (epi_stock_master.transaction_number like 'A%' or epi_stock_master.transaction_number like 'R%' or epi_stock_master.transaction_number is null) $wherecondition";
-		$result=$this->db->query($query)->result_array();
-		 return $result;
+		return $result=$this->db->query($query)->result_array();
 		/* 
 		$this -> db -> select("btch.pk_id as id,trimandappend(stackholdername(btch.stakeholder_id), 10, '...') || ' | ' || btch. number || ' | ' || btch.quantity as name");
 		$this->db->where("btch.item_pack_size_id",$productid);
@@ -896,5 +881,39 @@ class Inventory_model extends CI_Model {
 		return $data; 
 
 	}
+	public function get_received_stock_list($transac_id_type)
+	{
+		$whtype = $this -> session -> curr_wh_type;
+		$whcode = $this -> session -> curr_wh_code;
+		$this -> db -> select('transaction_date,transaction_number,transaction_counter,created_by,created_date');
+		
+		$this->  db -> where('transaction_type_id',$transac_id_type);
+		$this -> db -> where('to_warehouse_code',$whcode);
+		$this -> db -> where('to_warehouse_type_id',$whtype);
+		$this -> db -> order_by('created_date','DESC');
+		$this -> db -> from('epi_stock_master_history');
+
+		$data =$this -> db -> get() -> result_array();
+		
+		return $data;
+	}
+	public function get_received_stock_list_for_supplier($transac_id_type)
+	{
+		$whtype = $this -> session -> curr_wh_type;
+		$whcode = $this -> session -> curr_wh_code;
+		$this -> db -> select('transaction_date,transaction_number,transaction_counter,created_by,created_date');
+		
+		$this->  db -> where('transaction_type_id',$transac_id_type);
+		$this -> db -> where('to_warehouse_code',$whcode);
+		$this -> db -> where('to_warehouse_type_id',$whtype);
+		$this -> db -> where('from_warehouse_type_id','7');
+		$this -> db -> order_by('created_date','DESC');
+		$this -> db -> from('epi_stock_master_history');
+
+		$data =$this -> db -> get() -> result_array();
+		
+		return $data;
+	}
+
 	
 }

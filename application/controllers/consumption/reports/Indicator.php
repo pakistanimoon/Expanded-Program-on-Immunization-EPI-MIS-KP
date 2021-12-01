@@ -24,7 +24,6 @@ class Indicator extends CI_Controller {
 		$indicators = 'Vaccine';//$functionName;
 		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
 		$dataHtml .= $this->reportfilters->createReportFilters(true,true,true,true,$reportPeriod,false,$indicators);
-		//print_r($dataHtml);exit;
 		$dataHtml .= $this->reportfilters->filtersFooter();
 		$data['listing_filters'] = $dataHtml;
 		$data['data']=$data;

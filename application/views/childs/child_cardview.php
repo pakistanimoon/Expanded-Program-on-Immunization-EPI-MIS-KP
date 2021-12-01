@@ -1,7 +1,4 @@
-<?php //print_r ($childDataview); exit;?>
-<!doctype html>
-<html lang="en">
-  <head>
+
 <style>
 #myImg:hover {opacity: 0.7;}
 
@@ -102,11 +99,13 @@ body * { visibility: hidden; }
   }
 }
 
+.img-150{
+	height: 150px !important;
+	width: 150px !important; 
+	padding: 4px !important;
+}
+
 </style>
-	 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-    <title>Card | Child Vaccination</title>
-  </head>
-  <body>
     
   <section id="wrapper">
       <div class="container-fluid">
@@ -125,13 +124,10 @@ body * { visibility: hidden; }
                                              </td>
                                          </tr>
                                           <tr class="light-bg">
-                                              <td class="child-img text-center verticle-middle top-border-none"><img id="myImg" src="<?php echo base_url()?>webapis/cerv/assets/childs/<?php echo $childDataview[0]['child_registration_no'];?>.jpg" alt=""></td>
-											    <!-- The Modal -->
-												<div id="myModal" class="modal">
-													<span class="close">&times;</span>
-													<img class="modal-content" id="img01">
-													<div id="caption"></div>
-												</div>         
+                                              <td class="child-img text-center verticle-middle top-border-none">
+												<img id="myImg" src="<?php echo base_url()?>webapis/cerv/assets/childs/<?php echo $childDataview[0]['child_registration_no'];?>.jpg" class="img-150" alt="">
+												</td>
+											          
                                               <td class="epi-logo text-center verticle-middle top-border-none">
 	                                           <!-- <img src="images/logo/epiLogo.png" alt="">-->
                                                   <h6 class="mt-2"><?php echo $childDataview[0]['nameofchild'];?> </br>
@@ -162,10 +158,6 @@ body * { visibility: hidden; }
                                               <td><label for="VaccinatorName">Vaccinator Name <urdu>ٹیکہ لگانے والے کا نام</urdu></label></td>
                                               <td><span><?php echo $childDataview[0]['technicianname'];?></span></td>
                                           </tr>
-                                          <!--<tr>
-                                              <td><label for="VaccinatorContact#">Vaccinator Contact # <urdu>ٹیکہ لگانے والے کا فون نمبر</urdu></label></td>
-                                              <td><span><?php echo $childDataview[0]['techniciancontact'];?></span></td>
-                                          </tr>-->
                                            <tr>
                                               <td><label for="cardNumber#">Card Number <urdu>کارڈ نمبر</urdu></label></td>
                                               <td><span><?php echo $childDataview[0]['cardno'];?></span></td>
@@ -209,7 +201,7 @@ body * { visibility: hidden; }
                                           </tr>
 										  <tr>
                                               <td><label for="Contact">Complete Address<urdu>مکمل پتہ</urdu></label></td>
-											  <td><span><?php echo $childDataview[0]['address'];?> <?php echo $childDataview[0]['villagename'];?>, UC <?php echo $childDataview[0]['unioncouncil'];?>, Tehsil <?php echo $childDataview[0]['tehsil'];?>, District <?php echo $childDataview[0]['district'];?></span></td>
+                                              <td><span><?php echo $childDataview[0]['address'];?> <?php echo $childDataview[0]['villagename'];?>, UC <?php echo $childDataview[0]['unioncouncil']; ?>, Tehsil <?php echo $childDataview[0]['tehsil']; ?>, District <?php echo $childDataview[0]['district'];?></span></td>
                                           </tr>
 										  
                                         </tbody>
@@ -765,11 +757,14 @@ body * { visibility: hidden; }
           </div>
       </div>
   </section>
+  <!-- The Modal -->
+	<div id="myModal" class="modal">
+		<span class="close">&times;</span>
+		<img class="modal-content" id="img01">
+		<div id="caption"></div>
+	</div>   
    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="js/jquery-3.2.1.slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
 <script>
 // Get the modal
 var modal = document.getElementById('myModal');
@@ -793,11 +788,11 @@ span.onclick = function() {
 }
 
 <!--
-function popitup(url) {
+/* function popitup(url) {
 	newwindow=window.open(url,'name','height=600,width=600');
 	if (window.focus) {newwindow.focus()}
 	return false;
-}
+} */
 
 // -->
 <!-- print
@@ -820,5 +815,3 @@ $('button').on('click',function(){
 printData();
 }) */
 </script>
-  </body>
-</html>

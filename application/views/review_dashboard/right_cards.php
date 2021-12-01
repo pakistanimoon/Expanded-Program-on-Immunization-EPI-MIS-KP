@@ -2,6 +2,11 @@
 					<section id="rev_aside">
 						<div class="container-fluid p-0">
 							<?php
+							if(isset($ucwise) && $ucwise=='wise'){
+									$controller='ReviewDashboardUcWise';
+							}else{
+									$controller='ReviewDashboard';
+							}
 							$i=8;
 							foreach($rightCardsMainArray as $key => $indicator){
 								////////by usama for % sing
@@ -24,7 +29,7 @@
 								$queryString = http_build_query($_GET);
 							?>
 							<div class="row card-1 m-0">
-								<a href="<?php echo base_url('dashboard/ReviewDashboard?').$queryString.$ind_str; ?>" class="hover-tag">
+								<a href="<?php echo base_url('dashboard/'.$controller.'?').$queryString.$ind_str; ?>" class="hover-tag">
 									<div class="col-lg-12 p-0">
 										<table class="table m-0">
 											<tbody>
@@ -71,7 +76,7 @@
 																		$queryString = http_build_query($_GET);
 																	?>
 																	<li class="nav-item bg-<?php echo $i; ?> carousel-item col-12 col-sm-6 col-md-4 col-lg-3 <?php echo ($j == 0)?'active':''; ?>">
-																		<a class="nav-link <?php echo ($j == 0)?'active':''; ?>" href="<?php echo base_url('dashboard/ReviewDashboard?').$queryString.$ind_str.$subind_str; ?>"><span><?php echo $carousel['value']; ?>&#37;</span> <?php echo $carousel['name']; ?></a>
+																		<a class="nav-link <?php echo ($j == 0)?'active':''; ?>"  href="<?php echo base_url('dashboard/'.$controller.'?').$queryString.$ind_str.$subind_str; ?>"><span><?php echo $carousel['value']; ?>&#37;</span> <?php echo $carousel['name']; ?></a>
 																	</li>
 																	<?php
 																	$j++;

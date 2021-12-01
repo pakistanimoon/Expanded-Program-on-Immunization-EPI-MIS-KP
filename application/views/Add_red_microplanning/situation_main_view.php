@@ -2,7 +2,7 @@
 <?php 
 	date_default_timezone_set('Asia/Karachi'); // CDT
 	$current_date = date('Y-m-d');
-	//print_r($filter_view);exit;
+	
 ?>
 <!-- <div class="content-wrapper"> -->
 <section class="content">			
@@ -48,15 +48,16 @@ $(document).ready(function() {
 	var techniciancode = $('#techniciancodeh').val();
 	var year = $('#yearh').val();
 	var filter_view=$('#filterh').val();
+		//alert(year);
 		$('#ticode').attr("disabled", false); 
-        $('#unicode').attr("disabled", false); 
-        $('#faicode').attr("disabled", false); 
-        $('#technician').attr("disabled", false); 
-        $('#year').attr("disabled", false); 
-        $('#filter_view').attr("disabled", false); 
-        $('#myBtn').show(); 
+         $('#unicode').attr("disabled", false); 
+         $('#faicode').attr("disabled", false); 
+         $('#technician').attr("disabled", false); 
+         $('#year').attr("disabled", false); 
+         $('#myBtn').show(); 
 		$.ajax({
-			url: "<?php echo base_url(); ?>Ajax_red_rec/situation_analysis_view/"+techniciancode+"/"+year+"/"+filter_view,  
+			//url: "<?php echo base_url(); ?>Ajax_red_rec/situation_analysis_view/"+techniciancode+"/"+year,
+			url: "<?php echo base_url(); ?>Ajax_red_rec/situation_analysis_view/"+techniciancode+"/"+year+"/"+filter_view, 			
 			success: function(result){
 				$('#1a').html(result);				
 			}
@@ -66,13 +67,19 @@ $(document).ready(function() {
 
 	$('#a').trigger( "click" );
 	$('#b').on('click', function (e, x) {
+		//alert('test');
 		var techniciancode = $('#techniciancodeh').val();
 		var year = $('#yearh').val();
-		var filter_view = $('#filter_views').val();
-		if (techniciancode > 0){
+		//alert(techniciancode);
+     // alert(techniciancode);		
+		 if (techniciancode > 0)
+		{
             $('.nav li.active').next('li').removeClass('disabled');
             $('.nav li.active').next('li').find('a').attr("data-toggle","tab")
-			$.ajax({
+
+
+
+                $.ajax({
 				url: "<?php echo base_url(); ?>Ajax_red_rec/special_activities_view/"+techniciancode+"/"+year,  
 				success: function(result){
                  //alert('result');
@@ -80,14 +87,22 @@ $(document).ready(function() {
 				}
 			});				
 		} 
+		
 	});
+	
+
+
 	$('#c').on('click', function (e, x) {
+	 	//alert('test');
 		var techniciancode = $('#techniciancodeh').val();
 		var year = $('#yearh').val();
-		var filter_view = $('#filter_views').val();
-		if (techniciancode > 0){
-			$('.nav li.active').next('li').removeClass('disabled');
-			$('.nav li.active').next('li').find('a').attr("data-toggle","tab");
+		//alert(techniciancode);
+     // alert(techniciancode);		
+		if (techniciancode > 0)
+			{
+				$('.nav li.active').next('li').removeClass('disabled');
+				$('.nav li.active').next('li').find('a').attr("data-toggle","tab");
+		
 			console.log();
 			$.ajax({
 				url: "<?php echo base_url(); ?>Ajax_red_rec/session_plan_view/"+techniciancode+"/"+year,
@@ -98,13 +113,15 @@ $(document).ready(function() {
         }	
 	});
 	$('#d').on('click', function (e, x) {
+		//alert('test');
 		var techniciancode = $('#techniciancodeh').val();
 		var year = $('#yearh').val();
-		var filter_view = $('#filter_views').val();
+		//alert(year);
+      //alert(techniciancode);		
 		if (techniciancode > 0){
 				$('.nav li.active').next('li').removeClass('disabled');
 				$('.nav li.active').next('li').find('a').attr("data-toggle","tab");
-				$.ajax({
+					$.ajax({
 						url: "<?php echo base_url(); ?>Ajax_red_rec/red_strategy_view/"+techniciancode+"/"+year,
 						success: function(result){
 							$('#4a').html(result);
@@ -131,7 +148,6 @@ $(document).ready(function() {
 		$('#f').on('click', function () {
 	var techniciancode = $('#techniciancodeh').val();
 	var year = $('#yearh').val();
-	var filter_view = $('#filter_views').val();
 		//alert(year);
 		/*$('#ticode').attr("disabled", false); 
          $('#unicode').attr("disabled", false); 
@@ -140,7 +156,7 @@ $(document).ready(function() {
          $('#year').attr("disabled", false); 
          $('#myBtn').show();*/ 
 		$.ajax({
-			url: "<?php echo base_url(); ?>Ajax_red_rec/red_map_view/"+techniciancode+"/"+year+"/"+filter_view,  
+			url: "<?php echo base_url(); ?>Ajax_red_rec/red_map_view/"+techniciancode+"/"+year,  
 			success: function(result){
 				$('#6a').html(result);				
 			}
@@ -157,7 +173,7 @@ $(document).ready(function() {
 							<input type="hidden" name="submitted_date" id="submitted_date" value="<?php echo $current_date; ?>" class="form-control">					
 							<input type="hidden" name="techniciancodeh" id="techniciancodeh" value="<?php echo $data[0]['techniciancode']; ?>" class="form-control">					
 							<input type="hidden" name="year" id="yearh" value="<?php echo $data[0]['year']; ?>" class="form-control">					
-							<input type="hidden" name="filterh" id="filterh" value="<?php echo $filter_view; ?>" class="form-control">					
+							<input type="hidden" name="filterh" id="filterh" value="<?php echo $filter_view; ?>" class="form-control">
 							<div class="col-md-2 col-md-offset-1">
 								<label>Tehsil:</label>
 							</div>
@@ -197,7 +213,7 @@ $(document).ready(function() {
 							</div>
 							<div class="col-md-3">
 								<select class="form-control" name="techniciancode" id="technician">
-								        <?php if($data[0]['year']=='2019' || $data[0]['year']=='2018') { ?>
+								 <?php if($data[0]['year']=='2019' || $data[0]['year']=='2018') { ?>
 										<option value=""><?php echo get_Technician_Name($data[0]['techniciancode']);?></option>
 										<?php }else{ ?>
 										<option value=""><?php echo get_Hr_Name($data[0]['techniciancode'],'01');?></option>

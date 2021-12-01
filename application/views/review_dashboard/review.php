@@ -39,7 +39,7 @@
 									</div>
 									<div class="row">
 										<div class="col-lg-8 p-1 map-charts">
-											<div class="div-img" id="thematic-map" style="height: 100%;"></div>
+											<div class="div-img" id="thematic-map"></div>
 										</div>
 										<div class="col-lg-4 p-1 ranking">
 											<div class="">
@@ -56,3 +56,23 @@
 		<?php $this -> load -> view('review_dashboard/script'); ?>
 	</body>
 </html>
+<script>
+function eventHandler(e, run, fmonth){
+		var distcode = e.point.id;//alert(e.point.name);
+		var subindicatorid = '<?php echo $subindicatorid; ?>';
+		var indicatorid = '<?php echo $indicatorid; ?>';
+		var ucwise = '<?php echo (isset($ucwise))?$ucwise:""; ?>';
+		var year = $('#year').val();
+		var yearly = $('#yearly').val();
+		if(ucwise == 'wise'){
+			//No drilldown
+		}else{
+			if(run){
+				var url = '<?php echo base_url(); ?>dashboard/ReviewDashboardUcWise?&indicatorid='+indicatorid+'&subindicatorid='+subindicatorid+'&distcode='+distcode;
+				window.open(url, '_blank');
+			}
+		}
+		
+	}
+
+</script>

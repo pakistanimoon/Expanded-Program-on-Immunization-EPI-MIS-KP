@@ -115,12 +115,12 @@ background: #367fa9;
 				<div class="form-group">
 					<label class="col-xs-1 control-label lbl-setting" for="search">Search:</label>
 						<div class="col-xs-4">
-						<input id="search_table" name="searchParam" class="form-control" type="text" placeholder="Name/Label"/>
+						<input id="filter" name="searchParam" class="form-control" type="text"/>
 						</div>
 				</div>
 			</div>
             <br>
-            <table id="gl_tbl" class="table table-bordered table-hover table-striped footable table-vcenter" data-filter="#filter" data-filter-text-only="true" id="userList">
+            <table class="table table-bordered table-hover table-striped footable table-vcenter" data-filter="#filter" data-filter-text-only="true" id="userList">
                <thead>
                   <tr class="info">
                      <th class="text-center Heading">S#</th>
@@ -141,7 +141,21 @@ background: #367fa9;
                   </tr>
                </thead>
                <tbody id="tbody">
-
+			    <?php 
+					$i = 1;
+					foreach ($data as $key => $value){ ?>
+					<tr id="row_<?php echo $value['pk_id']; ?>" class="DrilledDown">
+						<td class="text-center  order"><?php echo $i++; ?></td>
+						<td class="text-center"><?php echo $value['name']; ?></td>
+						<td class="text-center"><?php echo $value['label']; ?></td>
+						<td class="text-center"><?php echo $value['created_date']; ?></td>
+						<td class="text-center"><?php echo $value['created_by']; ?></td>  
+						<td class="text-center">
+							<a id="edit_button" data-original-title="Edit" href="" data-id="<?php echo $value['id']; ?>" data-toggle="modal" data-target="#EditLevelModal" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData" ><i class="fa fa-pencil"></i></a>
+							<a data-original-title="Delete" href="javascript:void(0);" onclick="javascript:del_user('<?php echo $value['id']; ?>');"  data-toggle="tooltip"  class="btn btn-xs btn-danger btn-remov" ><i class="fa fa-times"></i></a>
+						</td>
+					</tr>
+				<?php }  ?>
                </tbody>
             </table>          
          </div> <!--end of panel body-->
@@ -269,50 +283,6 @@ background: #367fa9;
 	$(function () {
     	$('.footable').footable();
    	});
-		//DataTable start
-	 $(document).ready(function() { 
-	   var columns = [
-			{ data: "serial" ,
-			orderable: false,
-			},
-			{ data: "name" },
-			{ data: "label" },
-			{ data: "created_date" },
-			{ data: "created_by" },
-			{ data: "id" ,
-				orderable: false,
-				render : function(data, type, row) 
-					{				
-					 return '<a id="edit_button" data-original-title="Edit" href="" data-id="'+data+'" data-toggle="modal" data-target="#EditLevelModal" data-toggle="tooltip" title="" class="btn btn-xs btn-default editData" ><i class="fa fa-pencil"></i></a><a data-original-title="Delete" href="javascript:void(0);" onclick="javascript:del_user('+data+')"  data-toggle="tooltip"  class="btn btn-xs btn-danger btn-remov" ><i class="fa fa-times"></i></a>'
-					}
-			},
-		]; 
-		var table = $('#gl_tbl').DataTable(
-		{
-			"pageLength" : 50,
-			"serverSide": true,
-			"lengthChange": false,
-			"order": [
-			  [1, "desc" ]
-			],
-			"ajax": {
-				url : "<?php echo base_url(); ?>Ajax_hr_management/gl_list_search",
-				type : 'GET'
-			},
-			"columns": columns,
-			dom: 'lrtips',
-				"fnDrawCallback": function(oSettings) {
-					if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
-						$(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
-					}
-				}
-		 
-		});
-		$('#search_table').on('keyup change', function () {
-			table.search( this.value ).draw();
-		});
-	});
-	//End
 	function del_user(obj)
 	{	  
 		var myurl = '<?php echo base_url(); ?>Lookups_management/lookups_del/'+obj;
@@ -325,7 +295,8 @@ background: #367fa9;
 		}
 	}
 	
-	$(document).on("click",".editData",  function (e){
+	$('.editData').on('click', function()
+	{
 		var id = $(this).data("id");
 		$.ajax
 		({

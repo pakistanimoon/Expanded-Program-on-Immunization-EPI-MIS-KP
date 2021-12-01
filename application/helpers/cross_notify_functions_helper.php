@@ -1,4 +1,4 @@
-<?php 
+<?php
 if(!function_exists('getSingleRegionUrl')){
 	function getSingleRegionUrl($procode){
 		$CI = & get_instance();

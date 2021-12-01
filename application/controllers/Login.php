@@ -6,14 +6,14 @@
 			$this -> load -> model('Login_model');
 			$this -> load -> helper('date');
 			$this -> load -> helper('epi_functions_helper');
+			$this -> load -> helper('my_functions_helper');
 		}
 		//================ Constructor function ends=================//
 		//----------------------------------------------------------//
 		//================ Index function starts====================//
 		public function index() {
 			if($this -> session -> UserAuth == 'Yes' ){
-                //print_r($this->session); exit;
-				$data['data']=null;
+				$data['data']=NULL;
 				$data['fileToLoad'] = 'main';
 				$data['pageTitle'] = 'EPI-MIS | ' . $this -> session -> provincename;
 				$this -> load -> model('Common_model','common');
@@ -21,14 +21,14 @@
 				$data['data']['vouchers'] = $this->common->fetchall("epi_stock_master",array("table"=>"epi_stock_batch","tablecol"=>"batch_master_id","id"=>"pk_id"),"DISTINCT ON (epi_stock_master.transaction_number) epi_stock_master.transaction_number",$wh_whrarr,NULL,array("by"=>"epi_stock_master.transaction_number","type"=>"ASC"));
 				$this->load->view('template/epi_template',$data);
 			}else{
-				$data['msg']="Sorry, you have entered invalid security code.";
+				$data['msg']="Sorry , you have entered invalid security code.";
 				$this -> load -> view('index',$data);
 			}
 		}
 		//================ Index function ends======================//
 		//----------------------------------------------------------//
 		//================ Login function starts====================//
-		public function login() { 
+		public function login() {
 			$username = $this -> input -> post('username');
 			$password = $this -> input -> post('password');
 			date_default_timezone_set("Asia/Karachi");
@@ -121,9 +121,9 @@
 							$this -> session -> curr_wh_type = 4;
 							$this -> session -> curr_wh_code = $row['distcode'];
 							$this -> session -> loginfrom = DistrictName($row['distcode']);
-							//test to check at level 3  of sync when ever user login from any district.
 							syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
 							syncComplianceDataWithFederalEPIMIS('consumptioncompliance');
+							syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
 						}
 						break;
 					case '4' :
@@ -137,6 +137,20 @@
 							$this -> session -> curr_wh_type = 5;
 							$this -> session -> curr_wh_code = $row['tcode'];
 							$this -> session -> loginfrom = TehsilName($row['tcode']);
+						}
+						break;
+					case '6' :
+						if ($row['procode'] != "" && $row['distcode'] != "" && $row['facode'] != "") {
+							$this -> session -> distcode = $row['distcode'];
+							$this -> session -> tcode = $row['tcode'];
+							$this -> session -> facode = $row['facode'];
+							$this -> session -> Tehsil = $row['tcode'];
+							$this -> session -> District = $row['distcode'];
+							$this -> session -> Province = $row['procode'];
+							$this -> session -> login_yes = "logged in";
+							$this -> session -> curr_wh_type = 6;
+							$this -> session -> curr_wh_code = $row['facode'];
+							$this -> session -> loginfrom = FacilityName($row['facode']);
 						}
 						break;
 						default :
@@ -173,10 +187,11 @@
 						$this -> session -> provincename = "FATA";
 						break;
 				}
+				//print_r($_SESSION);exit;
 			}
 			else{
 				$this -> session -> set_flashdata('message', 'Sorry, you enter wrong Username or Password! Login Again!');
-			}
+				}
 			redirect(base_url());
 		}
 		//================ Login function ends======================//

@@ -4,7 +4,8 @@ class Investigation_forms extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this -> load -> helper('epi_functions_helper'); 
-		authentication();
+		$this -> load -> helper('cross_notify_functions_helper');
+		//authentication();
 		$this -> load -> model ('Investigation_forms_model');
 		$this -> load -> model ('Common_model');
 		$this -> load -> library('breadcrumbs');
@@ -27,12 +28,32 @@ class Investigation_forms extends CI_Controller {
 		$data['pageTitle']='NNT Investigation Form | EPI-MIS';
 		$this->load->view('template/epi_template',$data);	
 	}
-	public function nnt_investigation_Save(){	
-        dataEntryValidator(0);
-		if($this -> input -> post('distcode') && $this -> input -> post('tcode') && $this -> input -> post('uncode') && ($this -> input -> post('facode') || $this -> input -> post('cross_notified')) && $this -> input -> post('year')){			
+	public function nnt_investigation_Save(){
+		//print_r($_POST);exit();
+		$liveUrl = $this -> session -> liveURL;
+		$localUrl = $this -> session -> localURL;
+		$baseUrl = base_url();	
+     	//dataEntryValidator(0);
+		/////////By usama for federal sync
+		$doses_received= $this -> input -> post('doses_received');
+		$patient_gender= $this -> input -> post('gender');
+		$sdistcode= $this -> input -> post('distcode');
+		$case_type = 'Nnt';
+		if($patient_gender == 'Male'){
+			$gender = 1;
+		}else{
+			$gender = 0;
+		}
+		if($doses_received > 2 ){
+			$doses_received = 99;
+		}else{
+			$doses_received = $this -> input -> post('doses_received');
+		}
+		/////End//
+		if(($this -> input -> post('facode') || $this -> input -> post('cross_notified')) && $this -> input -> post('year')){			
 			$data=$_POST;
-			$data['procode']=$_SESSION["Province"];
-			$data['distcode']=$this -> session -> District;			
+			//$data['procode']=$_SESSION["Province"];
+			//$data['distcode']=$this -> session -> District;			
 			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
 			foreach($_POST as $key => $value)
 			{
@@ -53,56 +74,228 @@ class Investigation_forms extends CI_Controller {
 			$data['week'] = sprintf("%02d",$week);
 			$data['fweek'] = $year."-".sprintf("%02d",$week);
 			//$data['patient_address_procode']=$_SESSION["Province"];
-			if($this -> input -> post('cross_notified')){		
+			if($this -> input -> post('cross_notified') == 1){
+				$data['procode'] = $procode = $this -> input -> post('procode');
+				$data['nnt_procode'] = $this -> input -> post('procode');
+				$data['distcode'] = $this -> input -> post('nnt_distcode');
+				$data['tcode'] = $this -> input -> post('nnt_tcode');
+				$data['uncode'] = $this -> input -> post('nnt_uncode');				
+			}
+			if(!$this -> input -> post('cross_notified')){
+				$data['procode'] = $procode = $_SESSION["Province"];
+				
+			}
+			else{
 				if(!$this -> input -> post('edit') && !$this -> input -> post('id'))
 				{
-					$data['approval_status'] = "Pending";
+					$data['procode'] = $procode = $this -> input -> post('procode');
 					$data['cross_notified_from_distcode'] = $this -> session -> District;
+					$data['approval_status'] = "Pending";					
 				}
 			}
+			$query = "SELECT max(cn_id_from) AS cn_id_from FROM nnt_investigation_form";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$cn_id_from = $result['cn_id_from'] + 1; 
 			//echo '<pre>'; print_r($data); exit;	
 			if($this -> input -> post('edit') && $this -> input -> post('id'))
 			{ 
+				//echo "a"; exit();
+				//print_r($data);exit();
 				$id = $data['id'];
 				unset($data['id']);unset($data['edit']);
+				// $query = "SELECT approval_status FROM nnt_investigation_form where id=$id";
+				// $result = $this -> db -> query($query);
+				// $result = $result -> row_array();
+				// $data['approval_status'] = $approval_status = $result['approval_status'];
+
 				$updated_id = $this -> Common_model -> update_record('nnt_investigation_form',$data,array('id' => $id));
+				if(($procode != $_SESSION["Province"]) || ($approval_status == 'Approved')){
+					//echo "b"; exit();
+					$data['edit'] = $edit = $this -> input -> post('edit');
+					$filepath = 'Investigation_forms/nnt_receive_and_save';
+					$url = $this -> getSingleRegionUrl($procode);
+					$dataMeasles = $this -> getDataToSave($url, $filepath, $data);
+				}
+				if($this -> input -> post('cross_notified') != 1){
+					syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$sdistcode,$doses_received,$gender);
+				}
 				$this -> session -> set_flashdata('message','You have successfully updated your record!');
 				redirect('NNT-CIF/List');
-			}else{
-				/* $facode=($this -> input -> post('cross_notified'))?$this->input->post('rb_facode'):$this->input->post('facode');
-				$resultOfCount = $this -> Investigation_forms_model -> checkForExcessiveReocord($facode,'nnt',$data['fweek']);
-				if($resultOfCount != 1)
-				{ */
-					$inserted_id = $this -> Common_model -> insert_record('nnt_investigation_form',$data);
-					$this -> session -> set_flashdata('message','You have successfully saved your record!');
-					redirect('NNT-CIF/List');
-				/* }				 
-				else{
-					$this -> session -> set_flashdata('message','Sorry...You are entering excessive records!');
-					redirect('NNT-CIF/List');
-				} */ 
 			}
-		}else{
+			else{
+				if($this -> input -> post('cross_notified') == 1 && !$this -> input -> post('cross_case_id')){
+					//echo "a";exit();
+					$rcode = $this -> session -> District;
+					$distcode = $this -> input -> post('nnt_distcode');
+					$data['cross_case_id'] = $cross_case_id = $rcode.'-'.$distcode.'-'.$cn_id_from;
+				}
+				else if($this -> input -> post('cross_notified') == 1 && $this -> input -> post('cross_case_id')){
+					//echo "b";exit();
+					$data['cross_case_id'] =$this -> input -> post('cross_case_id');
+				}
+				else{
+					//echo "c";exit();
+					$data['cross_case_id'] = NULL;
+				}				
+				$inserted_id = $this -> Common_model -> insert_record('nnt_investigation_form',$data);
+				$query = "SELECT max(id) AS id FROM nnt_investigation_form";
+				$result = $this -> db -> query($query);
+				$result = $result -> row_array();
+				$data['cn_id_to'] = $cn_id_to = $result['id'];
+				if($procode != $_SESSION["Province"]){
+					$filepath = 'Investigation_forms/nnt_receive_and_save';
+					$url = $this -> getSingleRegionUrl($procode); //echo "a";exit();
+					$dataMeasles = $this -> getDataToSave($url, $filepath, $data); //echo "b";exit();
+				}
+				if($this -> input -> post('cross_notified') != 1){
+					//echo'test'; exit;
+					syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$sdistcode,$doses_received,$gender);
+				//}
+				}
+				$this -> session -> set_flashdata('message','You have successfully saved your record!');
+				redirect('NNT-CIF/List');				
+			}
+		}
+		else{
+			$this -> session -> set_flashdata('message','You must select District, Tehsil, Union Council and Facility!!');
+			redirect('NNT-CIF/Add');
+		}
+	}
+	public function nnt_receive_and_save(){
+		//print_r($_POST);exit();	
+     	//dataEntryValidator(0);
+		if($this -> input -> post('cross_notified') && $this -> input -> post('year')){			
+			$data=$_POST;	
+			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
+			foreach($_POST as $key => $value)
+			{
+				$data[$key] = (($value=='')?NULL:$value);
+				foreach ($formats as $format)
+				{
+					$date = DateTime::createFromFormat($format, $data[$key]);
+					if ($date == false || !(date_format($date,$format) == $data[$key]) ) 
+					{}
+					else
+					{
+						$data[$key] = date("Y-m-d",strtotime($data[$key]));
+					}
+				}
+			}
+			$year = $this -> input -> post('year');
+			$week = $this -> input -> post('week');
+			$data['week'] = sprintf("%02d",$week);
+			$data['fweek'] = $year."-".sprintf("%02d",$week);
+			//$data['patient_address_procode']=$_SESSION["Province"];
+			if($this -> input -> post('cross_notified') == 1){
+				$data['procode'] = $procode = $this -> input -> post('procode');
+				$data['nnt_procode'] = $this -> input -> post('procode');
+				$data['distcode'] = $this -> input -> post('nnt_distcode');
+				$data['tcode'] = $this -> input -> post('nnt_tcode');
+				$data['uncode'] = $this -> input -> post('nnt_uncode');				
+			}
+			if(!$this -> input -> post('cross_notified')){
+				$data['procode'] = $procode = $_SESSION["Province"];
+				
+			}
+			else{
+				if(!$this -> input -> post('edit') && !$this -> input -> post('id'))
+				{
+					//$data['procode'] = $procode = $this -> input -> post('procode');
+					$data['cross_notified_from_distcode'] = $this -> input -> post('rb_distcode');
+					$data['approval_status'] = "Pending";
+					
+				}
+			}
+			$query = "SELECT max(cn_id_from) AS cn_id_from FROM nnt_investigation_form";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$cn_id_from = $result['cn_id_from'] + 1; 
+			//echo '<pre>'; print_r($data); exit;	
+			if($this -> input -> post('edit') && $this -> input -> post('cross_case_id'))
+			{ 
+				//$id = $data['id'];
+				unset($data['id']);unset($data['edit']);
+				$cross_case_id = $this -> input -> post('cross_case_id');
+				//$updated_id = $this -> Common_model -> update_record('nnt_investigation_form',$data,array('id' => $id));
+				$updated_id = $this -> Common_model -> update_record('nnt_investigation_form',$data,array('cross_case_id' => $cross_case_id));
+				$this -> session -> set_flashdata('message','You have successfully updated your record!');
+				redirect('NNT-CIF/List');
+			}
+			else{				
+				$inserted_id = $this -> Common_model -> insert_record('nnt_investigation_form',$data);
+				$this -> session -> set_flashdata('message','You have successfully saved your record!');
+				redirect('NNT-CIF/List');				
+			}
+		}
+		else{
 			$this -> session -> set_flashdata('message','You must select District, Tehsil, Union Council and Facility!!');
 			redirect('NNT-CIF/Add');
 		}
 	}
 	public function nnt_Approve(){
-		dataEntryValidator(0);
+		//print_r($_POST);exit();
+		//dataEntryValidator(0);
+		/////parameter for sync by usama /////
+		$year = $this -> input -> post('year');
+		$week = $this -> input -> post('week');
+		$case_type = 'Nnt';
+		$sdistcode = $this -> input -> post('distcode');
+		$patient_gender = $this -> input -> post('gender');
+		$doses_received = $this -> input -> post('doses_received');
+		if($patient_gender == 'Male'){
+			$gender = '1';
+		}else{
+			$gender = '0';
+		}
+		if($doses_received > 2 ){
+			$doses_received = 99;
+		}else{
+			$doses_received = $this -> input -> post('doses_received');
+		}
+		//////////end
 		if($this -> input -> post('facode')>0 ){
 			$distcode = $this -> session -> District;
-			// $query = "select facode from districts where distcode='$distcode'";
-			// $result = $this -> db -> query($query);
-			// $result = $result -> row_array();
-			// $data['dcode'] = $result['epid_code'];
-			// $data['case_epi_no'] = $this -> input -> post('case_epi_no');
 			$data['facode'] = $this -> input -> post('facode');
-			//$data['measles_number'] = $this -> input -> post('measles_number');
+			$data['uncode'] = $this -> input -> post('uncode');
+			$data['tcode'] = $this -> input -> post('tcode');
+			$data['nnt_uncode'] = $this -> input -> post('uncode');
+			$data['nnt_tcode'] = $this -> input -> post('tcode');
+			$data['cross_case_id'] = $this -> input -> post('cross_case_id');
 			$data['approval_status'] = "Approved";
-			$updated_id = $this -> Common_model -> update_record('nnt_investigation_form',$data,array('id' => $this->input->post('id')));
+			$procode = $this -> input -> post('procode');
+			syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$sdistcode,$doses_received,$gender);
+			$updated_id = $this -> Common_model -> update_record('nnt_investigation_form',$data,array('id' => $this-> input-> post('id')));
+			if($procode != $_SESSION["Province"]){
+				$filepath = 'Investigation_forms/nntApprove_and_save'; 
+				$url = $this -> getSingleRegionUrl($procode); 
+				$dataMeasles = $this -> getDataToSave($url, $filepath,$data); 
+			}
 			$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
 			redirect('NNT-CIF/List');
-		}else{
+		}
+		else{
+			$this -> session -> set_flashdata('message','You must select Health Facility!');
+			redirect($this->session->flashdata('redirectToCurrent'));
+		}
+	}
+	public function nntApprove_and_save(){
+		//dataEntryValidator(0);
+		if($this -> input -> post('facode')>0 ){
+			$distcode = $this -> session -> District;
+			$data['facode'] = $this -> input -> post('facode');
+			$data['uncode'] = $this -> input -> post('uncode');
+			$data['tcode'] = $this -> input -> post('tcode');
+			$data['nnt_uncode'] = $this -> input -> post('uncode');
+			$data['nnt_tcode'] = $this -> input -> post('tcode');
+			$data['cross_case_id'] = $this -> input -> post('cross_case_id');
+			$data['approval_status'] = "Approved";
+			$procode = $this -> input -> post('procode');
+			$updated_id = $this -> Common_model -> update_record('nnt_investigation_form',$data,array('cross_case_id' => $this-> input-> post('cross_case_id')));			
+			$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
+			redirect('NNT-CIF/List');
+		}
+		else{
 			$this -> session -> set_flashdata('message','You must select Health Facility!');
 			redirect($this->session->flashdata('redirectToCurrent'));
 		}
@@ -137,7 +330,7 @@ class Investigation_forms extends CI_Controller {
 	}
 
 	public function nnt_investigation_edit(){
-		dataEntryValidator(0);
+		//dataEntryValidator(0);
 		$distcode = $this -> session -> District;
 		$query = "select distcode from districts where distcode='$distcode'";
 		$result = $this -> db -> query($query);
@@ -168,7 +361,7 @@ class Investigation_forms extends CI_Controller {
 		}
 	}
 	public function nnt_investigation_view(){
-		dataEntryValidator(0);
+		//dataEntryValidator(0);
 		//$id   = $this -> uri -> segment(3);
 		//$data['a'] = $this -> Common_model -> get_info('nnt_investigation_form', '', '','*', array('id' => $id));
 		if($this -> uri -> segment(4) != ''){
@@ -179,6 +372,7 @@ class Investigation_forms extends CI_Controller {
 			$id   = $this -> uri -> segment(3);
 			$data['a'] = $this -> Common_model -> get_info('nnt_investigation_form', '', '','*', array('id' => $id));
 		}
+		//print_r($data['a']);exit();
 		/*$data['unioncouncil']=get_UC_Name($data['a']->nnt_uncode);
 		$data['facility']=get_Facility_Name($data['a']->nnt_facode);
 		$data['tehsil']=get_Tehsil_Name($data['a']->nnt_tcode);
@@ -383,7 +577,8 @@ class Investigation_forms extends CI_Controller {
 		$result = $this -> db -> query($query);        
 		$result = $result -> row_array();
 		$data['measleNumber'] = str_split(sprintf('%04u', ($result['measles_number'] + 1)));
-		$data['years'] = getAllYearsOptionsIncludingCurrent(true);
+		$data['years'] = getEpiWeekYearsOptions('',true);
+		//$data['years'] = getAllYearsOptionsIncludingCurrent(true);
 		$data['fileToLoad'] = 'investigation_forms/measles_case_investigation_form';
 		$data['pageTitle']='Measles Case Investigation Form | EPI-MIS';
 		$this->load->view('template/epi_template',$data);	
@@ -502,45 +697,8 @@ class Investigation_forms extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
-	/*public function measles_edit(){
-		//$facode = $this -> uri -> segment(3);
-		$distcode = $this -> session -> District;
-		$query = "select epid_code from districts where distcode='$distcode'";
-		$result = $this -> db -> query($query);
-		$result = $result -> row_array();
-		$data['distCode'] = $result['epid_code'];
-		$dcode=$result['epid_code'];
-		$year = date('Y');
-		
-		$id   = ($this -> uri -> segment(4) != '')?$this -> uri -> segment(4):$this -> uri -> segment(3);
-		$data['measles_Result'] = $this -> Common_model -> get_info('measle_case_investigation', '', '','*', array('id' => $id));
-		if($data['measles_Result']->case_reported == 0){
-			$query = "select max(measles_number) as measles_number from measle_case_investigation where epid_year='$year' AND dcode='$dcode'";
-			$result = $this -> db -> query($query);        
-			$result = $result -> row_array();
-			$data['measleNumber'] = str_split(sprintf('%04u', ($result['measles_number'] + 1)));
-		}else
-			$data['measleNumber'] = str_split(sprintf('%04u', ($data['measles_Result']->measles_number)));	
-		//$data['measles_Result'] = $this -> Common_model -> get_info('measle_case_investigation', '', '','*', array('id' => $id, 'facode' => $facode));
-		$data['unioncouncil']=get_UC_Name($data['measles_Result']->uncode);
-		$data['facility']=get_Facility_Name($data['measles_Result']->facode);
-		$data['tehsil']=get_Tehsil_Name($data['measles_Result']->tcode);
-		$data['rbfacility']=get_Facility_Name($data['measles_Result']->rb_facode);
-		//$data['rbuncode']=get_UC_Name($data['measles_Result']->rb_uncode);
-		$data['edit']="Yes";
-		if($data != 0){
-			$data['data']=$data;
-			//print_r($data);exit;
-			$data['fileToLoad'] = 'investigation_forms/measles_case_investigation_form';
-			$data['pageTitle']='Measles Case Investigation Form | EPI-MIS';
-			$this->load->view('template/epi_template',$data);
-		}
-		else{
-			$data['message'] ="You must have rights to access this page.";
-			$this -> load -> view ('message',$data);
-		}
-	}*/
-		public function measles_edit(){
+	
+	public function measles_edit(){
 		dataEntryValidator(0);
 		//$facode = $this -> uri -> segment(3);
 		$distcode = $this -> session -> District;
@@ -606,17 +764,19 @@ class Investigation_forms extends CI_Controller {
 	public function afp_investigation(){
 		$data['data']=$this -> Investigation_forms_model -> afp_investigation();
 		$distcode = $this -> session -> District;
-		$query = "select epid_code from districts where distcode='$distcode'";
+		$query = "SELECT epid_code from districts where distcode='$distcode'";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
 		$data['distCode'] = $result['epid_code'];
 		$dcode=$result['epid_code'];
-		$year = date('Y');
-		$query = "select max(afp_number) as afp_number from afp_case_investigation where epid_year='$year' AND dcode='$dcode'";
+		$current_date = date('Y-m-d');
+		$year = getWeekYearAccordingToCurrentDate($current_date);
+		$query = "SELECT max(afp_number) as afp_number from afp_case_investigation where epid_year='$year' AND dcode='$dcode'";
 		$result = $this -> db -> query($query);        
 		$result = $result -> row_array();
 		$data['afpNumber'] = str_split(sprintf('%04u', ($result['afp_number'] + 1)));
-		$data['years'] = getAllYearsOptionsIncludingCurrent(true);
+		$data['years'] = getEpiWeekYearsOptions('',true);
+		//$data['years'] = getAllYearsOptionsIncludingCurrent(true);
 		$distcode = $this -> session -> District;
 		$data['fileToLoad'] = 'investigation_forms/afp_investigation_form';
 		$data['pageTitle']='AFP Investigation Form | EPI-MIS';
@@ -624,10 +784,24 @@ class Investigation_forms extends CI_Controller {
 	}
 	///////////////////////////////////AFP Forms Save/////////////////////////////////////////////////////////////////////////
 	public function afp_Save(){
-		dataEntryValidator(0);
-		if($this -> input -> post('distcode') && $this -> input -> post('tcode') && $this -> input -> post('uncode') && ($this -> input -> post('facode') || $this -> input -> post('cross_notified')) && $this -> input -> post('year')){
-			$data=$_POST;
-			$data['procode']=$_SESSION["Province"];
+		//print_r($_POST);exit();
+		$liveUrl = $this -> session -> liveURL;
+		$localUrl = $this -> session -> localURL;
+		$baseUrl = base_url();
+		//dataEntryValidator(0);
+		/////////By usama for federal sync
+		$doses_received= $this -> input -> post('doses_received');
+		$patient_gender= $this -> input -> post('patient_gender');
+		$sdistcode= $this -> input -> post('distcode');
+		$case_type = 'Afp';
+		if($doses_received > 2 ){
+			$doses_received = 99;
+		}else{
+			$doses_received = $this -> input -> post('doses_received');
+		}
+		/////End//
+		if(($this -> input -> post('facode') || $this -> input -> post('cross_notified')) && $this -> input -> post('year')){
+			$data=$_POST;			
 			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
 			foreach($_POST as $key => $value)
 			{
@@ -648,66 +822,179 @@ class Investigation_forms extends CI_Controller {
 			$data['epid_year'] = $year;
 			$data['week'] = sprintf("%02d",$week);
 			$data['fweek'] = $year."-".sprintf("%02d",$week);
+			if($this -> input -> post('cross_notified') == 1){
+				$data['procode'] = $procode = $this -> input -> post('procode');
+				$data['patient_address_procode'] = $this -> input -> post('procode');
+				$data['distcode'] = $this -> input -> post('patient_address_distcode');
+				$data['tcode'] = $this -> input -> post('patient_address_tcode');
+				$data['uncode'] = $this -> input -> post('patient_address_uncode');				
+			}
 			
 			if(!$this -> input -> post('cross_notified')){
+				$data['procode'] = $procode = $_SESSION["Province"];
 				$data['case_epi_no'] = "PAK/".$_SESSION["shortname"]."/".$this -> input -> post('dcode')."/".$this -> input -> post('year')."/".$this -> input -> post('a1').$this -> input -> post('a2').$this -> input -> post('a3').$this -> input -> post('a4');			
 				$data['afp_number'] = $this -> input -> post('a1').$this -> input -> post('a2').$this -> input -> post('a3').$this -> input -> post('a4');
-			}else{
+			}
+			else{
 				if(!$this -> input -> post('edit') && !$this -> input -> post('id')){
+					$data['procode'] = $procode = $this -> input -> post('procode');
 					$data['cross_notified_from_distcode'] = $this -> session -> District;
 					$data['approval_status'] = "Pending";
 				}
 			}
+			$query = "SELECT max(cn_id_from) AS cn_id_from FROM afp_case_investigation";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$cn_id_from = $result['cn_id_from'] + 1; 
+
 			unset($data['a1']);unset($data['a2']);unset($data['a3']);unset($data['a4']);
 			//echo '<pre>';print_r($data);exit;
 			if($this -> input -> post('edit') && $this -> input -> post('id'))
 			{
 				$id = $data['id'];
 				unset($data['id']);unset($data['edit']);
-				$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $id,'distcode' => $data['distcode'],'facode' => $data['facode']));
+				//$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $id,'distcode' => $data['distcode'],'facode' => $data['facode']));
+				$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $id));
+				if(($procode != $_SESSION["Province"]) || ($approval_status == 'Approved')){
+					$data['edit'] = $edit = $this -> input -> post('edit');
+					$filepath = 'Investigation_forms/afp_receive_and_save';
+					$url = $this -> getSingleRegionUrl($procode);
+					$dataMeasles = $this -> getDataToSave($url, $filepath, $data);
+				}
+				if($this -> input -> post('cross_notified') != 1){
+					syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$sdistcode,$doses_received,$patient_gender);
+				
+				}
 				$this -> session -> set_flashdata('message','You have successfully updated your record!');
 				redirect('AFP-CIF/List');
-			}else{
-				/* $facode=($this -> input -> post('cross_notified'))?$this->input->post('rb_facode'):$this->input->post('facode');
-				$resultOfCount = $this -> Investigation_forms_model -> checkForExcessiveReocord($facode,'afp',$data['fweek']);
-				if($resultOfCount != 1)
-				{ */
-						$inserted_id = $this -> Common_model -> insert_record('afp_case_investigation',$data);
-						$this -> session -> set_flashdata('message','You have successfully saved your record!');
-						redirect('AFP-CIF/List');
-				/* }
-				else
-				{
-					$this -> session -> set_flashdata('message','Sorry...You are entering excessive records!');
-					redirect('AFP-CIF/List');
-				}  */
+			}
+			else{
+				if($this -> input -> post('cross_notified') == 1 && !$this -> input -> post('cross_case_id')){
+					//echo "a";exit();
+					$rcode = $this -> session -> District;
+					$distcode = $this -> input -> post('patient_address_distcode');
+					$data['cross_case_id'] = $cross_case_id = $rcode.'-'.$distcode.'-'.$cn_id_from;
+				}
+				else if($this -> input -> post('cross_notified') == 1 && $this -> input -> post('cross_case_id')){
+					//echo "b";exit();
+					$data['cross_case_id'] =$this -> input -> post('cross_case_id');
+				}
+				else{
+					//echo "c";exit();
+					$data['cross_case_id'] = NULL;
+				}
+				$inserted_id = $this -> Common_model -> insert_record('afp_case_investigation',$data);
+				$query = "SELECT max(id) AS id FROM afp_case_investigation";
+				$result = $this -> db -> query($query);
+				$result = $result -> row_array();
+				$data['cn_id_to'] = $cn_id_to = $result['id'];			
+				if($procode != $_SESSION["Province"]){
+					$filepath = 'Investigation_forms/afp_receive_and_save';
+					$url = $this -> getSingleRegionUrl($procode);
+					$dataMeasles = $this -> getDataToSave($url, $filepath, $data);
+				}
+				if($this -> input -> post('cross_notified') != 1){
+
+					syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$sdistcode,$doses_received,$patient_gender);
+				 
+				}
+				$this -> session -> set_flashdata('message','You have successfully saved your record!');
+				redirect('AFP-CIF/List');				
 			}
 		}else{
 			$this -> session -> set_flashdata('message','You must select District, Tehsil, Union Council, Health Facility and Year!');
 			redirect('AFP-CIF/Add');
 		}
 	}
-	// public function afp_Approve(){
-	// 	if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
-	// 		$distcode = $this -> session -> District;
-	// 		$query = "select epid_code from districts where distcode='$distcode'";
-	// 		$result = $this -> db -> query($query);
-	// 		$result = $result -> row_array();
-	// 		$data['dcode'] = $result['epid_code'];
-	// 		$data['case_epi_no'] = $this -> input -> post('case_epi_no');
-	// 		$data['facode'] = $this -> input -> post('facode');
-	// 		$data['afp_number'] = $this -> input -> post('afp_number');
-	// 		$data['approval_status'] = "Approved";
-	// 		$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $this->input->post('id')));
-	// 		$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
-	// 		redirect('AFP-CIF/List');
-	// 	}else{
-	// 		$this -> session -> set_flashdata('message','You must select Health Facility!');
-	// 		redirect($this->session->flashdata('redirectToCurrent'));
-	// 	}
-	// }
+	
+	public function afp_receive_and_save(){
+		//print_r($_POST);exit();
+		//dataEntryValidator(0);
+		if($this -> input -> post('cross_notified') && $this -> input -> post('year')){
+			$data=$_POST;			
+			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
+			foreach($_POST as $key => $value)
+			{
+				$data[$key] = (($value=='')?NULL:$value);
+				foreach ($formats as $format)
+				{
+					$date = DateTime::createFromFormat($format, $data[$key]);
+					if ($date == false || !(date_format($date,$format) == $data[$key]) ) 
+					{}
+					else
+					{
+						$data[$key] = date("Y-m-d",strtotime($data[$key]));
+					}
+				}
+			}
+			$year = $this -> input -> post('year');
+			$week = $this -> input -> post('week');
+			$data['epid_year'] = $year;
+			$data['week'] = sprintf("%02d",$week);
+			$data['fweek'] = $year."-".sprintf("%02d",$week);
+			if($this -> input -> post('cross_notified') == 1){
+				$data['procode'] = $this -> input -> post('procode');
+				$data['patient_address_procode'] = $this -> input -> post('procode');
+				$data['distcode'] = $this -> input -> post('patient_address_distcode');
+				$data['tcode'] = $this -> input -> post('patient_address_tcode');
+				$data['uncode'] = $this -> input -> post('patient_address_uncode');				
+			}
+			
+			if(!$this -> input -> post('cross_notified')){
+				$data['procode']=$_SESSION["Province"];
+				$data['case_epi_no'] = "PAK/".$_SESSION["shortname"]."/".$this -> input -> post('dcode')."/".$this -> input -> post('year')."/".$this -> input -> post('a1').$this -> input -> post('a2').$this -> input -> post('a3').$this -> input -> post('a4');			
+				$data['afp_number'] = $this -> input -> post('a1').$this -> input -> post('a2').$this -> input -> post('a3').$this -> input -> post('a4');
+			}
+			else{
+				if(!$this -> input -> post('edit') && !$this -> input -> post('id')){
+					$data['cross_notified_from_distcode'] = $this -> input -> post('rb_distcode');
+					$data['approval_status'] = "Pending";
+				}
+			}
+			$query = "SELECT max(cn_id_from) AS cn_id_from FROM afp_case_investigation";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$cn_id_from = $result['cn_id_from'] + 1; 
+
+			unset($data['a1']);unset($data['a2']);unset($data['a3']);unset($data['a4']);
+			//echo '<pre>';print_r($data);exit;
+			if($this -> input -> post('edit') && $this -> input -> post('cross_case_id'))
+			{
+				//$id = $data['id'];
+				unset($data['id']);unset($data['edit']);
+				$cross_case_id = $this -> input -> post('cross_case_id'); 
+				//$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $id,'distcode' => $data['distcode'],'facode' => $data['facode']));
+				$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('cross_case_id' => $cross_case_id));
+				
+				$this -> session -> set_flashdata('message','You have successfully updated your record!');
+				redirect('AFP-CIF/List');
+			}
+			else{				
+				$inserted_id = $this -> Common_model -> insert_record('afp_case_investigation',$data);				
+				$this -> session -> set_flashdata('message','You have successfully saved your record!');
+				redirect('AFP-CIF/List');				
+			}
+		}else{
+			$this -> session -> set_flashdata('message','You must select District, Tehsil, Union Council, Health Facility and Year!');
+			redirect('AFP-CIF/Add');
+		}
+	}
 	public function afp_Approve(){
-		dataEntryValidator(0);
+		//print_r($_POST);exit();
+		//dataEntryValidator(0);
+		/////parameter for sync by usama /////
+		$year = $this -> input -> post('year');
+		$week = $this -> input -> post('week');
+		$case_type = 'Afp';
+		$sdistcode = $this -> input -> post('distcode');
+		$patient_gender = $this -> input -> post('gender');
+		$doses_received = $this -> input -> post('doses_received');
+		if($doses_received > 2 ){
+			$doses_received = 99;
+		}else{
+			$doses_received = $this -> input -> post('doses_received');
+		}
+		/////end
 		if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
 			$distcode = $this -> session -> District;
 			$query = "select epid_code from districts where distcode='$distcode'";
@@ -716,9 +1003,47 @@ class Investigation_forms extends CI_Controller {
 			$data['dcode'] = $result['epid_code'];
 			$data['case_epi_no'] = $this -> input -> post('case_epi_no');
 			$data['facode'] = $this -> input -> post('facode');
+			$data['uncode'] = $this -> input -> post('uncode');
+			$data['tcode'] = $this -> input -> post('tcode');
+			$data['patient_address_uncode'] = $this -> input -> post('uncode');
+			$data['patient_address_tcode'] = $this -> input -> post('tcode');
 			$data['afp_number'] = $this -> input -> post('afp_number');
+			$data['cross_case_id'] = $this -> input -> post('cross_case_id');			
 			$data['approval_status'] = "Approved";
+			$procode = $this -> input -> post('procode');
 			$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $this->input->post('id')));
+			syncCaseEpidCountMasterDataWithFederalEPIMIS($year,$week,$case_type,$sdistcode,$doses_received,$patient_gender);
+			if($procode != $_SESSION["Province"]){
+				$filepath = 'Investigation_forms/afpApprove_and_save'; 
+				$url = $this -> getSingleRegionUrl($procode); 
+				$dataMeasles = $this -> getDataToSave($url, $filepath,$data); 
+			}
+			$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
+			redirect('AFP-CIF/List');
+		}else{
+			$this -> session -> set_flashdata('message','You must select Health Facility!');
+			redirect($this->session->flashdata('redirectToCurrent'));
+		}
+	}
+	public function afpApprove_and_save(){
+		//dataEntryValidator(0);
+		if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
+			$distcode = $this -> session -> District;
+			$query = "select epid_code from districts where distcode='$distcode'";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$data['dcode'] = $result['epid_code'];
+			$data['case_epi_no'] = $this -> input -> post('case_epi_no');
+			$data['facode'] = $this -> input -> post('facode');
+			$data['uncode'] = $this -> input -> post('uncode');
+			$data['tcode'] = $this -> input -> post('tcode');
+			$data['patient_address_uncode'] = $this -> input -> post('uncode');
+			$data['patient_address_tcode'] = $this -> input -> post('tcode');
+			$data['afp_number'] = $this -> input -> post('afp_number');
+			//$data['cross_case_id'] = $this -> input -> post('cross_case_id');			
+			$data['approval_status'] = "Approved";
+			$procode = $this -> input -> post('procode');
+			$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('cross_case_id' => $this-> input-> post('cross_case_id')));
 			$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
 			redirect('AFP-CIF/List');
 		}else{
@@ -768,6 +1093,7 @@ class Investigation_forms extends CI_Controller {
 		
 		$id   = ($this -> uri -> segment(4) != '')?$this -> uri -> segment(4):$this -> uri -> segment(3);
 		$data['afp_Result'] = $this -> Common_model -> get_info('afp_case_investigation', '', '','*', array('id' => $id));
+		//print_r($data['afp_Result']);exit();
 		if($data['afp_Result']->case_reported == 0){
 			$query = "select max(afp_number) as afp_number from afp_case_investigation where epid_year='$year' AND dcode='$dcode'";
 			$result = $this -> db -> query($query);        
@@ -825,7 +1151,7 @@ class Investigation_forms extends CI_Controller {
 	public function zero_reporting(){
 		$data['data']=$this -> Investigation_forms_model -> zero_reporting();
 		$wc = getWC();
-		$data['years'] = getEpiWeekYearsOptions('',true);
+		$data['years'] = getEpiWeekYearsOptions('',true,true);
 		$distcode = $this -> session -> District;
 		//print_r($data);exit;
 		$data['fileToLoad'] = 'investigation_forms/zero_reporting_form';
@@ -1068,19 +1394,17 @@ class Investigation_forms extends CI_Controller {
 				$this -> Common_model -> insert_record('zero_report',$onearr);
 			}
 			syncDataWithFederalEPIMIS('zero_report', $fweek, 'weekly', $distcode);
+			syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
 			$this -> session -> set_flashdata('message','You have successfully updated your record!');
 			redirect('Zero-Reporting');
 		}
 		if(!$this -> input -> post('edit'))
-		{
-			//print_r($dataARRY);
-			//$inserted_id = $this -> Common_model -> insert_batch_record('zero_report',$dataARRY);
+		{			
 			foreach($dataARRY as $onearr){
 				$this -> Common_model -> insert_record('zero_report',$onearr);
-				//echo $this->db->last_query();
 			}
 			syncDataWithFederalEPIMIS('zero_report', $fweek, 'weekly', $distcode);
-			//exit;
+			syncComplianceDataWithFederalEPIMIS('zeroreportcompliance');
 			$this -> session -> set_flashdata('message','You have successfully saved your record!');
 			redirect('Zero-Reporting');	
 		}
@@ -1151,6 +1475,278 @@ class Investigation_forms extends CI_Controller {
 			$this -> load -> view ('message',$data);
 		}
 	}
+
+	function getSingleRegionUrl($procode){
+		$liveUrl = $this -> session -> liveURL;
+		$localUrl = $this -> session -> localURL;
+		$baseUrl = base_url();
+		if($baseUrl == $liveUrl){
+			switch($procode){
+				case  "1":
+					return "http://federal.epimis.pk/";
+					break;
+				case  "2":
+					return "http://federal.epimis.pk/";
+					break;
+				case  "3":
+					return "http://epimis.cres.pk/";
+					break;
+				case  "4":
+					return "http://balochistan.epimis.pk/";
+					break;
+				case  "5":
+					return "http://ajk.epimis.pk/";
+					break;
+				case  "6":
+					return "http://gb.epimis.pk/";
+					break;
+				case  "7":
+					return "http://islamabad.epimis.pk/";
+					break;
+				case  "8":
+					return "http://fata.epimis.pk/";
+					break;
+				default:
+					return NULL;
+					break;
+			}
+		}
+		else{
+			switch($procode){
+				case  "1":
+					return "http://epifederal.pacemis.com/";
+					break;
+				case  "2":
+					return "http://epifederal.pacemis.com/";
+					break;
+				case  "3":
+					return "http://epikp.pacemis.com/";
+					//return "http://epibeta.pacemis.com/";
+					break;
+				case  "4":
+					return "http://epiblch.pacemis.com/";
+					break;
+				case  "5":
+					return "http://epiajk.pacemis.com/";
+					break;
+				case  "6":
+					return "http://epigb.pacemis.com/";
+					break;
+				case  "7":
+					return "http://epiict.pacemis.com/";
+					break;
+				case  "8":
+					return "http://epifata.pacemis.com/";
+					break;
+				default:
+					return NULL;
+					break;
+			}
+		}
+	}
+	function getDataToSave($url=NULL,$filepath=NULL,$Array=NULL)
+	{		
+		//$data = array('procode' => $procode,'distcode' => $distcode,'tcode' => $tcode,);
+		$data = $Array;
+		//print_r($data);exit();
+		//post data mechanism
+		//$fields_string = http_build_query($data);
+		$fields_string = '';
+		foreach($data as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		$fields_string = rtrim($fields_string, '&');
+		//$filepath = 'API/Receiver/get_cc_assetType_counts';
+		//print_r($fields_string);exit();
+		//url to post
+		if($url===NULL)
+			$url = "http://epimis.cres.pk/";
+		$url .= $filepath;
+		//curl options
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);		
+		curl_setopt($ch, CURLOPT_POST, count($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+		$saveData = curl_exec($ch);
+		//print_r($saveData);exit();
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);	
+		//print_r($httpCode);exit();			
+		curl_close($ch);
+		//workout for data in response
+		//$userData = json_decode($saveData, true);
+		if(isset($saveData)){
+			return $saveData;
+		}else{
+			return array();
+		}
+	}
+	public function DistNames(){
+		$distcode = $this-> input-> post('distcode'); 
+		$Districtname = $this -> CrossProvince_DistrictName($distcode);
+		echo $Districtname;
+	}
+	
+	function CrossProvince_DistrictName($distcode)
+   {      
+		$_query = "SELECT district from districts where distcode = '$distcode'";
+		$results = $this-> db-> query($_query);
+		$rows = $results->row_array();        
+		return $rows['district'];	    
+   }
+   public function DistOptions(){
+		$distcode = $this-> input-> post('distcode'); 
+		$Districtname = $this -> getCrossProvince_DistrictsOptions(false,$distcode);
+		echo $Districtname;
+	}
+	
+	function getCrossProvince_DistrictsOptions($isreturn=false,$distcode=NULL,$allDistricts=NULL)
+    { 
+    	$procode = substr($distcode, 0,1);        
+      $output = '<option value="" >-- Select District --</option>';
+		$query="SELECT district,distcode from districts where procode = '$procode' order by district asc";
+		$result = $this -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $onedist) { 
+			$selected = '';
+			if(($distcode > 0)&&($distcode == $onedist["distcode"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$onedist["distcode"].'" '.$selected.' >'.$onedist["district"].'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
+	    
+    }
+    public function TehsilNames(){
+		$tcode = $this-> input-> post('tcode'); 
+		$TehsilName = $this -> CrossProvince_TehsilName($tcode);
+		echo $TehsilName;
+	}	
+
+   function CrossProvince_TehsilName($tcode)
+   {        
+		$_query = "SELECT tehsil from tehsil where tcode = '$tcode'";
+		$results = $this-> db-> query($_query);
+		$rows = $results->row_array();        
+		return $rows['tehsil'];	    
+   }
+
+	public function TehsilOptions(){
+		$tcode = $this-> input-> post('tcode'); 
+		$TehsilName = $this -> getCrossProvince_TehsilOptions(false,$tcode);
+		echo $TehsilName;
+	}	
+
+	function getCrossProvince_TehsilOptions($isreturn=false,$tcode=NULL,$distcode=NULL)
+	{       
+		$procode = substr($tcode,0,1);
+		$distcode = substr($tcode,0,3);
+		$output = '<option value="" >-- Select Tehsil --</option>';
+		$query="SELECT tehsil,tcode from tehsil where distcode = '$distcode' order by tcode";
+		$result = $this -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $oneteh) { 
+			$selected = '';
+			if(($tcode > 0)&&($tcode == $oneteh["tcode"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$oneteh["tcode"].'" '.$selected.' >'.$oneteh["tehsil"].'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
+
+	}
+   public function UCNames(){
+		$uncode = $this-> input-> post('uncode'); 
+		$UCName = $this -> CrossProvince_UCName($uncode);
+		echo $UCName;
+	}
+    
+   function CrossProvince_UCName($uncode)
+   {     
+		$_query = "SELECT un_name from unioncouncil where uncode = '$uncode'";
+		$results = $this-> db-> query($_query);
+		$rows = $results->row_array();        
+		return $rows['un_name'];	    
+   }
+   public function UCsOptions(){
+		$uncode = $this-> input-> post('uncode'); 
+		$UCName = $this -> getCrossProvince_UCsOptions(false,$uncode);
+		echo $UCName;
+	}
+    
+   function getCrossProvince_UCsOptions($isreturn=false,$uncode=NULL)
+   {  
+      $procode = substr($uncode,0,1);
+		$distcode = substr($uncode,0,3);
+		$tcode = substr($uncode,0,6);
+		$output = '<option value="" >-- Select Unioncouncil --</option>';
+		$query="SELECT un_name,uncode from unioncouncil where tcode = '$tcode' order by uncode";
+		$result = $this -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $oneteh) { 
+			$selected = '';
+			if(($uncode > 0)&&($uncode == $oneteh["uncode"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$oneteh["uncode"].'" '.$selected.' >'.$oneteh["un_name"].'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
+	    
+   }
+    public function FacilityNames(){
+		$facode = $this-> input-> post('facode');
+		$FacilityName = $this -> CrossProvince_FacilityName($facode);
+		echo $FacilityName;
+	}
+	function CrossProvince_FacilityName($facode)
+   {           
+		$_query = "SELECT fac_name from facilities where facode = '$facode'";
+		$results = $this-> db-> query($_query);
+		$rows = $results->row_array();        
+		return $rows['fac_name'];	    
+   }
+
+ //   public function FacilityOptions(){
+	// 	$facode = $this-> input-> post('facode');
+	// 	$FacilityName = $this -> getCrossProvince_FacilitiesOptions(false,$facode);
+	// 	echo $FacilityName;
+	// }
+	// function getCrossProvince_FacilitiesOptions($isreturn=false,$facode=NULL,$uncode=NULL){
+	// 	$procode = substr($facode,0,1);
+	// 	$distcode = substr($facode,0,3);
+	// 	$tcode = substr($uncode,0,6);
+	// 	$output = '<option value="" >--Select Facility--</option>'; 
+	// 	$query="SELECT fac_name,facode from facilities where distcode = '$distcode' and hf_type='e' order by facode";
+	// 	if($uncode != NULL){
+	// 		$query = "SELECT fac_name, facode from facilities where uncode = '$uncode' and hf_type = 'e' order by facode";
+	// 	}
+	// 	else if($tcode != NULL){
+	// 		$query = "SELECT fac_name, facode from facilities where tcode = '$tcode' and hf_type = 'e' order by facode";
+	// 	}
+	// 	else{
+	// 		$query = "SELECT fac_name, facode from facilities where distcode = '$distcode' and hf_type = 'e' order by facode";
+	// 	}
+	// 	$result = $this -> db ->query($query);
+	// 	$result1 = $result->result_array();
+	// 	foreach ($result1 as $oneteh) { 
+	// 		$selected = '';
+	// 		if(($facode > 0)&&($facode == $oneteh["facode"]))
+	// 		{
+	// 			$selected = 'selected="selected"';
+	// 		}
+	// 		$output .= '<option value="'.$oneteh["facode"].'" '.$selected.' >'.$oneteh["fac_name"].'</option>';
+	// 	}
+	// 	if($isreturn)
+	// 		return $output;
+	// 	echo $output;
+	// }
 	
 }
 ?>

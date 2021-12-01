@@ -1,5 +1,5 @@
 <?php
-//Local
+//live
 	class micro_plan_controller extends CI_Controller{
 		//================ Constructor function starts==================//
 		public function __construct(){
@@ -97,9 +97,8 @@
 				         $this -> session -> set_flashdata('message','You have successfully Updated your record!'); 
 						$location = base_url()."micro_plan/Micro_plan_controller/supervisory_plan";
 						redirect($location);
-			}
-			elseif ($edit  == "edit"){
-				//	echo("delet and insert");exit;
+			}elseif ($edit  == "edit"){
+			//	echo("delet and insert");exit;
 			    $procode = $this -> session -> Province;
 			    $distcode = $this-> session-> District; 
 				$supervisor_type = $this->input->post('supervisor_type');
@@ -155,15 +154,12 @@
 		        $resm3 = $this->db->query($query3);
 				//foreach for m1
 				foreach($this->input->post('sessionm1') as $key=>$val){
-						$uncode=$uncodem1[$key];
-						$tcode =substr($uncode,0,6);
 						$add_array=array(
 						    'procode' => $procode,
 						    'distcode' => $distcode,
 							'supervisorcode' => $supervisorcode,
 							'designation' => $supervisor_type,
 							'quarter' => $quarter,
-							'tcode' => $tcode,
 							'uncode'=>(isset($uncodem1[$key]) AND $uncodem1[$key] !="")?$uncodem1[$key]:NULL,
 							//'monthdate' => $monthdate1,
 							'fmonth' => $fmonthm1,
@@ -180,15 +176,12 @@
 				}
 				//foreach for m2
 				foreach($this->input->post('sessionm2') as $key=>$val){
-						$uncode=$uncodem2[$key];
-						$tcode =substr($uncode,0,6);
 						$add_array=array(
 						    'procode' => $procode,
 						    'distcode' => $distcode,
 							'supervisorcode' => $supervisorcode,
 							'designation' => $supervisor_type,
 							'quarter' => $quarter,
-							'tcode' => $tcode,
 							'uncode'=>(isset($uncodem2[$key]) AND $uncodem2[$key] !="")?$uncodem2[$key]:NULL,
 							//'monthdate' => $monthdate2,
 							'fmonth' => $fmonthm2,
@@ -205,15 +198,12 @@
 				}
 				//foreach for m3
 				foreach($this->input->post('sessionm3') as $key=>$val){
-						$uncode=$uncodem3[$key];
-						$tcode =substr($uncode,0,6);
 						$add_array=array(
 						    'procode' => $procode,
 						    'distcode' => $distcode,
 							'supervisorcode' => $supervisorcode,
 							'designation' => $supervisor_type,
 							'quarter' => $quarter,
-							'tcode' => $tcode,
 							'uncode'=>(isset($uncodem3[$key]) AND $uncodem3[$key] !="")?$uncodem3[$key]:NULL,
 							//'monthdate' => $monthdate3,
 							'fmonth' => $fmonthm3,
@@ -233,7 +223,7 @@
 						$location = base_url()."micro_plan/Micro_plan_controller/supervisory_plan";
 						redirect($location);
 			}
-			else {
+		 else {
 					$distcode = $this-> session->District;
 					$supervisorcode = $this->input->post('supervisor_name');
 					$quarter= $this->input->post('quarter');
@@ -314,14 +304,11 @@
 					$facodem3 = $this->input->post('vilage_hf_namem3');
 					//foreach for m1
 					foreach($this->input->post('sessionm1') as $key=>$val){
-						$uncode=$uncodem1[$key];
-						$tcode =substr($uncode,0,6);
 						$add_array=array(
 							'procode' => $procode,
 						    'distcode' => $distcode,
 							'supervisorcode' => $supervisorcode,
 							'quarter' => $quarter,
-							'tcode' => $tcode,
 							'uncode'=>(isset($uncodem1[$key]) AND $uncodem1[$key] !="")?$uncodem1[$key]:NULL,
 							//'monthdate' => $monthdate1,
 							'designation' => $supervisor_type,
@@ -338,14 +325,11 @@
 				    } 
 					//foreach for m2
 						foreach($this->input->post('sessionm2') as $key=>$val){
-						$uncode=$uncodem2[$key];
-						$tcode =substr($uncode,0,6);
 						$add_array=array(
 							'procode' => $procode,
 						    'distcode' => $distcode,
 							'supervisorcode' => $supervisorcode,
 							'quarter' => $quarter,
-							'tcode' => $tcode,
 							'uncode'=>(isset($uncodem2[$key]) AND $uncodem2[$key] !="")?$uncodem2[$key]:NULL,
 							//'monthdate' => $monthdate2,
 							'designation' => $supervisor_type,
@@ -362,14 +346,11 @@
 				    } 
 					//foreach for m3
 						foreach($this->input->post('sessionm3') as $key=>$val){
-						$uncode=$uncodem3[$key];
-						$tcode =substr($uncode,0,6);
 						$add_array=array(
 							'procode' => $procode,
 						    'distcode' => $distcode,
 							'supervisorcode' => $supervisorcode,
 							'quarter' => $quarter,
-							'tcode' => $tcode,
 							'uncode'=>(isset($uncodem3[$key]) AND $uncodem3[$key] !="")?$uncodem3[$key]:NULL,
 							//'monthdate' => $monthdate3,
 							'designation' => $supervisor_type,
@@ -390,8 +371,9 @@
 						$location = base_url()."micro_plan/Micro_plan_controller/supervisory_plan_add";
 						redirect($location);
 				}
-			}				
-		}
+			}
+				
+	}
 		public function supervisory_plan_edit(){
 			//$fmonth = $this->input->get_post('fmonth');
 			$supervisorcode = $this -> uri -> segment(4);
@@ -432,7 +414,8 @@
 		    $data['pageTitle']='Micro Plan | EPI-MIS';
 			$this->load->view('template/epi_template',$data);
 		}
-		public function supervisory_plan_view(){			
+		public function supervisory_plan_view(){
+			
 			$supervisorcode = $this -> uri -> segment(4);
 			$quarter   = $this -> uri -> segment(5);
 		    //$fmonth   = $this -> uri -> segment(6);
@@ -447,5 +430,10 @@
 		    $data['pageTitle']='Micro Plan | EPI-MIS';
 			$this->load->view('template/epi_template',$data);
 		}
+		
+		
+		
+		
+		
 	}
 ?>

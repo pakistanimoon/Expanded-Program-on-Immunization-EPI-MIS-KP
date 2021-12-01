@@ -90,6 +90,7 @@ $UserLevel=$_SESSION['UserLevel'];
                 <option value="Transfered">Transfered</option>
 				<option value="Active">Temporary-Post</option>
 				<option value="Post Back">Post Back</option> 
+				<option value="Move to H.Dpt">Move to H.Dpt</option>
               </select>
         </div>
          </div>
@@ -161,6 +162,7 @@ $UserLevel=$_SESSION['UserLevel'];
                 <option value="Transfered">Transfered</option>
 				<option value="post">Temporary-Post</option> 
 				<option value="Post Back">Post Back</option> 
+				<option value="Move to H.Dpt">Move to H.Dpt</option> 
               </select>
         </div>
          </div>

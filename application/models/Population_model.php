@@ -1,59 +1,67 @@
+
 <?php
+
 class Population_model extends CI_model{
 
 	public function getDistricts()
-	{		
-		$query=$this->db->query("select distcode,district,addeddate,
-			(select population from districts_population where distcode=districts.distcode and year='".(string)(date("Y")-1)."') as previous,
-			(select population from districts_population where distcode=districts.distcode and year='".(string)(date("Y"))."') as current,
-			(select population from districts_population where distcode=districts.distcode and year='".(string)(date("Y")+1)."') as next
-			 from districts where distcode='".$_SESSION['District']."' order by district");
-		return $query->result();
+
+	{		$query=$this->db->query("select distcode,district,addeddate,
+				(select population from districts_population where distcode=districts.distcode and year='".(string)(date("Y")-1)."') as previous,
+				(select population from districts_population where distcode=districts.distcode and year='".(string)(date("Y"))."') as current,
+				(select population from districts_population where distcode=districts.distcode and year='".(string)(date("Y")+1)."') as next
+				 from districts where distcode='".$_SESSION['District']."' order by district");
+			return $query->result();
+
 	}
 
-	public function getTehsil()
-	{			
-		$wc = getWC();
-		$query=$this->db->query("select tcode,tehsil,
-			(select population from tehsil_population where tcode=tehsil.tcode and year='".(string)(date("Y")-1)."') as previous,
-			(select population from tehsil_population where tcode=tehsil.tcode and year='".(string)(date("Y"))."') as current,
-			(select population from tehsil_population where tcode=tehsil.tcode and year='".(string)(date("Y")+1)."') as next
-			 from tehsil where $wc order by tehsil");
-		return $query->result();
-	}
+public function getTehsil()
 
-	public function getUC()
-	{			
-		$wc = getWC();
-		$query=$this->db->query("select  uncode,un_name,tcode,
-			(select distinct  population  from unioncouncil_population where uncode=unioncouncil.uncode and year='".(string)(date("Y")-1)."') as previous,
-			(select distinct  population from unioncouncil_population where uncode=unioncouncil.uncode and year='".(string)(date("Y"))."') as current,
-			(select distinct  population from unioncouncil_population where uncode=unioncouncil.uncode and year='".(string)(date("Y")+1)."') as next
-			from unioncouncil where $wc order by un_name");
-		return $query->result();
-	}
+{
+			
+			$query=$this->db->query("select tcode,tehsil,
+				(select population from tehsil_population where tcode=tehsil.tcode and year='".(string)(date("Y")-1)."') as previous,
+				(select population from tehsil_population where tcode=tehsil.tcode and year='".(string)(date("Y"))."') as current,
+				(select population from tehsil_population where tcode=tehsil.tcode and year='".(string)(date("Y")+1)."') as next
+				 from tehsil where distcode='".$_SESSION['District']."' order by tehsil");
+			return $query->result();
 
-	public function getFacilities()
-	{		
-		$wc = getWC();
-		$query=$this->db->query("select facode,tcode,distcode,uncode,fac_name,
-			(select population from facilities_population where facode=facilities.facode and year='".(string)(date("Y")-1)."') as previous,
-			(select population from facilities_population where facode=facilities.facode and year='".(string)(date("Y"))."') as current,
-			(select population from facilities_population where facode=facilities.facode and year='".(string)(date("Y")+1)."') as next
-			 from facilities where hf_type='e' and $wc order by fac_name");
-		return $query->result();
-	}
+}
+public function getUC()
+{
+			
+			$query=$this->db->query("select  uncode,un_name,tcode,
+				(select distinct  population  from unioncouncil_population where uncode=unioncouncil.uncode and year='".(string)(date("Y")-1)."') as previous,
+				(select distinct  population from unioncouncil_population where uncode=unioncouncil.uncode and year='".(string)(date("Y"))."') as current,
+				(select distinct  population from unioncouncil_population where uncode=unioncouncil.uncode and year='".(string)(date("Y")+1)."') as next
+				 from unioncouncil where distcode='".$_SESSION['District']."' order by un_name");
+			return $query->result();
 
-	public function getVillages()
-	{		
-		$wc = getWC();
-		$query=$this->db->query("select unname(uncode) as unname,vcode, tcode, distcode, unname(uncode) as unioncouncil, facode, uncode,village,added_date,
-			(select population from villages_population where vcode=villages.vcode and year='".(string)(date("Y")-1)."') as previous,
-			(select population from villages_population where vcode=villages.vcode and year='".(string)(date("Y"))."') as current,
-			(select population from villages_population where vcode=villages.vcode and year='".(string)(date("Y")+1)."') as next
-			 from villages where $wc order by uncode");		 
-		return $query->result();
-	} 
+}
+public function getFacilities()
+
+{
+			
+			$query=$this->db->query("select facode,tcode,distcode,uncode,fac_name,
+				(select population from facilities_population where facode=facilities.facode and year='".(string)(date("Y")-1)."') as previous,
+				(select population from facilities_population where facode=facilities.facode and year='".(string)(date("Y"))."') as current,
+				(select population from facilities_population where facode=facilities.facode and year='".(string)(date("Y")+1)."') as next
+				 from facilities where hf_type='e' and distcode='".$_SESSION['District']."' order by fac_name");
+			return $query->result();
+
+}
+ public function getVillages()
+
+{
+		
+			$query=$this->db->query("select unname(uncode) as unname,vcode, tcode, distcode, unname(uncode) as unioncouncil, facode, uncode,village,added_date,
+				(select population from villages_population where vcode=villages.vcode and year='".(string)(date("Y")-1)."') as previous,
+				(select population from villages_population where vcode=villages.vcode and year='".(string)(date("Y"))."') as current,
+				(select population from villages_population where vcode=villages.vcode and year='".(string)(date("Y")+1)."') as next
+				 from villages where distcode='".$_SESSION['District']."' order by uncode");
+				 
+			return $query->result();
+
+} 
 
 	public function setFacilities($data,$distcode)
 	{
@@ -99,7 +107,8 @@ class Population_model extends CI_model{
 			$year = (string)(date("Y")+1);
 		else
 			$year = (string) (date("Y"));
-		$this->db->delete('unioncouncil_population', array(
+		sendPopulationUpdatesToFederalDashboard($year);											 
+		/* $this->db->delete('unioncouncil_population', array(
 			'distcode'=> $distcode,
 			'year'=>$year
 		));
@@ -110,8 +119,8 @@ class Population_model extends CI_model{
 		$this->db->delete('districts_population', array(
 			'distcode'=> $distcode,
 			'year'=>$year
-		));
-		$this->db->trans_begin();
+		)); */
+		/* $this->db->trans_begin();
 		$unioncouncilQuery = "insert into unioncouncil_population(distcode,uncode,tcode,population,year) select distcode,uncode,tcode,sum(population::integer),year from facilities_population where uncode like '$distcode%' and year = '$year' group by distcode,tcode,uncode,year";
 		$this->db->query($unioncouncilQuery);
 		$unioncouncilUpdateQuery= "update unioncouncil_population set distcode='$distcode' where uncode like '$distcode%'";
@@ -129,8 +138,8 @@ class Population_model extends CI_model{
 		}
 		else
 		{
-			$this->db->trans_commit(); 
-		}
+			$this->db->trans_commit();
+		} */
 		$this -> session -> set_flashdata('message','Record Saved Successfully');
 	}
 	public function setvillages($data,$distcode,$tcodes,$uncodes,$facode){
@@ -138,8 +147,9 @@ class Population_model extends CI_model{
 		$k = count($data['village']);
 		$currentYear = (string) date("Y");
 		$nextYear = (string) date("Y")+1;
-		if($uncodes != '' AND $uncodes > 0){			
-			/* $wc_previousYear= array(
+		if($uncodes != '' AND $uncodes > 0){
+			
+			 /* $wc_previousYear= array(
 				'year'=>(string) (date("Y")-1),
 				'distcode' => $distcode,
 				'uncode' => $uncodes,
@@ -163,13 +173,18 @@ class Population_model extends CI_model{
 		$this -> db -> delete('villages_population',$wc_currentYear);
 		if(isset($data['next']))
 		{
-			$this -> db -> delete('villages_population',$wc_nextYear);			
+			$this -> db -> delete('villages_population',$wc_nextYear);	
+			
+			
+			
 			/* 
 			$yearCondition = " and year in ('{$currentYear}','{$nextYear}') ";
 			$this -> db -> delete('villages_population',array(
 				'year' => "$wc_nextYear",
 				'distcode' => $uncodes */
-			//));
+			//));	
+				
+				
 		}
 		for ($i=0; $i<$k; $i++)
 		{	
@@ -220,10 +235,11 @@ class Population_model extends CI_model{
 				)); */
 				$this->db->insert('villages_population',$obj);	
 			}
-		}		
+		}
+		
 		$this->db->trans_complete();
 		$this -> session -> set_flashdata('message','Record Saved Successfully');
-	}
+}
 
 /* 	public function setDistricts($data)
 	{
@@ -388,9 +404,11 @@ class Population_model extends CI_model{
 					));
 					$this->db->update('unioncouncil_population', $obj);
 				}
+
+
 			}
-			if(isset($data['next']) && $data['next'][$i]!=null)
-			{
+			 if(isset($data['next']) && $data['next'][$i]!=null)
+			 {
 			 	$obj['uncode']=$data['uncode'][$i];
 		 		$obj['year']=(string)(date("Y")+1);
 		 		$obj['population']=$data['next'][$i];

@@ -79,6 +79,23 @@ class Error_reports_model extends CI_Model {
 			where uncode not in (select uncode from facilities where hf_type='e') AND distcode='{$distcode}' order by districtname(distcode),un_name";
 			$subTitle = "UnionCouncils with NO attached Facilities";
 		}
+		else if($report_to_load == 'empty-consumption-reports'){
+			$query = "select 
+			row_number() over(order by fmonth desc) as \"Sr #\",
+			districtname(distcode) as \"District\",
+			tehsilname(tcode) as \"Tehsil\",
+			unname(uncode) as \"UC\",
+			facode as \"Facility Code\",
+			facilityname(facode) as \"Facility\",
+			fmonth as \"Report Month\",
+			created_date as \"Created Date\",
+			'<a href=\"".base_url('consumption/view')."/'||fmonth||'/'||facode||'\" target=\"_blank\" data-toggle=\"tooltip\" title=\"View\" class=\"btn btn-xs btn-default\"><i class=\"fa fa-search\"></i></a>' as \"Action\"
+			from epi_consumption_master 
+			join (select main_id from epi_consumption_detail group by main_id having sum(used_doses) = 0 and sum(unused_doses) = 0 and sum(vaccinated) = 0) as moon
+			on moon.main_id = epi_consumption_master.pk_id 
+			where distcode = '{$distcode}' and fmonth > ('CURRENT_TIMESTAM-00') order by fmonth desc";
+			$subTitle = "Consumption Report(s) with NULL or Zero Data.";
+		}
 		$result = $this -> db -> query($query);
 		$data['allDataTotal'] = $result->result_array();
 		$data['subtitle'] = $subTitle;

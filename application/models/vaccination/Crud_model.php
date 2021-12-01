@@ -87,7 +87,7 @@ class Crud_model extends CI_Model {
 	{
 		$distcode=$this->session->District;
 		$result="false";
-		$this->db->trans_start(); 
+		$this->db->trans_start();
 		$sql="DELETE FROM epi_consumption_detail USING epi_consumption_master 
 			WHERE epi_consumption_detail.main_id= epi_consumption_master.pk_id AND epi_consumption_master.distcode='$distcode' AND epi_consumption_master.facode='$facode' and  epi_consumption_master.fmonth='$fmonth'";
 		$this->db->query($sql);
@@ -294,6 +294,7 @@ class Crud_model extends CI_Model {
 		$result = $result -> result_array();
 		//return json_encode($result);	
 		return $result;
+		
 	}
 	public function view_monthly_outuc_coverage($facode,$fmonth,$countrycode,$uncode) {
 		if($uncode==0){ 
@@ -323,6 +324,7 @@ class Crud_model extends CI_Model {
 		return $result; 
 	}
 	public function total_get_monthly_outuc_coverage($facode,$fmonth,$distcode,$item_id,$antigen) {
+
 		$sessiondist=$this -> session -> District;
 		if($sessiondist==$distcode){
 			$distcode="and distcode='$sessiondist'"; 

@@ -290,7 +290,7 @@
 											<?php echo "Pending/Awaited"; ?>
 										<?php } else { ?>
 											<?php echo $row['test_result']; ?>
-										<?php } ?>		
+										<?php } ?>	
 									</td>
 									<td><?php echo $row['outcome']; ?></td>							
 								</tr>

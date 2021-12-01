@@ -76,7 +76,7 @@
 	<div id="mySidenavR" class="sidenavR">
 		<a href="javascript:void(0)" class="closebtn" title="Filters" onclick="closeNavR()">×</a>
 		<div class="filter_formwrp">
-			<h2> Filters </h2> 
+			<h2> Filters </h2>
 			<?php 
 				/*
 				*	This will load filter form based on 

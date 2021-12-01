@@ -134,13 +134,13 @@ if( ! function_exists('get_warehouse_type_option')){
 		$CI -> db -> select('pk_id as id,warehouse_type_name as name');
 		$CI -> db -> from('epi_cc_warehouse_types');
 		$CI -> db -> where($whereCondition);
-		//$distcode = $CI -> session -> District;
-        $sessionwhtype = $CI -> session -> curr_wh_type;
-		if($sessionwhtype == 4){
+		$sessionwhytype = $CI -> session -> curr_wh_type;
+		if($sessionwhytype==4){
+			$CI -> db -> where_in('pk_id',array(4,6));
+		}/* else if($sessionwhytype==5){
 			$CI -> db -> where_in('pk_id',array(4,5,6));
-		}else if($sessionwhtype==5){
-			$CI -> db -> where_in('pk_id',array(4,5,6));
-		}else{
+		} */
+		else{
 			$idstoshow = array();
 			if($includefederal){
 				$idstoshow[] = 1;
@@ -152,7 +152,6 @@ if( ! function_exists('get_warehouse_type_option')){
 			}
 			$CI -> db -> where_in('pk_id',$idstoshow);
 		}
-        $CI -> db -> order_by("pk_id","ASC");
 		$result = $CI -> db -> get() -> result_array();
 		/* update for selected dropdown */
 		if($createoption){
@@ -451,14 +450,13 @@ if( ! function_exists('get_store_name')){
 				break;
 			case 3:
 				echo '';
-				break; 
+				break;
 			case 4:
 				$dbdata = $CI->common->get_info("districts",NULL,NULL,"'District ' || district || ' Store' as name",array("distcode"=>$storecode));
 				$name = $dbdata->name;
 				break;
 			case 5:
-				$dbdata = $CI->common->get_info("tehsil",NULL,NULL,"'Tehsil ' || tehsil || ' Store' as name",array("tcode"=>$storecode));
-				$name = $dbdata->name;
+				echo '';
 				break;
 			case 6:
 				//$dbdata = $CI->common->get_info("unioncouncil",NULL,NULL,"'UC ' || un_name || ' Store' as name",array("uncode"=>$storecode));
@@ -497,7 +495,7 @@ if( ! function_exists('get_warehouse_type_name')){
 		$CI -> db -> where($whereCondition);
 		$distcode = $CI -> session -> District;
 		if($distcode){
-			$CI -> db -> where_in('pk_id',array(2,4,5,6));
+			$CI -> db -> where_in('pk_id',array(2,4,6));
 		}else{
 			$idstoshow = array(1,2,4);
 			$CI -> db -> where_in('pk_id',$idstoshow);
@@ -582,6 +580,53 @@ function check_Voucher_No($transNO)
 	
 	return $t;
 }
+//Function use to check voucher no / tranNo is already exits in DB
+function check_Voucher_main($yearmonth,$transactionType)
+{
+			$CI = & get_instance();
+			$row=$CI->db->query("SELECT nextval('stock_master_trans_num_seq'::regclass) as val")->row();	
+			//incremntend value by 
+			$maxval=$row->val; 
+			$voucher=$transactionType.''.$yearmonth;
+			//echo $voucher;exit;
+			$datemaxnumber=$CI->db->query("SELECT max(transaction_number) as number FROM epi_stock_master where transaction_number like '$voucher%' ")->row();
+			$transno=$datemaxnumber->number;
+			$transno=substr($transno,5);
+			/* IF IF max(tranNo) is greater/equal than latest sequence value (maxval) */
+			if($transno >= $maxval && $transno!='9999')
+			{
+				$transno=$transno+1;
+			}
+			else
+			{
+				/*using incremented sequence value. */
+				$transno=$maxval;
+			}
+			
+			//fucntion call to check whether incremented value match or not	
+			$transno=str_pad ($transno ,4,0,STR_PAD_LEFT) ;
+			//echo $transno;exit;
+			$voucher=$transactionType."".$yearmonth."".$transno;
+			//echo $voucher;exit;
+			$row=$CI->db->query("SELECT max_value from stock_master_trans_num_seq")->row();
+			$max_value=$row->max_value; 
+			for($i=1;$i<=$max_value;$i++){
+				$newtransno=check_Voucher_No($voucher);
+				if($newtransno==true){
+					$row=$CI->db->query("SELECT nextval('stock_master_trans_num_seq'::regclass) as val")->row();	
+					$maxval=$row->val;
+					$maxval=str_pad ($maxval ,4,0,STR_PAD_LEFT) ;
+					$tno=$transactionType.''.$yearmonth.''.$maxval;
+					$voucher=$tno;
+				}
+				else{
+					//if no match then break the loop
+					break;
+				}
+			}	
+			$TranNo=substr($voucher,5);
+	return 	$TranNo;	
+}
 //function for cerv api
 if( ! function_exists('validateToken')){
 	function validateToken($username,$token, $appType='cerv')
@@ -601,6 +646,7 @@ if( ! function_exists('authenticationbyusername')){
 		$CI -> db -> where(array('fk_hr_code' =>$username, 'app_type' => 'cerv'));
 		$result = $CI -> db -> get('hr_app_users') -> row();
 		$dbhrcode = (isset($result -> fk_hr_code))?$result -> fk_hr_code:'';
+		//echo $CI -> db -> last_query();
 		return true;
 		if($username == $dbhrcode){
 			return true;

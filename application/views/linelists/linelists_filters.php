@@ -3,73 +3,29 @@
 <script type="text/javascript">
 	$('document').ready(function(){
 		$('#year option:last').prop('selected', true);
-		$('#specimen_result').val('');
-		$('#specimen_result').addClass('hide');	
-		$('#lab_result').addClass('hide');
-		var case_type = $('#case_type').val();	
-		//alert(case_type);	
-		var year = $('#year').val();
-		$.ajax({
-			type: 'POST',
-			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
-			data:'year='+year,
-			success: function(response){
-				//$('#week').html(response.trim());
-				$('#week_from').html(response.trim());
-				$('#week_to').html(response.trim());
-				var week = $('#week_from').val();
-				var year = $('#year').val();
-				//alert(week);
-				$.ajax({
-					type: 'POST',
-					url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeksDates',
-					data:'epiweek='+week+'&year='+year,
-					success: function(response){
-						var obj = JSON.parse(response);
-						$('#datefrom').val(obj.startDate);
-						$('#dateto').val(obj.EndDate);
-					}
-				});				
-			}
+			var year = $('#year').val();
+			$.ajax({
+				type: 'POST',
+				url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
+				data:'year='+year,
+				success: function(response){
+					$('#week').html(response.trim());
+					var week = $('#week').val();
+					var year = $('#year').val();
+					$.ajax({
+						type: 'POST',
+						url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeksDates',
+						data:'epiweek='+week+'&year='+year,
+						success: function(response){
+							var obj = JSON.parse(response);
+							$('#datefrom').val(obj.startDate);
+							$('#dateto').val(obj.EndDate);
+						}
+					});
+					
+				}
+			});
 		});
-		var measlesOptions = {
-			'0' : '--Select--',
-			// 'Positive Measles' : 'Confirmed Measles',
-			// 'Negative Measles' : 'Negative',
-			// 'Positive Rubella' : 'Confirmed Rubella',
-			// 'Death' : 'Death Cases',
-			'Positive Measles' : 'Positive Measles',
-			'Positive Rubella' : 'Positive Rubella',
-			'Negative Measles' : 'Negative',
-			
-			//'Negative Rubella' : 'Negative Rubella'
-		};
-		var otherOptions = {
-			'0' : '--Select--',
-			'Positive' : 'Positive',
-			'Negative' : 'Negative'
-		};
-		var mySelect = $('#specimen_result');
-		mySelect.html('');
-		if(case_type == 'Msl'){
-			$.each(measlesOptions, function(val, text) {
-				mySelect.append(
-					$('<option></option>').val(val).html(text)
-				);
-			});
-		}
-		else{
-			$.each(otherOptions, function(val, text) {
-				mySelect.append(
-					$('<option></option>').val(val).html(text)
-				);
-			});
-		}
-		$('#specimen_result').val('0');
-		$('#specimen_result').removeClass('hide');
-		$('#lab_result').removeClass('hide');
-	});
-		
 	$(document).on('change','#year',function(){
 		var year = $(this).val();
 		$.ajax({
@@ -79,8 +35,6 @@
 			success: function(response){
 				$('#week_from').html(response.trim());
 				$('#week_to').html(response.trim());
-				$('#datefrom').val('');
-				$('#dateto').val('');
 				/* var week = $('#week').val();
 				var year = $('#year').val();
 				$.ajax({
@@ -130,13 +84,10 @@
 			$('#lab_result').removeClass('hide');	
 		}		
 	});  */
-	
-	
-	
 	$(document).on('change','#case_type',function(){
 		var case_type = $(this).val();
 		var cross_notified = $('#cross_notified').val();
-		if(case_type == 'AEFI' ){
+		if(case_type == 'AEFI'){
 			$('#cross_notified').val('');
 			$('#cross_notified').addClass('hide');	
 			$('#cross_notify').addClass('hide');	
@@ -157,18 +108,14 @@
 		var case_type = $(this).val();
 		var otherOptions = {
 			'0' : '--Select--',
-			'Positive' : 'Positive',
+			'Postive' : 'Postive',
 			'Negative' : 'Negative'
 		};
 		var measlesOptions = {
 			'0' : '--Select--',
-			// 'Positive Measles' : 'Confirmed Measles',
-			// 'Negative Measles' : 'Negative',
-			// 'Positive Rubella' : 'Confirmed Rubella',
-			// 'Death' : 'Death Cases',
-			'Positive Measles' : 'Positive Measles',
+			'Postive Measles' : 'Postive Measles',
 			'Negative Measles' : 'Negative',
-			'Positive Rubella' : 'Positive Rubella',
+			'Postive Rubella' : 'Postive Rubella',
 			//'Negative Rubella' : 'Negative Rubella'
 		};
 		var mySelect = $('#specimen_result');
@@ -229,19 +176,5 @@
 				}
 			});
 		}
-	});
-	$(document).on('change','#case_type',function(){
-		var case_type = $(this).val();
-		if(case_type == 'NT' || case_type == 'AFP'){
-			console.log('asd');	
-			$('#specimen_result').val('');
-			$('#specimen_result').addClass('hide');	
-			$('#lab_result').addClass('hide');				
-		}
-		else{			
-			$('#specimen_result').val('0');
-			$('#specimen_result').removeClass('hide');
-			$('#lab_result').removeClass('hide');	
-		}		
-	}); 
+	});  
 </script>

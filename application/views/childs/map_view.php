@@ -53,6 +53,6 @@ $long = $this -> uri -> segment(4); //exit;
 				});
 			}
 		</script>
-		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmTQ-bxSu9wEwPoFhONtXUjeC6cNbIqU8&callback=initMap"></script>
+		<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeFNhAVwp0q8R7N6J9H-hRLxrUdaNov-I&callback=initMap"></script>
 	</body>
 </html>

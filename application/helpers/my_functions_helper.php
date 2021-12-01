@@ -1,6 +1,7 @@
 <?php
 if(!function_exists('getListingReportTable')){
 	function getListingReportTable($allData,$listingFor,$allTotal=NULL,$sectionTotal = 'Yes'){
+						
 		if(!empty($allData)){
 			$count = 0;
 			$innerHead = '';
@@ -32,6 +33,7 @@ if(!function_exists('getListingReportTable')){
 					unset($value['total']);
 				}
 					if($count == 0)
+	 
 					{$returnData .= "<thead><tr><th class='Heading text-center' style='background: #008d4c; color: white; width: 200px; border: 1px solid black;'>";
 					$returnData .= implode("</th><th class='Heading text-center'  style='background: #008d4c; color: white; width: 200px; border: 1px solid black;'>",array_map("ucwords",array_keys($value)));
 					$returnData .= "</th></tr></thead><tbody>";
@@ -406,9 +408,9 @@ if(!function_exists('FacilityName')){
         return $rows['fac_name'];
     }
 }
-if(!function_exists('FacilityNameByuncode')){
+/* if(!function_exists('FacilityNameByuncode')){
     function FacilityNameByuncode($uncode="")
-    {   
+	{
         $CI=& get_instance();
 		$output = '';
         $_query  = "select fac_name,facode from facilities where uncode = '$uncode'";
@@ -416,21 +418,46 @@ if(!function_exists('FacilityNameByuncode')){
 		
 		$result1 = $results->result_array();
 		foreach ($result1 as $onedist) { 
-			$selected = '';
+			//$selected = '';
 			/* if(($uncode > 0)&&($uncode == $onedist["uncode"]))
 			{ */
 				//$selected = 'selected="selected"';
 			//}
-			$output .= '<option name=facode[] id=facode[] value="'.$onedist["facode"].'"  >'.$onedist["fac_name"].'</option>'; 
+			//$isSelected = (isset($selected) && $selected==$onedist["facode"])?'selected="selected"':'';
+			//$vaccname = trim($vaccines["item_name"]);
+			//$output .= '<option value="cr_r'.$vaccines["cr_table_row_numb"].'_f6"  >'.$vaccname.'</option>';
+		///
+		
+			/* $selected = '';
+			if(($uncode > 0)&&($uncode == $onedist["uncode"]))
+			{
+				$selected = 'selected="selected"';
+			} */
+			//$output .= '<option value="'.$oneteh["uncode"].'" '.$selected.' >'.$oneteh["un_name"].'</option>';
+		
+		
+		
+		
+		///
+		
+		
+		
+		
+		
+		
+			/* $output .= '<option value="'.$onedist["facode"].'"  >'.$onedist["fac_name"].'</option>'; 
 		}
-			return $output;
-	}
+			//return $output;
+		if($isreturn)
+				return $output;
+			echo $output;
+	} */
 	
        /*  $rows=$results->row_array();
 
-        return $rows['fac_name']; */
+        return $rows['fac_name']; *
     //}
-}
+} */
 if(!function_exists('getFLCF_optionsbyuncode')){
 	function getFLCF_optionsbyuncode($isreturn=false,$facode=NULL,$uncode=NULL){
 		$CI = & get_instance();
@@ -454,6 +481,23 @@ if(!function_exists('getFLCF_optionsbyuncode')){
 		echo $output;
 	}
 } 
+/* if(!function_exists('getFLCF_options')){
+		function getFLCF_options($uncode="")
+		{
+			$CI=& get_instance();
+			$output = '';
+			$_query  = "select fac_name,facode from facilities where uncode = '$uncode'";
+			$results=$CI->db->query($_query);
+			
+			$result1 = $results->result_array();
+			foreach ($result1 as $onedist) { 
+				
+				$output .= '<option value="'.$onedist["facode"].'"  >'.$onedist["fac_name"].'</option>'; 
+			}
+				return $output;
+		} 
+	} */
+
 if(!function_exists('createTransactionLog')){
 	function createTransactionLog($module, $action) {
 		//echo "moon";exit;
@@ -650,7 +694,7 @@ if(!function_exists('getSectionsStatusTableHR')){
     
 
 	}
-} 
+}
 /////////////////////// this function is for status history of HR Report View //////////////////
 if(!function_exists('getSectionsStatus')){
     function getSectionsStatus($hrstatus){

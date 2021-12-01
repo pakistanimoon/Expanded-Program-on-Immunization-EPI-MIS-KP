@@ -1,5 +1,5 @@
  			<?php
-			//Local
+			//live
 if($this -> session -> flashdata('message')){  ?>
                           <div class="row mb3">
                             <div class="col-sm-12 filters-selection" style="Background-color:#008d4c;">
@@ -70,13 +70,9 @@ if($this -> session -> flashdata('message')){  ?>
 							<th>Quarter</th>
 							<!--<th>Area name</th>-->
 							<th class="text-center Heading">
-								<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-									<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_add" data-toggle="tooltip" title="Add New Supervisor">
-									 <button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
-									</a>
-								<?php } else{?>
-									Action
-								<?php }?>
+								<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_add" data-toggle="tooltip" title="Add New Supervisor">
+                                 <button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
+                                </a>
                             </th>
 						</tr>
 					</thead>
@@ -91,7 +87,7 @@ if($this -> session -> flashdata('message')){  ?>
                               <td class="text-left"><?php
 							  
 							  $str = $row['supervisorcode'];
-							  if (strlen($str) <= 7) {
+							 if (strlen($str) <= 7) {
 								  if(isset($row)){
 									 echo get_supervisor_Name($row['supervisorcode']); 
 									}
@@ -117,16 +113,12 @@ if($this -> session -> flashdata('message')){  ?>
 							   
                               <td class="text-center">                                
                                    <?php if($row['status'] == 1) {?>
-										<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_view/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> 
-                                   <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-										<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_conducted/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>
-								    <?php }?>
+								<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_view/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> 
+                                   <a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_conducted/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>
 								   <?php }else{?>
-										<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_view/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-                                   <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-										<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_edit/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-										<a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_conducted/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>
-								   <?php }?>
+                                   <a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_view/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+                                   <a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_edit/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                                   <a href="<?php echo base_url(); ?>micro_plan/Micro_plan_controller/supervisory_plan_conducted/<?php echo $row['supervisorcode']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['year']; ?>" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>
 								   <?php }?>
                               </td>
                            </tr>

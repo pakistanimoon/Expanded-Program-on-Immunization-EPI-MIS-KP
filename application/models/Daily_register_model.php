@@ -1,5 +1,4 @@
 <?php
-//local
 class Daily_register_model extends CI_Model {
 	//================ Constructor function Starts Here ==================//
 	public function __construct() {
@@ -364,8 +363,8 @@ class Daily_register_model extends CI_Model {
 		if(isset($data['techniciancode']) && $data['techniciancode'] !='' && $data['facode'] !='' && $data['uncode'] !='' && $data['distcode'] !='' && $data['tcode'] !=''){
 			$wc = "where distcode= '".$data['distcode']."' and tcode= '".$data['tcode']."' and uncode= '".$data['uncode']."' and reg_facode= '".$data['facode']."' and techniciancode= '".$data['techniciancode']."' AND deleted_at IS NULL";
 		}
-		
-		$query="select techniciancode,hr_name(techniciancode) as technicianname, 
+
+		$query="select techniciancode,hr_name(techniciancode) as technicianname, facilityname((select facode from hr_db where code = techniciancode)) as reghf, 
 					sum(case when bcg='{$selecteddate}' then 1 else 0 end) as bcgcount,
 					sum(case when hepb='{$selecteddate}' then 1 else 0 end) as hepbcount,
 					sum(case when opv0='{$selecteddate}' then 1 else 0 end) as opv0count,
@@ -480,25 +479,20 @@ class Daily_register_model extends CI_Model {
 		return $dataReturned;
 	}	
 	function dataentry_report($data){
-		/* if($data['datefrom'] == 0){
+		if($data['datefrom'] == 0){
 			$date = date('yy-m-d');
 		}else{
-			$date =$data['datefrom'];                        
-		} */
-		$datefrom=$data['datefrom'];
-		$dateto=$data['dateto'];
-		//print_r($datefrom);  //exit;
+			$date =$data['datefrom'];
+		}
+		//print_r($data);exit;
 		if($data['datefrom'] == 0){
 			$query="select uncode,unname(uncode),count(*) 
 					from cerv_child_registration where and deleted_at IS NULL
 						group by uncode having count(*) > 0 order by uncode";
 		}else{
-			/*$query="select uncode,unname(uncode),submitteddate from cerv_child_registration   
-		where submitteddate BETWEEN '$datefrom' AND '$dateto' group by uncode,unname(uncode),submitteddate order by unname(uncode),submitteddate limit 5000 ";  */
-		
-		$query="select uncode \"UC Code\", unname(uncode) \"UC Name\",
-			(select count(*) as count from cerv_child_registration where submitteddate = '$datefrom' and uncode=cerv.uncode AND deleted_at IS NULL) as \"$datefrom\"
-			 from cerv_child_registration cerv where deleted_at IS NULL  group by uncode,unname(uncode) order by uncode";
+			$query="select uncode,unname(uncode),count(*) 
+					from cerv_child_registration  where  deleted_at IS NULL AND submitteddate='{$date}'
+						group by uncode having count(*) > 0 order by uncode";
 		}
 		$dataReturned['Monthlentry'] = $this -> db -> query($query) -> result_array(); 
 		$subTitle = "Data Entry Record # UC wise";
@@ -511,11 +505,11 @@ class Daily_register_model extends CI_Model {
 			header("Expires: 0");
 			//Excel Ending here
 		}
-		//$dataReturned['date']=$date;
+		$dataReturned['date']=$date;
 		/* for table top info */
 		if($data['distcode']=='')
 		$data['procode'] = $this->session->Province;
-		//unset($data['datefrom']);
+		unset($data['datefrom']);
 		unset($data['report_type']);
 		/* End */
 		$dataReturned['subtitle'] = $subTitle;

@@ -2451,18 +2451,15 @@ $data["year"]=$this->input->post('year');
 			$dataColdchainmain = array(				///data for colchainmain table
 				'auto_asset_id'			 	=> $auto_asset_id,
 				'warehouse_type_id'         => $warehouse_type_id,
-				'manufacturer_year' 		=> date('Y', strtotime($this->input->post('manufacturer_year'))),
-														   
-							 
-                'ccm_status_history_id'   	=> $status_history_id,
-                'status' 					=> $status,
+				'ccm_status_history_id'   	=> $status_history_id,
+				//'ccm_sub_asset_type_id'   	=> $ccm_sub_asset_type_id,
+				'status' 					=> $status,
 				'created_by' 				=> $this->session->User_Name,
 				//'auto_asset_id_increment' 	=> $increment,
 				'ccm_model_id' 				=> $modelID,
 				'ccm_sub_asset_type_id'		=> $assetTypeId,
-																
-																						   
-                'working_since'   			=> $this->input->post('working_since'),
+				'working_since'   			=> $this->input->post('working_since'),
+				'manufacturer_year' 		=> date('Y', strtotime($this->input->post('manufacturer_year'))),
 				'procode' 					=> $this -> session -> Province,
 				'quantity' 					=> (! is_null($this->input->post('quantity')))?$this->input->post('quantity'):NULL,
 				'distcode' 					=> ($this->input->post('distcode') != 0)?$this->input->post('distcode'):NULL,
@@ -2470,7 +2467,7 @@ $data["year"]=$this->input->post('year');
 				'uncode' 					=> ($this->input->post('uncode') != 0)?$this->input->post('uncode'):NULL,
 				'facode'					=> ( $this->input->post('facode')!= 0)?$this->input->post('facode'):NULL,
 				'asset_status' => "Active"
-			);
+			); //print_r($dataColdchainmain); exit;
 			$wc = "";
 			if($warehouse_type_id=='0'){
 				if($this->session->UserLevel=='3' && $this->session->utype=='DEO')
@@ -2516,7 +2513,7 @@ $data["year"]=$this->input->post('year');
 			$coldchainMainId = $this-> Common_model -> insert_record('epi_cc_coldchain_main',$dataColdchainmain,'epi_coldchain_main_seq_id');
 			$this-> Common_model -> update_record('epi_cc_asset_status_history',array('ccm_id'=>$coldchainMainId),array('pk_id'=>$status_history_id));
 			$this->db->trans_complete();
-            $this -> session -> set_flashdata('message','Voltage Regulator Record Inserted Successfully!');
+		    $this -> session -> set_flashdata('message','Voltage Regulator Record Inserted Successfully!');
 		}
 		else
 		{
@@ -2562,7 +2559,7 @@ $data["year"]=$this->input->post('year');
 					'asset_type_id'				=> $asset_type_id,
 					'ccm_make_id'	 			=> $makeID,
 					'created_by'	 			=> $username
-				);
+				); 
 				$modelID = $this-> Common_model -> insert_record('epi_cc_models',$dataModel);
 				$this->db->trans_complete();
 				$range="pk_id,catalogue_id";
@@ -2615,11 +2612,11 @@ $data["year"]=$this->input->post('year');
 					'quantity' 					=> (! is_null($this->input->post('quantity')))?$this->input->post('quantity'):NULL,
 					'ccm_model_id' 				=> $this->input->post('ccm_model_id'),
 					'auto_asset_id' 			=> $auto_asset_id,
-                    'ccm_status_history_id'		=> $status_history_id,
+					'ccm_status_history_id'		=> $status_history_id,	
 					'ccm_sub_asset_type_id' 	=> $assetTypeId,
 					//'auto_asset_id_increment'	=> $increment,
 					'warehouse_type_id' 		=> $warehouse_type_id,
-                    'status' 					=> $status,
+					'status' 					=> $status,
 					'working_since'   			=> $this->input->post('working_since'),
 					'manufacturer_year' 		=> date('Y', strtotime($this->input->post('manufacturer_year'))),
 					'procode' 					=> $this -> session -> Province,
@@ -2630,6 +2627,7 @@ $data["year"]=$this->input->post('year');
 					'created_by'	 			=> $this->session->User_Name,
 					'asset_status' => "Active"
 				);
+				
 				$wc = "";
 				if($warehouse_type_id=='0'){
 					if($this->session->UserLevel=='3' && $this->session->utype=='DEO')
@@ -2681,9 +2679,9 @@ $data["year"]=$this->input->post('year');
 					$dataColdchainmain['storecode'] = $this->session->District;
 				} */
 				$coldchainMainId =$this-> Common_model -> insert_record('epi_cc_coldchain_main',$dataColdchainmain);
-                $this-> Common_model -> update_record('epi_cc_asset_status_history',array('ccm_id'=>$coldchainMainId),array('pk_id'=>$status_history_id));
+				$this-> Common_model -> update_record('epi_cc_asset_status_history',array('ccm_id'=>$coldchainMainId),array('pk_id'=>$status_history_id));
 				$this->db->trans_complete();
-                $this -> session -> set_flashdata('message','Vaccine Carriers Record Inserted Successfully!');
+				$this -> session -> set_flashdata('message','Vaccine Carriers Record Inserted Successfully!');
 			}
 			else
 			{
@@ -2717,19 +2715,17 @@ $data["year"]=$this->input->post('year');
 				'status' 			=> ($this->input->post('status')!='')?$this->input->post('status'):0,
 				'reasons' 			=> $reasons,
 				'utilizations' 		=> $utilizations,
-				//'date' 				=> $this->input->post('date'),
+				//'date' 		=> $this->input->post('date'),
 				'assets_type_id' 	=> $assetTypeId,
 				'procode' 			=> $this -> session -> Province,
 				'distcode' 			=> $distcode,
 				'tcode' 			=> $tcode,
 				'uncode' 			=> $uncode,
 				'facode'			=> $facode
-			);
-			//print_r($dataStatus); exit;
+			); //print_r($dataStatus); exit;
 			if($warehouse_type_id==0){
 				unset($dataStatus['distcode'],$dataStatus['tcode'],$dataStatus['uncode'],$dataStatus['facode']);
 			}
-			
 			$this->db->trans_start();
 			$status_history_id = $this-> Common_model -> insert_record('epi_cc_asset_status_history',$dataStatus);
 			$dataColdchainmain = array(			///data for colchainmain table
@@ -2742,8 +2738,8 @@ $data["year"]=$this->input->post('year');
 				'ccm_sub_asset_type_id' 	=> $assetTypeId,
 				'serial_no' 				=> $this->input->post('serial_no'),
 				'working_since' 			=> $this->input->post('working_since'),
-				'manufacturer_year' 		=> date('Y', strtotime($this->input->post('manufacturer_year'))),
 				'ccm_user_asset_id' 		=> $this->input->post('ccm_user_asset_id'),
+				'manufacturer_year' 		=> date('Y', strtotime($this->input->post('manufacturer_year'))),
 				'ccm_status_history_id' 	=> $status_history_id,
 				'warehouse_type_id' 		=> $warehouse_type_id,
 				'procode' 					=> $this -> session -> Province,
@@ -2752,12 +2748,12 @@ $data["year"]=$this->input->post('year');
 				'uncode' 					=> $uncode,
 				'facode'					=> $facode,
 				'asset_status' => "Active"
-			);
-			//$wc = "";
-            $wc = "asset_status='Active' and";
+			); //print_r($dataColdchainmain); exit;
+			//$wc = "";  
+			$wc = "asset_status='Active' and";
 			$dataPost['warehouse_type_id'] = $warehouse_type_id;
 			$dataPost['ccm_status_history_id'] = $status_history_id;
-            if($warehouse_type_id=='0'){
+			if($warehouse_type_id=='0'){
 				if($this->session->UserLevel=='3' && $this->session->utype=='DEO')
 				{
 					$dataColdchainmain['storecode'] = $this->session->District;
@@ -2798,8 +2794,8 @@ $data["year"]=$this->input->post('year');
 				$dataColdchainmain['short_name'] = 'GEN-6000000';
 				
 			}
-            $dataPost['procode']= $this -> session -> Province;
-		    $dataPost['asset_status']="Active"; 
+				$dataPost['procode']= $this -> session -> Province;
+				$dataPost['asset_status']="Active"; 
 			/* if($this->session->UserLevel==2)
 			{
 				$dataColdchainmain['storecode'] = $this->session->Province;
@@ -2831,7 +2827,7 @@ $data["year"]=$this->input->post('year');
 	public function transportSave()
 	{
 		if($this->input->post('source_id') !="" && $this->input->post('utilizations') !="" && $this->input->post('ccm_sub_asset_type_id') !="" && $this->input->post('manufacturer_year') !="")
-		{
+		{   
 			$username = $this->session->User_Name;
 			$assetTypeId = $this->input->post('asset_type_id');
 			$distcode = ($this->input->post('distcode') != 0)?$this->input->post('distcode'):NULL;
@@ -2846,7 +2842,7 @@ $data["year"]=$this->input->post('year');
 			$utilizations = ($this->input->post('utilizations')!='')?$this->input->post('utilizations'):0;
 			$warehouse_type_id = ($this->input->post('placed_at-0')==1)?$this->input->post('warehouse_type_id'):0;
 			$subAssetTypeId = $this->input->post('ccm_sub_asset_type_id');
-			$dataStatus = array(
+			$dataStatus = array( 
 				'warehouse_type_id' => $warehouse_type_id,
 				'status' 			=> ($this->input->post('status')!='')?$this->input->post('status'):0,
 				'reasons' 			=> $reasons,
@@ -2971,6 +2967,7 @@ $data["year"]=$this->input->post('year');
 			if($dataTransport['used_for_epi']==''){
 				unset($dataTransport['used_for_epi']);
 			}
+			//print_r($dataTransport); exit;
 			$status_history_id = $this-> Common_model -> insert_record('epi_ccm_vehicles',$dataTransport);
 			$this->db->trans_complete();
 			$this -> session -> set_flashdata('message','Transport Record Inserted Successfully!');
@@ -3015,7 +3012,7 @@ $data["year"]=$this->input->post('year');
 				'uncode' 					=> ($this->input->post('uncode') != 0)?$this->input->post('uncode'):NULL,
 				'facode'					=> ( $this->input->post('facode')!= 0)?$this->input->post('facode'):NULL,
 				'short_name' 				=> 'AICP',
-				'ccm_sub_asset_type_id' 	=> '27', 
+				'ccm_sub_asset_type_id' 	=> '27',
 				'asset_status' => "Active"
 			);
 			//Delete Mechanism start
@@ -3094,6 +3091,7 @@ $data["year"]=$this->input->post('year');
 					$status_history_id = $this-> Common_model -> insert_record('epi_cc_asset_status_history',$dataStatus);
 					$model_name = "0.{$i}";
 					//$modelId = $this-> Common_model -> get_info('epi_cc_models',NULL,NULL,'pk_id',array('model_name'=>$model_name));
+					//print_r($modelId); exit();  
 					$arrayColdchain = array('quantity' => $quantity,'ccm_status_history_id' => $status_history_id,'auto_asset_id_increment'=>$increment);
 					$dataColdchainmain = $dataColdchainmain  + $arrayColdchain;
 					$coldchainMainId = $this-> Common_model -> insert_record('epi_cc_coldchain_main',$dataColdchainmain);
@@ -3152,11 +3150,9 @@ $data["year"]=$this->input->post('year');
 			$distcode = (isset($dataPost['distcode']))?$dataPost['distcode']:NULL;
 			$assetTypeId = $dataPost['ccm_sub_asset_type_id'] = $dataPost['asset_type_id'];
 			//$reasons = (isset($dataPost['reasons']))?$dataPost['reasons']:0;
-
 			//$status = ($this->input->post('status')!='')?$this->input->post('status'):0;
 			$auto_asset_id = $distcode.$assetTypeId;
 			$dataPost['asset_type_id'] = $auto_asset_id;
-
 			//$warehouse_type_id = ($dataPost['placed_at-0']==1)?$this->input->post('warehouse_type_id'):0;
 			if($dataPost['quantity'] !="" && $dataPost['ccm_model_id'] != "")
 			{
@@ -3169,7 +3165,6 @@ $data["year"]=$this->input->post('year');
 					'warehouse_type_id' => $warehouse_type_id,
 					'status' 			=> (isset($dataPost['status']))?$dataPost['status']:0,
 					'reasons' 			=> $reasons,
-
 					'procode' 			=> $procode,
 					'assets_type_id' 	=> $assetTypeId,
 					//'total_quantity' 	=> $dataPost['quantity'],
@@ -3178,7 +3173,6 @@ $data["year"]=$this->input->post('year');
 					'tcode' 			=> (isset($dataPost['tcode']))?$dataPost['tcode']:NULL,
 					'uncode' 			=> (isset($dataPost['uncode']))?$dataPost['uncode']:NULL,
 					'facode'			=> (isset($dataPost['facode']))?$dataPost['facode']:NULL
-
 				); //print_r($dataStatus); exit; 
 				if($warehouse_type_id==0){
 					unset($dataStatus['distcode'],$dataStatus['tcode'],$dataStatus['uncode'],$dataStatus['facode']);
@@ -3259,15 +3253,10 @@ $data["year"]=$this->input->post('year');
 					$dataPost['short_name'] = 'CB-1';
 					
 				}
-
-
-
-
 				$dataPost['procode']= $this -> session -> Province;
 				$dataPost['asset_status']="Active"; 
 				/* $coldchainMainId = $this-> Common_model -> insert_record('epi_cc_coldchain_main',$dataPost,'epi_coldchain_main_seq_id');
 				 if($status_history_id > 0)
-
 				{ */
 					unset($dataPost['asset_type_id']);
 					unset($dataPost['placed_at-0']);
@@ -3279,13 +3268,11 @@ $data["year"]=$this->input->post('year');
 					$this-> Common_model -> update_record('epi_cc_asset_status_history',array('ccm_id'=>$coldchainMainId),array('pk_id'=>$status_history_id));
 					$this->db->trans_complete();
 					$this -> session -> set_flashdata('message','Cold Box Record Inserted Successfully!');
-
 				//}
 				/* else
 				{
 					$this -> session -> set_flashdata('message','SORRY! Asset History occurs issue.');
 				}  */
-
 			} 
 			else
 			{
@@ -3314,9 +3301,10 @@ $data["year"]=$this->input->post('year');
 		}elseif($storeId=='2'){
 			$wc = " and history.warehouse_type_id='2'";
 		}
-		$query = "
+		$query = " 
 			SELECT history.working_quantity as quantity from epi_cc_coldchain_main ccm join epi_cc_asset_status_history history on history.ccm_id=ccm.asset_id where short_name like '%AICP%' {$wc} order by ccm.ccm_model_id
 		";
+		//print_r($query); exit();
 		$result = $this -> db ->query($query);
 		$result = $result -> result_array();
 		$resulttot = FALSE;
@@ -3454,7 +3442,7 @@ $data["year"]=$this->input->post('year');
 		if($_registration_no!="")
 			$wc['tble.registration_no'] = $_registration_no;
 		$tbl="";
-        unset($wc['ccm.parent_id']);
+		unset($wc['ccm.parent_id']);
 		$defaultlink = "refrigeratorView";
 		$shortName = "REF";
 		if($assetsName == "coldRoom")
@@ -3463,8 +3451,7 @@ $data["year"]=$this->input->post('year');
 			unset($wc['ccm.parent_id']);
 			$defaultlink = "coldroomView";
 			$shortName='CR';
-            $wc['assetTypes.parent_id'] = $assetsID;
-			
+			$wc['assetTypes.parent_id'] = $assetsID;
 		}elseif($assetsName == "generator")
 		{
 			$tbl = "epi_ccm_generators";
@@ -3478,7 +3465,7 @@ $data["year"]=$this->input->post('year');
 			unset($wc['ccm.parent_id']);
 			$defaultlink = "transportView";
 			$shortName='Vehicles';
-            $wc['assetTypes.parent_id'] = $assetsID;
+			$wc['assetTypes.parent_id'] = $assetsID;
 		}
 		elseif($assetsName == "voltageRegulator")
 		{
@@ -3513,9 +3500,9 @@ $data["year"]=$this->input->post('year');
 			$wc['assetTypes.pk_id'] = $assetsID;
 			$defaultlink = "coldBox";
 			$shortName='CB';
-		}
+		}//print_r($wc);exit;
 		$data = $this -> Coldchain_model -> getSearch($wc,$tbl);
-		//print_r($data);exit;
+		//print_r($data); exit();
 		$tbody='';
 		$storename = "";
 		if(!empty($data)){
@@ -3568,8 +3555,9 @@ $data["year"]=$this->input->post('year');
 							if($assetsName=="coldRoom")
 							{
 								//$tbody .= '<td class="text-center">' . $row['gross_capacity'] . '</td>';
-							}
-							else
+								//echo ($tbody); exit;
+							} 
+							else 
 							{
 								if($assetsName!="voltageRegulator"){
 									if($assetsName!="icePack"){
@@ -3642,6 +3630,7 @@ $data["year"]=$this->input->post('year');
 			$data['dataModel'] = $this->db->query($query)->result_array();
 			$data['data'] =$data;//print_r($LoadData);exit;
 			$data['assetid']=$asset_id;
+			//$data['working_since']="";
 			//$data['coldchain_id']=$coldchain_id;
 			$data['fileToLoad'] = 'coldchain/add_forms/refrigerator_edit';
 			$data['pageTitle']='Refrigerator Edit | EPI-MIS';
@@ -3777,11 +3766,12 @@ $data["year"]=$this->input->post('year');
 		{
 			$dataColdchainmain['storecode'] = $this->session->District;
 		}
-        else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
+		else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
 		{
 			$dataColdchainmain['storecode'] = $this->session->Tehsil;
 		}
-        else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
+		
+		else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
 		{
 			$dataColdchainmain['storecode'] = $this->session->Province;
 		}
@@ -3789,37 +3779,41 @@ $data["year"]=$this->input->post('year');
 		$dataColdchainmain['distcode']=NULL;
 		$dataColdchainmain['tcode']=NULL;
 		$dataColdchainmain['uncode']=NULL;
-		$dataColdchainmain['facode']=NULL;
-		//unset($dataColdchainmain['distcode'],$dataColdchainmain['tcode'],$dataColdchainmain['uncode'],$dataColdchainmain['facode']);
-	}elseif($warehouse_type_id =='2'){
-		$wc = "and warehouse_type_id='2' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
-		$dataColdchainmain['storecode'] = $this->session->Province;
-		unset($dataColdchainmain['distcode'],$dataColdchainmain['tcode'],$dataColdchainmain['tcode'],$dataColdchainmain['facode']);
-	}elseif($warehouse_type_id =='4'){
-		$wc = "and warehouse_type_id='4' and distcode='{$dataColdchainmain['distcode']}' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
-		$dataColdchainmain['storecode'] = $dataColdchainmain['distcode'];
-		unset($dataColdchainmain['tcode'],$dataColdchainmain['tcode'],$dataColdchainmain['facode']);
-	}elseif($warehouse_type_id =='5'){
-		$wc = "and warehouse_type_id='5' and tcode='{$dataColdchainmain['tcode']}' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
-		$dataColdchainmain['storecode'] = $dataColdchainmain['tcode'];
-		unset($dataColdchainmain['uncode'],$dataColdchainmain['facode']);
-	}elseif($warehouse_type_id =='6'){
-		$wc = "and warehouse_type_id='6' and facode='{$dataColdchainmain['facode']}' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
-		$dataColdchainmain['storecode'] = $dataColdchainmain['facode'];
-	}
-	/* $queryShortName="select max(numbarr[1]) as name,MAX(numbarr[2]::numeric) as maxval from (select regexp_split_to_array(short_name, '-') as numbarr from epi_cc_coldchain_main where short_name like 'CR-%' $wc) as a";
-	$MaxShortName = $this->db->query($queryShortName)->row();
-	if($MaxShortName->maxval!=''){
-		$code = $MaxShortName->maxval+1;
-		$Shortname = $MaxShortName->name."-".$code;
-		$dataColdchainmain['short_name'] = $Shortname;//print_r($Shortname);
-	}else{
-		$dataColdchainmain['short_name'] = 'CR-1';
-		
-	} */
-	unset($dataColdchainmain['asset_id'],$dataColdchainmain['ccm_user_asset_id'],$dataColdchainmain['asset_id']);unset($dataColdchainmain['placed_at-0']);unset($dataColdchainmain['Capacity']);unset($dataColdchainmain['gross_capacity']);;unset($dataColdchainmain['net_capacity']);
-	//print_r($dataColdchainmain);
-	$result=$this->db->update("epi_cc_coldchain_main",$dataColdchainmain,array('asset_id'=>$assetid));
+		$dataColdchainmain['facode']=NULL;//unset($dataColdchainmain['distcode'],$dataColdchainmain['tcode'],$dataColdchainmain['uncode'],$dataColdchainmain['facode']);
+		}elseif($warehouse_type_id =='2'){
+			$wc = "and warehouse_type_id='2' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
+			$dataColdchainmain['storecode'] = $this->session->Province;
+			unset($dataColdchainmain['distcode'],$dataColdchainmain['tcode'],$dataColdchainmain['tcode'],$dataColdchainmain['facode']);
+		}elseif($warehouse_type_id =='4'){
+			$wc = "and warehouse_type_id='4' and distcode='{$dataColdchainmain['distcode']}' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
+			$dataColdchainmain['storecode'] = $dataColdchainmain['distcode'];
+			unset($dataColdchainmain['tcode'],$dataColdchainmain['tcode'],$dataColdchainmain['facode']);
+		}elseif($warehouse_type_id =='5'){
+			$wc = "and warehouse_type_id='5' and tcode='{$dataColdchainmain['tcode']}' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
+			$dataColdchainmain['storecode'] = $dataColdchainmain['tcode'];
+			unset($dataColdchainmain['uncode'],$dataColdchainmain['facode']);
+		}elseif($warehouse_type_id =='6'){
+			$wc = "and warehouse_type_id='6' and facode='{$dataColdchainmain['facode']}' and ccm_sub_asset_type_id='{$dataColdchainmain['ccm_sub_asset_type_id']}'";
+			$dataColdchainmain['storecode'] = $dataColdchainmain['facode'];
+		}
+		/* $queryShortName="select max(numbarr[1]) as name,MAX(numbarr[2]::numeric) as maxval from (select regexp_split_to_array(short_name, '-') as numbarr from epi_cc_coldchain_main where short_name like 'CR-%' $wc) as a";
+		$MaxShortName = $this->db->query($queryShortName)->row();
+		if($MaxShortName->maxval!=''){
+			$code = $MaxShortName->maxval+1;
+			$Shortname = $MaxShortName->name."-".$code;
+			$dataColdchainmain['short_name'] = $Shortname;//print_r($Shortname);
+		}else{
+			$dataColdchainmain['short_name'] = 'CR-1';
+			
+		} */
+		$coldroomData['cooling_system'] = $dataColdchainmain['cooling_system'];
+		$coldroomData['backup_generator'] = $dataColdchainmain['backup_generator'];
+		$coldroomData['temperature_recording_system'] = $dataColdchainmain['temperature_recording_system'];
+		unset($dataColdchainmain['asset_id'],$dataColdchainmain['asset_id']);unset($dataColdchainmain['placed_at-0']);unset($dataColdchainmain['Capacity']);unset($dataColdchainmain['gross_capacity']);;unset($dataColdchainmain['net_capacity'],$dataColdchainmain['cooling_system'],$dataColdchainmain['backup_generator'],$dataColdchainmain['temperature_recording_system']);
+		//print_r($dataColdchainmain);
+		$result=$this->db->update("epi_cc_coldchain_main",$dataColdchainmain,array('asset_id'=>$assetid));
+		if($result)
+			$result=$this->db->update("epi_ccm_cold_rooms",$coldroomData,array('ccm_id'=>$assetid));
 		if($result > 0)
 		{
 			$this -> session -> set_flashdata('message','Record Update Successfully. !');
@@ -3858,11 +3852,11 @@ $data["year"]=$this->input->post('year');
 		{
 			$data['storename'] = get_store_name(TRUE,$data['warehouse_type_id'],$data[get_warehouse_code_column($data['warehouse_type_id'])]);
 		}
-        $wc="asset_type_id='24' and is_active='1'"; 
+		$wc="asset_type_id='24' and is_active='1'"; 
 		$query ="select pk_id,model_name,ccm_make_id,makername(ccm_make_id) as make_name from epi_cc_models where {$wc} order by pk_id ASC";
-		//print_r($query); exit(); 
+		//print_r($query); exit();
 		$data['dataModel'] = $this->db->query($query)->result_array();
-        $data["assetid"]=$assetid;
+		$data["assetid"]=$assetid;
 		if ($data != 0) {
 			$data['data'] = $data;
 			$data['fileToLoad'] = 'coldchain/add_forms/generator_Edit';
@@ -3936,11 +3930,11 @@ $data["year"]=$this->input->post('year');
 				{
 					$dataColdchainmain['storecode'] = $this->session->District;
 				}
-                else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
+				else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
 				{
 				$dataColdchainmain['storecode'] = $this->session->Tehsil;
 				}
-                else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
+				else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
 				{
 					$dataColdchainmain['storecode'] = $this->session->Province;
 				}
@@ -3949,7 +3943,7 @@ $data["year"]=$this->input->post('year');
 				$dataColdchainmain['tcode']=NULL;
 				$dataColdchainmain['uncode']=NULL;
 				$dataColdchainmain['facode']=NULL;
-				//unset($dataColdchainmain['distcode'],$dataColdchainmain['tcode'],$dataColdchainmain['uncode'],$dataColdchainmain['facode']);
+  //unset($dataColdchainmain['distcode'],$dataColdchainmain['tcode'],$dataColdchainmain['uncode'],$dataColdchainmain['facode']);
 			}elseif($warehouse_type_id=='2'){
 				$wc = " warehouse_type_id='2' and  ccm_sub_asset_type_id='{$assetTypeId}'";
 				$dataColdchainmain['storecode'] = $this->session->Province;
@@ -3997,7 +3991,7 @@ $data["year"]=$this->input->post('year');
 		//	$this-> Common_model -> insert_record('epi_ccm_generators',$dataGenerator);
 		//	print_r($dataColdchainmain);exit;
 			$result=$this->db->update("epi_cc_coldchain_main",$dataColdchainmain,array('asset_id'=>$assetid));
-            	$dataGenerator = array(
+				$dataGenerator = array(
 				'power_rating' 				=> $this->input->post('power_rating'),
 				'automatic_start_mechanism' => $this->input->post('automatic_start_mechanism'),
 				'use_for' 					=> $this->input->post('use_for'),
@@ -4005,8 +3999,8 @@ $data["year"]=$this->input->post('year');
 				//'ccm_id' 					=> $coldchainMainId,
 				'created_by' 				=> $username
 			);
-			$status_history_id =$this->db->update('epi_ccm_generators',$dataGenerator,array('ccm_id'=>$assetid));
-            if($result > 0)
+			$status_history_id =$this->db->update('epi_ccm_generators',$dataGenerator,array('ccm_id'=>$assetid));	
+			if($result > 0)
 				{
 					$this -> session -> set_flashdata('message','Record Update Successfully. !');
 					$location = base_url(). "Coldchain/generator_list/24";
@@ -4130,11 +4124,11 @@ $data["year"]=$this->input->post('year');
 			{
 				$dataColdchainmain['storecode'] = $this->session->District;
 			}
-            else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
+			else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
 			{
 				$dataColdchainmain['storecode'] = $this->session->Tehsil;
 			}
-            else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
+			else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
 			{
 				$dataColdchainmain['storecode'] = $this->session->Province;
 			}
@@ -4191,7 +4185,7 @@ $data["year"]=$this->input->post('year');
 		} */
 		//print_r($dataColdchainmain);exit;
 		$result = $this->db->update("epi_cc_coldchain_main",$dataColdchainmain,array('asset_id'=>$assetid));
-        		$dataTransport = array(
+				$dataTransport = array(
 				'registration_no' 		=> $this->input->post('registration_no'),
 				'engine_no' 		    => $this->input->post('engine_no'),
 				'chases_no' 		    => $this->input->post('chases_no'),
@@ -4207,7 +4201,7 @@ $data["year"]=$this->input->post('year');
 				unset($dataTransport['used_for_epi']);
 		}
 			//print_r($dataTransport); exit;
-		$status_history_id = $this->db->update('epi_ccm_vehicles',$dataTransport,array('ccm_id'=>$assetid));
+		$status_history_id = $this->db->update('epi_ccm_vehicles',$dataTransport,array('ccm_id'=>$assetid));			 
 		if($result > 0)
 			{
 				$this -> session -> set_flashdata('message','Record Update Successfully. !');
@@ -4342,7 +4336,7 @@ $data["year"]=$this->input->post('year');
 				'facode' 					=> $facode,
 			//	'created_by'	 			=> $this->session->User_Name,
 				//'asset_status' => "Active"
-			);
+			); //print_r($dataColdchainmain); exit;
 			/* $wc = "";
 			if($warehouse_type_id=='0'){
 				if($this->session->UserLevel=='3' && $this->session->utype=='DEO')
@@ -4432,6 +4426,9 @@ $data["year"]=$this->input->post('year');
 	public function voltageRegulatorEdit()
 	{
 		$CI = & get_instance();
+		//$wc="";
+		
+		
 		$rcode['ccm.asset_id'] =$asset_id=$this -> uri -> segment(3);
 		$data = $this -> Coldchain_model -> getVoltageRegulatorData($rcode);
 		$data['storename']= "Unallocated";
@@ -4444,6 +4441,7 @@ $data["year"]=$this->input->post('year');
 			$data['dataModel'] = $this->db->query($query)->result_array();
 			$data['assetid']=$asset_id;
 			$data['asset_type_id'] = 23;
+			
 		if ($data != 0) {
 			$data['data'] = $data;
 			$data['fileToLoad'] = 'coldchain/add_forms/voltageRegulator_Edit';
@@ -4466,7 +4464,7 @@ $data["year"]=$this->input->post('year');
 			{
 				$dataColdchainmain['storecode'] = $this->session->District;
 			}
-            else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
+			else if($this->session->UserLevel=='4' && $this->session->utype=='Store')
 			{
 				$dataColdchainmain['storecode'] = $this->session->Tehsil;
 			}
@@ -4585,6 +4583,7 @@ $data["year"]=$this->input->post('year');
 		{
 			$dataStatus = array(
 				'warehouse_type_id' => $warehouse_type_id,
+				'working_since' 	=> $this->input->post('working_since'),
 				'status' 			=> (isset($dataPost['status']))?$dataPost['status']:0,
 				//'reasons' 			=> $reasons,
 				//'utilizations' 		=> $utilizations,
@@ -4596,7 +4595,7 @@ $data["year"]=$this->input->post('year');
 				'tcode' 			=> (isset($dataPost['tcode']))?$dataPost['tcode']:NULL,
 				'uncode' 			=> (isset($dataPost['uncode']))?$dataPost['uncode']:NULL,
 				'facode'			=> (isset($dataPost['facode']))?$dataPost['facode']:NULL
-			);
+			); //print_r($dataStatus); exit;
 			if($warehouse_type_id==0){
 				unset($dataStatus['distcode'],$dataStatus['tcode'],$dataStatus['uncode'],$dataStatus['facode']);
 			}
@@ -4608,6 +4607,7 @@ $data["year"]=$this->input->post('year');
 				{
 					$dataPost['storecode'] = $this->session->District;
 				}
+			
 				else if($this->session->UserLevel=='2' && $this->session->utype=='Manager')
 				{
 					$dataPost['storecode'] = $this->session->Province;
@@ -4991,7 +4991,7 @@ $data["year"]=$this->input->post('year');
                 "storecode",
 				"ccm_user_asset_id",
 				"warehouse_type_name",
-				"source_id",				
+           		"source_id",				
 				//"created_date"
 			);
 		}
@@ -5056,12 +5056,37 @@ $data["year"]=$this->input->post('year');
 				$formeditlink = "refrigeratorEdit";
 				
 			}
-		} 
+		}
 		//print_r($formlink);exit;
 		$data=array();
 		$i=$start+1;
 		foreach($datalist['data'] as $r)
 		{
+			/* if(get_warehouse_code_column($r['warehouse_type_id'])=="unallocated"){
+				$code = "unallocated";
+			}
+			else{
+				$code = $r[get_warehouse_code_column($r['warehouse_type_id'])];
+			}
+			if($code !="" && $r['warehouse_type_id']==6){
+				$code = $r['facode'];
+			}
+			elseif($code != "" && $r['warehouse_type_id']==5)
+			{
+				$code = $r['tcode'];
+			}elseif($code != "" && $r['warehouse_type_id']==4)
+			{
+				$code = $r['distcode'];
+			}elseif($code != "" && $r['warehouse_type_id']==2){
+				$code = $r['procode'];
+			}
+			if($code=="unallocated"){
+				$storename = "Unallocated ({$r['store']})";
+			}
+			else
+			{
+				$storename = get_store_name(TRUE,$r['warehouse_type_id'],$code);
+			} */
 			if($this->session->UserLevel=='3' && $this->session->utype=='DEO'){
 				$data[] = array(
 					"serial" => $i,
@@ -5112,6 +5137,8 @@ $data["year"]=$this->input->post('year');
 			}
 			$i++;
 		}
+		//if($assetID==24)
+			//unset($data['quantity'],$data['net_capacity_20']);
 		//print_r($data);exit;
 		$patient_total = $this->Coldchain_model->coldchaintotal($multiple_search,$assetsID);   
 		$output = array(
@@ -5258,7 +5285,8 @@ $data["year"]=$this->input->post('year');
 	}
 	public function addmake(){
 		$update_array = array();
-		$dataToInsert= array();
+		$dataToInsert= array(); 
+		//print_r($_POST); exit();
 		if($this->input->post('make_name') !="" || $this->input->post('model_name') !="")
 		{
 		//print_r($dataToInsert); exit; 
@@ -5314,7 +5342,7 @@ $data["year"]=$this->input->post('year');
 		{
 			echo "required";
 		}
-	}
+	}	
 	public function getmodelname(){
 		$makeid=$this->input->get('make_name');
 		$query ="select pk_id,ccm_make_id,model_name from epi_cc_models where ccm_make_id='{$makeid}' order by pk_id ASC";
@@ -5339,6 +5367,6 @@ $data["year"]=$this->input->post('year');
 		}
 		echo $return;
 		
-	}
+	}												
 }
 ?>

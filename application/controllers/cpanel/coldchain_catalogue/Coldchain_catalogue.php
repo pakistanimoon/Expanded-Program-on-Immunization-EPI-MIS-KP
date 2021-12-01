@@ -346,7 +346,7 @@ class Coldchain_catalogue extends CI_Controller {
 			$modelData['ccm_make_id'] = $makeid;
 			$modelData['asset_type_id'] = 1;
 			$modelData['is_active'] = 1;
-			$modelData['procode'] = $this->session->Province;
+			$modelData['procode'] = $this -> session -> Province;
 			unset($modelData['make_name'],$modelData['asset_id']);
 			//print_r($modelData);exit;
 			$this-> Common_model ->insert_record('epi_cc_models',$modelData);
@@ -429,7 +429,7 @@ class Coldchain_catalogue extends CI_Controller {
 		if($this->input->post('catalogue_id')!='' && $this->input->post('make_name')!='' && $this->input->post('model_name')!='' && $this->input->post('net_capacity')!='' && $this->input->post('gross_capacity')!='')
 		{
 			$username = $this->session->User_Name;
-			$procode = $this->session->Province;
+			$procode = $this -> session -> Province;
 			$dataMake = array( 						///data for make table
 				'make_name'		=> (! is_null($this->input->post('make_name')))?$this->input->post('make_name'):NULL,
 				'created_by' 	=> $username
@@ -452,7 +452,7 @@ class Coldchain_catalogue extends CI_Controller {
 				'ccm_sub_asset_type_id'		=> (! is_null($this->input->post('ccm_sub_asset_type_id')))?$this->input->post('ccm_sub_asset_type_id'):9,
 				'asset_type_id'				=> '21',
 				'is_active'					=> '1',
-				'procode' 					=> $procode,
+				'procode'					=> $procode,
 				'created_by' 				=> $username
 			);
 			$modelID = $this-> Common_model -> insert_record('epi_cc_models',$dataModel);
@@ -539,7 +539,7 @@ class Coldchain_catalogue extends CI_Controller {
 		if($this->input->post('catalogue_id')!='' && $this->input->post('make_name')!='' && $this->input->post('model_name')!='' && $this->input->post('nominal_voltage')!='')
 		{
 			$username = $this->session->User_Name;
-			$procode = $this->session->Province;
+			$procode = $this -> session -> Province;
 			$dataMake = array( 						///data for make table
 				'make_name'		=> (! is_null($this->input->post('make_name')))?$this->input->post('make_name'):NULL,
 				'created_by' 	=> $username
@@ -649,7 +649,7 @@ class Coldchain_catalogue extends CI_Controller {
 		if($this->input->post('make_name') !="" || $this->input->post('model_name') !="")
 		{
 			$username = $this->session->User_Name;
-			$procode = $this->session->Province;
+			$procode = $this -> session -> Province;
 			$dataMake = array( 						///data for make table
 				'make_name'		=> (! is_null($this->input->post('make_name')))?$this->input->post('make_name'):NULL,
 				'created_by' 	=> $username
@@ -739,7 +739,7 @@ class Coldchain_catalogue extends CI_Controller {
 		if($this->input->post('make_name') !="" || $this->input->post('model_name') !="")
 		{
 			$username = $this->session->User_Name;
-			$procode = $this->session->Province;
+			$procode = $this -> session -> Province;
 			$dataMake = array( 						///data for make table
 				'make_name'		=> (! is_null($this->input->post('make_name')))?$this->input->post('make_name'):NULL,
 				'created_by' 	=> $username
@@ -834,7 +834,7 @@ class Coldchain_catalogue extends CI_Controller {
 		if($this->input->post('catalogue_id')!='' && $this->input->post('make_name')!='' && $this->input->post('model_name')!='')
 		{
 			$username = $this->session->User_Name;
-			$procode = $this->session->Province;
+			$procode = $this -> session -> Province;
 			$catalogue_id = (! is_null($this->input->post('catalogue_id')))?$this->input->post('catalogue_id'):NULL;
 			$make_name = (! is_null($this->input->post('make_name')))?$this->input->post('make_name'):NULL;
 			$model_name = (! is_null($this->input->post('model_name')))?$this->input->post('model_name'):NULL;
@@ -958,7 +958,7 @@ class Coldchain_catalogue extends CI_Controller {
 		if($this->input->post('catalogue_id')!='' && $this->input->post('make_name')!='' && $this->input->post('model_name')!='')
 		{
 			$username = $this->session->User_Name;
-			$procode = $this->session->Province;
+			$procode = $this -> session -> Province;
 			$catalogue_id = (! is_null($this->input->post('catalogue_id')))?$this->input->post('catalogue_id'):NULL;
 			$make_name = (! is_null($this->input->post('make_name')))?$this->input->post('make_name'):NULL;
 			$model_name = (! is_null($this->input->post('model_name')))?$this->input->post('model_name'):NULL;

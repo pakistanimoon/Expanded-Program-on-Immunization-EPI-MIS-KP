@@ -17,20 +17,20 @@ class Hr_management_model extends CI_Model {
 		$procode = $_SESSION['Province'];
 		$UserLevel = $_SESSION['UserLevel'];
 		$district = $this -> session -> District;
-		$query = "SELECT * from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC LIMIT {$per_page} OFFSET {$startpoint}) subquery  where post_status='Active' and post_distcode = '$district'  and is_deleted='0'";
+		$query = "SELECT * from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC LIMIT {$per_page} OFFSET {$startpoint}) subquery  where post_status='Active' and post_distcode = '$district' and is_deleted='0'";
 		$results = $this -> db -> query($query);
 		$data['results'] = $results -> result_array(); 
 		
 		$query="SELECT distcode, district FROM districts order by district ASC"; 
 		$result1=$this->db->query($query); 
 		$data['districts']=$result1->result_array();
-		$query="SELECT facode, fac_name from facilities where $wc  and hf_type='e' order by fac_name ASC";
+		$query="SELECT facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
 		$resultFac=$this->db->query($query);
 		$data['resultFac']=$resultFac->result_array();
-		$query="SELECT uncode, un_name from unioncouncil where $wc order by un_name ASC";
+		$query="SELECT uncode, un_name from unioncouncil where distcode='$district' order by un_name ASC";
 		$resultun=$this->db->query($query);
 		$data['resultun']=$resultun->result_array();
-		$query="SELECT tcode, tehsil from tehsil where $wc order by tehsil ASC";
+		$query="SELECT tcode, tehsil from tehsil where distcode='$district' order by tehsil ASC";
 		$resultTeh=$this->db->query($query);
 		$data['resultTeh']=$resultTeh->result_array();
 		//echo $this->db->last_query();exit;
@@ -39,7 +39,6 @@ class Hr_management_model extends CI_Model {
 	
 	public function hr_add()
 	{
-		$wc = getWC();//helper function
 		if ((in_array($_SESSION['UserLevel'], array('2','3','4'))) && $_SESSION['UserType'] == 'DEO')
 		{
 			if($_SESSION['UserLevel'] == '3' || $_SESSION['UserLevel'] == '4')
@@ -49,13 +48,13 @@ class Hr_management_model extends CI_Model {
 				$result=$this->db->query($query);
 				$data['result']=$result->result_array();
 			}
-			$query="SELECT facode, fac_name from facilities where $wc and hf_type='e' order by fac_name ASC";
+			$query="SELECT facode, fac_name from facilities where distcode='$district' and hf_type='e' order by fac_name ASC";
 			$resultFac=$this->db->query($query);
 			$data['resultFac']=$resultFac->result_array();
-			$query="SELECT uncode, un_name from unioncouncil where $wc order by un_name ASC";
+			$query="SELECT uncode, un_name from unioncouncil where distcode='$district' order by un_name ASC";
 			$resultun=$this->db->query($query);
 			$data['resultun']=$resultun->result_array();
-			$query="SELECT tcode, tehsil from tehsil where $wc order by tehsil ASC";
+			$query="SELECT tcode, tehsil from tehsil where distcode='$district' order by tehsil ASC";
 			$resultTeh=$this->db->query($query);
 			$data['resultTeh']=$resultTeh->result_array(); 
 			$query="SELECT name, id from training_types where is_active= '1' order by created_date ASC";
@@ -322,7 +321,7 @@ class Hr_management_model extends CI_Model {
 			$this->db->update('hr_db',$data);
 		$this->db->trans_complete();
 	}
-    public function hr_status_edit($hrcode){ 
+	public function hr_status_edit($hrcode){ 
 		$utype=$_SESSION['utype'];
 		//print_r($utype);
 		$query="select *, facilityname(facode) as facilityname, districtname(distcode) as district, tehsilname(tcode), coalesce(unname(uncode),'') as unioncouncil  from hr_db where code = '$hrcode' ";
@@ -344,6 +343,7 @@ class Hr_management_model extends CI_Model {
 		$hrstatus = $res -> result_array();
 		
 		$query="select count(*) from hr_db_history where code='$hrcode'";
+        //print_r($q); exit();
 		$res = $this -> db -> query($query);
 		$hrstatus_counts = $res -> result_array();
 		
@@ -370,7 +370,7 @@ class Hr_management_model extends CI_Model {
 		$data['htmlData'] = getSectionsStatusTableHR($hrstatus,$hrstatus_counts);
 		return $data;
 	}
-		public function hr_status_save(){
+	public function hr_status_save(){
 		//echo '<pre>';print_r($this->input->post()); exit;  
 		$old_code=$this->input->post("code");
 		$id=$this->input->post("id");    
@@ -654,7 +654,7 @@ class Hr_management_model extends CI_Model {
 			//echo $this->db->last_query(); exit; 
 		} 
 		$this->db->trans_complete();
-		$query = "DELETE from hr_db_history where (code = '$code' and status_date = '$status_date' and post_status = '$status' and id='$last_id')";
+		$query = "DELETE from hr_db_history where (code = '$code' and status_date = '$status_date' and post_status = '$status' and id = '$last_id')";
 		//print_r($query); exit();
 		$result = $this -> db -> query($query);
 		if($result)

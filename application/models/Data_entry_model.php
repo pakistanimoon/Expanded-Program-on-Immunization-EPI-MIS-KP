@@ -201,7 +201,7 @@ class Data_entry_model extends CI_Model {
 	//====== Function to Show Edit Page for a Facility Monthly vaccination Report Ends ============//
 	//-------------------------------------------------------------------------------------//
 	//====== Function to Save New facility Monthly vaccination Report Starts ===========//
-	public function fmvrf_save($data){
+	public function fmvrf_save($data){		
 		/* $checkquery = "select count(*) as cnt from flcf_vacc_mr where distcode='".$data["facode"]."' and fmonth='".$data["fmonth"]."'";
 		$checkresult=$this->db->query($checkquery);
 		$checkrow=$checkresult->row_array();
@@ -258,12 +258,11 @@ class Data_entry_model extends CI_Model {
 		$data['resultFac'] = $resultFac -> result_array();
 		
 		//Workaround for Cloumn name difference in districts table. i.e procode is prvince.
-		if($this->session->UserLevel == 2){
-			$neWc = str_replace("procode", "province", $wc);
-			$query="SELECT distcode, district from districts where $neWc order by district asc";
-			$resultDist=$this -> db -> query($query);
-			$data['resultDist'] = $resultDist -> result_array();
-		}
+		$neWc = str_replace("procode", "province", $wc);
+		$query="SELECT distcode, district from districts where $neWc order by district asc";
+		$resultDist=$this -> db -> query($query);
+		$data['resultDist'] = $resultDist -> result_array();
+		
         $query="SELECT id,casename,age,facilityname(facode) as facilityname,unname(uncode) as unioncouncil,tehsilname(tcode) as tehsilname,		
 		trim(trailing ', ' from  
 			case when mc_bcg = 1 then 'BCG Lymphadenitis , ' else '' END || 
@@ -299,7 +298,7 @@ class Data_entry_model extends CI_Model {
 	//-------------------------------------------------------------------------------------//
 	//====== Function to Save New AEFI Report Starts ===========//
 	public function aefi_save($data){
-		//print_r($data);exit;		
+//print_r($data);exit;		
 		$inserted_id = $this -> Common_model -> insert_record('aefi_rep', $data);
 		createTransactionLog("Data Entry", "AEFI Report Added");
 		//echo $this->db->last_query();exit;
@@ -636,6 +635,7 @@ class Data_entry_model extends CI_Model {
 	}
 	
 	public function	form_A2_edit($distcode,$id){
+
 		//////////////////////////////Adding BreadCrums////////////////////
 		$this->breadcrumbs->push('Home','/');
 		$this->breadcrumbs->push('Form A-2-Provincial List', '/Data_entry/form_a2_list');
@@ -655,6 +655,7 @@ class Data_entry_model extends CI_Model {
 		$data['vaccine_titles'] = $result -> result_array();
 		
 		return $data;
+
 	}
 	//======================== Function to Show Listing Page for Form A2 Ends ===============================//
 	//-------------------------------------------------------------------------------------------------------//
@@ -807,7 +808,7 @@ class Data_entry_model extends CI_Model {
 		$resultDist=$this -> db -> query($query);
 		$data['resultDist'] = $resultDist -> result_array();
 		
-        $query="select facode, vacc_name, facilityname(facode) as facilityname,unname(uncode) as unioncouncil, facilitytype(facode) as facilitytype, fmonth from fac_mvrf_db where $wc order by fmonth, facode desc LIMIT {$per_page} OFFSET {$startpoint}  ";
+        $query="select facode, vacc_name, facilityname(facode) as facilityname,unname(uncode) as unioncouncil, facilitytype(facode) as facilitytype, fmonth from fac_mvrf_db where $wc order by fmonth desc, facode asc LIMIT {$per_page} OFFSET {$startpoint}  ";
         $result=$this -> db -> query ($query);
 		$data['result'] = $result -> result_array();
 		return $data;
@@ -819,7 +820,6 @@ class Data_entry_model extends CI_Model {
 		$mainQuery = "SELECT * FROM fac_mvrf_db WHERE facode = '$facode'  AND fmonth = '$fmonth'";
 		$result = $this->db->query($mainQuery);
 		$data['fmvrf_info'] = $result->row_array();
-		//print_r($data['fmvrf_info']);exit;
 		$mainQuery_od = "SELECT * FROM fac_mvrf_od_db WHERE facode = '$facode'  AND fmonth = '$fmonth'";
 		$result = $this->db->query($mainQuery_od);
 		$data['fmvrf_info_od'] = $result->row_array();
@@ -942,25 +942,7 @@ class Data_entry_model extends CI_Model {
 		return $data;
 		
 	}
-	public function asdtesting($bcg,$fmonth){
-		
-		//////////////////////////////Adding BreadCrums////////////////////
-		$this->breadcrumbs->push('Home','/');
-		$this->breadcrumbs->push('District Stock Issue & Receipt Voucher', '/District-Issue-Receipt/List');
-		//////////////////////////////Adding BreadCrums////////////////////
-		$wc = getWC();
-		$query="Select uncode, un_name from unioncouncil where $wc order by un_name asc";
-		$resultUnc=$this -> db -> query($query);
-		$data['resultUnC'] = $resultUnc -> result_array();
-		
-		$query="select group_id,campaign_type, form_date,distcode, districtname(distcode) as districtname, is_temp_saved from form_a2_new where $wc and form_date <> '1970-01-01' GROUP BY group_id,campaign_type ,form_date,distcode, districtname(distcode),is_temp_saved order by group_id desc LIMIT {$per_page} OFFSET {$startpoint}  ";
-        $result=$this -> db -> query ($query);
-		$data['result'] = $result -> result_array();
-		return $data;
-		
-	}
-	//======================= Function to Show Listing Page for Form C Ends ========================//
-	//============================== Function for AEFI Vaccines Start ==============================//
+	//======================== Function to Show Listing Page for Form C Ends ===============================//
 	public function get_vaccinename(){
 		$query = "SELECT pk_id, description from epi_items where item_category_id='1' and is_active='1' order by pk_id";
 		$result = $this->db->query($query);

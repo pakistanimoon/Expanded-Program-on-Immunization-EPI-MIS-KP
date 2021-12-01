@@ -361,18 +361,22 @@ $(document).ready(function(){
 		var dp = $(e.currentTarget).data('datepicker');
 		var minDate = new Date(e.date.valueOf());
 		document.getElementById('tt2').disabled = false;
-		addDays('tt1', 'tt2', 30); 
-		dp.date = e.date;
-		dp.setValue();
-	}).on('clearDate', function(){
+		addDays('tt1', 'tt2', 30);
 		$('#tt2').val('');
 		$('#tt3').val('');
 		$('#tt4').val('');
-		$('#tt5').val('');
+		$('#tt5').val(''); 
+		dp.date = e.date;
+		dp.setValue();
+	}).on('clearDate', function(){
 		document.getElementById('tt2').disabled = true;
 		document.getElementById('tt3').disabled = true;
 		document.getElementById('tt4').disabled = true;
 		document.getElementById('tt5').disabled = true;
+		$('#tt2').val('');
+		$('#tt3').val('');
+		$('#tt4').val('');
+		$('#tt5').val('');
 	});
 	
 	$('#tt2').datepicker({	

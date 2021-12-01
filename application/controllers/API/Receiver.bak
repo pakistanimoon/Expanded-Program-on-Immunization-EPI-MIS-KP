@@ -150,7 +150,8 @@ class Receiver extends CI_Controller
         $itemCategory = $this->getItemCategoryId(($this -> input -> post('typeofitems'))?$this -> input -> post('typeofitems'):'1');
 		$reportingmonth = date('Y-m', strtotime('-1 month', time()));
 		//$items = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,(SELECT count(*) FROM form_b_cr where fmonth = '".$reportingmonth."') as submitted,get_pro_level_all_fac_stock_out(cr_table_row_numb,'".$reportingmonth."') as stockout",array("item_category_id"=>$itemCategory,"cr_table_row_numb !="=>NULL),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
-		$items = $this->rcvr_mdl->get_str_stock_out_data($reportingmonth,$itemCategory);
+		//$items = $this->rcvr_mdl->get_str_stock_out_data($reportingmonth,$itemCategory);
+		$items = $this->rcvr_mdl->get_str_stock_out_data_new($reportingmonth,$itemCategory);
 		$data["error"] = false;
 		$data["result"] = $items;
 		echo json_encode($data);exit;

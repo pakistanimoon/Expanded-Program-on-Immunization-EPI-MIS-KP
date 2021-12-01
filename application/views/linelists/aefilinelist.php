@@ -46,7 +46,7 @@
                                 <th rowspan="2">Suspected<br>Vaccine</th>
                                 <th rowspan="3">AEFI*</th>
                                 <th rowspan="2">Hospita<br>lization<br>(Yes/No)</th>
-                                <th rowspan="2">Death<br>(Yes/No)</th>				
+                                <th rowspan="2">Death<br>(Yes/No)</th>              
                             </tr>                        
                         </thead>
                         <tbody>
@@ -63,8 +63,8 @@
                             <tr class="DrillDownRow">
                                 <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){ ?>
                                 <td>
-                                    <!-- <a href="<?php //echo base_url(); ?>AFP-CIF/Edit/<?php //echo $row['facode']; ?>/<?php //echo $row['id']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> --> 
-                                    <a href="<?php echo base_url(); ?>AEFI-CIF/Edit/<?php echo $row['id']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+                                <!-- <a href="<?php //echo base_url(); ?>AFP-CIF/Edit/<?php //echo $row['facode']; ?>/<?php //echo $row['id']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> --> 
+                                <a href="<?php echo base_url(); ?>AEFI-CIF/Edit/<?php echo $row['id']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
                                 </td>               
                                 <?php } ?> 
                                 <td style="display:none;"><?php echo $row['id']; ?></td>
@@ -126,7 +126,7 @@
                     <table class="table table-bordered table-striped" style="margin-top: 10px;">
                         <tbody>
                             <tr>
-                                <td>*Reporting For district level Reporting unit will be respective reporting health facility.for Provincial level compitition Reporting unit wilbe respective reporting district </td>
+                                <td>*Reporting For districtlevel Reporting unit will be respective reporting health facility.for Provincial level compitition Reporting unit wilbe respective reporting district </td>
                             </tr>
                             <tr>
                                 <td>**Type of case means AFP Measlics.NT Pertusis Deptheria Childhood TB etc </td>
@@ -148,27 +148,28 @@
     </div><!--end of row-->
 </div><!--End of page content or body-->  
 <?php if(!$this->input->post('export_excel')){ ?>
-    <script type="text/javascript">
-        $('.DrillDownRow').css('cursor','pointer');
-        $(document).on('click',".DrillDownRow", function(){
-            var ulevel = '<?php echo $_SESSION['UserLevel']; ?>';
-            if(ulevel==3){
-                var code = $(this).find("td:nth-child(3)").text();
-            }
-            else{
-                var code = $(this).find("td:first-child(2)").text();
-            }
-    		var url = '';
-    		url = "<?php echo base_url(); ?>AEFI-CIF/View/"+code;       
-            var win = window.open(url,'_self');
-            if(win){
-                //Browser has allowed it to be opened
-                win.focus();
-            }
-            else{
-                //Broswer has blocked it
-                alert('Please allow popups for this site');
-            }      
-        });
-    </script>
+
+<script type="text/javascript">
+    $('.DrillDownRow').css('cursor','pointer');
+    $(document).on('click',".DrillDownRow", function(){
+        var ulevel = '<?php echo $_SESSION['UserLevel']; ?>';
+        if(ulevel==3){
+            var code = $(this).find("td:nth-child(3)").text();
+        }
+        else{
+            var code = $(this).find("td:first-child(2)").text();
+        }
+        var url = '';
+        url = "<?php echo base_url(); ?>AEFI-CIF/View/"+code;       
+        var win = window.open(url,'_self');
+        if(win){
+            //Browser has allowed it to be opened
+            win.focus();
+        }
+        else{
+            //Broswer has blocked it
+            alert('Please allow popups for this site');
+        }      
+    });
+</script>
 <?php } ?>

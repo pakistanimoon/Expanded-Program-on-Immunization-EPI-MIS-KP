@@ -312,9 +312,10 @@
 			echo $server_output;
 		}
 	}
-	
+
 	if(!function_exists('syncCaseEpidCountMasterDataWithFederalEPIMIS')){
 		function syncCaseEpidCountMasterDataWithFederalEPIMIS($year, $week, $caseType, $districtCode, $doseNumber, $gender){
+			//echo $year;exit;
 			$CI = & get_instance();
 			$liveUrl = $CI -> session -> liveURL;
 			$localUrl = $CI -> session -> localURL;
@@ -322,19 +323,23 @@
 			$districtCode = ($districtCode)?$districtCode:$CI -> session -> District;
 			$CI -> db -> select('*');
 			$CI -> db -> from('caseepidcount_master');
-			$CI -> db -> where(array('year' => $year, 'selected_week' => $week, 'case_type' => $caseType, 'distcode' => $districtCode, 'dosenumber' => $doseNumber, 'gender' => $gender));
+			$CI -> db -> where(array('year' => $year, 'selected_week' => '2', 'case_type' => $caseType, 'distcode' => $districtCode, 'dosenumber' => $doseNumber, 'gender' => (string)$gender));
 			$epidCountArray = $CI -> db -> get() -> row_array();
+			//print_r($year);exit;
+			//echo($epidCountArray);exit;
 			//echo $CI -> db -> last_query();exit;	
 			unset($epidCountArray['pk_id']);
 			$whereArray = array(
 				'year' => $year, 
 				'selected_week' => $week, 
-				'case_type' => $caseType, 
+				'case_type' => $caseType,
 				'distcode' => $districtCode, 
 				'dosenumber' => $doseNumber, 
 				'gender' => $gender
 			);
+			//print_r($liveUrl);exit;
 			if($baseUrl == $liveUrl){
+				//echo'here';exit;
 				$url = 'http://federal.epimis.pk/Receive_data_from_regions/saveCaseEpidCountMasterData/';
 			}
 			elseif($baseUrl == $localUrl){
@@ -343,8 +348,9 @@
 			else{
 				$url = '';
 			}
-			$ch = curl_init();
 			
+			$ch = curl_init();
+			//print_r($url);exit;
 			curl_setopt($ch, CURLOPT_URL,$url);
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
@@ -359,6 +365,7 @@
 											'epidCountMasterArray' => $epidCountArray
 										)
 									);
+			//print_r($aray);exit;
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $aray);
 			curl_setopt($ch, CURLOPT_VERBOSE, 0);
 			// receive server response ...
@@ -367,7 +374,7 @@
 			echo $server_output;
 		}
 	}
-/** data that change on trigger which is not sync to federal using flag .sync it **/
+		/** data that change on trigger which is not sync to federal using flag .sync it **/
 	if(!function_exists('synccomplianceDataWithFederalEPIMIS')){
 		function syncComplianceDataWithFederalEPIMIS($tablename){
 			$CI = & get_instance();
@@ -379,10 +386,6 @@
 			//getting data that not sync to federal DB
 			$CI -> db -> where(array('flag' =>1));
 			$complianceArray = $CI -> db -> get() -> result_array();
-			//print_r($dataArray);//unset the id in fedral and flag column before sync to fedDB
-			/* $complianceTable = array(
-				'complianceTable' => $tablename
-			); */
 			if(!empty($complianceArray)){		
 			if($baseUrl == $liveUrl){
 				$url = 'http://federal.epimis.pk/Receive_data_from_regions/receiveAndSaveFlagComplianceData/';
@@ -433,6 +436,5 @@
 			echo 'No rows to sync.';
 		}	
 	}
-}	
-	
+}
 ?>

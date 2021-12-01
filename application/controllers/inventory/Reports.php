@@ -24,7 +24,7 @@ class Reports extends CI_Controller {
 			$reportPath = base_url()."vaccine_distribution_report";
 			$reportTitle = "Vaccine Distribution Report";
 			$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-			$reportlevelarr = array("0"=>"Warehouse Level")+array_column ( get_warehouse_type_option(TRUE,NULL,NULL,FALSE,FALSE), "name","id");
+			$reportlevelarr = array("0"=>"Warehouse Level")+array_column ( get_warehouse_type_option(TRUE,NULL,NULL,FALSE,FALSE,FALSE), "name","id");
 			$reportstore = array("0"=>"Warehouse Store",""=>"--Select Store--");
 			$ucdropdown = array("0"=>"UC",""=>"select");
 			$reporttypearr = array("0"=>"Report Type","1"=>"Summary"/*,"2"=>"Detail"*/,"class"=>NULL);
@@ -51,14 +51,21 @@ class Reports extends CI_Controller {
 			$data['report_type'] = $report_type	= (null !== $this->uri->segment(2)) ? $this->uri->segment(2) : $this->input->post('report_type');
 			if($report_type=="1"){
 				$startdate = $monthfrom.'-01 00:00:00';
-				$expire_startdate = $monthfrom.'-01';
 				$enddate = date("Y-m-t", strtotime($monthto.'-01')).' 23:59:59';
 				$items = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,get_stackholder_activity_name(activity_type_id) as activity",array("item_category_id"=>'1'),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
-				$prevbalance = $this->invnrep->getprevbalance($startdate,$whtype,$whcode,$expire_startdate);
+				
+				$prevbalance = $this->invnrep->getprevbalance($startdate,$whtype,$whcode);
+				
 				$prevbalance = array_column($prevbalance,"balance","id");
+				//print_r($prevbalance);exit;
 				$receivebalance = $this->invnrep->getintervalReceive($startdate,$enddate,$whtype,$whcode);
+				
+				//print_r($this->db->last_query());exit;
 				$receivebalance = array_column($receivebalance,"balance","id");
+				//print_r($this->db->last_query());exit;
+				
 				$issuebalance = $this->invnrep->getintervalIssue($startdate,$enddate,$whtype,$whcode);
+				
 				$issuebalance = array_column($issuebalance,"balance","id");		
 
 // That file which is_Adjustment is show data which is 1 of the coloum is_Adjustment
@@ -77,9 +84,10 @@ class Reports extends CI_Controller {
 				
 				$activityid = 0;$activityindex=-1;
 				foreach($items as $key=>$onerow){
-				 $onerow["activity"];
+					$combineindex = $onerow["activityid"].'-'.$onerow["id"];
+
 					$itemid = $onerow["id"];
-					$items[$key]['prevbalance'] = isset($prevbalance[$itemid])?$prevbalance[$itemid]:0;
+					$items[$key]['prevbalance'] = isset($prevbalance[$combineindex])?$prevbalance[$combineindex]:0;
 					$items[$key]['receivebalance'] = isset($receivebalance[$itemid])?$receivebalance[$itemid]:0;
 					$items[$key]['issuebalance'] = isset($issuebalance[$itemid])?$issuebalance[$itemid]:0;
 					$items[$key]['adjustment_post'] = isset($adjustment_post[$itemid])?$adjustment_post[$itemid]:0;
@@ -90,8 +98,10 @@ class Reports extends CI_Controller {
 						$activityid = $onerow["activityid"];
 					}else{
 						$data["purpose"][$activityindex]["items"]++;
+					}
 				}
-				}
+
+
 				$data["reportdata"] = $items;
 				$fileToLoad = 'inventory_management/reports/vaccine_distribution';
 				$template = 'template/reports_template';
@@ -169,11 +179,7 @@ class Reports extends CI_Controller {
 			//$reportlevelarr = array("0"=>"Warehouse Level")+array_column ( get_warehouse_type_option(TRUE,$whtype,NULL,FALSE,FALSE), "name","id");
 			//$reportstore = array("0"=>"Warehouse Store",""=>"--Select Store--");
 			//$ucdropdown = array("0"=>"UC",""=>"select");
-            if($this -> session -> UserLevel==4){
-				$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportPeriod,false,NULL,$extraNeededFilters,"No","No",NULL/*,array($reportlevelarr,$ucdropdown ,$reportstore )*/);
-			}else{
 			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,$extraNeededFilters,"No","No",NULL/*,array($reportlevelarr,$ucdropdown ,$reportstore )*/);
-			}
 			$dataHtml .= $this->reportfilters->filtersFooter();
 			$data['listing_filters'] = $dataHtml;
 			//$data['edit'] = "Yes";
@@ -496,11 +502,7 @@ class Reports extends CI_Controller {
 			$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
 			$activity=array("0"=>"Purpose")+array_column ( get_purposes(TRUE,NULL,FALSE), "activity","pk_id");
 			$reportlevelarr = array("0"=>"Product")+array_column ( get_products_by_activity(1,TRUE,NULL,FALSE), "name","id");
-			if($this -> session -> UserLevel==4){
-				$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportPeriod,false,NULL,NULL,"No","No",NULL,array($activity,$reportlevelarr));
-			}else{
-				$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,"No","No",NULL,array($activity,$reportlevelarr));
-			}
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportPeriod,false,NULL,NULL,"No","No",NULL,array($activity,$reportlevelarr));
 			$dataHtml .= $this->reportfilters->filtersFooter();
 			$data['listing_filters'] = $dataHtml;
 			$fileToLoad = 'inventory_management/reports/reports_filters';
@@ -519,19 +521,19 @@ class Reports extends CI_Controller {
 					$data['monthfrom'] 	 = $monthfrom	= (null !== $this->uri->segment(5)) ? $this->uri->segment(5) : $this->input->post('monthfrom');
 					$data['monthto']   	 = $monthto		= (null !== $this->uri->segment(6)) ? $this->uri->segment(6) : $this->input->post('monthto');
 					$data['product'] 	 = $product	= (null !== $this->uri->segment(4)) ? $this->uri->segment(4) :$this->input->post('product');
-					$data['purpose'] 	 = $purpose   = $this->input->post('purpose');
+					$data['purpose'] 	 = $purpose	= $this->input->post('purpose');
 					//$data['wh_type'] 	 = $whtype		= (null !== $this->uri->segment(3)) ? $this->uri->segment(3) : $this->input->post('warehouse_level');
 					//$data['wh_code'] 	 = $whcode		= (null !== $this->uri->segment(4)) ? $this->uri->segment(4) : $this->input->post('warehouse_store');
-					$data['distcode'] 	 = $distcode = ($this->input->post('distcode'))?$this->input->post('distcode'):0;
+					$data['distcode'] = $distcode = ($this->input->post('distcode'))?$this->input->post('distcode'):0;
 					if($distcode>0){
-						$whcode=$distcode;
-						$whtype=4;
+						$whcode	 = $distcode;
+						$whtype	 = 4; 
 					}else{
 						$whtype	 = $this->session->curr_wh_type; 
 						$whcode	 = $this->session->curr_wh_code;
 					}
-					$data['wh_type']=$whtype;
-					$data['wh_code']=$whcode;
+					$data['wh_type']	 = $whtype; 
+					$data['wh_code']	 = $whcode;
 					$startdate = $monthfrom.'-01 00:00:00';//2018-05-01 00:00:00
 					$expire_startdate = $monthfrom.'-01';
 					//$enddate = date("Y-m-t", strtotime($monthto.'-01')).' 11:59:59';
@@ -540,7 +542,7 @@ class Reports extends CI_Controller {
 					if($monthto >= date('Y-m'))
 					{
 						$enddate = date('Y-m-d H:i:s');
-						$expire_enddate = date('Y-m-d');
+						$expire_enddate = date('Y-m-d H:i:s');
 					}
 					else
 					{
@@ -549,13 +551,12 @@ class Reports extends CI_Controller {
 					}
 					//echo $enddate;exit;
 					$openingbalance = $this->invnrep->opening_balance_for_stockledger($startdate,$whtype,$whcode,$product,$purpose,$expire_startdate);
-					//echo $this->db->last_query(); exit;
+					
 					//$openingbalance = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,get_stackholder_activity_name(activity_type_id) as activity,get_curr_stock_quantity('".$startdate."','".$whtype."',$product) as stock",array("pk_id"=>$product),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
 					$tabledata = $this->invnrep->stock_ledger_data($startdate,$enddate,$product,$whtype,$whcode,$purpose);
 					$closingbalance = $this->invnrep->closing_balance_for_stockledger($enddate,$whtype,$whcode,$product,$purpose,$expire_enddate);
-					//echo $this->db->last_query(); exit;
 					/* $closingbalance=$this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,get_stackholder_activity_name(activity_type_id) as activity,get_curr_stock_quantity('".$enddate."','".$whtype."',$product) as stock",array("pk_id"=>$product),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc")); */
-					//print_r($openingbalance); exit;  
+					//print_r($openingbalance); exit; 
 					$doses = $this->invnrep->numberofdossesinproduct($product);
 					$data['data']['tabledata'] = $tabledata;
 					$data['data']['enddate'] = $enddate;
@@ -591,13 +592,22 @@ class Reports extends CI_Controller {
 	{		
 		$data['data']['vouchernum'] =  $vouchernum;
 		$data['data']['output'] = $this->invnrep->voucher_detail($vouchernum);
+		if(empty($data['data']['output']))
+		{
+			//will set  flash message on main view.
+			redirect(base_url());
+			
+		}
+		else
+		{	
 		$allproducts = array_column($data['data']['output'], 'itemname');
 		$uniqueprod = array_unique($allproducts);
 		$data['data']['uniqueProd']=$uniqueprod;
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'inventory_management/reports/voucher_detail';
 		$data['pageTitle'] = 'EPI-MIS | Voucher Detail';
-		$this->load->view('template/reports_template',$data);	
+		$this->load->view('template/reports_template',$data);
+		}	
 	}
 		public function get_purpose_product()
 	{
@@ -615,15 +625,25 @@ class Reports extends CI_Controller {
 	{		
 		$data['data']['vouchernum'] =  $vouchernum;
 		$data['data']['output'] = $this->invnrep->rec_voucher_detail($vouchernum);
+		if(empty($data['data']['output']))
+		{
+			//will set  flash message on main view.
+			redirect(base_url("inventory_status_report"));
+			
+		}
+		else
+		{
 		$allproducts = array_column($data['data']['output'], 'itemname');
 		$uniqueprod = array_unique($allproducts);
 		$data['data']['uniqueProd']=$uniqueprod;
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
 		$data['fileToLoad'] = 'inventory_management/reports/voucher_detail';
 		$data['pageTitle'] = 'EPI-MIS | Voucher Detail';
-		$this->load->view('template/reports_template',$data);	
+		$this->load->view('template/reports_template',$data);
+		}	
 	}
-    public function current_stock($default='filter')
+
+	public function current_stock($default='filter')
 	{
 		
 		if($default==='filter')
@@ -638,11 +658,7 @@ class Reports extends CI_Controller {
 			$report_type = array("0"=>"Report Type","p_summary"=>"Product Wise Summary","b_summary"=>"Batch Wise Summary","manuf_summary"=>"Manufacturer Wise Summary","p_dist"=>"Priority Distribution","class"=>NULL);
 			//$category = array("0"=>"Category","all"=>"All","vac"=>"Vaccine","non_vac"=>"Non-Vaccine","dilluent"=>"Dilluent","class"=>NULL);
 			$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
-			if($this -> session -> UserLevel==4){
-				$dataHtml .= $this->reportfilters->createReportFilters(false,true,false,false,$reportperiod,false,NULL,NULL,"No","No",NULL,array($report_type));
-            }else{
-				$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportperiod,false,NULL,NULL,"No","No",NULL,array($report_type));
-			}
+			$dataHtml .= $this->reportfilters->createReportFilters(true,false,false,false,$reportperiod,false,NULL,NULL,"No","No",NULL,array($report_type));
 			$dataHtml .= $this->reportfilters->filtersFooter();
 			$data['listing_filters'] = $dataHtml;
 			$data['type'] = 'current_stock';
@@ -652,9 +668,8 @@ class Reports extends CI_Controller {
 			$this -> load -> view('template/epi_template',$data);
 		}
 		else if($default=='preview')
-		{   //print_r($_POST); exit();
+		{
 			$distcode = $this->input->post('distcode');
-			$tcode = $this->input->post('tcode');
 			$category = $this->input->post('vacc_ind');
 			$cat_type ="'".implode("','", $category)."'";
 			$purpose_type = $this->input->post('act_purpose');
@@ -663,19 +678,19 @@ class Reports extends CI_Controller {
 			
 			if($report_type == 'p_summary')
 			{
-				$this->stock_product_summary($distcode ,$tcode, $purpose, $cat_type);
+				$this->stock_product_summary($distcode, $purpose, $cat_type);
 			}
 			else if($report_type == 'b_summary')
 			{
-				$this->stock_batch_Summary($distcode, $tcode,$purpose, $cat_type);
+				$this->stock_batch_Summary($distcode, $purpose, $cat_type);
 			}
 			else if($report_type == 'p_dist')
 			{
-				$this->stock_batch_priority($distcode,$tcode, $purpose, $cat_type);
+				$this->stock_batch_priority($distcode, $purpose, $cat_type);
 			}
 			else if($report_type == 'manuf_summary')
 			{
-				$this->stock_manufacturer_summary($distcode,$tcode, $purpose, $cat_type);
+				$this->stock_manufacturer_summary($distcode, $purpose, $cat_type);
 			}
 			
 			/* 
@@ -709,14 +724,11 @@ class Reports extends CI_Controller {
 		
 	}
 	
-	public function stock_product_summary($distcode,$tcode,$purpose, $category)
+	public function stock_product_summary($distcode, $purpose, $category)
 	{
 		//Vaccine Productstock_issue_dispatch_report
-		    //print_r($_POST); exit();
-			$data['data']['searchResult'] = $this->invn->product_summary_report($distcode,$tcode ,$purpose, $category);
-			//echo $this->db->last_query(); exit;
+			$data['data']['searchResult'] = $this->invn->product_summary_report($distcode, $purpose, $category);
 			$data['data']['distcode'] = $distcode;
-			$data['data']['tcode'] = $tcode;
 			$data['data']['purpose'] = $purpose;
 			$data['data']['category'] = $category;
 			$data['data']['exportIcons']=exportIcons($_REQUEST);
@@ -725,11 +737,10 @@ class Reports extends CI_Controller {
 			$this->load->view('template/reports_template',$data);
 	}
 	
-	public function stock_batch_Summary($distcode, $tcode, $purpose, $category)
+	public function stock_batch_Summary($distcode, $purpose, $category)
 	{
-		$data['data']['searchResult'] = $this->invn->batch_summary_report($distcode, $tcode,$purpose, $category);
+		$data['data']['searchResult'] = $this->invn->batch_summary_report($distcode, $purpose, $category);
 		$data['data']['distcode'] = $distcode;
-		$data['data']['tcode'] = $tcode;
 		$data['data']['purpose'] = $purpose;
 		$data['data']['category'] = $category;
 		$data['data']['exportIcons']=exportIcons($_REQUEST);
@@ -738,9 +749,9 @@ class Reports extends CI_Controller {
 		$this->load->view('template/reports_template',$data);
 	}
 	
-	public function stock_batch_priority($distcode, $tcode,$purpose, $category)
+	public function stock_batch_priority($distcode, $purpose, $category)
 	{
-			$data['data']['searchResult'] = $this->invn->priority_summary_report($distcode, $tcode,$purpose, $category);
+			$data['data']['searchResult'] = $this->invn->priority_summary_report($distcode, $purpose, $category);
 			$allproducts= array_column($data['data']['searchResult'], 'itemname');
 			$allpriority= array_column($data['data']['searchResult'], 'priority');
 			$allactivitytype= array_column($data['data']['searchResult'], 'activity_type_id');
@@ -751,7 +762,6 @@ class Reports extends CI_Controller {
 			$data['data']['uniquepriority']=$uniquepriority;
 			$data['data']['uniqueactivity']=$uniqueactivity;
 			$data['data']['distcode'] = $distcode;
-			$data['data']['tcode'] = $tcode;
 			$data['data']['purpose'] = $purpose;
 			$data['data']['category'] = $category;
 			$data['data']['exportIcons']=exportIcons($_REQUEST);
@@ -761,7 +771,7 @@ class Reports extends CI_Controller {
 	}
 	
 	public function adjustment_report($default='filter')
-	{ 
+	{
 		
 		if($default==='filter')
 		{
@@ -811,18 +821,17 @@ class Reports extends CI_Controller {
 			}
 		}
 		
-	public function stock_manufacturer_summary($distcode,$tcode, $purpose, $category)
+	public function stock_manufacturer_summary($distcode, $purpose, $category)
 	{
 		
-			$data['data']['searchResult'] = $this->invn->manufacturer_summary_report($distcode,$tcode, $purpose, $category);
+			$data['data']['searchResult'] = $this->invn->manufacturer_summary_report($distcode, $purpose, $category);
 			$data['data']['distcode'] = $distcode;
-			$data['data']['tcode'] = $tcode;
 			$data['data']['purpose'] = $purpose;
 			$data['data']['category'] = $category; 
 			$data['data']['exportIcons']=exportIcons($_REQUEST);
 			$data['fileToLoad'] = 'inventory_management/stock_batch_Manufacturer';
 			$data['pageTitle'] = 'EPI-MIS | Stock Batch -Manufacturer';
 			$this->load->view('template/reports_template',$data);
-	}	
+	}
 }
 ?>

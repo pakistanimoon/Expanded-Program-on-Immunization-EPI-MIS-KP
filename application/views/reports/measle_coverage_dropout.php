@@ -1,5 +1,5 @@
 <?php
-	//print_r($result_length);exit;
+	//print_r($result);exit;
 	echo $TopInfo;
 	$result_length = ((count($result[0]) - 2) / 2) - 1;
 	$period_wise = $data['period_wise'];
@@ -52,40 +52,39 @@
 			<thead>
 				<tr>
 					<?php if(isset($data['type_wise']) AND $data['type_wise'] == 'uc') {?>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2">UC code</th>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2">UnionCouncil</th>
+					<th class="text-center" rowspan="2">UC code</th>
+					<th class="text-center" rowspan="2">UnionCouncil</th>
 					<?php } elseif(isset($data['type_wise']) AND $data['type_wise'] == 'facility') { ?>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2">Facility Code</th>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2">Facility Name</th>
+					<th class="text-center" rowspan="2">Facility Code</th>
+					<th class="text-center" rowspan="2">Facility Name</th>
 					<?php } else { ?>
-						<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2">District Code</th>
-						<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2">District Name</th>
+					<th class="text-center" rowspan="2">District Code</th>
+					<th class="text-center" rowspan="2">District Name</th>
 					<?php } ?>
 					 
 					<?php for($i=1; $i<=$result_length; $i++){?>
-						<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" colspan="2"><?php echo $header_array[$period_wise][$i-1]; ?></th>
+					<th class="text-center" colspan="2"><?php echo $header_array[$period_wise][$i-1]; ?></th>
 					<?php } ?>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" colspan="2">Total</th>
+					<th class="text-center" colspan="2">Total</th>
 				</tr>
 				<tr>
 					<?php for($i=1; $i<=$result_length; $i++){?>
-						<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Coverage</th>
-						<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Cases</th>
+						<th class="text-center">Coverage</th>
+						<th class="text-center">Cases</th>
 					<?php } ?>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Coverage</th>
-					<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Cases</th>
+						<th class="text-center">Coverage</th>
+						<th class="text-center">Cases</th>
 				</tr>
 
 			<tbody>
 				<?php
 					$str = "";
 					if(isset($result))
-					{ 
-						//echo print_r($result);exit;
+					{
 						foreach ($result as $key => $value) 
 						{
-						 	$str .= "<tr class='DrillDownRow' style='cursor: pointer;'><td style='text-align:center; border: 1px solid black;' class='text-center'>";
-						 	$str .= implode("</td><td style='text-align:center; border: 1px solid black;' class='text-center'>", $value);
+						 	$str .= "<tr class='DrillDownRow' style='cursor: pointer;'><td class='text-center'>";
+						 	$str .= implode("</td><td class='text-center'>", $value);
 						 	$str .= "</td></tr>";
 						} 
 					}
@@ -114,6 +113,7 @@
 		var period_wise = "<?php echo $data['period_wise']?>";
 	    var type_wise = 'facility';
 	    var url = '';
+
 	    if(code.toString().length == 3){
 	    	url = "<?php echo base_url();?>Reports/measle_coverage_dropout/"+code+"/"+year+"/"+period_wise+"/"+type_wise;
 	    }

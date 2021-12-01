@@ -62,7 +62,7 @@ input[type=checkbox], input[type=radio] {
 									<select id="gender" name="gender" class="form-control" size="1" required>
 										<?php general_lookups(array("lookup_name"=>"gender","active"=>"1"),array("create"=>"options","selected"=>$select_gender)); ?>
 									</select>
-								</div>	
+								</div>		
 						</div>
 					</div>
 					<div class="row bgrow" style="text-align: center;color: white;font-size: 15px; font-family: Arial;padding-top: 5px; "> Basic Information</div>

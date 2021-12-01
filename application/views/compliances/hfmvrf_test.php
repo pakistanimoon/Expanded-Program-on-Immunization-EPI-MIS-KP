@@ -112,4 +112,23 @@
 			//view();
 		});
 	<?php } ?>
+	// function view(){
+	// 	//get all quantity input fields
+	// 	var quantityFields = document.getElementsByClassName("dataReset");
+	// 	//iterate through all quantity input fields
+	// 	for(var i = 0; i < quantityFields.length; i++){
+	// 		if(quantityFields[i].value != 'NF'){
+	// 			//if the input value of this quantity field is not equal to zero then find the closest "item-row"
+	// 			//so that we can set this table row to visible
+	// 			quantityFields[i].closest(".clickedReport").style.visibility = "visible";
+	// 		}
+	// 		else{
+	// 			//if the input value of this quantity field is equal to zero then find the closest "item-row"
+	// 			//so that we can set this table row to collapse
+	// 			quantityFields[i].closest(".clickedReport").style.visibility = "collapse";
+	// 		}
+	// 	}
+	// 	//change the value of the select menu to "All"
+	// 	$('#CategoryName').val('All');
+	// }
 </script>

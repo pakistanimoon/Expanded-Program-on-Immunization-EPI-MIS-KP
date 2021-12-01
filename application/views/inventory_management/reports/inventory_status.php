@@ -1,4 +1,4 @@
-K<?php $store = '';
+<?php $store = '';
 //echo $monthfrom;exit;
  ?>
 
@@ -39,15 +39,25 @@ K<?php $store = '';
 					<thead>
 						<tr>
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2"><?php echo $colname; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" colspan="3">Vouchers issued to <?php echo $store; ?></th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" colspan="3">Vouchers issued from <?php echo $store; ?></th>
+
 						</tr>
+
 						<tr>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Issued</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Received</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Pending Receiving</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Issued</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Received</th>
+
 							<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;">Pending Receiving</th>
 						</tr>
 					</thead>
@@ -55,7 +65,6 @@ K<?php $store = '';
 						<?php 
 						//$titlerow = $receiverow = $issuerow = $balancerow = '';
 						//print_r($reportdata);exit;
-						if(!empty($reportdata)){
 						foreach($reportdata as $key=>$row){
 							if(isset($invnRepType) && $invnRepType=="storewise"){
 								$exploded = explode("-",$row["repbyname"]);
@@ -70,18 +79,24 @@ K<?php $store = '';
 							*/?>
 							<tr>
 								<th style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $firstcolval; ?></th>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center" <?php echo ($row["issuedme"])?'class="drilldownCell" data-class="issuedme" data-month="'.$row["repbyname"].'"':''; ?>><?php echo $row["issuedme"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center" <?php echo ($row["receivedme"])?'class="drilldownCell" data-class="receivedme" data-month="'.$row["repbyname"].'"':''; ?>><?php echo $row["receivedme"]; ?></td>
+
 								<?php $pending = $row["issuedme"]-$row["receivedme"]; ?>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center" <?php echo (isset($pending) && $pending>0)?'class="drilldownCell" data-class="pendingme" data-month="'.$row["repbyname"].'"':''; ?>><?php echo $pending; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center" <?php echo ($row["issuedother"])?'class="drilldownCell" data-class="issuedother" data-month="'.$row["repbyname"].'"':''; ?>><?php echo $row["issuedother"]; ?></td>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center" <?php echo ($row["receivedother"])?'class="drilldownCell" data-class="receivedother" data-month="'.$row["repbyname"].'"':''; ?>><?php echo $row["receivedother"]; ?></td>
+
 								<?php $pendingother = $row["issuedother"]-$row["receivedother"]; ?>
+
 								<td style="text-align:center; border: 1px solid black;" class="text-center" <?php echo (isset($pendingother) && $pendingother>0)?'class="drilldownCell" data-class="pendingother" data-month="'.$row["repbyname"].'"':''; ?>><?php echo $pendingother; ?></td>
 							</tr><?php
-						}} else{?>
-						<tr><td style="text-align:center; border: 1px solid black;" class="text-center" colspan="9"><center><b>No Record Found</b></center></td></tr>
-						<?php }?>
+						} ?>
 					</tbody>
 				</table>
 					<?php 	if (!$this -> input -> post('export_excel')) {?>

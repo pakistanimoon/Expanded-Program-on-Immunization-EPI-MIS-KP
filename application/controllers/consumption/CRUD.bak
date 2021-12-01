@@ -55,16 +55,12 @@ class CRUD extends CI_Controller {
 			$edit = $this -> input -> post('edit');
 			if($edit=="edit")
 			{
-				//removing check of freeze for district swat, they want to reset their data...... work by moon 2019-02-17
-				if($this -> session -> District==="346"){
-					$res = false;
-				}else{
+				
 					$res=freezeReport('epi_consumption_master',$facode,$fmonth,NUll,TRUE);
 					if($res==1){
 						$this->session->set_flashdata('message',"Report Freezed You cannot Update it Now.");
 						redirect( base_url().'consumption');
 					}
-				}				
 				$this->db->trans_start();
 				$result=0;
 				$allproducts = $this->input->post("product");
@@ -104,6 +100,8 @@ class CRUD extends CI_Controller {
 				$this->db->trans_complete();
 				if($result > 0)
 				{
+					//For sending Data to federal DB.using "form_b_cr" table name.bcz on federal DB "form_b_cr" table used.
+					syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
 					$this->session->set_flashdata('message',"Report Updated Successfully of $facode and month $fmonth");
 				}
 				else
@@ -163,6 +161,8 @@ class CRUD extends CI_Controller {
 				}
 			}
 			$this->db->trans_complete();
+			//For sending Data to federal DB.using "form_b_cr" table name,.bcz on federal DB "form_b_cr" table used.
+			syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
 			redirect( base_url().'consumption');
 		}
 	}			
@@ -209,22 +209,19 @@ class CRUD extends CI_Controller {
 		dataEntryValidator(0);
 		$fmonth=$this->uri->segment(3);
 		$facode=$this->uri->segment(4);
-		//removing check of freeze for district swat, they want to reset their data...... work by moon 2019-02-17
-		if($this -> session -> District==="346"){
-			$res = false;
-		}else{
-			$res=freezeReport('epi_consumption_master',$facode,$fmonth,NUll,TRUE);
+		$res=freezeReport('epi_consumption_master',$facode,$fmonth,NUll,TRUE);
 			if($res==1){
 				$this->session->set_flashdata('message',"Report Freezed You cannot Delete it Now.");	
 				redirect( base_url().'consumption');
 			}
-		}		
 		$this->db->trans_start();
 		$result=$this->crud->consumption_delete($fmonth,$facode);
 		$this->db->trans_complete();
 		if($result=="true")
 		{
 			$this->session->set_flashdata('message',"Report Delete Successfully of $facode and month $fmonth");
+			//For sending Data to federal DB.using "form_b_cr" table name.bcz on federal DB "form_b_cr" table used.
+			syncDataWithFederalEPIMIS('form_b_cr',$fmonth);
 		}
 		else
 		{
@@ -237,16 +234,11 @@ class CRUD extends CI_Controller {
 		dataEntryValidator(0);
 		$fmonth=$this->uri->segment(3);
 		$facode=$this->uri->segment(4);
-		//removing check of freeze for district swat, they want to reset their data...... work by moon 2019-02-17
-		if($this -> session -> District==="346"){
-			$res = false;
-		}else{
-			$res=freezeReport('epi_consumption_master',$facode,$fmonth,NUll,TRUE);
+		$res=freezeReport('epi_consumption_master',$facode,$fmonth,NUll,TRUE);
 			if($res==1){
 				$this->session->set_flashdata('message',"Report Freezed You cannot Delete it Now.");	
 				redirect( base_url().'consumption');
 			}
-		}		
 		$this->db->trans_start();
 		$data['formB_Result']=$this->crud->formb_consumption_edit($fmonth,$facode,$view=false);
 		$data['edit']="true";

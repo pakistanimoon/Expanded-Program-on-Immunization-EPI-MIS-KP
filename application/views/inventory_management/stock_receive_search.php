@@ -17,25 +17,29 @@
 							<tbody>
 								<tr>
 									<td style="padding-left:10px;">
-										<label>Store</label>
+										<label> Date From </label>
+										<input id="date_from" required="required" name="date_from" class="form-control dpinvn" value="<?php echo (isset($date_from))?$date_from:date('Y-m-d',strtotime('first day of this month',time())); ?>" data-date-end-date="0d" />
+										<!--<label>Store</label>
 										<select id="from_warehouse_type_id" name="from_warehouse_type_id" class="form-control">
-											<?php if(isset($from_warehouse_type_id)){ ?>
+											<?php /* if(isset($from_warehouse_type_id)){ ?>
 												<?php get_warehouse_type_option(FALSE,NULL,$from_warehouse_type_id,TRUE); ?>
 											<?php }else{ ?>
 												<?php get_warehouse_type_option(FALSE,NULL,NULL,TRUE); ?>
-											<?php } ?>
-										</select>
+											<?php } */ ?>
+										</select>-->
 									</td>
 									<td>
-										<label>Purpose</label>
+										<label> Date To </label>
+										<input id="date_to" required="required" name="date_to" class="form-control dpinvn" value="<?php echo (isset($date_to))?$date_to:date('Y-m-d'); ?>" data-date-end-date="0d" />
+										<!--<label>Purpose</label>
 										<select id="activity" name="activity" class="form-control">
 											<option value="">--Select--</option>
-											<?php if(isset($activity)){ ?>
+											<?php /* if(isset($activity)){ ?>
 												<?php get_purposes(FALSE,$activity); ?>
 											<?php }else{ ?>
 												<?php get_purposes(FALSE,NULL); ?>
-											<?php } ?>
-										</select>
+											<?php } */ ?>
+										</select>-->
 									</td>
 									<td style="padding-left:10px;">
 										<label>Product</label>
@@ -55,7 +59,7 @@
 										<select name="search_type" class="form-control">
 											<option value="">Select</option>
 											<option <?php echo (isset($search_type) && $search_type == 'receiptnumber')?'selected="selected"':''; ?> value="receiptnumber">Receive No.</option>
-											<option <?php echo (isset($search_type) && $search_type == 'receivereference')?'selected="selected"':''; ?> value="receivereference">Receive Ref.</option>
+											<!--<option <?php //echo (isset($search_type) && $search_type == 'receivereference')?'selected="selected"':''; ?> value="receivereference">Receive Ref.</option>-->
 											<option <?php echo (isset($search_type) && $search_type == 'batchnumber')?'selected="selected"':''; ?> value="batchnumber">Batch No.</option>
 										</select>										
 									</td>
@@ -63,22 +67,23 @@
 										<label>Value</label>
 										<input name="search_key" class="form-control" value="<?php echo (isset($search_key))?$search_key:''; ?>" type="text" />
 									</td>
-								</tr>
-								<tr>
-									<td style="padding-left:10px;">
-										<label> Date From </label>
-										<input id="date_from" required="required" name="date_from" class="form-control dpinvn" value="<?php echo (isset($date_from))?$date_from:date('Y-m-d',strtotime('first day of this month',time())); ?>" data-date-end-date="0d" />
-									</td>
-									<td style="padding-left:10px;">
-										<label> Date To </label>
-										<input id="date_to" required="required" name="date_to" class="form-control dpinvn" value="<?php echo (isset($date_to))?$date_to:date('Y-m-d'); ?>" data-date-end-date="0d" />
-									</td>
 									<td style="padding-left:10px;">
 										<label>&nbsp;</label><br>
-										<button style="background:#008d4c;" type="submit" class="btn btn-primary btn-md" role="button"><i class="fa fa-search "></i> Search </button>
-										<button type="reset" class="btn btn-info btn-md" role="button"><i class="fa fa-repeat"></i> Reset </button>
+										<button type="submit" class="btn btnSubmit pull-right" role="button"><i class="fa fa-search "></i> Search </button>
+										<!--<button type="reset" class="btn btnReset" role="button"><i class="fa fa-repeat"></i> Reset </button>-->
 									</td>
 								</tr>
+								<!--<tr>
+									<td style="padding-left:10px;">
+										
+									</td>
+									<td style="padding-left:10px;">
+										
+									</td>
+									<td style="padding-left:10px;">
+										
+									</td>
+								</tr>-->
 							</tbody>
 						</table>
 					<?php echo form_close(); ?>
@@ -93,23 +98,23 @@
 							</tr>
 						<?php }?>
 							<tr>
-								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Sr No.</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Date</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Receive No.</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Received From</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Ref No.</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Product</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Batch No.</label style="padding:0px 15px 15px 5px"></th>
-								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Manufacturer</label style="padding:0px 15px 15px 5px"></th>
-								<th  colspan="3" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Quantity</label style="padding:0px 15px 15px 5px"></th>
-								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Unit</label style="padding:0px 15px 15px 5px"></th>
-								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Expiry Date</label style="padding:0px 15px 15px 5px"></th>
-								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Created On</label style="padding:0px 15px 15px 5px"></th>
-						<?php if(!isset($_REQUEST['export_excel'])){?><th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Action</label style="padding:0px 15px 15px 5px"></th><?php }?>
+								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Sr No.</label></th>
+								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Date</label></th>
+								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Receive No.</label></th>
+								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Received From</label></th>
+								<!--<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Ref No.</label></th>-->
+								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Product</label></th>
+								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Batch No.</label></th>
+								<th  rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Manufacturer</label></th>
+								<th  colspan="3" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Quantity</label></th>
+								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Unit</label></th>
+								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Expiry Date</label></th>
+								<th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Created On</label></th>
+						<?php /* if(!isset($_REQUEST['export_excel'])){?><th rowspan="2" style="text-align:center;"><label style="padding:0px 15px 15px 5px">Action</label></th><?php } */?>
 							</tr>
 							<tr>
-								<th style="text-align:center;"><label style="padding:0px 15px 15px 5px">Vials/Pcs</label style="padding:0px 15px 15px 5px"></th>
-								<th style="text-align:center;"><label style="padding:0px 15px 15px 5px">Doses per Vial</label style="padding:0px 15px 15px 5px"></th>
+								<th style="text-align:center;"><label style="padding:0px 15px 15px 5px">Vials/Pcs</label></th>
+								<th style="text-align:center;"><label style="padding:0px 15px 15px 5px">Doses per Vial</label></th>
 								<th style="text-align:center;"><label style="padding:0px 15px 15px 5px">Total Doses</label></th>
 							</tr>	
 					  </thead>
@@ -131,8 +136,8 @@
 										<td><?php echo $key+1; ?></td>
 										<td><?php echo $value['transaction_date']; ?></td>
 										<td><?php echo $value['transaction_number']; ?></td>
-										<td><?php get_store_name(false,$value['to_warehouse_type_id'],$value['to_warehouse_code']); ?></td>
-										<td><?php echo $value['transaction_reference']; ?></td>
+										<td><?php get_store_name(false,$value['from_warehouse_type_id'],$value['from_warehouse_code']); ?></td>
+										<!--<td><?php //echo $value['transaction_reference']; ?></td>-->
 										<td><?php echo $value['itemname']; ?></td>
 										<td><?php echo $value['number']; ?></td>
 										<td><?php echo $value['manufacturer']; ?></td>
@@ -142,7 +147,7 @@
 										<td><?php echo $value['unit']; ?></td>
 										<td><?php echo $value['expiry_date']; ?></td>
 										<td><?php echo $value['created_date']; ?></td>
-										<?php if(!isset($_REQUEST['export_excel'])){?><td></td><?php } ?>
+										<?php /* if(!isset($_REQUEST['export_excel'])){?><td></td><?php } */ ?>
 									</tr>
 								<?php 
 								}
@@ -152,11 +157,11 @@
 					<?php if(!isset($_REQUEST['export_excel'])){?>
 					<div class="left" style="float:left">
                                         <b>Summary: </b>
-                                        <input type="radio"  style="margin-left:10px" name="summary" id="prod" value="Product" checked="checked"> Product Wise<input type="radio" name="summary" id="loc" value="Location"> Location wise<button style="margin-left:10px" id="stock_rec_summary" type="button" class="btn btn-warning">Print</button>
+                                        <input type="radio"  style="margin-left:10px" name="summary" id="prod" value="Product" checked="checked"> Product Wise<input type="radio" name="summary" id="loc" value="Location"> Location wise<button style="margin-left:10px" id="stock_rec_summary" type="button" class="btn btnPrint">Print</button>
                     </div>
 					<div class="right" style="float:right;">
                                         <b>Detail: </b>
-                                        <input style="margin-left:10px" type="radio" name="groupBy" id="none" value="none" checked="checked"> None<input style="margin-left:10px" type="radio" name="groupBy" id="loc" value="Location"> Location wise<input type="radio" name="groupBy" id="prod" value="Product"> Product wise<button style="margin-left:10px" id="stock_rec_detail" type="button" class="btn btn-warning">Print</button>
+                                        <input style="margin-left:10px" type="radio" name="groupBy" id="none" value="none" checked="checked"> None<input style="margin-left:10px" type="radio" name="groupBy" id="loc" value="Location"> Location wise<input type="radio" name="groupBy" id="prod" value="Product"> Product wise<button style="margin-left:10px" id="stock_rec_detail" type="button" class="btn btnPrint">Print</button>
                     </div>
 				</div> <!--end of panel body-->
 			</div> <!--end of panel panel-primary-->

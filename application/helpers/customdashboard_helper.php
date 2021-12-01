@@ -25,7 +25,7 @@ if( ! function_exists('getModulesOptions')){
 			if(($module > 0) &&($module == $onemod["pk_id"]))
 			{
 				$selected = 'selected="selected"';
-			} 
+			}
 			$output .= '<option value="'.$onemod["pk_id"].'" '.$selected.' >'.$onemod["name"].'</option>';
 		}
 		if($return == true)
@@ -96,7 +96,7 @@ if( ! function_exists('getCustomFilterDefination')){
 		$CI -> db -> select('*');
 		$CI -> db -> from('custom_filters_detail');
 		$CI -> db -> where('main_filter_id',$filterId);
-		$CI -> db -> order_by('order','desc');
+		$CI -> db -> order_by('order','asc');
 		$result = $CI -> db -> get() -> result_array();
 		
 		foreach($result as $key => $value){

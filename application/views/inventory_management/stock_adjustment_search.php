@@ -104,7 +104,7 @@ if(!isset($_REQUEST['export_excel'])){
 									<tr>
 										<td><?php echo $key+1; ?></td>
 										<td><?php echo $value['transaction_date']; ?></td>
-										<td><?php echo $value['transaction_number']; ?></td>
+										<td><a target="_blank"  href="<?php echo base_url('voucher');?>/<?php echo $value['transaction_number']; ?>" ><?php echo $value['transaction_number']; ?></a></td>
 										<td><?php echo $value['transaction_reference']; ?></td>
 										<td><?php echo $value['itemname']; ?></td>
 										<td><?php echo $value['number']; ?></td>
@@ -113,7 +113,7 @@ if(!isset($_REQUEST['export_excel'])){
 										<td><?php echo $value['comments']; ?></td>
 										<td><?php echo $value['expiry_date']; ?></td><?php
 										if($value["nature"]==0 OR $value["status"]!='Finished'){?>
-											<td><span data-id="<?php echo $value['batch_id']; ?>" data-masterid="<?php echo $value['batch_master_id']; ?>" class="fa fa-times cursor-hand actiondel" style="cursor:pointer"></span></td><?php 
+											<td><span data-id="<?php echo $value['batch_id']; ?>" data-masterid="<?php echo $value['batch_master_id']; ?>" data-adjnum="<?php echo $value['transaction_number']; ?>" class="fa fa-times cursor-hand actiondel" style="cursor:pointer"></span></td><?php 
 										}?>
 									</tr>
 								<?php 
@@ -149,7 +149,7 @@ if(!isset($_REQUEST['export_excel'])){
 		var options = {
 			format : "yyyy-mm-dd",
 			color: "green",
-			autoclose: true
+			autoclose:true
 		};
 		$('.dpinvn').datepicker(options);
 	});
@@ -184,16 +184,19 @@ if(!isset($_REQUEST['export_excel'])){
 		if(confirm("Do You realy want to delete this?")){
 			var batchId = $(this).data("id");
 			var masterId = $(this).data("masterid");
+			var adjnum   = $(this).data("adjnum");
 			$.ajax({
 				type: "POST",
 				datatype: "JSON",
-				data: {batch: batchId,master: masterId},
+				data: {batch: batchId,master: masterId,adjusmentnum:adjnum},
 				url: "<?php echo base_url("delinvnAdjustment"); ?>",
 				success: function(result){
 					var output = JSON.parse(result);
 					if(output.result==="false"){
 						alert(output.msg);
 					}else if(output.result==="true"){
+						if(output.adjmsg)
+							alert(output.adjmsg);
 						alert(output.msg);
 						location.reload();
 					}

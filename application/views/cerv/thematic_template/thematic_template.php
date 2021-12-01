@@ -1,7 +1,7 @@
 <?php if(!isset($_REQUEST['export_excel']))
 {
 ?>
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 	<?php
 		$this -> load -> view('cerv/thematic_template/style', $data);

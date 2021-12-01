@@ -95,13 +95,12 @@ a.btn{
 					<option value="0">--Select--</option>
 					<?php if($this->session->UserLevel=='2'){ ?>
 					<option value="2">Provicial</option>
-					<?php } else {?>
+					<?php } ?>
                     <?php if($this->session->UserLevel!='4' and $this->session->UserLevel!='6'){ ?>
 					<option value="4">District</option>
 					<?php } ?>
                     <option value="5">Tehsil-Taluka</option>
 					<option value="6">Union Council</option>
-					<?php } ?>
 				</select>
 			</div>
 			<!--<div class="col-md-1 disthide " style="display:none;">

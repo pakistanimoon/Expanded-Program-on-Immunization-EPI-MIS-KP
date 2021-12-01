@@ -1,4 +1,5 @@
 <!--start of page content or body-->
+<?php //sprint_r($data);?>
 <div class="container bodycontainer">
 	<?php echo $data['TopInfo']; ?>
 	<div class="panel panel-primary">
@@ -14,6 +15,7 @@
 						<th>Vials<br>Used</th>
 						<th>Unusable<br>Vials</th>
 						<th>Closing<br>Balance</th>
+						<th>Closing<br>Balance</th>
 						<!--<th>Max. Stock Level</th>
 						<th>Request<br>(I=H-G)</th>-->
 						<!--<th>Replenishment</th>-->
@@ -25,6 +27,7 @@
 						<th>Vials/Nos.</th>
 						<th>Vials/Nos.</th>
 						<th>Vials/Nos.</th>
+						<th>Doses/Nos.</th>
 						<!--<th>Vials/Nos.</th>-->
 					</tr>
 				</thead>
@@ -56,28 +59,29 @@
 										
 									); */
 									
-				unset($data['TopInfo']);unset($data['exportIcons']);unset($data['monthfrom']);unset($data['monthto']);
+				//unset($data['TopInfo']);unset($data['exportIcons']);unset($data['monthfrom']);unset($data['monthto']);
 				
-				$dataValues = array_values($data[0]);
+				//$dataValues = array_values($data[0]);
 				//print_r($dataValues);
 				?>
 				<tbody>
 					<?php
-					$i = 0;
-					foreach($data['Name'] as $key => $val){
+					//$i = 0;
+					foreach($consumption as $key => $val){
 					?>
 					<tr class="DrillDownRow">
-						<td><?php echo $key; ?></td>
-						<td><?php if($val==1){ echo ""; }else{ echo $val ; } ?></td>
-						<td><?php echo $dataValues[$i]; ?></td>
-						<td><?php echo $dataValues[$i+1]; ?></td>
-						<td><?php echo $dataValues[$i+2]; ?></td>
-						<td><?php echo $dataValues[$i+3]; ?></td>
-						<td><?php echo $dataValues[$i+4];  ?></td>
-						<!--<td><?php echo $dataValues[$i+5]; $i = $i+5; ?></td>-->
+						<td><?php echo $val['item_name']; ?></td>
+						<td><?php echo $val['number_of_doses']; ?></td>
+						<td><?php echo $val['opening']; ?></td>
+						<td><?php echo $val['received']; ?></td>
+						<td><?php echo $val['used']; ?></td>
+						<td><?php echo $val['unused']; ?></td>
+						<td><?php echo $val['closing']; ?></td>
+						<td><?php echo ($val['closing']*$val['number_of_doses']); ?></td>
+						
 					</tr>
 					<?php 
-						$i+1;
+						//$i+1;
 						
 					} 
 					?>
@@ -92,11 +96,11 @@
 <script type="text/javascript">
 	$(document).ready(function(){ 
 	//alert("danish");
-		$('.DrillDownRow').css('cursor','pointer');
+		//$('.DrillDownRow').css('cursor','pointer');
 	});
  	<?php if(!$this->input->post('export_excel'))
     {?>
-	$(document).on('click','.DrillDownRow', function(){
+	/* $(document).on('click','.DrillDownRow', function(){
 		var code="";
 		<?php if($this->session->District){ ?>
 		code="<?php echo $this->session->District; ?>";
@@ -150,6 +154,7 @@
 			alert('Please allow popups for this site');
 		}
     });
+	 */
  <?php } ?>  
 
 

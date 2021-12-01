@@ -52,9 +52,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true):false; *
 					<table class="table table-bordered table-condensed mytable3" border="1" id="table">
 						<thead>
 						<?php if(!isset($_REQUEST['export_excel'])){?>
-							<tr>
-								<th colspan="8" style="padding-top: 10px; padding-bottom: 10px;"><label>Stock Transfer History</label></th>
-							</tr>
+							
 						<?php }?>
 						
 							<tr>
@@ -85,7 +83,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true):false; *
 									<tr>
 										<td><?php echo $key+1; ?></td>
 										<td><?php echo $value['transaction_date']; ?></td>
-										<td><?php echo $value['transaction_number']; ?></td>
+										<td><a target="_blank"  href="<?php echo base_url('voucher');?>/<?php echo $value['transaction_number']; ?>" ><?php echo $value['transaction_number']; ?></a></td>
 										<td><?php get_transfer_from(false,$value['transaction_type_id'],$value['stock_batch_id']); ?></td>
 										<td><?php get_transfer_to(false,$value['transaction_type_id'],$value['stock_batch_id']); ?></td>
 										<td><?php echo $value['number']; ?></td>
@@ -123,7 +121,7 @@ $adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true):false; *
 		var options = {
 			format : "yyyy-mm-dd",
 			color: "green",
-			autoclose: true
+			autoclose:true
 		};
 		$('.dpinvn').datepicker(options);
 	});

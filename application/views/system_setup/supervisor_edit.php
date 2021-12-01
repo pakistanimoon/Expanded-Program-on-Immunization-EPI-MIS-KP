@@ -175,12 +175,12 @@
                       <?php if($supervisordata['status']!='Transfered') {?>
                       <option <?php if($supervisordata['status'] == 'Active') { echo 'selected="selected"'; } else { echo ''; } ?> value="Active">Active</option>
                         <option <?php if($supervisordata['status'] == 'Terminated') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Terminated">Terminated</option>
-                        <option <?php if($supervisordata['status'] == 'Back to H.O.D') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Back to H.O.D">Back to H.O.D</option>
                         <option <?php if($supervisordata['status'] == 'Died') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Died">Died</option>
                         <option <?php if($supervisordata['status'] == 'Retired') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Retired">Retired</option>
                          <option <?php if($supervisordata['status'] == 'Resigned') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Resigned">Resigned</option>
 					   <option <?php if($supervisordata['status'] == 'On Leave') { echo 'selected="selected"'; } else { echo ''; } ?>  value="On Leave">On Leave</option>
 					   <option <?php if($supervisordata['status'] == 'Transfered') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Transfered">Transfered</option>
+					   <option <?php if($supervisordata['status'] == 'Move to H.Dpt') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Move to H.Dpt">Move to H.Dpt</option>
 						<!-- <option <?php if($supervisordata['status'] == 'Transfer(Other)') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Transfer">Transfer(Other)</option>-->
 						<?php if($supervisordata['previous_table']==NULL){?>
 					<option <?php if($supervisordata['status'] == 'Temporary-Post') { echo 'selected="selected"'; }else echo ''; ?>  value="post">Temporary-Post</option>	
@@ -285,6 +285,14 @@
 						<input  type="text"  name="date_resigned" id="date_resigned" placeholder="Date Resigned"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_resigned'); } else { echo isset($supervisordata['date_resigned']) ? date('d-m-Y', strtotime($supervisordata['date_resigned'])) : ''; } ?>"/>
 					</div>
 					</div>
+					
+					<div class="showmovedpt" id="showmovedpt" style="display: none;">
+					<label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Transfered H.Dpt</label>
+					<div class="col-xs-3">
+						<input  type="text"  name="date_transfered_to_hdpt" id="date_transfered_to_hdpt" placeholder="Date Transfered to H.Dpt"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_transfered_to_hdpt'); } else { echo isset($supervisordata['date_transfered_to_hdpt']) ? date('d-m-Y', strtotime($supervisordata['date_transfered_to_hdpt'])) : ''; } ?>"/>
+					</div>
+					</div>
+					
 					<div class="showReason" id="showReason" style="display: none;">
 					<label class="col-xs-2 control-label"  for = "reason" > Reason </label>
                   <div class="col-xs-3">
@@ -799,11 +807,13 @@
   
 $("#status").bind('change', function(){
     var selected = $(this).val();
+	alert(selected);
     if (selected == 'Active') { 
 			$('#showTerminated').css('display', 'none');
 			$('#showRetired').css('display', 'none');
 			$('#showTransfer').css('display', 'none');
             $('#showResigned').css('display', 'none');
+            $('#showmovedpt').css('display', 'none');
 			$('#showReason').css('display', 'none');			
 			$('#showDied').css('display', 'none'); 
             $('#showpostoption').css('display', 'none');
@@ -827,6 +837,7 @@ $("#status").bind('change', function(){
 			$('#showRetired').css('display', 'none'); 
 			$('#showTransfer').css('display', 'none');
 			$('#showResigned').css('display', 'none');
+			$('#showmovedpt').css('display', 'none');
 			$('#showReason').css('display', 'none');
             $('#showDied').css('display', 'none'); 
             $('#showpostoption').css('display', 'none');
@@ -850,6 +861,7 @@ $("#status").bind('change', function(){
 			$('#showTerminated').css('display', 'none');
 			$('#showResigned').css('display', 'none');
 			$('#showReason').css('display', 'none');
+			$('#showmovedpt').css('display', 'none');
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'block');
             $('#showpostoption').css('display', 'none');
@@ -874,6 +886,7 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'none'); 
 			$('#showResigned').css('display', 'none');
+			$('#showmovedpt').css('display', 'none');
 			$('#showReason').css('display', 'none');
 			$('#showpostoption').css('display', 'none');
             $('#showFacility').css('display', 'none'); 
@@ -895,6 +908,7 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'block');
 			$('#newFac').css('display', 'block');
 			$('#showResigned').css('display', 'none');
+			$('#showmovedpt').css('display', 'none');
 			$('#showReason').css('display', 'none');
 			$('#showTerminated').css('display', 'none');
 			$('#showRetired').css('display', 'none');
@@ -916,6 +930,28 @@ $("#status").bind('change', function(){
 			$('#showRetired').css('display', 'none');
 			$('#showReason').css('display', 'block');
 			$('#showResigned').css('display', 'block');
+			$('#showmovedpt').css('display', 'none');
+			$('#showTerminated').css('display', 'none');
+			$('#showTransfer').css('display', 'none');	
+			$('#showDied').css('display', 'none');
+ 			$('#newFac').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required');
+	  $('#showpostoption').css('display', 'none');
+	  $('#showLeavefrom').css('display', 'none');			
+	  $('#showLeaveto').css('display', 'none');
+			
+	}
+	if (selected == 'Move to H.Dpt') { 
+	alert('test');
+			$('#showRetired').css('display', 'none');
+			$('#showResigned').css('display', 'none');
+			$('#showReason').css('display', 'block');
+			$('#showmovedpt').css('display', 'block');
 			$('#showTerminated').css('display', 'none');
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'none');
@@ -936,6 +972,7 @@ $("#status").bind('change', function(){
    $('#post_type').css('display', 'block');
    $('#showTransfer').css('display', 'none');
    $('#showResigned').css('display', 'none');
+   $('#showmovedpt').css('display', 'none');
    $('#showReason').css('display', 'none');
    $('#showLeavefrom').css('display', 'none');			
    $('#showLeaveto').css('display', 'none');
@@ -959,6 +996,7 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');
 			$('#showTerminated').css('display', 'none');
 			$('#showRetired').css('display', 'none');
+			$('#showmovedpt').css('display', 'none');
 			$('#showDied').css('display', 'none');
             $('#showLeavefrom').css('display', 'none');			
 			$('#showLeaveto').css('display', 'none');			
@@ -972,6 +1010,7 @@ $("#status").bind('change', function(){
 			$('#showRetired').css('display', 'none');
 			$('#showReason').css('display', 'none');
 			$('#showResigned').css('display', 'none');
+			$('#showmovedpt').css('display', 'none');
 			$('#showTerminated').css('display', 'none');
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'none');
@@ -991,6 +1030,7 @@ $("#status").bind('change', function(){
 		   $('#post_type').css('display', 'block');
 		   $('#showTransfer').css('display', 'none');
 		   $('#showResigned').css('display', 'none');
+		   $('#showmovedpt').css('display', 'none');
 		   $('#showReason').css('display', 'none');
 		   $('#showLeavefrom').css('display', 'none');			
 		   $('#showLeaveto').css('display', 'none');
@@ -1243,6 +1283,7 @@ $('#new_lhwcodel').keyup(function (){
 	    $('#basic_training_end_date').datepicker(options);
 		$('#date_from').datepicker(options);
 	    $('#date_to').datepicker(options);
+	    $('#date_transfered_to_hdpt').datepicker(options);
 	    
 	   	 });
           $(document).ready(function(){
@@ -1275,6 +1316,7 @@ $('#new_lhwcodel').keyup(function (){
 	$("#phone").inputmask("99999999999");
 	$('#date_from').inputmask("99-99-9999");
 	$('#date_to').inputmask("99-99-9999");
+	$('#date_transfered_to_hdpt').inputmask("99-99-9999");
     
 });
   $(document).on('change','#date_termination', function(){

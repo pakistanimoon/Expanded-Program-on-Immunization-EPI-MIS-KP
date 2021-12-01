@@ -1,5 +1,4 @@
 <?php
-//KP
 class Linelists_model extends CI_Model {
 	//================ Constructor Function Starts ==================//
 	public function __construct() {
@@ -73,6 +72,7 @@ class Linelists_model extends CI_Model {
 		$datArray['listing_filters'] = $this -> Filter_model -> createListingFilter($datArray, $datArray, base_url() . 'Linelists/' . str_replace(" ", "_", $reportName) , $UserLevel, $Caption);
 		return $datArray;
 	}
+	
 	//================ Function to Create Filters for Sepecific Reports Ends Here ===================//
 	public function Surveillance($wc){
 		//print_r($wc);exit();
@@ -113,7 +113,7 @@ class Linelists_model extends CI_Model {
 		else{
 		$wc = "fweek BETWEEN '{$f_from_week}' AND '{$f_to_week}'"; 
 		}
-		
+		$wc .= " AND procode='". $this->session->Province ."' ";
 		$this -> db -> where($wc);
 		if($week == "00"){
 			$this->db->like('fweek',"$year-",'after');
@@ -183,8 +183,10 @@ class Linelists_model extends CI_Model {
 	//************************************************************************************//
 	//================ Function to Create Filters for Sepecific Reports Ends Here ===================//
 	public function Cases($wc,$per_page=NULL, $startpoint=NULL){
+		//kp
 		//print_r($wc); exit();
 		//echo $wc['case_type'];
+		$sessionProcode = $this -> session -> Province;
 		$specimen_result = $this -> input -> get_post('specimen_result');
 		//$case = $this -> input -> get_post('case_type');
 		$case =$wc['case_type']; 
@@ -192,8 +194,8 @@ class Linelists_model extends CI_Model {
 		$year =isset($wc['year']) ?  $wc['year'] : '' ;
 		$week = isset($wc['week']) ?  $wc['week'] : '' ;
 		$distcodePro =isset($wc['distcode']) ?  $wc['distcode'] : 'ALL' ;
-        $data['tcode'] = (isset($wc['tcode']))?$wc['tcode']:NULL;
-		$data['uncode'] = (isset($wc['uncode']))?$wc['uncode']:NULL;
+		$tcode =isset($wc['tcode']) ?  $wc['tcode'] :NULL ;
+		$uncode =isset($wc['uncode']) ?  $wc['uncode'] :NULL ;
 		$patient_address_uncode =isset($wc['patient_address_uncode']) ?  $wc['patient_address_uncode'] : '' ;
 		$datefromReport =isset($wc['datefrom']) ?  $wc['datefrom'] : '' ;
 		$datetoReport = isset($wc['dateto']) ?  $wc['dateto'] : '' ;
@@ -218,36 +220,37 @@ class Linelists_model extends CI_Model {
 		unset($wc['export_excel']);
 		unset($wc['ci_session']);
 		$cross_notified = $wc['cross_notified'];
+
+		if(isset($wc['uncode']) && $wc['uncode'] > 0){
+			$this -> db -> where("uncode = '{$wc['uncode']}'",NULL,FALSE);
+			$distcode=$wc['uncode'];
+			unset($wc['uncode']);
+		}
+		if(isset($wc['tcode']) && $wc['tcode'] > 0){
+			$this -> db -> where("tcode = '{$wc['tcode']}'",NULL,FALSE);
+			$distcode=$wc['tcode'];
+			unset($wc['tcode']);
+		}
 		if(isset($wc['distcode']) && $wc['distcode'] > 0){
 			$this -> db -> where("distcode = '{$wc['distcode']}'",NULL,FALSE);
 			$distcode=$wc['distcode'];
 			unset($wc['distcode']);
 		}
-        if(isset($wc['tcode']) && $wc['tcode'] > 0){
-			$this -> db -> where("tcode = '{$wc['tcode']}'",NULL,FALSE);
-			$tcode=$wc['tcode'];
-			unset($wc['tcode']);
-		}
-        if(isset($wc['uncode']) && $wc['uncode'] > 0){
-			$this -> db -> where("uncode = '{$wc['uncode']}'",NULL,FALSE);
-			$uncode=$wc['uncode'];
-			unset($wc['uncode']);
-		}
 		if($wc['cross_notified'] == 1)
 		{
 			$wc['cross_notified ='] = 1;		
 			if(isset($from_week) && $from_week == "00" && $to_week == "00"){
-				$wc = " year = '{$year}'"; 
+				$wc = " year = '{$year}' AND fweek <> '$year-00' AND procode = '{$sessionProcode}'"; 
 			}
 			else if (isset($from_week) && $from_week != "00" && $to_week == "00"){
-				$wc = " fweek >= '{$f_from_week}' AND year = '{$year}' ";
+				$wc = " fweek >= '{$f_from_week}' AND fweek <> '$year-00' AND year = '{$year}' AND procode = '{$sessionProcode}'";
 			} 
 			else if (isset($to_week) && $from_week == "00" && $to_week != "00"){
 				$year_st = $year."-".'01' ;
-				$wc = "fweek BETWEEN '{$year_st}' AND '{$f_to_week}'"; 
+				$wc = "fweek BETWEEN '{$year_st}' AND '{$f_to_week}' AND fweek <> '$year-00' AND procode = '{$sessionProcode}'"; 
 			}
 			else{
-				$wc = "fweek BETWEEN '{$f_from_week}' AND '{$f_to_week}'"; 
+				$wc = "fweek BETWEEN '{$f_from_week}' AND '{$f_to_week}' AND fweek <> '$year-00' AND procode = '{$sessionProcode}'"; 
 			}
 			
 		}
@@ -255,22 +258,22 @@ class Linelists_model extends CI_Model {
 		elseif($wc['cross_notified'] == 0)
 		{
 			if(isset($from_week) && $from_week == "00" && $to_week == "00"){
-				$wc = " year = '{$year}'"; 
+				$wc = " year = '{$year}' AND fweek <> '$year-00' AND procode = '{$sessionProcode}'"; 
 			}
 			else if (isset($from_week) && $from_week != "00" && $to_week == "00"){
-				$wc = " fweek >= '{$f_from_week}' AND year = '{$year}' ";
+				$wc = " fweek >= '{$f_from_week}' AND fweek <> '$year-00' AND year = '{$year}' AND procode = '{$sessionProcode}'";
 			} 
 			else if (isset($to_week) && $from_week == "00" && $to_week != "00"){
 				$year_st = $year."-".'01' ;
-				$wc = "fweek BETWEEN '{$year_st}' AND '{$f_to_week}'"; 
+				$wc = "fweek BETWEEN '{$year_st}' AND '{$f_to_week}' AND fweek <> '$year-00' AND procode = '{$sessionProcode}'"; 
 			}
 			else{
-				$wc = "fweek BETWEEN '{$f_from_week}' AND '{$f_to_week}'"; 
+				$wc = "fweek BETWEEN '{$f_from_week}' AND '{$f_to_week}' AND fweek <> '$year-00' AND procode = '{$sessionProcode}'"; 
 			}
 		}
 		$wc .= " AND procode='". $this->session->Province ."' ";
 		if($cross_notified == 0)
-		{
+		{	//patient_address_uncode
 			$this-> db-> select('*, districtname(distcode) as district, provincename(procode) as province, facilityname(facode) as facility,unname(patient_address_uncode) as patient_unname, tehsilname(patient_address_tcode) as patient_tehsil, districtname(patient_address_distcode) as patient_district,id');
 		}
 		elseif($cross_notified == 1)
@@ -291,8 +294,12 @@ class Linelists_model extends CI_Model {
 		}else{
 			$this->db->offset(0);
 		}
+		//echo $patient_address_uncode;exit();
 		if(isset($patient_address_uncode) && $patient_address_uncode > 0){
 			$this->db->where("patient_address_uncode='$patient_address_uncode'",NULL,FALSE);
+		}
+		if(isset($uncode) && $uncode > 0){
+			$this->db->where("uncode='$uncode'",NULL,FALSE);
 		}
 		if($cross_notified == 0)
 		{
@@ -303,10 +310,10 @@ class Linelists_model extends CI_Model {
 		}
 		if($case == 'Msl' ){
 			if($lab_result == 'Positive Measles'){
-				$this->db->where('specimen_result=\'Positive Measles\' AND case_type=\'Msl\' ',NULL,FALSE);
+				$this->db->where('specimen_result=\'Positive Measles\' AND case_type=\'Msl\' AND facode > \'0\' ',NULL,FALSE);
 			}
 			else if($lab_result == 'Positive Rubella'){
-				$this->db->where('specimen_result=\'Positive Rubella\' AND case_type=\'Msl\' ',NULL,FALSE);
+				$this->db->where('specimen_result=\'Positive Rubella\' AND case_type=\'Msl\' AND facode > \'0\' ',NULL,FALSE);
 			}
 			else if($lab_result == 'Negative Measles'){
 				$this->db->where('specimen_result=\'Negative Measles\' AND case_type=\'Msl\' ',NULL,FALSE);
@@ -333,7 +340,8 @@ class Linelists_model extends CI_Model {
 			$this -> db -> order_by('fweek,case_number,districtname(distcode),facilityname(facode)','asc');
 		}
 		$data['measles'] = $this -> db -> get() -> result_array();
-		//echo $this -> db -> last_query();exit;
+		
+		//echo $this -> db -> last_query();exit();
 		if(!empty($data['measles'])) {
 			foreach ($data['measles'] as $key => $value) {
 				$clinicalrep = $data['measles'][$key]['clinical_representation'];
@@ -351,7 +359,12 @@ class Linelists_model extends CI_Model {
 		else{
 			$data['districtName'] = 'ALL';
 		}
-		$data['ucName'] = 'ALL';
+		if(isset($uncode) && $uncode > 0){
+			$data['ucName'] = get_UC_Name($uncode);
+		}
+		else{
+			$data['ucName'] = 'ALL';
+		}		
 		$data['year'] = $year;
 		$data['week'] = $week;
 		$data['datefromReport'] = $datefromReport;
@@ -427,6 +440,12 @@ class Linelists_model extends CI_Model {
 		if(isset($patient_address_uncode) && $patient_address_uncode > 0){
 			$this->db->where("patient_address_uncode='$patient_address_uncode'",NULL,FALSE);
 		}
+		if(isset($tcode) && $tcode > 0){
+			$this->db->where("tcode='$tcode'",NULL,FALSE);
+		}
+		if(isset($uncode) && $uncode > 0){
+			$this->db->where("uncode='$uncode'",NULL,FALSE);
+		}
 		if($cross_notified == 0)
 		{
 			if(isset($distcode) && $distcode > 0){
@@ -439,10 +458,10 @@ class Linelists_model extends CI_Model {
 		}
 		if($case == 'Msl' ){
 			if($lab_result == 'Positive Measles'){
-				$this->db->where('specimen_result=\'Positive Measles\' AND case_type=\'Msl\' ',NULL,FALSE);
+				$this->db->where('specimen_result=\'Positive Measles\' AND case_type=\'Msl\' AND facode > \'0\' ',NULL,FALSE);
 			}
 			else if($lab_result == 'Positive Rubella'){
-				$this->db->where('specimen_result=\'Positive Rubella\' AND case_type=\'Msl\' ',NULL,FALSE);
+				$this->db->where('specimen_result=\'Positive Rubella\' AND case_type=\'Msl\' AND facode > \'0\' ',NULL,FALSE);
 			}
 			else if($lab_result == 'Negative Measles'){
 				$this->db->where('specimen_result=\'Negative Measles\' AND case_type=\'Msl\' ',NULL,FALSE);
@@ -465,6 +484,7 @@ class Linelists_model extends CI_Model {
 		//echo $this -> db -> last_query();exit();
 		$data['ReportingFLCF'] = $result['cnt'];
 		$data['exportIcons']=exportIcons($_REQUEST);
+		//echo print_r($data['ReportingFLCF']);exit();
 		return $data;		
 	}
 	//************************************************************************************//
@@ -761,27 +781,27 @@ class Linelists_model extends CI_Model {
 		
 		unset($wc['case_type']);
 		if(isset($wc['distcode']) && $wc['distcode'] > 0){
-				$this -> db -> where("distcode = '{$wc['distcode']}' ",NULL,FALSE);
-				$distcode=$wc['distcode'];
-				unset($wc['distcode']);
-				
-				$wc= "distcode = '{$distcode}' ";
-			}
+			$this -> db -> where("distcode = '{$wc['distcode']}' ",NULL,FALSE);
+			$distcode=$wc['distcode'];
+			unset($wc['distcode']);
 			
-			//print_r($wc);
-			$this -> db -> select("districtname(distcode) as district,facilityname(facode) as facilityname,village,casename,gender,dob,age,vacc_date,unname(uncode) as unname,tehsilname(tcode) as tehsil,date_aefi_onset,mc_hospitalized,death,week,vacc_name,id,
-				trim(trailing ', ' from  
-				case when mc_bcg = 1 then 'BCG Lymphadenitis , ' else '' END || 
-				case when mc_convulsion = 1 then 'Convulsion , ' else '' END || 
-				case when mc_severe = 1 then 'Severe Local Reaction , ' else '' END || 
-				case when mc_unconscious = 1 then 'Unconsciousness , ' else '' END || 
-				case when mc_abscess = 1 then 'Injection site abscess , ' else '' END || 
-				case when mc_respiratory = 1 then 'Respiratory Distress , ' else '' END || 
-				case when mc_fever = 1 then 'Fever , ' else '' END || 
-				case when mc_swelling = 1 then 'Swelling of body or face , ' else '' END || 
-				case when mc_rash = 1 then 'Rash , ' else '' END || 
-				case when mc_other = '' then '' else mc_other END
-			) as complaints,
+			$wc= "distcode = '{$distcode}' ";
+		}
+			
+		//print_r($wc);
+		$this -> db -> select("districtname(distcode) as district,facilityname(facode) as facilityname,village,casename,gender,dob,age,vacc_date,unname(uncode) as unname,tehsilname(tcode) as tehsil,date_aefi_onset,mc_hospitalized,death,week,vacc_name,id,
+			trim(trailing ', ' from  
+			case when mc_bcg = 1 then 'BCG Lymphadenitis , ' else '' END || 
+			case when mc_convulsion = 1 then 'Convulsion , ' else '' END || 
+			case when mc_severe = 1 then 'Severe Local Reaction , ' else '' END || 
+			case when mc_unconscious = 1 then 'Unconsciousness , ' else '' END || 
+			case when mc_abscess = 1 then 'Injection site abscess , ' else '' END || 
+			case when mc_respiratory = 1 then 'Respiratory Distress , ' else '' END || 
+			case when mc_fever = 1 then 'Fever , ' else '' END || 
+			case when mc_swelling = 1 then 'Swelling of body or face , ' else '' END || 
+			case when mc_rash = 1 then 'Rash , ' else '' END || 
+			case when mc_other = '' then '' else mc_other END
+		) as complaints,
 		");
 		$this -> db -> from('aefi_rep');
 		
@@ -806,8 +826,7 @@ class Linelists_model extends CI_Model {
 		}
 		$this -> db -> order_by('uncode','asc');
 		$data['aefi'] = $this -> db -> get() -> result_array();
-		//echo $this->db-> last_query(); exit;
-	
+		//echo $this->db-> last_query(); exit;	
 		
 		$dist="";
 		$data['districtName'] = 'ALL';

@@ -63,4 +63,13 @@
 	<script type="text/javascript" src="<?php echo base_url(); ?>assets/fusioncharts/themes/fusioncharts.theme.carbon.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>includes/circle-progress/dist/circle-progress.js"></script><!--for widget pie circles-->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-100961453-2"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-100961453-2');
+	</script>
 </head>

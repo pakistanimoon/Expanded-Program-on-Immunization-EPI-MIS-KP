@@ -4,15 +4,20 @@ $i=$startpoint;
 $tbodydata = '';
 foreach($tabledata as $row){
 	$i++;
-	$edit_del='';
+	//removing check of freeze for district swat, they want to reset their data...... work by moon 2019-02-17
 	//echo $this -> session -> District;
+	$edit_del='';
 	if($row['data_source']=='web'){
 		$edit_del='<a href="'.base_url().'consumption/edit/'.$row['fmonth'].'/'.$row['facode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a><a  data-toggle="tooltip" title="Delete" onclick ="consumptiondelcst(this)" class="btn btn-xs btn-default"><i class="fa fa-close"></i></a>';
 	}
+	if($this -> session -> District==="346"){
+		$res = false;
+	}else{
 		$res=freezeReport('epi_consumption_master',$row['facode'],$row['fmonth'],Null,TRUE);
 		if($res==1){
 			$edit_del='';
 		}
+	}
 	$tbodydata .= '<tr>
 		<td class="text-center">'.$i.'</td>
 		<td class="text-center facode">'.$row['facode'].'</td>
@@ -28,7 +33,7 @@ foreach($tabledata as $row){
 			
 		</td>
 	</tr>';
-
+	//later we have to restrict deletion of consumption report which is freezed......work remaining
 }?>
 <div class="container bodycontainer"> 
 	<div class="row">
@@ -153,7 +158,7 @@ foreach($tabledata as $row){
 //delete consumption report 
 	function consumptiondelcst(ab){
 		
-		var facode=$(ab).closest('tr').find('.facode').text();
+			var facode=$(ab).closest('tr').find('.facode').text();
 		var fmonth=$(ab).closest('tr').find('.fmonth').text();
 		var res=confirm("Are You Sure to Delete that Report ?");
 		if(res==true && facode!="" && fmonth!="")

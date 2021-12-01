@@ -1,5 +1,7 @@
 <?php
-class Maps_model extends CI_Model {	
+//live
+class Maps_model extends CI_Model {
+	
 	
 	function Priority_diseases($data){
 		$id = $data['disease'];
@@ -17,15 +19,6 @@ class Maps_model extends CI_Model {
         
         return $rows['district'];
     }
-	function TehsilName($tcode="")
-    {  
-        //echo 'i m here';exit();
-        $_query  = "select tehsil from tehsil where tcode = '$tcode'";
-        $results=$this->db->query($_query);
-        $rows=$results->row_array();
-        
-        return $rows['tehsil'];
-    }
 	function districtWiseMapData($fmonth="2016-01"){
 		$query = "
 					SELECT 
@@ -37,17 +30,12 @@ class Maps_model extends CI_Model {
 					d2.path 
 						FROM districts d1
 							LEFT JOIN districts_wise_maps_paths d2 ON d1.distcode=d2.distcode";
-		//echo $query;exit();
+		//echo $query;exit;
 		$query = $this -> db -> query($query);
 		return $query -> result();
 	}
 	function getdistrictWiseMapData($code=NULL,$querySelection,$firstqueryselection=NULL,$lastqueryselection=NULL){
 		if($code){
-			$wc = " where u2.distcode ='{$code}'";
-			if($this->session->UserLevel==4){
-				$code = $this->session->Tehsil;
-				$wc = " where left(u2.uncode,6)='{$code}'";
-			}
 			$query = "
 					SELECT 
 					u2.uncode as code,
@@ -55,7 +43,7 @@ class Maps_model extends CI_Model {
 					{$querySelection}
 					u2.path 
 					FROM unioncouncil u1
-						  RIGHT JOIN uc_wise_maps_paths u2 ON u1.uncode=u2.uncode {$wc} order by code";
+						  RIGHT JOIN uc_wise_maps_paths u2 ON u1.uncode=u2.uncode where u2.distcode='{$code}'";
 		}
 		else
 		{
@@ -69,7 +57,7 @@ class Maps_model extends CI_Model {
 						FROM districts d1
 							LEFT JOIN districts_wise_maps_paths d2 ON d1.distcode=d2.distcode {$lastqueryselection}";
 		}
-		//echo $query; exit();
+		//echo $query;exit;
 		$query = $this -> db -> query($query);
 		return $query -> result();
 	}
@@ -153,14 +141,9 @@ class Maps_model extends CI_Model {
 		return $query -> result();
 	}
 	public function getUCsVaccineDropout($data, $selectQuery,$order=NULL){
-		$code = ($this -> session -> UserLevel == 4 )?$this->session->TehsilCode:$this -> session -> District;
+		$code = $this -> session -> District;
 		if(isset($data['id']) && $data['id']>0)
 			$code = $data['id'];
-		if($this -> session -> UserLevel == 4){
-			$wc = " where left(uc_wise_maps_paths.uncode,6)='{$code}'";
-		}else{
-			$wc = " where uc_wise_maps_paths.distcode ='{$code}'";
-		}
 		$query = "
 					SELECT 
 					$selectQuery";
@@ -169,7 +152,7 @@ class Maps_model extends CI_Model {
 		}
 			$query .= "
 						FROM unioncouncil
-						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode {$wc}";
+						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode where uc_wise_maps_paths.distcode='".$code."'";
 		if($order)
 			$query .= " order by sum desc";
 		//echo $query;exit;
@@ -188,7 +171,7 @@ class Maps_model extends CI_Model {
 							LEFT JOIN districts_wise_maps_paths d2 ON districts.distcode=d2.distcode";
 		if($order)
 			$query .= " order by second, first desc";
-		//echo $query;exit();
+		//echo $query;exit;
 		$query = $this -> db -> query($query);
 		return $query -> result();
 	}
@@ -196,11 +179,6 @@ class Maps_model extends CI_Model {
 		$code = $this -> session -> District;
 		if(isset($data['id']) && $data['id']>0)
 			$code = $data['id'];
-		$wc = " where uc_wise_maps_paths.distcode ='{$code}'";
-			if($this->session->UserLevel==4){
-				$code = $this->session->Tehsil;
-				$wc = " where left(uc_wise_maps_paths.uncode,6)='{$code}'";
-			}
 		$query = "
 					SELECT 
 					$selectQuery";
@@ -209,7 +187,7 @@ class Maps_model extends CI_Model {
 		}
 			$query .= "
 						FROM unioncouncil
-						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode {$wc}";
+						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode where uc_wise_maps_paths.distcode='".$code."'";
 		if($order)
 			$query .= " order by sum desc";
 		//echo $query;exit;
@@ -271,7 +249,7 @@ class Maps_model extends CI_Model {
 			case '21':
 				$firstCol = 'f13';
 				$secondCol = 'f21';
-				break;	
+				break;		
 			default:
 				$firstCol = 'f7';
 				$secondCol = 'f9';
@@ -286,7 +264,7 @@ class Maps_model extends CI_Model {
 		$query = $this -> db -> query($query);
 		return $query -> result();
 	}
-	public function getMainIndicatorsData($distcode=0,$year){
+	public function getMainIndicatorsData($distcode=0){
 		$district = $this -> session -> District;
 		if($distcode){
 			$district = $distcode;
@@ -301,26 +279,19 @@ class Maps_model extends CI_Model {
 		//echo $this-> db-> last_query(); exit;
 		// --------------------------------------------------------------------------------------------- //
 		$data['provincePopulation']		 = (int)$result->pop;
-		//$data['anuualTargetPopulation']  = round(($data['provincePopulation']*3.533)/100);
-		$data['anuualTargetPopulation']  = round(($data['provincePopulation']*get_indicator_periodic_multiplier('newborn',$year))/100);
-		
+		$data['anuualTargetPopulation']  = round(($data['provincePopulation']*3.533)/100);
 		$data['monthlyTargetPopulation'] = round($data['anuualTargetPopulation']/12);
-		//$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
-		$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*get_indicator_periodic_multiplier('survivinginfant',$year))/100);
+		$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
 		$data['monthlySurvivingInfants'] = round($data['annualSurvivingInfants']/12);
-		//$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*1.02);
-		$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*get_indicator_periodic_multiplier('plwomen',$year));
+		$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*1.02);
 		$data['monthlyPregnantLactatingPlWomen'] = round($data['annualPregnantLactatingPlWomen']/12);
 		// --------------------------------------------------------------------------------------------- //
 		$data['annualPnnMortality'] = round(($data['annualSurvivingInfants']*98.3)/100);
 		$data['monthlyPnnMortality'] = round($data['annualPnnMortality']/12);
-		//$data['childrenLessThan5Years'] = round(($data['provincePopulation']*16)/100);
-		$data['childrenLessThan5Years'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less5year',$year))/100);
-		//$data['annualCbaLadies'] = round(($data['provincePopulation']*22)/100);
-		$data['annualCbaLadies'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less5year',$year))/100);
+		$data['childrenLessThan5Years'] = round(($data['provincePopulation']*16)/100);
+		$data['annualCbaLadies'] = round(($data['provincePopulation']*22)/100);
 		$data['monthlyCbaLadies'] = round($data['annualCbaLadies']/12);
-		//$data['below15Years'] = round(($data['provincePopulation']*45)/100);
-		$data['below15Years'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less15year',$year))/100);
+		$data['below15Years'] = round(($data['provincePopulation']*45)/100);
 		// --------------------------------------------------------------------------------------------- //
 		// --------------------------------------------------------------------------------------------- //
 		//$query = "select district,(select count(*) from techniciandb where distcode=districts.distcode) as tot_technicians from districts order by district";
@@ -334,13 +305,13 @@ class Maps_model extends CI_Model {
 		// --------------------------------------------------------------------------------------------- //
 		$data['tot_technicians'] = (int)$result->tot_technicians;
 		//$query = $this -> db -> query($query);
-		//print_r($query);exit();
+		//print_r($query);exit;
 		//$data['tot_technicians'] = $query->result_array();
 		return $data;
 	}
 
-	public function getVaccineIndicatorCoverge($data, $selectQuery, $order=NULL, $orderType=NULL){
-		//echo $selectQuery; exit();
+	public function getVaccineIndicatorCoverge($data, $selectQuery,$order=NULL,$orderType=NULL){
+		//	echo $selectQuery; exit;
 		$query = "
 					SELECT 
 					$selectQuery";
@@ -352,20 +323,14 @@ class Maps_model extends CI_Model {
 							LEFT JOIN districts_wise_maps_paths d2 ON districts.distcode=d2.distcode";
 		if($order)
 			$query .= " order by $order $orderType";
-		//echo $query; exit();
+		//echo $query;exit;
 		$query = $this -> db -> query($query);
 		return $query -> result();
 	}
-	public function getUCsVaccineIndicatorCoverge($data, $selectQuery, $order=NULL, $orderType=NULL){
+	public function getUCsVaccineIndicatorCoverge($data, $selectQuery,$order=NULL,$orderType=NULL){
 		$code = $this -> session -> District;
 		if(isset($data['distcode']) && $data['distcode']>0)
 			$code = $data['distcode'];
-		if($this -> session -> UserLevel == 4){
-			$code = $this->session->TehsilCode;
-			$wc = " where left(uc_wise_maps_paths.uncode,6)='{$code}'";
-		}else{
-			$wc = " where uc_wise_maps_paths.distcode ='{$code}'";
-		}
 		$query = "
 					SELECT 
 					$selectQuery";
@@ -374,10 +339,10 @@ class Maps_model extends CI_Model {
 		}
 			$query .= "
 						FROM unioncouncil
-						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode  {$wc}";
+						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode where uc_wise_maps_paths.distcode='".$code."'";
 		if($order)
 			$query .= " order by $order $orderType";
-		//echo $query; exit();
+		//echo $query;exit;
 		$query = $this -> db -> query($query);
 		return $query -> result();
 	}
@@ -428,12 +393,6 @@ class Maps_model extends CI_Model {
 		$code = $this -> session -> District;
 		if(isset($data['id']) && $data['id']>0)
 			$code = $data['id'];
-		if($this -> session -> UserLevel == 4){
-			$code = $this->session->TehsilCode;
-			$wc = " where left(uc_wise_maps_paths.uncode,6)='{$code}' ";
-		}else{
-			$wc = " where uc_wise_maps_paths.distcode ='{$code}' ";
-		}
 		$query = "
 					SELECT 
 					$selectQuery";
@@ -442,7 +401,7 @@ class Maps_model extends CI_Model {
 		}
 			$query .= "
 						FROM unioncouncil
-						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode {$wc}";
+						  RIGHT JOIN uc_wise_maps_paths ON unioncouncil.uncode=uc_wise_maps_paths.uncode where uc_wise_maps_paths.distcode='".$code."'";
 		if($order)
 			$query .= " order by $order $orderType";
 		//echo $query;exit;
@@ -511,6 +470,9 @@ class Maps_model extends CI_Model {
 		
 		return $query -> result();
 	}
+// new code upload by zeeshan start
+
+
 
 	function getCoronaDetails()
 	{
@@ -704,5 +666,7 @@ class Maps_model extends CI_Model {
 		}
 		return $this -> db -> get() -> result();
 	}
+ 
+// new code upload by zeeshan End
 }
 ?>

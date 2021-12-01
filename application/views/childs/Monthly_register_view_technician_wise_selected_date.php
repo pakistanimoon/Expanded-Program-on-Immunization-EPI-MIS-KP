@@ -68,8 +68,9 @@
 			<table id="fixTable" class="table table-bordered table-hover table-striped">
 			<thead>
 				<tr>
-					<th rowspan="3">Technician Code</th>	
+					<th rowspan="3">Code</th>
 					<th rowspan="3">Technician Name</th>
+					<th rowspan="3">Health Facility</th>
 				</tr>
 				<tr> 					
 					<th rowspan="1">BCG</th>
@@ -89,16 +90,17 @@
 					<th rowspan="1">Rota2</th>
 					<th rowspan="1">Measles1</th>
 					<th rowspan="1">Measles2</th>
-					<th rowspan="1">Total Child Vaccinated</th>
+					<th rowspan="1">Total Children</th>
 				</tr>			
 			</thead>
 			<tbody>
 		<?php
-			foreach($Monthlyresult as $key => $val)	
+			foreach($Monthlyresult as $key => $val)
 			{ ?>
 					<tr class="DrillDownRow" style="cursor: pointer;">
 					<td><?php echo $val['techniciancode']; ?></td> 
 					<td><?php echo $val['technicianname']; ?></td>
+					<td><?php echo $val['reghf']; ?></td>
 					<td><?php echo $val['bcgcount']; ?></td>
 					<td><?php echo $val['hepbcount']; ?></td>
 					<td><?php echo $val['opv0count']; ?></td>
@@ -142,7 +144,7 @@ $(document).on('click',".DrillDownRow", function(){
 	var facode = '<?php echo (isset($facode))?$facode:''; ?>'; 
 	var reportType = '0';
 	var drilldownType='techniciancode';
-	url = "<?php echo base_url();?>childs/DailyRegisterChildReport/monthly_report/?monthdate="+monthdate+"&distcode="+distcode+"&tcode="+tcode+"&uncode="+uncode+"&facode="+facode+"&techniciancode="+techniciancode+"&drilldownType="+drilldownType;
+	url = "<?php echo base_url();?>childs/DailyRegisterChildReport/monthly_report/?&monthdate="+monthdate+"&distcode="+distcode+"&tcode="+tcode+"&uncode="+uncode+"&facode="+facode+"&techniciancode="+techniciancode+"&drilldownType="+drilldownType;
 	var win = window.open(url,'_blank');
 		if(win){
 			//Browser has allowed it to be opened

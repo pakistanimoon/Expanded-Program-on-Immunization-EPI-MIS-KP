@@ -1,6 +1,8 @@
 <?php
 class Inventory_model extends CI_Model {
 	/*
+	@ Author:        Raja Imran Qamer
+	@ Email:         rajaimranqamer@gmail.com
 	@ Function:      get_invn_priority_details
 	@ Description:   Returns Manufacturer | Batch | Quantity | Priority from epi_stock_batch depending upon product id posted and user loggedin, sort by priority
 	*/
@@ -266,8 +268,12 @@ class Inventory_model extends CI_Model {
 	public function stock_transfer($datefrom,$dateto,$product)
 	{
 		$this -> db -> select('master.pk_id,master.master_id,master.transaction_type_id,batch.pk_id,detail.pk_id,detail.stock_batch_id,adjustmentname(master.transaction_type_id) as adjustment_type,CAST(master.transaction_date AS DATE),master.transaction_number,master.transaction_reference,get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,batch.number,stackholdername(batch.stakeholder_id) as manufacturer,batch.quantity,itemunitname(detail.item_unit_id) as unit,batch.expiry_date,CAST(master.created_date as DATE),master.to_warehouse_type_id,master.to_warehouse_code');
+		$whtype = $this -> session -> curr_wh_type;
+		$whcode = $this -> session -> curr_wh_code;
 		$this -> db -> where("master.transaction_date BETWEEN '{$datefrom}' AND '{$dateto}'", NULL, FALSE);
 		$this -> db -> where("master.transaction_type_id  IN (13,14)", NULL, FALSE);
+		$this->db->where("batch.warehouse_type_id",$whtype);
+		$this->db->where("batch.code","$whcode");
 		if(($product) && $product!=""){
 			$data['data']['product']=$whereCondition['batch.item_pack_size_id'] = $product;
 		$this -> db -> where($whereCondition);
@@ -275,7 +281,6 @@ class Inventory_model extends CI_Model {
 		$this -> db -> from('epi_stock_master_history master');
 		$this -> db -> join('epi_stock_batch_history batch','master.master_id = batch.batch_master_id','left');
 		$this -> db -> join('epi_stock_detail_history detail','batch.batch_id = detail.stock_batch_id','left');
-		//print_r($this->db->last_query());exit;
 		$data['data']['transfer'] = $this -> db -> get() -> result_array();
 		return $data;
 	}
@@ -325,8 +330,43 @@ class Inventory_model extends CI_Model {
 	}
 	public function batch_summary($type)
 	{
-		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,count(batch.number) as batch,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity");
+	
+	
+		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,COUNT(distinct batch.number) as batch,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose");
 		$whereCondition['master.draft'] =0;
+		$whereCondition['batch.status!=']='Finished';
+		
+		$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
+		$whereCondition['batch.code'] = $this -> session -> curr_wh_code;
+		$this -> db -> where($whereCondition);
+		$this -> db -> where("epi_item_pack_sizes.item_category_id  IN ({$type})", NULL, FALSE);
+		$this -> db -> where("batch.status!='Finished'");
+		$this -> db -> where("batch.quantity > 0");
+		$this -> db -> from('epi_stock_master master');
+		$this->db->where("tt.nature",'1');
+		$this->db->where("master.to_warehouse_type_id",'2');
+		$this->db->where("master.to_warehouse_code",'3');
+		$this -> db -> join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
+		
+		$this->db->join("epi_transaction_types tt","tt.pk_id = master.transaction_type_id");
+		
+		$this -> db -> join('epi_stock_detail detail','batch.pk_id = detail.stock_batch_id','left');
+		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = batch.item_pack_size_id","LEFT OUTER");
+        //$this->db->join("vvm_stages","vvm_stages.type = epi_item_pack_sizes.vvm_stage_type and vvm_stages.value = detail.vvm_stage","LEFT OUTER");
+		//$this->db->group_by('batch.number');
+		$this->db->order_by('batch.item_pack_size_id','asc');
+		$this->db->group_by('batch.item_pack_size_id,epi_item_pack_sizes.activity_type_id');
+//	echo $this->db->last_query();
+		//print_r($this->db->last_query());
+		 return  $this -> db -> get() -> result_array();
+	//echo "<pre>";	print_r($this->db->last_query());
+	} 
+	public function batch_wise_summary($type)
+	{
+		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,batch.number as batch,stackholdername(batch.stakeholder_id) as manufacturer,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose,batch.expiry_date as exp_date,batch.vvm_type_id as vvm_type,vvm_stages.name as vvm_name,(case when batch.ccm_id IS NOT NULL then getccmshortname (ccm_id) else noncclocationname(batch.non_ccm_id) end) as placment,getpriority(batch.expiry_date,detail.vvm_stage) as priority"); 
+		$whereCondition['master.draft'] =0;
+		//$whereCondition['batch.status!']='Finished';
+		
 		$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$whereCondition['batch.code'] = $this -> session -> curr_wh_code;
 		$this -> db -> where($whereCondition);
@@ -337,29 +377,97 @@ class Inventory_model extends CI_Model {
 		$this -> db -> join('epi_stock_detail detail','batch.pk_id = detail.stock_batch_id','left');
 		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = batch.item_pack_size_id","LEFT OUTER");
         $this->db->join("vvm_stages","vvm_stages.type = epi_item_pack_sizes.vvm_stage_type and vvm_stages.value = detail.vvm_stage","LEFT OUTER");
-		$this->db->order_by('batch.item_pack_size_id','asc'); 
-		$this->db->group_by('batch.item_pack_size_id');
-		//echo $this->db->last_query();
+		//$this->db->group_by('batch.number');
+		$this->db->order_by('batch.item_pack_size_id','asc');
+		$this->db->group_by('batch.number,epi_item_pack_sizes.activity_type_id,batch.item_pack_size_id,batch.stakeholder_id,batch.expiry_date,batch.vvm_type_id,vvm_stages.name,batch.ccm_id,batch.non_ccm_id,detail.vvm_stage');
+//	echo $this->db->last_query();
+		//print_r($this->db->last_query());
 		return $this -> db -> get() -> result_array();
+//echo "<pre>";	print_r($this->db->last_query());
 	}
-	public function batch_manufacturer()
+	public function batch_nonwise_summary($type)
 	{
-		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,getpriority(batch.expiry_date,detail.vvm_stage) as priority, batch.number as batch,stackholdername(batch.stakeholder_id) as manufacturer,sum(batch.quantity) as quantity,batch.expiry_date,coalesce(vvm_stages.name,'') as vvmstage");
+		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,batch.number as batch,stackholdername(batch.stakeholder_id) as manufacturer,sum(batch.quantity) as quantity,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,sum(batch.quantity) as quantity,get_stackholder_activity_name(epi_item_pack_sizes.activity_type_id) as purpose,batch.expiry_date as exp_date,batch.vvm_type_id as vvm_type,vvm_stages.name as vvm_name,(case when batch.ccm_id IS NOT NULL then getccmshortname (ccm_id) else noncclocationname(batch.non_ccm_id) end) as placment,getpriority(batch.expiry_date,detail.vvm_stage) as priority"); 
 		$whereCondition['master.draft'] =0;
+		//$whereCondition['batch.status!']='Finished';
+		
 		$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$whereCondition['batch.code'] = $this -> session -> curr_wh_code;
 		$this -> db -> where($whereCondition);
-		$this -> db -> order_by('batch.expiry_date','asc');
+		$this -> db -> where("epi_item_pack_sizes.item_category_id  IN ({$type})", NULL, FALSE);
+		$this -> db -> where("batch.status!='Finished'");
 		$this -> db -> from('epi_stock_master master');
 		$this -> db -> join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
 		$this -> db -> join('epi_stock_detail detail','batch.pk_id = detail.stock_batch_id','left');
 		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = batch.item_pack_size_id","LEFT OUTER");
         $this->db->join("vvm_stages","vvm_stages.type = epi_item_pack_sizes.vvm_stage_type and vvm_stages.value = detail.vvm_stage","LEFT OUTER");
-		$this->db->group_by('batch.stakeholder_id,batch.item_pack_size_id,batch.expiry_date,batch.number,vvm_stages.name,detail.vvm_stage');
+		//$this->db->group_by('batch.number');
+		$this->db->order_by('batch.item_pack_size_id','asc');
+		$this->db->group_by('batch.number,epi_item_pack_sizes.activity_type_id,batch.item_pack_size_id,batch.stakeholder_id,batch.expiry_date,batch.vvm_type_id,vvm_stages.name,batch.ccm_id,batch.non_ccm_id,detail.vvm_stage');
+//	echo $this->db->last_query();
+		//print_r($this->db->last_query());
+		return $this -> db -> get() -> result_array();
+//echo "<pre>";	print_r($this->db->last_query());
+	}
+	public function batch_manufacturer() 
+	{
+		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses, Count(distinct batch.number) as batch,stackholdername(batch.stakeholder_id) as manufacturer,sum(batch.quantity) as quantity");
+		$whereCondition['master.draft'] =0;
+		$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
+		$whereCondition['batch.code'] = $this -> session -> curr_wh_code;
+		$this -> db -> where($whereCondition);
+		$this -> db -> where("batch.status!='Finished'");
+		$this -> db -> order_by('batch.item_pack_size_id','asc');
+		$this -> db -> from('epi_stock_master master');
+		$this -> db -> join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
+		$this -> db -> join('epi_stock_detail detail','batch.pk_id = detail.stock_batch_id','left');
+		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = batch.item_pack_size_id","LEFT OUTER");
+        $this->db->join("vvm_stages","vvm_stages.type = epi_item_pack_sizes.vvm_stage_type and vvm_stages.value = detail.vvm_stage","LEFT OUTER");
+		$this->db->group_by('batch.stakeholder_id,batch.item_pack_size_id');
 		//echo $this->db->last_query();
 		return $this -> db -> get() -> result_array();
 		//echo $this->db->last_query();
 	}
+	
+	public function recevie_vaccine()
+	{	
+	
+	// this code is used for issue(data) from fedural to provience
+	
+		/* //$f_wharehouse_id =  $this->session->userdata("curr_wh_type");
+		$f_wharehouse_code = $this->session->userdata("curr_wh_code");
+		$f_wharehouse_id =  $this->session->curr_wh_type;
+		$this->db->select('master.pk_id as mid,get_product_name(batch.item_pack_size_id) itemname,*');
+		$this->db->from('epi_stock_master master');
+		$this->db->where("master.from_warehouse_code='$f_wharehouse_code'");
+		//this where used for, which issue(data) we send to provience by fedural
+		$this ->db->where("master.from_warehouse_type_id='$f_wharehouse_id'");
+		//this where used for, which issue(data) we send to District by provience
+		//$this -> db -> where("master.from_warehouse_type_id='2'");
+		//$this->db->where("master.transaction_type_id='2'");
+		$this->db->where("master.transaction_type_id='2'");
+		$this->db->join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
+		 return $this -> db -> get() -> result_array();
+		// print_r($this->db->last_query());exit;
+		 */
+
+
+	// this code is used for issue(data) from provience to distinct
+
+	 
+		$f_wharehouse_code = $this->session->userdata("curr_wh_code");
+		$f_wharehouse_id =  $this->session->curr_wh_type;
+		$this->db->select('master.pk_id as mid,get_product_name(batch.item_pack_size_id) itemname,*');
+		$this->db->from('epi_stock_master master');
+		$this->db->where("master.to_warehouse_code='$f_wharehouse_code'");
+		$this->db->where("master.to_warehouse_type_id='$f_wharehouse_id'");
+		$this->db->where("master.transaction_type_id='1'");
+		$this->db->join('epi_stock_batch batch','master.pk_id = batch.batch_master_id','left');
+		return  $this -> db -> get() -> result_array();
+		//print_r($this->db->last_query());exit;
+	// return $this -> db -> get() -> result_array();
+	}
+	
 	public function get_issued_vouchers_list($fromwhtype,$fromwhcode)
 	{
 		$username = $this->session->userdata("username");
@@ -393,7 +501,8 @@ class Inventory_model extends CI_Model {
 		$this -> db -> from('epi_stock_master master');
 		$this -> db -> join("(select batch_master_id,count(*) as totfinish from epi_stock_batch where status = 'Finished' group by batch_master_id) as viewtbl","viewtbl.batch_master_id = master.pk_id","LEFT OUTER");
 		$this->db->order_by('transaction_number',"DESC");
-		$this->db->limit("200");
+		//$this->db->limit("200");
+		$this->db->limit("1000");
 		return $this -> db -> get() -> result_array();
 	}
 	public function get_issued_voucher_status($vouchernum)
@@ -427,7 +536,7 @@ class Inventory_model extends CI_Model {
 	}
 	public function batch_priority($type)
 	{
-		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,getpriority(batch.expiry_date,detail.vvm_stage) as priority, COUNT(distinct batch.number) as batch,sum(batch.quantity),epi_item_pack_sizes.activity_type_id");
+		$this -> db -> select("get_product_name(batch.item_pack_size_id) itemname,get_epi_item_dose_per_vials(batch.item_pack_size_id) doses,getpriority(batch.expiry_date,detail.vvm_stage) as priority, COUNT(distinct batch.number) as batch,sum(batch.quantity),get_activity_name(epi_item_pack_sizes.activity_type_id) as activity_type_id");
 		$whereCondition['master.draft'] =0;
 		$whereCondition['batch.warehouse_type_id'] = $this -> session -> curr_wh_type;
 		$whereCondition['batch.code'] = $this -> session -> curr_wh_code;

@@ -399,5 +399,5 @@
 			});
 		} */
 	}
-
+console.log(<?php echo json_encode($vacctbldata);?>);
 </script>

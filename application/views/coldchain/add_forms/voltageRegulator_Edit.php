@@ -80,18 +80,15 @@ $style = "";
 				<option value="2">Provincial</option>
 			<?php }else{ ?>
 				<option value="0">Select</option>
-			<?php
-			if($this -> session -> Tehsil){ ?>
-				<option value="5">Tehsil-Taluka</option>
-				<option value="6">Union Council</option>
-			<?php
-			}else if($this -> session -> District){ ?>
+				<?php
+				if($this -> session -> District){ ?>
 				<option value="4">District</option>
 				<option value="5">Tehsil-Taluka</option>
 				<option value="6">Union Council</option>
-			<?php } else { ?>
-			  <option value="2">Provincial</option>
-			<?php }?>
+				<?php
+				}else{ ?>
+				<option value="2">Provincial</option>
+				<?php } ?>
 			<?php } ?>
 			</select>
 		</div>
@@ -144,9 +141,9 @@ $style = "";
 						</div>
 					</div>
 					
-					<div class="col-md-1">
-						<!--<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" style="margin-top: 23px;"> <i class="fa fa-plus"></i></button>-->
-					</div>
+					<!--<div class="col-md-1">
+						<button type="button" id='modalid' class="btn btn-success btn-md" data-toggle="modal" data-target="#myModal" style="margin-top: 23px;"> <i class="fa fa-plus"></i></button>
+					</div>-->
 					<div class="col-md-4">
 						<div class="form-group">
 							<label for="Quantity">Quantity<span style="color:red;">*</span></label>
@@ -760,8 +757,8 @@ $(function () {
 		todayHighlight : true,
 		todayBtn : true
 	});
-});
+});	
 $(".readonly").keydown(function(e){
-   e.preventDefault();
-});
+	e.preventDefault();
+});			
 </script>

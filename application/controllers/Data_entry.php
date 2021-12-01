@@ -9,10 +9,10 @@ class Data_entry extends CI_Controller {
 		}else{
 			authentication();
 		}		
-		$this -> load -> model('Data_entry_model');
-		$this -> load -> model('Common_model');
+		$this -> load -> model ('Data_entry_model');
+		$this -> load -> model ('Common_model');
 		$this -> load -> library('breadcrumbs');
-		$this -> load -> library('form_validation');
+		$this->load->library('form_validation');
 		$this -> load -> helper('my_functions_helper');
 	}
 	//============================ Constructor Function Ends ============================//
@@ -689,7 +689,7 @@ class Data_entry extends CI_Controller {
 			$data['data']=$data;
 			$data['edit'] = "yes";
 			$data['fileToLoad'] = 'data_entry/aefi'; 
-			$query="SELECT uncode, un_name from unioncouncil where distcode='$district' order by un_name";
+			$query="Select uncode, un_name from unioncouncil where distcode='$district' order by un_name";
 			$resultUnC=$this -> db -> query ($query);
 			$data['resultUnC']= $resultUnC -> result_array();
 			$data['pageTitle']='EPI-MIS | Edit Adverse Events Following Immunisation (AEFI) Report Form';
@@ -725,24 +725,23 @@ class Data_entry extends CI_Controller {
 	//---------------------------------------------------------------------------------------------------//
 	//==============================        Comment Here          =======================================//
 	public function aefi(){
-      	dataEntryValidator(0);
-	    $district = $this -> session -> District;
-		$data['data']="";
-		$query="SELECT uncode, un_name from unioncouncil where distcode='$district' order by un_name";
-		$resultUnC=$this -> db -> query ($query);
-		$data['resultUnC']= $resultUnC -> result_array();
-		$data['item_name'] = $this -> Data_entry_model -> get_vaccinename();
-		$data['years'] = getEpiWeekYearsOptions('',true); 
-		$data['fileToLoad'] = 'data_entry/aefi';
-		$data['edit'] = 'yes';
-		$data['pageTitle']='EPI-MIS | Adverse Events Following Immunisation (AEFI) Report Form';
-		$this->load->view('template/epi_template',$data);
+	      	dataEntryValidator(0);
+		    $district = $this -> session -> District;
+			$data['data']="";
+			$query="Select uncode, un_name from unioncouncil where distcode='$district' order by un_name";
+			$resultUnC=$this -> db -> query ($query);
+			$data['resultUnC']= $resultUnC -> result_array();
+			$data['item_name'] = $this -> Data_entry_model -> get_vaccinename();
+			$data['years'] = getEpiWeekYearsOptions('',true); 
+			$data['fileToLoad'] = 'data_entry/aefi';
+			$data['edit'] = 'yes';
+			$data['pageTitle']='EPI-MIS | Adverse Events Following Immunisation (AEFI) Report Form';
+			$this->load->view('template/epi_template',$data);
 	}
 	//==============================        Comment Here          =======================================//
 	//---------------------------------------------------------------------------------------------------//
 	//==============================        Comment Here          =======================================//
 	public function aefi_save(){
-		//print_r($_POST); exit();
 		dataEntryValidator(0);
 		//echo '<pre>';print_r($this->input->post());echo '</pre>';exit();
 		$this->form_validation->set_error_delimiters('<div class="error" style="color:red;">', '</div>');
@@ -755,30 +754,31 @@ class Data_entry extends CI_Controller {
 		if ($this->form_validation->run() === FALSE) 
 		{
 			$this->aefi();
-		} 
-		else {
-			if(!($this -> input -> post('casename'))){
-				$script = '<script language="javascript" type="text/javascript">';
-				$script .= 'alert("Case name cannot be empty, Kindly enter a name");';
-				$script .= 'history.go(-1);';
-				$script .= '</script>';
-				echo $script;
-				exit();
-			}
-			//old validation end
-			$distcode = $this -> input -> post('distcode');
-			$procode  = $this -> session -> Province;
-			$uncode   = $this -> input -> post('uncode');
-			$facode   = $this -> input -> post('facode');
-			$data=$_POST;
-			//custom fields
-			$data["procode"]=$procode;
-			$data["rep_date"]=date("Y-m-d");
-			/* if($data["dob"]=="")
-			{
-				$data["dob"] = NULL;
-			} */
-			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
+		} else {
+			
+		
+		if(!($this -> input -> post('casename'))){
+			$script = '<script language="javascript" type="text/javascript">';
+			$script .= 'alert("case name cannot be empty, Kindly enter a name");';
+			$script .= 'history.go(-1);';
+			$script .= '</script>';
+			echo $script;
+			exit();
+		}
+		//old validation end
+		$distcode = $this -> input -> post('distcode');
+		$procode  = $this -> session -> Province;
+		$uncode   = $this -> input -> post('uncode');
+		$facode   = $this -> input -> post('facode');
+		$data=$_POST;
+		//custom fields
+		$data["procode"]=$procode;
+		$data["rep_date"]=date("Y-m-d");
+		/* if($data["dob"]=="")
+		{
+			$data["dob"] = NULL;
+		} */
+		$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
 			foreach($_POST as $key => $value)
 			{
 				$data[$key] = (($value=='')?NULL:$value);
@@ -793,19 +793,19 @@ class Data_entry extends CI_Controller {
 					}
 				}
 			}
-			$num=$this->input->post("week");
-			$data['week']=(sprintf("%02d",$num)); 
-			$data['fweek'] = $this -> input -> post('year')."-".sprintf("%02d",$num);
-			
-			$data = $this -> Data_entry_model -> aefi_save($data);		
-			//print_r($data);
-			if($data != 0){
-				$this -> load -> view ('data_entry/aefi_list',$data);
-			}
-			else{
-				$data['message'] ="You must have rights to access this page.";
-				$this -> load -> view ('message',$data);
-			}
+		$num=$this->input->post("week");
+		$data['week']=(sprintf("%02d",$num)); 
+		$data['fweek'] = $this -> input -> post('year')."-".sprintf("%02d",$num);
+		
+		$data = $this -> Data_entry_model -> aefi_save($data);		
+		//print_r($data);
+		if($data != 0){
+			$this -> load -> view ('data_entry/aefi_list',$data);
+		}
+		else{
+			$data['message'] ="You must have rights to access this page.";
+			$this -> load -> view ('message',$data);
+		}
 		}
 	}
 	//==============================        Comment Here          =======================================//
@@ -822,34 +822,35 @@ class Data_entry extends CI_Controller {
 		
 		if ($this->form_validation->run() === FALSE) 
 		{
-			$this->aefi_edit($id);	
-			/*
-			$data['id']= $id;
-			$data['data']="";
-			$data['edit']="yes";
-			$data['fileToLoad'] = 'data_entry/aefi';
-			$data['pageTitle']='EPI-MIS | Adverse Events Following Immunisation (AEFI) Report Form';
-			$this->load->view('template/epi_template',$data);*/
-	    }
-	    else {
-			if(!($this -> input -> post('casename'))){
-				$script = '<script language="javascript" type="text/javascript">';
-				$script .= 'alert("case name cannot be empty, Kindly enter a name");';
-				$script .= 'history.go(-1);';
-				$script .= '</script>';
-				echo $script;
-				exit();
-			}
-			$distcode = $this -> input -> post('distcode');
-			$procode  = $this -> session -> Province;
-			$tcode   = $this -> input -> post('tcode');
-			$uncode   = $this -> input -> post('uncode');
-			$facode   = $this -> input -> post('facode');
-			$data=$_POST;
-			//custom fields
-			$data["procode"]=$procode;
-			$data["rep_date"]=date("Y-m-d");
-			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
+				$this->aefi_edit($id);	
+				/*
+				$data['id']= $id;
+								$data['data']="";
+								$data['edit']="yes";
+								$data['fileToLoad'] = 'data_entry/aefi';
+								$data['pageTitle']='EPI-MIS | Adverse Events Following Immunisation (AEFI) Report Form';
+								$this->load->view('template/epi_template',$data);*/
+				
+			
+	     } else {
+		if(!($this -> input -> post('casename'))){
+			$script = '<script language="javascript" type="text/javascript">';
+			$script .= 'alert("case name cannot be empty, Kindly enter a name");';
+			$script .= 'history.go(-1);';
+			$script .= '</script>';
+			echo $script;
+			exit();
+		}
+		$distcode = $this -> input -> post('distcode');
+		$procode  = $this -> session -> Province;
+		$tcode   = $this -> input -> post('tcode');
+		$uncode   = $this -> input -> post('uncode');
+		$facode   = $this -> input -> post('facode');
+		$data=$_POST;
+		//custom fields
+		$data["procode"]=$procode;
+		$data["rep_date"]=date("Y-m-d");
+		$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y");
 			foreach($_POST as $key => $value)
 			{
 				$data[$key] = (($value=='')?NULL:$value);
@@ -897,24 +898,24 @@ class Data_entry extends CI_Controller {
 	//---------------------------------------------------------------------------------------------------//
 	//==============================        Comment Here          =======================================//
 	public function vacc_wastage(){
-	    dataEntryValidator(0);
-		$data['data']="";
-		$data['fileToLoad'] = 'data_entry/vacc_wastage';
-		$data['pageTitle']='EPI-MIS | Facility Monthly Vaccine Wastage Reports';
-		$this->load->view('template/epi_template',$data);
+		    dataEntryValidator(0);
+			$data['data']="";
+			$data['fileToLoad'] = 'data_entry/vacc_wastage';
+			$data['pageTitle']='EPI-MIS | Facility Monthly Vaccine Wastage Reports';
+			$this->load->view('template/epi_template',$data);
 	}
 	//==============================        Comment Here          =======================================//
 	//---------------------------------------------------------------------------------------------------//
 	//==============================        Comment Here          =======================================//
 	public function consolidated_uc(){
 		if (($_SESSION['utype']=='Manager')){
-			$location = base_url();
-       		echo '<script language="javascript" type="text/javascript"> alert("You don`t have access on this page");	window.location="'.$location.'"</script>';
-		}
-		$data['data']="";
-		$data['fileToLoad'] = 'data_entry/consolidated-union-councel';
-		$data['pageTitle']='EPI-MIS | Facility Monthly Vaccination Reports';
-		$this->load->view('template/epi_template',$data);
+					$location = base_url();
+           		echo '<script language="javascript" type="text/javascript"> alert("You don`t have access on this page");	window.location="'.$location.'"</script>';
+			    }
+			$data['data']="";
+			$data['fileToLoad'] = 'data_entry/consolidated-union-councel';
+			$data['pageTitle']='EPI-MIS | Facility Monthly Vaccination Reports';
+			$this->load->view('template/epi_template',$data);
 	}
 	//==============================        Comment Here          =======================================//
 	//---------------------------------------------------------------------------------------------------//
@@ -2161,7 +2162,7 @@ else{
 				unset($data['id']);unset($data['edit']);unset($data['month']);unset($data['year']);
 				$updated_id = $this -> Common_model -> update_record('form_b_cr',$data,array('id' => $id,'distcode' => $data['distcode'],'facode' => $data['facode'],'fmonth'=>$fmonth));
 				//if($baseUrl == $liveUrl){
-				//syncDataWithFederalEPIMIS('form_b_cr',$fmonth );
+				syncDataWithFederalEPIMIS('form_b_cr',$fmonth );
 				//}
 				$this -> session -> set_flashdata('message','You have successfully updated your record!');
 				redirect('HF-Consumption-Requisition/List');
@@ -2170,7 +2171,7 @@ else{
 				unset($data['month']);unset($data['year']);
 				$inserted_id = $this -> Common_model -> insert_record('form_b_cr',$data);
 				//if($baseUrl == $liveUrl){
-				//syncDataWithFederalEPIMIS('form_b_cr',$fmonth );
+				syncDataWithFederalEPIMIS('form_b_cr',$fmonth );
 				//}
 				$this -> session -> set_flashdata('message','You have successfully saved your record!');
 				redirect('HF-Consumption-Requisition/List');
@@ -2693,7 +2694,10 @@ else{
 				$facode = $this -> input -> post('facode');
 				$data['fmonth'] = $year."-".$month;
 				$fmonth = $data['fmonth'];
-				freezeReport('fac_mvrf_db',$facode,$fmonth);
+				$dist=$this -> session -> District;
+				if($dist!='328'){
+					freezeReport('fac_mvrf_db',$facode,$fmonth);
+				}
 				$distcode=($this -> input -> post('distcode'))?$this -> input -> post('distcode'):$this -> session -> District;
 				if(!$this -> input -> post('edit') ){
 					$whereClause=" facode='$facode' and distcode='$distcode' ";
@@ -2721,6 +2725,7 @@ else{
 					}
 					syncDataWithFederalEPIMIS('fac_mvrf_db',$fmonth );
 					syncComplianceDataWithFederalEPIMIS('vaccinationcompliance');
+				
 				}
 				else {
 					$this -> session -> set_flashdata('message','Select Month For Facility Vaccine Monthly Reports to Proceed!');

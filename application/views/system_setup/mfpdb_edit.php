@@ -8,74 +8,73 @@
       <ol class="breadcrumb">
        <?php  echo $this->breadcrumbs->show();?>
      </ol> 
-    <div class="panel-heading"> Update Measles Focal Person Form
-    </div>
-    <div class="panel-body">
-       <form name="dataform" id="dataform" action="<?php echo base_url(); ?>System_setup/mfpdb_save" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onSubmit="">  
-<input type="hidden" name="previous_code" id="previous_code"  value="<?php echo $mfpdata['previous_code']; ?>"  class="form-control "/> 	   
-	   <input type="hidden" name="distcode" id="distcode" value="<?php echo $mfpdata['distcode']; ?>" />
+     <div class="panel-heading"> Update Measles Focal Person Form
+     </div>
+     <div class="panel-body">
+       <form name="dataform" id="dataform" action="<?php echo base_url(); ?>System_setup/mfpdb_save" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onSubmit="">     
+<input type="hidden" name="distcode" id="distcode" value="<?php echo $mfpdata['distcode']; ?>" />
    <div class="form-group">
-    <div class="row">
-            <label class="col-xs-2 col-xs-offset-1 control-label"  for = "facode" > District </label>
-        <div class="col-xs-3 cmargin5">
-            <span> <?php echo $mfpdata['districtname'];?> </span>
-        </div>
-            <label type="hidden" hidden class="control-label"  for = "mfpcode" >Measles Focal Person Code  </label>
-        <div class="col-xs-3 cmargin5">
-           <label type="hidden" hidden class="col-xs-2 control-label"   for = "mfpcode" ><?php echo $mfpdata['mfpcode'];?>  </label>
-            <!--<span> <?php echo $mfpdata['mfpcode'];?> </span>-->
-            <input type="hidden" required name="mfpcode" id="mfpcode" placeholder="AS Code"  value="<?php echo $mfpdata['mfpcode'];?>"  class="form-control "/>
-        </div>
-        </div>
-    <div class="row">
-            <label class="col-xs-2 col-xs-offset-1 control-label"  for = "asname" > Measles Focal Person Name </label>
-        <div class="col-xs-3">
-           <input type="text" required name="mfpname" id="mfpname" placeholder="Measles Focal Person Name"  value="<?php if(validation_errors() != false) { echo set_value('mfpname'); } else { echo $mfpdata['mfpname']; } ?>"  class="form-control "/><?php echo form_error('mfpname'); ?>
-        </div>
-            <label class="col-xs-2 control-label"  for = "fathername" > Father Name </label>
-        <div class="col-xs-3">
-             <input type="text"  name="  fathername" id="fathername" placeholder="Father Name"  value="<?php if(validation_errors() != false) { echo set_value('fathername'); } else { echo $mfpdata['fathername']; } ?>"  class="form-control "/><?php echo form_error('fathername'); ?>
-        </div>
-        </div>
-	</div>
+                <div class="row">
+                        <label class="col-xs-2 col-xs-offset-1 control-label"  for = "facode" > District </label>
+                      <div class="col-xs-3 cmargin5">
+                        <span> <?php echo $mfpdata['districtname'];?> </span>
+                      </div>
+                        <label type="hidden" hidden class="control-label"  for = "mfpcode" >Measles Focal Person Code  </label>
+                      <div class="col-xs-3 cmargin5">
+                       <label type="hidden" hidden class="col-xs-2 control-label"   for = "mfpcode" ><?php echo $mfpdata['mfpcode'];?>  </label>
+                        <!--<span> <?php echo $mfpdata['mfpcode'];?> </span>-->
+                        <input type="hidden" required name="mfpcode" id="mfpcode" placeholder="AS Code"  value="<?php echo $mfpdata['mfpcode'];?>"  class="form-control "/>
+                      </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2 col-xs-offset-1 control-label"  for = "asname" > Measles Focal Person Name </label>
+                      <div class="col-xs-3">
+                       <input type="text" required name="mfpname" id="mfpname" placeholder="Measles Focal Person Name"  value="<?php if(validation_errors() != false) { echo set_value('mfpname'); } else { echo $mfpdata['mfpname']; } ?>"  class="form-control "/><?php echo form_error('mfpname'); ?>
+                      </div>
+                        <label class="col-xs-2 control-label"  for = "fathername" > Father Name </label>
+                      <div class="col-xs-3">
+                         <input type="text"  name="  fathername" id="fathername" placeholder="Father Name"  value="<?php if(validation_errors() != false) { echo set_value('fathername'); } else { echo $mfpdata['fathername']; } ?>"  class="form-control "/><?php echo form_error('fathername'); ?>
+                      </div>
+                    </div>
+              </div>
  <div class="row bgrow" style="text-align: center;color: white;font-size: 15px; font-family: Arial;padding-top: 5px; "> Basic Information</div>
  <div class="form-group">
-	<div class="row">
-			<label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Date Of Birth</label>
-		<div class="col-xs-3">
-			<input type="text"  name="date_of_birth" id="date_of_birth" placeholder="dd-mm-yyyy" value="<?php if(validation_errors() != false) { echo set_value('date_of_birth'); } else { echo isset($mfpdata['date_of_birth']) ? date('d-m-Y', strtotime($mfpdata['date_of_birth'])) : ''; } ?>"  class="form-control "/>
-		</div>
-			<label class="col-xs-2 control-label"  for = "facode" > CNIC # </label>
-		<div class="col-xs-3">
-			<input type="text"  name="nic" id="nic" placeholder="Enter Your CNIC #"  value="<?php if(validation_errors() != false) { echo set_value('nic'); } else { echo $mfpdata['nic']; } ?>"  class="form-control "/><?php echo form_error('nic'); ?>
-		</div>
-		</div>
-			
-	<div class="row">
-			<label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Phone</label>
-		<div class="col-xs-3">
-			<input type="text"  name="phone" id="phone" placeholder="Phone"  value="<?php if(validation_errors() != false) { echo set_value('phone'); } else { echo $mfpdata['phone']; } ?>"  class="form-control numberclass"/><?php echo form_error('phone'); ?>
-		</div>    
-			<label class="col-xs-2 control-label"  for = "asname" > Marital Status </label>
-		<div class="col-xs-3">
-			<select id="marital_status" name="marital_status" class="form-control" size="1" >
-				<option <?php if($mfpdata['marital_status'] == 'Married') { echo 'selected="selected"'; } else { echo ''; } ?> value="Married">Married</option>
-				<option  <?php if($mfpdata['marital_status'] == 'Un Married') { echo 'selected="selected"'; } else { echo ''; } ?> value="Un Married">Un Married</option>
-				<option <?php if($mfpdata['marital_status'] == 'Widow') { echo 'selected="selected"'; } else { echo ''; } ?> value="Widow">Widow</option>
-				<option <?php if($mfpdata['marital_status'] == 'Divorced') { echo 'selected="selected"'; } else { echo ''; } ?> value="Divorced">Divorced</option>
-				<option <?php if($mfpdata['marital_status'] == 'Other') { echo 'selected="selected"'; } else { echo ''; } ?> value="Other">Other</option>
-			</select>
-		</div>
-		</div>
+                <div class="row">
+             <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Date Of Birth</label>
+                <div class="col-xs-3">
+                  <input type="text"  name="date_of_birth" id="date_of_birth" placeholder="dd-mm-yyyy" value="<?php if(validation_errors() != false) { echo set_value('date_of_birth'); } else { echo isset($mfpdata['date_of_birth']) ? date('d-m-Y', strtotime($mfpdata['date_of_birth'])) : ''; } ?>"  class="form-control "/>
+                </div>
+                  <label class="col-xs-2 control-label"  for = "facode" > CNIC # </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="nic" id="nic" placeholder="Enter Your CNIC #"  value="<?php if(validation_errors() != false) { echo set_value('nic'); } else { echo $mfpdata['nic']; } ?>"  class="form-control "/><?php echo form_error('nic'); ?>
+                  </div>
+                </div>
+               
+                <div class="row">
+                    <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Phone</label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="phone" id="phone" placeholder="Phone"  value="<?php if(validation_errors() != false) { echo set_value('phone'); } else { echo $mfpdata['phone']; } ?>"  class="form-control numberclass"/><?php echo form_error('phone'); ?>
+                  </div>    
+                  <label class="col-xs-2 control-label"  for = "asname" > Marital Status </label>
+                  <div class="col-xs-3">
+                    <select id="marital_status" name="marital_status" class="form-control" size="1" >
+                        <option <?php if($mfpdata['marital_status'] == 'Married') { echo 'selected="selected"'; } else { echo ''; } ?> value="Married">Married</option>
+                        <option  <?php if($mfpdata['marital_status'] == 'Un Married') { echo 'selected="selected"'; } else { echo ''; } ?> value="Un Married">Un Married</option>
+                        <option <?php if($mfpdata['marital_status'] == 'Widow') { echo 'selected="selected"'; } else { echo ''; } ?> value="Widow">Widow</option>
+                        <option <?php if($mfpdata['marital_status'] == 'Divorced') { echo 'selected="selected"'; } else { echo ''; } ?> value="Divorced">Divorced</option>
+                        <option <?php if($mfpdata['marital_status'] == 'Other') { echo 'selected="selected"'; } else { echo ''; } ?> value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
 				
 				 <!--<div class="row">
                            <label class="col-xs-2 col-xs-offset-1 control-label"  for = "lhscode" > Supervisor Name</label>
                   <div class="col-xs-3">
                      <select id="supervisorcode" required name="supervisorcode" class="form-control" size="1" >
-                <?php 
-                foreach($resultSupervisor as $row){
-                ?>
-                 <option <?php if($mfpdata['supervisorcode'] == $row['supervisorcode'] ){ echo 'selected="selected"'; } else  { echo ''; } ?> value="<?php echo $row['supervisorcode']; ?>" /><?php echo $row['supervisorname']; ?></option>
+                      <?php 
+                      foreach($resultSupervisor as $row){
+                        ?>
+                        <option <?php if($mfpdata['supervisorcode'] == $row['supervisorcode'] ){ echo 'selected="selected"'; } else  { echo ''; } ?> value="<?php echo $row['supervisorcode']; ?>" /><?php echo $row['supervisorname']; ?></option>
                         <?php
                       }
                       ?>
@@ -84,136 +83,136 @@
                
                       </div>-->
               
-                
-    </div>
+             
+            </div>
+			
 	<div class="row bgrow" style="text-align: center;color: white;font-size: 15px; font-family: Arial;padding-top: 5px; "> Address and Qualification</div>
-    <div class="form-group">
-        <div class="row">
-                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "drivercode" >Permanent Address  </label>
-            <div class="col-xs-3">
-                <input type="text"  name="permanent_address" id="permanent_address" placeholder="Permanent Address "  value="<?php if(validation_errors() != false) { echo set_value('permanent_address'); } else { echo $mfpdata['permanent_address']; } ?>"  class="form-control "/>
-            </div>    
-                <label class="col-xs-2 control-label"  for = "asname" > Present Address </label>
-            <div class="col-xs-3">
-                <input type="text"  name="present_address" id="present_address" placeholder=" Present Address"  value="<?php if(validation_errors() != false) { echo set_value('present_address'); } else { echo $mfpdata['present_address']; } ?>"  class="form-control "/>
-            </div>
-            </div>
-            <div class="row">
-                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Postal Code</label>
-            <div class="col-xs-3">
-                <input type="text"  name="postalcode" id="postalcode" placeholder="Postal Code"  value="<?php if(validation_errors() != false) { echo set_value('postalcode'); } else { echo $mfpdata['postalcode']; } ?>"  class="form-control "/>
-            </div>
-                <label class="col-xs-2 control-label"  for = "asname" > City </label>
-            <div class="col-xs-3">
-                <input type="text"  name="city" id="city" placeholder="City"  value="<?php if(validation_errors() != false) { echo set_value('city'); } else { echo $mfpdata['city']; } ?>"  class="form-control "/>
-            </div>
-            </div>
-		<div class="row">
-                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Area Type</label>
-            <div class="col-xs-3">
-                <select id="area_type" name="area_type" class="form-control" size="1" >
-                    <option <?php if($mfpdata['area_type'] == 'Urban') { echo 'selected="selected"'; } else { echo ''; } ?> value="Urban">Urban</option>
-                    <option <?php if($mfpdata['area_type'] == 'Rural') { echo 'selected="selected"'; } else { echo ''; } ?> value="Rural">Rural</option> 
-                </select>
-            </div>    
-                <label class="col-xs-2 control-label"  for = "asname" > Last Qualification </label>
-            <div class="col-xs-3">
-                <select name="lastqualification" id="lastqualification" class="form-control"> 
-                    <option <?php if($mfpdata['lastqualification'] == 'Matric') { echo 'selected="selected"'; }else echo ''; ?> value="Matric">Matric</option>
-                    <option <?php if($mfpdata['lastqualification'] == 'FA') { echo 'selected="selected"'; }else echo ''; ?> value="FA">F.A/F.Sc</option>
-                    <option <?php if($mfpdata['lastqualification'] == 'BA') { echo 'selected="selected"'; }else echo ''; ?> value="BA">B.A/BCS/B.Sc/B.Ed</option>
-                    <option <?php if($mfpdata['lastqualification'] == 'MA') { echo 'selected="selected"'; }else echo ''; ?> value="MA">M.A/MCS/M.Sc/M.Ed</option>
-					<option <?php if($mfpdata['lastqualification'] == 'BBA/MBA') { echo 'selected="selected"'; }else echo ''; ?> value="BBA/MBA">BBA/MBA</option>
-                    <option <?php if($mfpdata['lastqualification'] == 'Diploma') { echo 'selected="selected"'; }else echo ''; ?> value="Diploma">Diploma</option>
-                    <option <?php if($mfpdata['lastqualification'] == 'MBBS') { echo 'selected="selected"'; }else echo ''; ?> value="MBBS">MBBS</option>
-					<option <?php if($mfpdata['lastqualification'] == 'MBBS,MPH') { echo 'selected="selected"'; }else echo ''; ?> value="MBBS,MPH">MBBS,MPH</option>
-					<option <?php if($mfpdata['lastqualification'] == 'MD') { echo 'selected="selected"'; }else echo ''; ?> value="MD">MD</option>
-					<option <?php if($mfpdata['lastqualification'] == 'MD,MPH') { echo 'selected="selected"'; }else echo ''; ?> value="MD,MPH">MD,MPH</option>
-					   <option <?php if($mfpdata['lastqualification'] == 'SE') { echo 'selected="selected"'; } else { echo ''; } ?> value="SE">Software Engineering</option>
-                </select>
-            </div>
-            </div>
-        <div class="row">
+            <div class="form-group">
+                 <div class="row">
+                   <label class="col-xs-2 col-xs-offset-1 control-label"  for = "drivercode" >Permanent Address  </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="permanent_address" id="permanent_address" placeholder="Permanent Address "  value="<?php if(validation_errors() != false) { echo set_value('permanent_address'); } else { echo $mfpdata['permanent_address']; } ?>"  class="form-control "/>
+                  </div>    
+                  <label class="col-xs-2 control-label"  for = "asname" > Present Address </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="present_address" id="present_address" placeholder=" Present Address"  value="<?php if(validation_errors() != false) { echo set_value('present_address'); } else { echo $mfpdata['present_address']; } ?>"  class="form-control "/>
+                  </div>
+                </div>
+                <div class="row">
+                 <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Postal Code</label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="postalcode" id="postalcode" placeholder="Postal Code"  value="<?php if(validation_errors() != false) { echo set_value('postalcode'); } else { echo $mfpdata['postalcode']; } ?>"  class="form-control "/>
+                  </div>
+                  <label class="col-xs-2 control-label"  for = "asname" > City </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="city" id="city" placeholder="City"  value="<?php if(validation_errors() != false) { echo set_value('city'); } else { echo $mfpdata['city']; } ?>"  class="form-control "/>
+                  </div>
+                </div>
+				  <div class="row">
+                  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Area Type</label>
+                  <div class="col-xs-3">
+                    <select id="area_type" name="area_type" class="form-control" size="1" >
+                          <option <?php if($mfpdata['area_type'] == 'Urban') { echo 'selected="selected"'; } else { echo ''; } ?> value="Urban">Urban</option>
+                          <option <?php if($mfpdata['area_type'] == 'Rural') { echo 'selected="selected"'; } else { echo ''; } ?> value="Rural">Rural</option> 
+                    </select>
+                  </div>    
+                  <label class="col-xs-2 control-label"  for = "asname" > Last Qualification </label>
+                  <div class="col-xs-3">
+                    <select name="lastqualification" id="lastqualification" class="form-control"> 
+                         <option <?php if($mfpdata['lastqualification'] == 'Matric') { echo 'selected="selected"'; }else echo ''; ?> value="Matric">Matric</option>
+                      <option <?php if($mfpdata['lastqualification'] == 'FA') { echo 'selected="selected"'; }else echo ''; ?> value="FA">F.A/F.Sc</option>
+                      <option <?php if($mfpdata['lastqualification'] == 'BA') { echo 'selected="selected"'; }else echo ''; ?> value="BA">B.A/BCS/B.Sc/B.Ed</option>
+                      <option <?php if($mfpdata['lastqualification'] == 'MA') { echo 'selected="selected"'; }else echo ''; ?> value="MA">M.A/MCS/M.Sc/M.Ed</option>
+					  <option <?php if($mfpdata['lastqualification'] == 'BBA/MBA') { echo 'selected="selected"'; }else echo ''; ?> value="BBA/MBA">BBA/MBA</option>
+                      <option <?php if($mfpdata['lastqualification'] == 'Diploma') { echo 'selected="selected"'; }else echo ''; ?> value="Diploma">Diploma</option>
+                       <option <?php if($mfpdata['lastqualification'] == 'MBBS') { echo 'selected="selected"'; }else echo ''; ?> value="MBBS">MBBS</option>
+					  <option <?php if($mfpdata['lastqualification'] == 'MBBS,MPH') { echo 'selected="selected"'; }else echo ''; ?> value="MBBS,MPH">MBBS,MPH</option>
+					  <option <?php if($mfpdata['lastqualification'] == 'MD') { echo 'selected="selected"'; }else echo ''; ?> value="MD">MD</option>
+					  <option <?php if($mfpdata['lastqualification'] == 'MD,MPH') { echo 'selected="selected"'; }else echo ''; ?> value="MD,MPH">MD,MPH</option>
+                    </select>
+                  </div>
+              </div>
+              <div class="row">
 			   <label class="col-xs-2 col-xs-offset-1 control-label"  for = "asname" > Institute Name </label>
-            <div class="col-xs-3">
-                <input type="text"  name="institutename" id="institutename" placeholder="Institute Name"  value="<?php if(validation_errors() != false) { echo set_value('institutename'); } else { echo $mfpdata['institutename']; } ?>"  class="form-control "/>
+                <div class="col-xs-3">
+                  <input type="text"  name="institutename" id="institutename" placeholder="Institute Name"  value="<?php if(validation_errors() != false) { echo set_value('institutename'); } else { echo $mfpdata['institutename']; } ?>"  class="form-control "/>
+                </div>
+                   <label class="col-xs-2 control-label"  for = "fathername" > Passing Year</label>
+                <div class="col-xs-3">
+                  <input type="text"  name="passingyear" id="passingyear" placeholder="Phone"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/><?php echo form_error('passingyear'); ?>
+                </div>    
+              </div>
+ 
             </div>
-                <label class="col-xs-2 control-label"  for = "fathername" > Passing Year</label>
-            <div class="col-xs-3">
-                <input type="text"  name="passingyear" id="passingyear" placeholder="Phone"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/><?php echo form_error('passingyear'); ?>
-            </div>    
-        </div>
-    </div>
     <div class="row bgrow " style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Joining Details</div>
-    <div class="form-group">
-        <div class="row">
-                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "facode" > Date Of Joining </label>
-            <div class="col-xs-3">
-                <input type="text"  name="date_joining" id="date_joining" placeholder="Date Of Joining"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_of_birth'); } else { echo isset($mfpdata['date_of_birth']) ? date('d-m-Y', strtotime($mfpdata['date_of_birth'])) : ''; } ?>"/>
-            </div>
-                <label class=" col-xs-2 control-label"  for = "drivercode" >Place of Joining </label>
-            <div class="col-xs-3">
-                <input type="text" name="place_of_joining" id="place_of_joining" placeholder="Place of Joining"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/>
-            </div>
-        </div>
-        <div class="row">
-                <label class="col-xs-2 col-xs-offset-1 control-label"  for = "asname" >Place Of Posting</label>
-            <div class="col-xs-3">
-                <input type="text"  name="place_of_posting" id="place_of_posting" placeholder="Place Of Posting"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/>
-            </div>
-                <label class="col-xs-2 control-label"  for = "fathername" > Designation </label>
-            <div class="col-xs-3">
-                <input type="text"  name="  designation" id="designation" placeholder="Designation"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/>
-            </div>
-        </div>
-		<div class="row">
-				<label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Employee Type</label>
-            <div class="col-xs-3">
-                <select id="employee_type" name="employee_type" class="form-control" size="1" >
-					<option <?php if($mfpdata['employee_type'] == 'Contract') { echo 'selected="selected"'; } else { echo ''; } ?> value="Contract">Contract</option>
-					<option <?php if($mfpdata['employee_type'] == 'Permanent') { echo 'selected="selected"'; } else { echo ''; } ?> value="Permanent">Permanent</option> 
-                </select>
-            </div>    
-				<label class="col-xs-2  control-label"  for = "status" > Status </label>
-            <div class="col-xs-3">
-                <select id="status" name="status" class="form-control" size="1" >
-                    <?php if($mfpdata['status']!='Transfered') {?>
-                    <option <?php if($mfpdata['status'] == 'Active') { echo 'selected="selected"'; } else { echo ''; } ?> value="Active">Active</option>
-                    <option <?php if($mfpdata['status'] == 'Terminated') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Terminated">Terminated</option>
-                    <option <?php if($mfpdata['status'] == 'Died') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Died">Died</option>
-                    <option <?php if($mfpdata['status'] == 'Retired') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Retired">Retired</option>
-                    <option <?php if($mfpdata['status'] == 'Resigned') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Resigned">Resigned</option>
-					<option <?php if($mfpdata['status'] == 'On Leave') { echo 'selected="selected"'; } else { echo ''; } ?>  value="On Leave">On Leave</option>
-						   <option <?php if($mfpdata['status'] == 'Transfered') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Transfered">Transfered</option>
+              <div class="form-group">
+                <div class="row">
+                  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "facode" > Date Of Joining </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="date_joining" id="date_joining" placeholder="Date Of Joining"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_of_birth'); } else { echo isset($mfpdata['date_of_birth']) ? date('d-m-Y', strtotime($mfpdata['date_of_birth'])) : ''; } ?>"/>
+                  </div>
+                  <label class=" col-xs-2 control-label"  for = "drivercode" >Place of Joining </label>
+                  <div class="col-xs-3">
+                    <input type="text" name="place_of_joining" id="place_of_joining" placeholder="Place of Joining"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/>
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "asname" >Place Of Posting</label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="place_of_posting" id="place_of_posting" placeholder="Place Of Posting"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/>
+                  </div>
+                  <label class="col-xs-2 control-label"  for = "fathername" > Designation </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="  designation" id="designation" placeholder="Designation"  value="<?php if(validation_errors() != false) { echo set_value('passingyear'); } else { echo $mfpdata['passingyear']; } ?>"  class="form-control "/>
+                  </div>
+                </div>
+
+				
+				 <div class="row">
+				 
+				  <label class="col-xs-2 col-xs-offset-1 control-label"  for = "fathername" > Employee Type</label>
+                  <div class="col-xs-3">
+                    <select id="employee_type" name="employee_type" class="form-control" size="1" >
+                          <option <?php if($mfpdata['employee_type'] == 'Contract') { echo 'selected="selected"'; } else { echo ''; } ?> value="Contract">Contract</option>
+                          <option <?php if($mfpdata['employee_type'] == 'Permanent') { echo 'selected="selected"'; } else { echo ''; } ?> value="Permanent">Permanent</option> 
+                    </select>
+                  </div>    
+				 
+				 	<label class="col-xs-2  control-label"  for = "status" > Status </label>
+                  <div class="col-xs-3">
+                    <select id="status" name="status" class="form-control" size="1" >
+                      <?php if($mfpdata['status']!='Transfered') {?>
+                      <option <?php if($mfpdata['status'] == 'Active') { echo 'selected="selected"'; } else { echo ''; } ?> value="Active">Active</option>
+                        <option <?php if($mfpdata['status'] == 'Terminated') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Terminated">Terminated</option>
+                        <option <?php if($mfpdata['status'] == 'Died') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Died">Died</option>
+                        <option <?php if($mfpdata['status'] == 'Retired') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Retired">Retired</option>
+                         <option <?php if($mfpdata['status'] == 'Resigned') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Resigned">Resigned</option>
+						 <option <?php if($mfpdata['status'] == 'On Leave') { echo 'selected="selected"'; } else { echo ''; } ?>  value="On Leave">On Leave</option>
+					   <option <?php if($mfpdata['status'] == 'Transfered') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Transfered">Transfered</option>
 						<!-- <option <?php if($mfpdata['status'] == 'Transfer(Other)') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Transfer">Transfer(Other)</option>-->
-					<!---<option ?php if($mfpdata['status'] == 'Temporary-Post') { echo 'selected="selected"'; }else echo ''; ?>  value="post">Temporary-Post</option>	
-				    ?php if($mfpdata['current_status']=='Temporary-Post'){?>
+					<option <?php if($mfpdata['status'] == 'Temporary-Post') { echo 'selected="selected"'; }else echo ''; ?>  value="post">Temporary-Post</option>	
+					<?php if($mfpdata['current_status']=='Temporary-Post'){?>
 						<option value="post">Temporary-Post</option>
-						?php }else{} ?> --->
-						<?php if($mfpdata['previous_table']==NULL){?>
-						<option <?php if($mfpdata['status'] == 'Temporary-Post') { echo 'selected="selected"'; }else echo ''; ?>  value="post">Temporary-Post</option>	
-						<?php }else{} ?> 
-						<?php if($mfpdata['previous_table']!=NULL){?>
-						<option value="Post Back">Post-Back</option>
 						<?php }else{} ?>
 					<?php } else {?>
 						<option <?php if($mfpdata['status'] == 'Transfered') { echo 'selected="selected"'; } else { echo ''; } ?>  value="Transfered">Transfered</option>
 					<?php } ?>
 					</select>
-            </div>
-		</div>
-		<div class="row">
-		<div class="newFac" id="newFac" style="display: none;">
-				<label class="col-xs-2 col-xs-offset-1 control-label lbl-search"  for = "facode" >District </label>
-			<div class="col-xs-3">
-				<select id="new_distcode" name="new_distcode" required="required" class="form-control" size="1" >
-					<option value="">District</option>
-					<?php 
-					foreach($dists as $row){?>
-					<option value="<?php echo $row['distcode'];?>" ><?php echo $row['district'];?></option><?php
-					}?>
-				</select>
-			</div>
+                    </div>
+				</div>
+					
+					<div class="row">
+					<div class="newFac" id="newFac" style="display: none;">
+						<label class="col-xs-2 col-xs-offset-1 control-label lbl-search"  for = "facode" >District </label>
+						 <div class="col-xs-3">
+							<select id="new_distcode" name="new_distcode" required="required" class="form-control" size="1" >
+									<option value="">District</option>
+									<?php 
+									foreach($dists as $row){?>
+										<option value="<?php echo $row['distcode'];?>" ><?php echo $row['district'];?></option><?php
+									}?>
+								</select>
+						 </div>
 						 <!--<label class="col-xs-2 control-label" for="status">Tehsil</label>
 						 <div class="col-xs-3">
 							<select id="new_tcode" name="new_tcode" required="required" class="form-control" size="1" >
@@ -245,107 +244,69 @@
 								</select>
 							</div>-->
 													 
-				<label class="col-xs-2  control-label"   for = "new_lhwcode" > New Measles Focal Person Code </label>
-				<input type="hidden" name="new_lhwcode" id="new_lhwcode" value="" >
-		<div class="col-xs-1 cmargin18">
-					<input type="text" disabled="disabled"  class="form-control  right" style="text-align: -webkit-right;" id="new_lhwcodef" value="D.Code" />
-		</div>
-		<div class="col-xs-2 cmargin19">
-				<input type="text" style=" text-align: -webkit-left;" name="new_lhwcodel" id="new_lhwcodel" placeholder="code"  class="form-control " value="<?php echo set_value('new_lhwcodel'); ?>"/>
-		</div>
-		</div>
-        </div>
-			
-		<div class="row">
-		<div class="showTerminated" id="showTerminated" style="display: none;">
-            <label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Termination </label>
-        <div class="col-xs-3">
-            <input type="text"  name="date_termination" id="date_termination" placeholder="Date Of Termination"  value="<?php if(validation_errors() != false) { echo set_value('date_termination'); } else { echo isset($mfpdata['date_termination']) ? date('d-m-Y', strtotime($mfpdata['date_termination'])) : ''; } ?>"  class="form-control "/>
-		</div>
-		</div>
-		<div class="showRetired" id="showRetired" style="display: none;">
-		<label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Retired </label>
-		<div class="col-xs-3">
-			<input  type="text"  name="date_retired" id="date_retired" placeholder="Date Retired"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_retired'); } else { echo isset($mfpdata['date_retired']) ? date('d-m-Y', strtotime($mfpdata['date_retired'])) : ''; } ?>"/>
-		</div>
-		</div>
-		<div class="showDied" id="showDied" style="display: none;">
-		<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Died </label>
-		<div class="col-xs-3">
-			<input  type="text"  name="date_died" id="date_died" placeholder="Date Died"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_died'); } else { echo isset($mfpdata['date_died']) ? date('d-m-Y', strtotime($mfpdata['date_died'])) : ''; } ?>"/>
-		</div>
-		</div>
-		<div class="showTransfer" id="showTransfer" style="display: none;">
-		<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Transfered </label>
-		<div class="col-xs-3">
-			<input  type="text"  name="date_transfer" id="date_transfer" placeholder="Date Transfered"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_transfer'); } else { echo isset($mfpdata['date_transfer']) ? date('d-m-Y', strtotime($mfpdata['date_transfer'])) : ''; } ?>"/>
-		</div>
-		</div>
-		<div class="showResigned" id="showResigned" style="display: none;">
-		<label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Resigned </label>
-		<div class="col-xs-3">
-			<input  type="text"  name="date_resigned" id="date_resigned" placeholder="Date Resigned"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_resigned'); } else { echo isset($mfpdata['date_resigned']) ? date('d-m-Y', strtotime($mfpdata['date_resigned'])) : ''; } ?>"/>
-		</div>
-		</div>
-		<div class="showReason" id="showReason" style="display: none;">
-		<label class="col-xs-2 control-label"  for = "reason" > Reason </label>
-               <div class="col-xs-3">
-                 <input type="text"  name="reason" id="reason" placeholder=" Reason"  value="<?php echo set_value('reason'); ?>"  class="form-control "/>
-               </div>
-		</div>
-		
-		<div class="showpostoption" id="showpostoption" style="display: none;">
-                 <label class="col-xs-2 col-xs-offset-1 control-label"  for = "showpostoption" > Posted As</label>
-            <div class="col-xs-3">
-                <select id="post_type" name="post_type" class=  "form-control" size="1" onchange="suptype(this.value)" >
-				    <option value="select">Select Post</option>
-					<!--- All post-Back Function and Names --->
-		 <?php if($mfpdata['previous_table']==NULL):?>	
-					<option value="Tehsil Superintendent Vaccinator">TSV</option>
-					<option value="Field Superintendent Vaccinator">FSV</option>
-					<option value="District Superintendent Vaccinator">DSV</option>	 					 
-					<option value="dsodb">District Surveillance Officer</option> 					 
-					<option value="codb">Computer Operator</option>  
-					<!---<option value="deodb">Data entry operator</option>	--->
-		   <?php else:?>
-					<?php if($mfpdata['previous_table']=='dsodb'){?>
-					<option value="dsodb">District Surveillance Officer</option> 
-					<?php } ?>		
-					<?php if($mfpdata['previous_table']=='codb'){?>				 					 
-					<option value="codb">Computer Operator</option>  
-					<?php } ?>			
-					<?php if($mfpdata['previous_table']=='mfpdb'){?>			 
-					<option value="mfpdb">Measles Focal Person</option>	
-					<?php } ?>
-					<?php if($mfpdata['previous_table']=='med_techniciandb'){?>						 			 
-					<option value="med_techniciandb">HF Incharges</option>
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='skdb'){?>					 
-					<option value="skdb">Storekeeper</option>
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='techniciandb'){?>					 
-					<option value="techniciandb">EPI Technician</option>	
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='cc_techniciandb'){?>					 	 
-					<option value="cc_techniciandb">Cold Chain Technician </option>
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='cco_db'){?>					 	
-					<option value="cco_db">Cold Chain Operator</option>
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='go_db'){?>					 						
-					<option value="go_db">Generator Operator</option>
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='cc_mechanic'){?>					  					 
-					<option value="cc_mechanic">Cold Chain Mechanic </option>
-					<?php } ?>	
-					<?php if($mfpdata['previous_table']=='driverdb'){?>					 
-					<option value="driverdb">Driver</option> 
-					<?php } ?>
-			<?php endif;?>	
-                </select>
-            </div>
-        </div>
-	</div>  
+						<label class="col-xs-2  control-label"   for = "new_lhwcode" > New Measles Focal Person Code </label>
+						<input type="hidden" name="new_lhwcode" id="new_lhwcode" value="" >
+						<div class="col-xs-1 cmargin18">
+							<input type="text" disabled="disabled"  class="form-control  right" style="text-align: -webkit-right;" id="new_lhwcodef" value="D.Code" />
+						</div>
+						<div class="col-xs-2 cmargin19">
+							<input type="text" style=" text-align: -webkit-left;" name="new_lhwcodel" id="new_lhwcodel" placeholder="code"  class="form-control " value="<?php echo set_value('new_lhwcodel'); ?>"/>
+						</div>
+					</div>
+                </div>
+					
+					<div class="row">
+				   	<div class="showTerminated" id="showTerminated" style="display: none;">
+                      <label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Termination </label>
+                      <div class="col-xs-3">
+                          <input type="text"  name="date_termination" id="date_termination" placeholder="Date Of Termination"  value="<?php if(validation_errors() != false) { echo set_value('date_termination'); } else { echo isset($mfpdata['date_termination']) ? date('d-m-Y', strtotime($mfpdata['date_termination'])) : ''; } ?>"  class="form-control "/>
+					</div>
+					</div>
+					<div class="showRetired" id="showRetired" style="display: none;">
+					<label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Retired </label>
+					<div class="col-xs-3">
+						<input  type="text"  name="date_retired" id="date_retired" placeholder="Date Retired"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_retired'); } else { echo isset($mfpdata['date_retired']) ? date('d-m-Y', strtotime($mfpdata['date_retired'])) : ''; } ?>"/>
+					</div>
+					</div>
+					<div class="showDied" id="showDied" style="display: none;">
+					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Died </label>
+					<div class="col-xs-3">
+						<input  type="text"  name="date_died" id="date_died" placeholder="Date Died"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_died'); } else { echo isset($mfpdata['date_died']) ? date('d-m-Y', strtotime($mfpdata['date_died'])) : ''; } ?>"/>
+					</div>
+					</div>
+					<div class="showTransfer" id="showTransfer" style="display: none;">
+					<label class="col-xs-2 col-xs-offset-1 control-label"  for = "date_termination" > Date Transfered </label>
+					<div class="col-xs-3">
+						<input  type="text"  name="date_transfer" id="date_transfer" placeholder="Date Transfered"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_transfer'); } else { echo isset($mfpdata['date_transfer']) ? date('d-m-Y', strtotime($mfpdata['date_transfer'])) : ''; } ?>"/>
+					</div>
+					</div>
+					<div class="showResigned" id="showResigned" style="display: none;">
+					<label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date Resigned </label>
+					<div class="col-xs-3">
+						<input  type="text"  name="date_resigned" id="date_resigned" placeholder="Date Resigned"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_resigned'); } else { echo isset($mfpdata['date_resigned']) ? date('d-m-Y', strtotime($mfpdata['date_resigned'])) : ''; } ?>"/>
+					</div>
+					</div>
+					<div class="showReason" id="showReason" style="display: none;">
+					<label class="col-xs-2 control-label"  for = "reason" > Reason </label>
+                  <div class="col-xs-3">
+                    <input type="text"  name="reason" id="reason" placeholder=" Reason"  value="<?php echo set_value('reason'); ?>"  class="form-control "/>
+                  </div>
+					</div>
+					
+							 <div class="showpostoption" id="showpostoption" style="display: none;">
+                   <label class="col-xs-2 col-xs-offset-1 control-label"  for = "showpostoption" > Posted As</label>
+                    <div class="col-xs-3">
+                          <select id="post_type" name="post_type" class=  "form-control" size="1" onchange="suptype(this.value)" >
+                    <option value="select">Select Post</option>
+                    <option value="District Superintendent Vaccinator">DSV</option>
+                    <option value="Tehsil Superintendent Vaccinator">TSV</option>
+                    <option value="Field Superintendent Vaccinator">FSV</option>
+                    <option value="DataEntry">DataEntry Operator</option>
+                    <option value="Storekeeper">Store Keeper</option>
+                    </select>
+                 </div>
+              </div>
+			</div>  
 			
 			<div class="row">
 			                 <div class="showTehsil" id="showTehsil" style="display: none;">
@@ -380,40 +341,32 @@
 						  </select>
 					</div>
 					</div>
-					<div class="showLeave" id="showLeavefrom" style="display: none;">
-					<label class="col-xs-2 col-xs-offset-1  control-label"  for = "date_termination" > Date From </label>
-					<div class="col-xs-3">
-						<input  type="text"  name="date_from" id="date_from" placeholder="Date From"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_from'); } else { echo isset($mfpdata['date_from']) ? date('d-m-Y', strtotime($mfpdata['date_from'])) : ''; } ?>"/>
-					</div>
-					</div>
-					<div class="showLeave" id="showLeaveto" style="display: none;">
-					<label class="col-xs-2 control-label"  for = "date_termination" > Date To </label>
-					<div class="col-xs-3">
-						<input  type="text"  name="date_to" id="date_to" placeholder="Date To"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('date_to'); } else { echo isset($mfpdata['date_to']) ? date('d-m-Y', strtotime($mfpdata['date_to'])) : ''; } ?>"/>
-					</div>
-					</div>
-				  
+	 
 	 
 	 
 				
 </div>
-  </div>
+			  
+			  
+             
+				
+            </div>
 			
 			<div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Training Information</div>
 	<div class="form-group">
-	 <div class="row">
-		<div class="col-xs-3 col-xs-offset-1 control-label">
-		  <label>Training</label>
-		</div>
-		<div class="col-xs-3 control-label">
-		  <label>Start Date</label>
-		</div>
-		<div class="col-xs-3 control-label">
-		  <label>End Date</label>
-		</div>
-	  </div>
-	  <hr>
-	  <div class="row">
+							 <div class="row">
+								<div class="col-xs-3 col-xs-offset-1 control-label">
+								  <label>Training</label>
+								</div>
+								<div class="col-xs-3 control-label">
+								  <label>Start Date</label>
+								</div>
+								<div class="col-xs-3 control-label">
+								  <label>End Date</label>
+								</div>
+							  </div>
+							  <hr>
+							  <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="tenmonth_training_start_date"> Basic Training </label>
            <div class="col-xs-3">
 		    <input type="text"  name="basic_training_start_date" id="basic_training_start_date" placeholder="Basic Training Start Date"  value=" <?php if(validation_errors() != false) { echo set_value('basic_training_start_date'); } else { echo isset($mfpdata['basic_training_start_date']) ? date('d-m-Y', strtotime($mfpdata['basic_training_start_date'])) : ''; } ?>"  class="form-control "/>
@@ -442,13 +395,13 @@
            <div class="col-xs-3">
             <input type="text"  name="cold_chain_training_end_date" id="cold_chain_training_end_date" placeholder="Cold Chain Training End Date"  value=" <?php if(validation_errors() != false) { echo set_value('cold_chain_training_end_date'); } else { echo isset($mfpdata['cold_chain_training_end_date']) ? date('d-m-Y', strtotime($mfpdata['cold_chain_training_end_date'])) : ''; } ?>"  class="form-control "/>         </div>
           </div>
-		<div class="row">
+		 <div class="row">
            <label class="col-xs-3 col-xs-offset-1 control-label" for="vlmis_training_start_date"> vLMIS/EPI-MIS</label>
-         <div class="col-xs-3">
+           <div class="col-xs-3">
            <input type="text"  name="vlmis_training_start_date" id="vlmis_training_start_date" placeholder="vLMIS/EPI-MISTraining Start Date"  value=" <?php if(validation_errors() != false) { echo set_value('vlmis_training_start_date'); } else { echo isset($mfpdata['vlmis_training_start_date']) ? date('d-m-Y', strtotime($mfpdata['vlmis_training_start_date'])) : ''; } ?>"  class="form-control "/>         </div>
-        <div class="col-xs-3">
+           <div class="col-xs-3">
             <input type="text"  name="vlmis_training_end_date" id="vlmis_training_end_date" placeholder="vLMIS/EPI-MIS Training End Date"  value=" <?php if(validation_errors() != false) { echo set_value('vlmis_training_end_date'); } else { echo isset($mfpdata['vlmis_training_end_date']) ? date('d-m-Y', strtotime($mfpdata['vlmis_training_end_date'])) : ''; } ?>"  class="form-control "/>         </div>
-        </div>
+          </div>
 		   <!--<div class="row">
            <label class="col-xs-3 control-label" for="epimis_training_start_date"> vLMIS/EPI-MIS </label>
            <div class="col-xs-3">
@@ -457,7 +410,7 @@
            <input type="text"  name="epimis_training_end_date" id="epimis_training_end_date" placeholder="vLMIS/EPI-MIS Training End Date"  value=" <?php if(validation_errors() != false) { echo set_value('epimis_training_end_date'); } else { echo isset($mfpdata['epimis_training_end_date']) ? date('d-m-Y', strtotime($mfpdata['epimis_training_end_date'])) : ''; } ?>"  class="form-control "/>          </div>
           </div>-->
           <!--yea change kia ha 25-->
-			</div>	
+				</div>	
 			
 			
   <div class="row bgrow" style="text-align: center;color: white;font-size: 15px;font-family: Arial;padding-top: 5px;"> Banking Details</div>
@@ -473,7 +426,7 @@
 				  <option value="<?php echo $row['bankid'];?>"  <?php if($mfpdata['bid'] == $row['bankid'] ){ echo 'selected="selected"'; } else  { echo ''; } ?>  /><?php echo $row['bankcode']."-".$row['bankname'];?>
 					<?php
 				  }
-				?>
+												?>
 			  </select>
 		</div>
 		<label class="col-xs-2 control-label"  for = "branchcode" > Branch Code  </label>
@@ -501,20 +454,20 @@
 		  <option <?php if($mfpdata['payscale'] == 'BPS-'.$i) { echo "selected='selected'"; }else{} ?> value="<?php echo "BPS-".$i ;?>" <?php echo set_select('payscale',"BPS-".$i); ?> /><?php echo "BPS-".$i ;?>
 			  <?php }
 						?>
-				</select>
+																			  </select>
 		</div>
 		<label class="col-xs-2 control-label"  for = "nic" > Basic Pay </label>
 		<div class="col-xs-3">
 			<input type="text"  name="basicpay" id="basicpay" placeholder="Basic Pay"  class="form-control " value="<?php if(validation_errors() != false) { echo set_value('basicpay'); } else { echo $mfpdata['basicpay']; } ?>"/><?php echo form_error('basicpay'); ?>
 		</div>
 		</div>
-		</div>
+</div>
             <hr>
 <input type="hidden" name="edit" value="edit">
             <div class="row">
-             <div class="col-xs-11" style="padding:0px; text-align:right;">
+             <div class="col-xs-7" style="margin-left:53.5%;" >
                <button type="submit" name="is_temp_saved" value="1" id="save" class="btn btn-md btn-success bc1"><i class="fa fa-floppy-o "></i> Save </button>
-			  <!---<button type="submit" name="is_temp_saved" value="0" class="btn btn-md btn-success bc1" style="margin-left: 0.12%;"><i class="fa fa-floppy-o "></i> Submit </button>--->
+			   <button type="submit" name="is_temp_saved" value="0" class="btn btn-md btn-success bc1" style="margin-left: 0.12%;"><i class="fa fa-floppy-o "></i> Submit </button>
                <button type="reset" class="btn btn-md btn-success"><i class="fa fa-repeat"></i> Reset</button>
                <a href="<?php echo base_url();?>Measles-Focal-Person-List" class="btn btn-md btn-success"><i class="fa fa-times"></i> Cancel </a>
              </div>
@@ -536,15 +489,13 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');			
 			$('#showDied').css('display', 'none');
             $('#newFac').css('display', 'none');
-			$('#new_distcode').removeAttr('required','required');
-			$('#new_tcode').removeAttr('required','required');
-			$('#new_uncode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#date_transfer').removeAttr('required','required'); 
-			$('#showpostoption').css('display', 'none');
-			$('#showLeavefrom').css('display', 'none');
-			$('#showLeaveto').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required'); 
+      $('#showpostoption').css('display', 'none');	  
 	}
     if (selected == 'Terminated') {  
 			$('#showTerminated').css('display', 'block');
@@ -554,15 +505,13 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'none');
 			$('#newFac').css('display', 'none');
-			$('#new_distcode').removeAttr('required','required');
-			$('#new_tcode').removeAttr('required','required');
-			$('#new_uncode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#date_transfer').removeAttr('required','required');
-			$('#showpostoption').css('display', 'none');
-			$('#showLeavefrom').css('display', 'none');
-			$('#showLeaveto').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required');
+	  $('#showpostoption').css('display', 'none');
 			}
 	if (selected == 'Died') { 
 			$('#showRetired').css('display', 'none');
@@ -572,16 +521,13 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'block');
  			$('#newFac').css('display', 'none');
-			$('#new_distcode').removeAttr('required','required');
-			$('#new_tcode').removeAttr('required','required');
-			$('#new_uncode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#date_transfer').removeAttr('required','required');
-			$('#showpostoption').css('display', 'none');
-			$('#showLeavefrom').css('display', 'none');
-			$('#showLeaveto').css('display', 'none');
-     
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required');
+	  $('#showpostoption').css('display', 'none');
 	}
 	if (selected == 'Retired') { 
 			$('#showRetired').css('display', 'block');
@@ -591,15 +537,13 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'none');
  			$('#newFac').css('display', 'none');
-			$('#new_distcode').removeAttr('required','required');
-			$('#new_tcode').removeAttr('required','required');
-			$('#new_uncode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#date_transfer').removeAttr('required','required');
-			$('#showpostoption').css('display', 'none');
-			$('#showLeavefrom').css('display', 'none');
-			$('#showLeaveto').css('display', 'none');
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required');
+	  $('#showpostoption').css('display', 'none');
 	}
 	if (selected == 'Resigned') { 
 			$('#showRetired').css('display', 'none');
@@ -609,16 +553,13 @@ $("#status").bind('change', function(){
 			$('#showTransfer').css('display', 'none');	
 			$('#showDied').css('display', 'none');
  			$('#newFac').css('display', 'none');
-			$('#new_distcode').removeAttr('required','required');
-			$('#new_tcode').removeAttr('required','required');
-			$('#new_uncode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#new_facode').removeAttr('required','required');
-			$('#date_transfer').removeAttr('required','required');
-			$('#showpostoption').css('display', 'none');
-			$('#showLeavefrom').css('display', 'none');
-			$('#showLeaveto').css('display', 'none');
-    
+      $('#new_distcode').removeAttr('required','required');
+      $('#new_tcode').removeAttr('required','required');
+      $('#new_uncode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#new_facode').removeAttr('required','required');
+      $('#date_transfer').removeAttr('required','required');
+	  $('#showpostoption').css('display', 'none');
 	}
 	if (selected == 'Transfered') { 
 			$('#showTransfer').css('display', 'block');
@@ -629,94 +570,40 @@ $("#status").bind('change', function(){
 			$('#showRetired').css('display', 'none');
 			$('#showDied').css('display', 'none');
  			$('#showDied').css('display', 'none');
-			$('#new_distcode').attr('required','required');
-			$('#new_tcode').attr('required','required');
-			$('#new_uncode').attr('required','required');
-			$('#new_facode').attr('required','required');
-			$('#new_facode').attr('required','required');
-			$('#date_transfer').attr('required','required'); 
-			$('#showpostoption').css('display', 'none');
-			$('#showTehsil').css('display', 'none');
-			$('#showLeavefrom').css('display', 'none');
-			$('#showLeaveto').css('display', 'none');
-   
+      $('#new_distcode').attr('required','required');
+      $('#new_tcode').attr('required','required');
+      $('#new_uncode').attr('required','required');
+      $('#new_facode').attr('required','required');
+      $('#new_facode').attr('required','required');
+      $('#date_transfer').attr('required','required'); 
+	   $('#showpostoption').css('display', 'none');
+	    $('#showTehsil').css('display', 'none');
 	}
 	
 	
 	if (selected == 'post') { 
  //alert(1);
-				   $('#post_type').css('display', 'block');
-				   $('#showResigned').css('display', 'none');
-				   $('#showReason').css('display', 'none');
-				   $('#showTransfer').css('display', 'none');
-				   $('#showTerminated').css('display', 'none');
-				   $('#showRetired').css('display', 'none');
-				   $('#showDied').css('display', 'none'); 
-				   $('#showpostoption').css('display', 'block');
-				   $('#showFacility').css('display', 'none'); 
-				   $('#showTehsil').css('display', 'none');
-				   $('#showUnc').css('display', 'none');   
-				   $('#newFac').css('display', 'none');
-				   $('#showUnc').css('display', 'none');
-				   $('#new_distcode').removeAttr('required','required');
-				   $('#new_tcode').removeAttr('required','required');
-				   $('#new_uncode').removeAttr('required','required');
-				   $('#new_facode').removeAttr('required','required');
-				   $('#new_facode').removeAttr('required','required');
-				   $('#date_transfer').removeAttr('required','required'); 
-				   $('#showLeavefrom').css('display', 'none');
-				   $('#showLeaveto').css('display', 'none');
-					 
+   $('#post_type').css('display', 'block');
+   $('#showResigned').css('display', 'none');
+   $('#showReason').css('display', 'none');
+   $('#showTransfer').css('display', 'none');
+   $('#showTerminated').css('display', 'none');
+   $('#showRetired').css('display', 'none');
+   $('#showDied').css('display', 'none'); 
+   $('#showpostoption').css('display', 'block');
+   $('#showFacility').css('display', 'none'); 
+   $('#showTehsil').css('display', 'none');
+   $('#showUnc').css('display', 'none');   
+   $('#newFac').css('display', 'none');
+   $('#showUnc').css('display', 'none');
+   $('#new_distcode').removeAttr('required','required');
+   $('#new_tcode').removeAttr('required','required');
+   $('#new_uncode').removeAttr('required','required');
+   $('#new_facode').removeAttr('required','required');
+   $('#new_facode').removeAttr('required','required');
+   $('#date_transfer').removeAttr('required','required'); 
+     
  }
- 
-	if (selected == 'On Leave') { 
- //alert(1);
-				   $('#post_type').css('display', 'none');
-				   $('#showResigned').css('display', 'none');
-				   $('#showReason').css('display', 'none');
-				   $('#showTransfer').css('display', 'none');
-				   $('#showTerminated').css('display', 'none');
-				   $('#showRetired').css('display', 'none');
-				   $('#showDied').css('display', 'none'); 
-				   $('#showpostoption').css('display', 'none');
-				   $('#showFacility').css('display', 'none'); 
-				   $('#showTehsil').css('display', 'none');
-				   $('#showUnc').css('display', 'none');   
-				   $('#newFac').css('display', 'none');
-				   $('#showUnc').css('display', 'none');
-				   $('#new_distcode').removeAttr('required','required');
-				   $('#new_tcode').removeAttr('required','required');
-				   $('#new_uncode').removeAttr('required','required');
-				   $('#new_facode').removeAttr('required','required');
-				   $('#new_facode').removeAttr('required','required');
-				   $('#date_transfer').removeAttr('required','required'); 
-					$('#showLeavefrom').css('display', 'block');
-				   $('#showLeaveto').css('display', 'block');
-			}
-	if (selected == 'Post Back') { 
-		   $('#post_type').css('display', 'block');
-		   $('#showTransfer').css('display', 'none');
-		   $('#showResigned').css('display', 'none');
-		   $('#showReason').css('display', 'none');
-		   $('#showLeavefrom').css('display', 'none');			
-		   $('#showLeaveto').css('display', 'none');
-		   $('#showTerminated').css('display', 'none');
-		   $('#showRetired').css('display', 'none');
-		   $('#showDied').css('display', 'none'); 
-		   $('#showpostoption').css('display', 'block');
-		   $('#showFacility').css('display', 'none'); 
-		   $('#showTehsil').css('display', 'none');
-		   $('#showUnc').css('display', 'none');   
-		   $('#newFac').css('display', 'none');
-		   $('#showUnc').css('display', 'none');
-		   $('#new_distcode').removeAttr('required','required');
-		   $('#new_tcode').removeAttr('required','required');
-		   $('#new_uncode').removeAttr('required','required');
-		   $('#new_facode').removeAttr('required','required');
-		   $('#new_facode').removeAttr('required','required');
-		   $('#date_transfer').removeAttr('required','required');   	
-			
-	}
     //etc ...
 });
 
@@ -749,6 +636,49 @@ $('#newuncode').on('change' , function (){
   });
 });
 
+    function suptype(val){
+	   
+	   if(val=="EpiTechnician"){
+		  
+		  $('#showTehsil').css('display', 'none'); 
+		    $('#showFacility').css('display', 'none');
+            $('#showUnc').css('display', 'none'); 
+		   		
+	   }
+	   if(val=="Field Superintendent Vaccinator"){
+		  
+		  $('#showTehsil').css('display', 'block'); 
+		    $('#showFacility').css('display', 'block');
+            $('#showUnc').css('display', 'block'); 
+		   		
+	   }
+	   if(val=="Tehsil Superintendent Vaccinator"){
+		  
+		  $('#showTehsil').css('display', 'block'); 
+		    $('#showFacility').css('display', 'none'); 
+			$('#showUnc').css('display', 'none'); 
+	   }
+	   if(val=="District Superintendent Vaccinator"){
+		  	$('#showTehsil').css('display', 'none'); 
+		    $('#showFacility').css('display', 'none'); 
+			$('#showUnc').css('display', 'none');  
+	   }
+	   if(val=="Storekeeper"){
+		  	$('#showTehsil').css('display', 'none'); 
+		    $('#showFacility').css('display', 'none'); 
+			$('#showUnc').css('display', 'none');  
+	   }
+	   if(val=="Dataentry"){
+		  	$('#showTehsil').css('display', 'none'); 
+		    $('#showFacility').css('display', 'none'); 
+			$('#showUnc').css('display', 'none');  
+	   }
+	   if(val=="select"){
+		  	$('#showTehsil').css('display', 'none'); 
+		    $('#showFacility').css('display', 'none'); 
+			$('#showUnc').css('display', 'none');  
+	   }
+   }
    
         function checkNICNumber(num) {
             var regexp = /[0-9]{5}\-[0-9]{7}\-[0-9]{1}/; 
@@ -959,8 +889,6 @@ $('#new_lhwcodel').keyup(function (){
 			$('#epimis_training_start_date').datepicker(options);
 			$('#epimis_training_end_date').datepicker(options);
 			$('#basic_training_end_date').datepicker(options);
-			$('#date_from').datepicker(options);
-			$('#date_to').datepicker(options);
           });
           $(document).ready(function(){
             $('#bankaccountno').numeric({allow:"-"});
@@ -988,9 +916,7 @@ $('#new_lhwcodel').keyup(function (){
 			$("#epimis_training_start_date").inputmask("99-99-9999");
 			$("#epimis_training_end_date").inputmask("99-99-9999");
             $("#passingyear").inputmask("9999");
-			$("#nic").inputmask({"mask": "99999-9999999-9"}); //specifying options only
-			$("#date_from").inputmask("99-99-9999");
-			$("#date_to").inputmask("99-99-9999");
+   $("#nic").inputmask({"mask": "99999-9999999-9"}); //specifying options only
 });
      
 	 $(document).on('change','#date_termination', function(){
@@ -1155,43 +1081,4 @@ $(document).ready(function() {
 			return false;
 		}
 	});
-	
-// For Post As dropdown
-function suptype(val){
-	   
-	   if(val=="Field Superintendent Vaccinator"){
-		  
-		  $('#showTehsil').css('display', 'block'); 
-		    $('#showFacility').css('display', 'block');
-            $('#showUnc').css('display', 'block'); 
-	   }
-	   if(val=="Tehsil Superintendent Vaccinator"){
-		  
-		  $('#showTehsil').css('display', 'block'); 
-		    $('#showFacility').css('display', 'none'); 
-			$('#showUnc').css('display', 'none'); 
-	   }
-	   if(val=="District Superintendent Vaccinator"){
-		  	$('#showTehsil').css('display', 'none'); 
-		    $('#showFacility').css('display', 'none'); 
-			$('#showUnc').css('display', 'none');  
-	   }
-	   if(val=="dsodb"){
-		  	$('#showTehsil').css('display', 'none'); 
-		    $('#showFacility').css('display', 'none'); 
-			$('#showUnc').css('display', 'none');  
-	   }
-	   if(val=="codb"){
-		  	$('#showTehsil').css('display', 'none'); 
-		    $('#showFacility').css('display', 'none'); 
-			$('#showUnc').css('display', 'none');  
-	   }
-	   if(val=="select"){
-		  	$('#showTehsil').css('display', 'none'); 
-		    $('#showFacility').css('display', 'none'); 
-			$('#showUnc').css('display', 'none');  
-	   }
-   }
-// End 
-		
         </script>

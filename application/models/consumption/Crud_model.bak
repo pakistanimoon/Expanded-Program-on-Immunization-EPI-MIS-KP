@@ -40,13 +40,16 @@ class Crud_model extends CI_Model {
 		$this -> db -> select("epi_item_pack_sizes.pk_id as itemid,epi_items.list_order as rank,epi_items.description itemname,item_name,epi_item_pack_sizes.number_of_doses doses,detail.batch_number as batch,detail.closing_doses as opening,0 as recdoses,epi_items.in_doses,epi_item_pack_sizes.item_category_id");
 		$whereCondition['master.facode'] = $whcode;
 		$whereCondition['master.fmonth'] = $fmonth;
+		$whereCondition['detail.closing_doses >'] = 0;
+		$whereCondition['epi_item_pack_sizes.status >'] = 0; 
+		$this -> db -> where('epi_item_pack_sizes.cr_table_row_numb Is Not Null');
 		$this -> db -> where($whereCondition);
 		$this -> db -> order_by('detail.batch_number','asc');
 		$this -> db -> from('epi_consumption_master master');
 		$this -> db -> join('epi_consumption_detail detail','master.pk_id = detail.main_id','left');
 		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = detail.item_id","LEFT OUTER");
 		$this->db->join("epi_items","epi_item_pack_sizes.item_id = epi_items.pk_id","LEFT OUTER");
-        return $this -> db -> get() -> result_array();
+        return $this -> db -> get() -> result_array(); 
 		//echo $this->db->last_query();
 	}
 	public function get_existing_items_oldtbl($activity,$whcode,$fmonth)
@@ -107,13 +110,16 @@ class Crud_model extends CI_Model {
 		}	
 		$whereCondition['master.fmonth'] = $fmonth;
 		$whereCondition['master.facode'] = $facode;
+		$this -> db -> where('(detail.opening_doses > 0 or detail.received_doses >0)');
 		$this -> db -> where($whereCondition);
-		$this -> db -> order_by('detail.batch_number','asc');
+		$this -> db -> order_by('epi_items.list_order','asc');
+		//$this -> db -> order_by('detail.batch_number','asc');
 		$this -> db -> from('epi_consumption_master master');
 		$this -> db -> join('epi_consumption_detail detail','master.pk_id = detail.main_id','left');
 		$this->db->join("epi_item_pack_sizes","epi_item_pack_sizes.pk_id = detail.item_id","LEFT OUTER");
 		$this->db->join("epi_items","epi_item_pack_sizes.item_id = epi_items.pk_id","LEFT OUTER");
         return $this -> db -> get() -> result_array();
+		//print_r($this->db->last_query());exit;
 	}
 	public function formb_consumption_edit($fmonth,$facode,$view)
 	{

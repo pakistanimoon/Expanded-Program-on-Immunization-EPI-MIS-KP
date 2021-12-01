@@ -528,7 +528,7 @@ class ThematicVaccineIndicator extends CI_Controller {
 		}
 	}
 	function getVaccineName($data){
-		$vacArray = array('cr_r1_f6' => 'BCG', 'cr_r2_f6' => 'DIL BCG', 'cr_r3_f6' => 'bOPV', 'cr_r4_f6' => 'Pentavalent', 'cr_r5_f6' => 'Pneumococcal(PCV10)', 'cr_r6_f6' => 'Measles', 'cr_r7_f6' => 'DIL Measles', 'cr_r8_f6' => 'TT 10', 'cr_r9_f6' => 'TT 20', 'cr_r10_f6' => 'HBV (Birth dose)', 'cr_r11_f6' => 'IPV', 'cr_r12_f6' => 'AD Syringes 0.5 ml', 'cr_r13_f6' => 'AD Syringes 0.05 ml', 'cr_r14_f6' => 'Recon.Syringes (2 ml)', 'cr_r15_f6' => 'Recon. Syringes (5 ml)', 'cr_r16_f6' => 'Safety Boxes', 'cr_r17_f6' => 'Other');
+		$vacArray = array('cr_r1_f6' => 'BCG', 'cr_r2_f6' => 'DIL BCG', 'cr_r3_f6' => 'bOPV', 'cr_r4_f6' => 'Pentavalent', 'cr_r5_f6' => 'Pneumococcal(PCV10)', 'cr_r6_f6' => 'Measles', 'cr_r7_f6' => 'DIL Measles', 'cr_r8_f6' => 'TT 10', 'cr_r9_f6' => 'TT 20', 'cr_r10_f6' => 'Hep-B-10', 'cr_r11_f6' => 'IPV-10', 'cr_r12_f6' => 'AD Syringes 0.5 ml', 'cr_r13_f6' => 'AD Syringes 0.05 ml', 'cr_r14_f6' => 'Recon.Syringes (2 ml)', 'cr_r15_f6' => 'Recon. Syringes (5 ml)', 'cr_r16_f6' => 'Safety Boxes', 'cr_r17_f6' => 'Other', 'cr_r18_f6' => 'Rotarix', 'cr_r19_f6' => 'IPV-5','cr_r20_f6' => 'Hep-B-02');
 		return $vacArray[$data['vacc_ind']];
 	}
 	function colorAxis($vacc_id=NULL){
@@ -709,7 +709,7 @@ class ThematicVaccineIndicator extends CI_Controller {
 		$arrData = $dataSeries= array();
 		$i=0;
 		foreach ($result as $value) {
-			$arrData[$i]['label'] = $value->fweek;
+			$arrData[$i]['lable'] = $value->fweek;
 			$arrData[$i]['value'] = $value->DiseasesCount;
 			$arrData[$i]['link'] = "JavaScript:drilldownfun('{$caseType}','{$value->code}','{$value->year}','{$value->week}')";
 			$arrData[$i]['color'] = "{$color}";

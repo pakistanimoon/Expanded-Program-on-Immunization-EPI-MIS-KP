@@ -140,38 +140,38 @@
           </tbody>
         </table>
   <div id="parent"> 
-      
+			
        <table id="fixTable" class="table table-bordered table-condensed table-striped table-hover mytable3">
           <thead>
-               <tr>
+							 <tr>
                 <th colspan="5"  style="width:45%; border-right:0;">
-                <ul class="nav nav-tabs" style="border-bottom:none;">
-                  <li class="active">
-                    <a href="#tab-1" data-toggle="tab" aria-expanded="true" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
-                    Inside UC</a>
-                  </li>
-                  <li class="">
-                    <a href="#tab-2" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
-                    OutSide UC</a>
-                  </li>
+								<ul class="nav nav-tabs" style="border-bottom:none;">
+									<li class="active">
+										<a href="#tab-1" data-toggle="tab" aria-expanded="true" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
+										Inside UC</a>
+									</li>
+									<li class="">
+										<a href="#tab-2" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
+										OutSide UC</a>
+									</li>
                                     <li class="">
-                    <a href="#tab-3" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
-                    Out District</a>
-                  </li>                   
-                </ul>
-                </th>
-                <th colspan="15" style="text-align: left; padding-top: 10px; padding-bottom: 10px;border-left: 0;">A. Childhood Routine Immunization</th>
+										<a href="#tab-3" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
+										Out District</a>
+									</li>  									
+								</ul>
+								</th>
+								<th colspan="15" style="text-align: left; padding-top: 10px; padding-bottom: 10px;border-left: 0;">A. Childhood Routine Immunization</th>
               </tr>
           </thead>
-            <tbody>
-              <tr style="padding:0px;">
-                <td colspan="20" style="padding:0px;">
-                  <div class="tab-content">
-                    
-                    <div class="tab-pane active" id="tab-1">
-                          <table class="table table-bordered table-condensed table-striped table-hover mytable3" >
-                            <thead class="trans">
-                                          <tr>
+						<tbody>
+							<tr style="padding:0px;">
+								<td colspan="20" style="padding:0px;">
+									<div class="tab-content">
+										
+										<div class="tab-pane active" id="tab-1">
+													<table class="table table-bordered table-condensed table-striped table-hover mytable3" >
+														<thead class="trans">
+														              <tr>
                 <th rowspan="2">Vaccination by</th>
                 <th rowspan="2">Vaccination<br>Given to<br>Children</th>
                 <th colspan="18">Vaccines</th>
@@ -196,8 +196,8 @@
                 <th>Fully Immun<br>-ized</th>
                 <th>Measles<br>-2</th>
               </tr>
-                            </thead>
-                            <tbody>
+														</thead>
+														<tbody>
           <?php
     $columnsToDisableArr =  array("14","15","17");
     $individualColumnsToDisableArr = array("cri_r3_f1","cri_r4_f1","cri_r5_f1","cri_r6_f1","cri_r7_f1","cri_r8_f1","cri_r9_f1","cri_r10_f1","cri_r11_f1","cri_r12_f1","cri_r13_f1","cri_r14_f1","cri_r15_f1","cri_r16_f1","cri_r17_f1","cri_r18_f1","cri_r19_f1","cri_r20_f1","cri_r21_f1","cri_r22_f1","cri_r23_f1","cri_r24_f1","cri_r3_f2","cri_r3_f3","cri_r4_f2","cri_r4_f3",
@@ -304,13 +304,13 @@
               <?php } ?>
             </tr>
           </tbody>
-        </table>
-      </div>
-      
-        <div class="tab-pane" id="tab-2">
-                          <table class="table table-bordered table-condensed table-striped table-hover mytable3">
-          <thead class="trans">
-                                          <tr>
+				</table>
+			</div>
+			
+				<div class="tab-pane" id="tab-2">
+													<table class="table table-bordered table-condensed table-striped table-hover mytable3">
+					<thead class="trans">
+														              <tr>
                 <th rowspan="2">Vaccination by</th>
                 <th rowspan="2">Vaccination<br>Given to<br>Children</th>
                 <th colspan="18">Vaccines</th>
@@ -335,15 +335,15 @@
                 <th>Fully Immun<br>-ized</th>
                 <th>Measles<br>-2</th>
               </tr>
-                            </thead>                    
+														</thead>										
 <tbody>
           <?php
     $columnsToDisableArr =  array("14","15","17");
     $individualColumnsToDisableArr = array("oui_r3_f1","oui_r4_f1","oui_r5_f1","oui_r6_f1","oui_r7_f1","oui_r8_f1","oui_r9_f1","oui_r10_f1","oui_r11_f1","oui_r12_f1","oui_r13_f1","oui_r14_f1","oui_r15_f1","oui_r16_f1","oui_r17_f1","oui_r18_f1","oui_r19_f1","oui_r20_f1","oui_r21_f1","oui_r22_f1","oui_r23_f1","oui_r24_f1","oui_r3_f2","oui_r3_f3","oui_r4_f2","oui_r4_f3",
-    "oui_r5_f2","oui_r5_f3","oui_r6_f2","oui_r6_f3","oui_r9_f2","oui_r10_f2","oui_r11_f2","oui_r12_f2","oui_r15_f2","oui_r16_f2","oui_r17_f2","oui_r18_f2","oui_r21_f2","oui_r22_f2","oui_r23_f2","oui_r24_f2","oui_r9_f3","oui_r10_f3","oui_r11_f3","oui_r12_f3","oui_r15_f3","oui_r16_f3","oui_r17_f3","oui_r18_f3","oui_r21_f3","oui_r22_f3","oui_r23_f3","oui_r24_f3","oui_r5_f10",
-    "oui_r6_f10","oui_r11_f10","oui_r12_f10","oui_r17_f10","oui_r18_f10","oui_r23_f10","oui_r24_f10","oui_r5_f11","oui_r6_f11","oui_r11_f11","oui_r12_f11","oui_r17_f11","oui_r18_f11","oui_r23_f11","oui_r24_f11","oui_r5_f12","oui_r6_f12","oui_r11_f12","oui_r12_f12","oui_r17_f12","oui_r18_f12","oui_r23_f12","oui_r24_f12","oui_r3_f13","oui_r4_f13","oui_r5_f13","oui_r6_f13",
-    "oui_r9_f13","oui_r10_f13","oui_r11_f13","oui_r12_f13","oui_r15_f13","oui_r16_f13","oui_r17_f13","oui_r18_f13","oui_r21_f13","oui_r22_f13","oui_r23_f13","oui_r24_f13","oui_r19_f16","oui_r20_f16","oui_r21_f16","oui_r22_f16","oui_r23_f16","oui_r24_f16","oui_r1_f18","oui_r2_f18","oui_r7_f18","oui_r8_f18","oui_r13_f18","oui_r14_f18","oui_r19_f18",
-    "oui_r20_f18","oui_r21_f18","oui_r22_f18","oui_r23_f18","oui_r24_f18","oui_r19_f17","oui_r20_f17","oui_r21_f17","oui_r22_f17","oui_r23_f17","oui_r24_f17");
+		"oui_r5_f2","oui_r5_f3","oui_r6_f2","oui_r6_f3","oui_r9_f2","oui_r10_f2","oui_r11_f2","oui_r12_f2","oui_r15_f2","oui_r16_f2","oui_r17_f2","oui_r18_f2","oui_r21_f2","oui_r22_f2","oui_r23_f2","oui_r24_f2","oui_r9_f3","oui_r10_f3","oui_r11_f3","oui_r12_f3","oui_r15_f3","oui_r16_f3","oui_r17_f3","oui_r18_f3","oui_r21_f3","oui_r22_f3","oui_r23_f3","oui_r24_f3","oui_r5_f10",
+		"oui_r6_f10","oui_r11_f10","oui_r12_f10","oui_r17_f10","oui_r18_f10","oui_r23_f10","oui_r24_f10","oui_r5_f11","oui_r6_f11","oui_r11_f11","oui_r12_f11","oui_r17_f11","oui_r18_f11","oui_r23_f11","oui_r24_f11","oui_r5_f12","oui_r6_f12","oui_r11_f12","oui_r12_f12","oui_r17_f12","oui_r18_f12","oui_r23_f12","oui_r24_f12","oui_r3_f13","oui_r4_f13","oui_r5_f13","oui_r6_f13",
+		"oui_r9_f13","oui_r10_f13","oui_r11_f13","oui_r12_f13","oui_r15_f13","oui_r16_f13","oui_r17_f13","oui_r18_f13","oui_r21_f13","oui_r22_f13","oui_r23_f13","oui_r24_f13","oui_r19_f16","oui_r20_f16","oui_r21_f16","oui_r22_f16","oui_r23_f16","oui_r24_f16","oui_r1_f18","oui_r2_f18","oui_r7_f18","oui_r8_f18","oui_r13_f18","oui_r14_f18","oui_r19_f18",
+		"oui_r20_f18","oui_r21_f18","oui_r22_f18","oui_r23_f18","oui_r24_f18","oui_r19_f17","oui_r20_f17","oui_r21_f17","oui_r22_f17","oui_r23_f17","oui_r24_f17");
     $mainHeadingArr = array("Vaccinator (Fixed) Out","Vaccinator (Outreach)","Vaccinator (Mobile)","Health House (LHW)");
     $otherHeadingsArr = array("0-11 Months","12-23 Months","2 Years and Above");
     $row = 1;
@@ -443,12 +443,12 @@
               <?php } ?>
             </tr>
           </tbody>
-        </table>
-      </div>
-      <div class="tab-pane" id="tab-3">
-                          <table class="table table-bordered table-condensed table-striped table-hover mytable3">
-          <thead class="trans">
-                                          <tr>
+				</table>
+			</div>
+			<div class="tab-pane" id="tab-3">
+													<table class="table table-bordered table-condensed table-striped table-hover mytable3">
+					<thead class="trans">
+														              <tr>
                 <th rowspan="2">Vaccination by</th>
                 <th rowspan="2">Vaccination<br>Given to<br>Children</th>
                 <th colspan="18">Vaccines</th>
@@ -473,15 +473,15 @@
                 <th>Fully Immun<br>-ized</th>
                 <th>Measles<br>-2</th>
               </tr>
-                            </thead>                    
+														</thead>										
 <tbody>
           <?php
     $columnsToDisableArr =  array("14","15","17");
     $individualColumnsToDisableArr = array("od_r3_f1","od_r4_f1","od_r5_f1","od_r6_f1","od_r7_f1","od_r8_f1","od_r9_f1","od_r10_f1","od_r11_f1","od_r12_f1","od_r13_f1","od_r14_f1","od_r15_f1","od_r16_f1","od_r17_f1","od_r18_f1","od_r19_f1","od_r20_f1","od_r21_f1","od_r22_f1","od_r23_f1","od_r24_f1","od_r3_f2","od_r3_f3","od_r4_f2","od_r4_f3",
-    "od_r5_f2","od_r5_f3","od_r6_f2","od_r6_f3","od_r9_f2","od_r10_f2","od_r11_f2","od_r12_f2","od_r15_f2","od_r16_f2","od_r17_f2","od_r18_f2","od_r21_f2","od_r22_f2","od_r23_f2","od_r24_f2","od_r9_f3","od_r10_f3","od_r11_f3","od_r12_f3","od_r15_f3","od_r16_f3","od_r17_f3","od_r18_f3","od_r21_f3","od_r22_f3","od_r23_f3","od_r24_f3","od_r5_f10",
-    "od_r6_f10","od_r11_f10","od_r12_f10","od_r17_f10","od_r18_f10","od_r23_f10","od_r24_f10","od_r5_f11","od_r6_f11","od_r11_f11","od_r12_f11","od_r17_f11","od_r18_f11","od_r23_f11","od_r24_f11","od_r5_f12","od_r6_f12","od_r11_f12","od_r12_f12","od_r17_f12","od_r18_f12","od_r23_f12","od_r24_f12","od_r3_f13","od_r4_f13","od_r5_f13","od_r6_f13",
-    "od_r9_f13","od_r10_f13","od_r11_f13","od_r12_f13","od_r15_f13","od_r16_f13","od_r17_f13","od_r18_f13","od_r21_f13","od_r22_f13","od_r23_f13","od_r24_f13","od_r19_f16","od_r20_f16","od_r21_f16","od_r22_f16","od_r23_f16","od_r24_f16","od_r1_f18","od_r2_f18","od_r7_f18","od_r8_f18","od_r13_f18","od_r14_f18","od_r19_f18",
-    "od_r20_f18","od_r21_f18","od_r22_f18","od_r23_f18","od_r24_f18","od_r19_f17","od_r20_f17","od_r21_f17","od_r22_f17","od_r23_f17","od_r24_f17");
+		"od_r5_f2","od_r5_f3","od_r6_f2","od_r6_f3","od_r9_f2","od_r10_f2","od_r11_f2","od_r12_f2","od_r15_f2","od_r16_f2","od_r17_f2","od_r18_f2","od_r21_f2","od_r22_f2","od_r23_f2","od_r24_f2","od_r9_f3","od_r10_f3","od_r11_f3","od_r12_f3","od_r15_f3","od_r16_f3","od_r17_f3","od_r18_f3","od_r21_f3","od_r22_f3","od_r23_f3","od_r24_f3","od_r5_f10",
+		"od_r6_f10","od_r11_f10","od_r12_f10","od_r17_f10","od_r18_f10","od_r23_f10","od_r24_f10","od_r5_f11","od_r6_f11","od_r11_f11","od_r12_f11","od_r17_f11","od_r18_f11","od_r23_f11","od_r24_f11","od_r5_f12","od_r6_f12","od_r11_f12","od_r12_f12","od_r17_f12","od_r18_f12","od_r23_f12","od_r24_f12","od_r3_f13","od_r4_f13","od_r5_f13","od_r6_f13",
+		"od_r9_f13","od_r10_f13","od_r11_f13","od_r12_f13","od_r15_f13","od_r16_f13","od_r17_f13","od_r18_f13","od_r21_f13","od_r22_f13","od_r23_f13","od_r24_f13","od_r19_f16","od_r20_f16","od_r21_f16","od_r22_f16","od_r23_f16","od_r24_f16","od_r1_f18","od_r2_f18","od_r7_f18","od_r8_f18","od_r13_f18","od_r14_f18","od_r19_f18",
+		"od_r20_f18","od_r21_f18","od_r22_f18","od_r23_f18","od_r24_f18","od_r19_f17","od_r20_f17","od_r21_f17","od_r22_f17","od_r23_f17","od_r24_f17");
     $mainHeadingArr = array("Vaccinator (Fixed) Out","Vaccinator (Outreach)","Vaccinator (Mobile)","Health House (LHW)");
     $otherHeadingsArr = array("0-11 Months","12-23 Months","2 Years and Above");
     $row = 1;
@@ -581,22 +581,22 @@
               <?php } ?>
             </tr>
           </tbody>
-        </table>
-      </div>
-                    
-                  </div>
-                </td>
-                
-              </tr> 
-            </tbody>
-          </table>  
-              
+				</table>
+			</div>
+										
+									</div>
+								</td>
+								
+							</tr>	
+						</tbody>
+					</table>	
+							
         
       </div>
      
 
 
-   </div>
+	 </div>
 
 
 
@@ -605,32 +605,32 @@
         <thead>
               <tr>
                 <th colspan="3" style="border-right:0;">
-                  <ul class="nav nav-tabs" style="border-bottom:none;">
-                    <li class="active">
-                      <a href="#tab-4" data-toggle="tab" aria-expanded="true" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
-                      InSide UC</a>
-                    </li>
-                    <li class="">
-                      <a href="#tab-5" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
-                      OutSide UC</a>
-                    </li>
+									<ul class="nav nav-tabs" style="border-bottom:none;">
+										<li class="active">
+											<a href="#tab-4" data-toggle="tab" aria-expanded="true" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
+											InSide UC</a>
+										</li>
+										<li class="">
+											<a href="#tab-5" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
+											OutSide UC</a>
+										</li>
                                         <li class="">
-                      <a href="#tab-6" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
-                      OUT District</a>
-                    </li>                   
-                  </ul>
-                </th>
-                <th colspan="6" style="text-align: left; padding-top: 10px; padding-bottom: 10px; border-left:0;">B. TT Routine Immunization</th>
+											<a href="#tab-6" data-toggle="tab" aria-expanded="false" style="color:black; font-size: 10px;font-family: initial;font-style: normal;font-weight: bold;color: #030303;text-transform: uppercase;">
+											OUT District</a>
+										</li>										
+									</ul>
+								</th>
+								<th colspan="6" style="text-align: left; padding-top: 10px; padding-bottom: 10px; border-left:0;">B. TT Routine Immunization</th>
               </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colspan="9" style="padding:0px;">
-                <div class="tab-content">
-                   <div class="tab-pane active in" id="tab-4">
-                      <table class="table table-bordered table-condensed table-striped table-hover mytable3">
-                        <thead class="trans">
-                              <tr>
+						<tr>
+							<td colspan="9" style="padding:0px;">
+								<div class="tab-content">
+									 <div class="tab-pane active in" id="tab-4">
+											<table class="table table-bordered table-condensed table-striped table-hover mytable3">
+												<thead class="trans">
+													    <tr>
                 <th rowspan="2">Vaccination by</th>
                 <th rowspan="2" style="min-width: 230px;">Vaccination Given to Children</th>
                 <th colspan="6">Vaccines</th>
@@ -643,9 +643,9 @@
                 <th>TT-5</th>
                 <th>Children Protected<br>at Birth</th>
               </tr>
-                        </thead>
-                        <tbody>
-                     
+												</thead>
+												<tbody>
+										 
           <?php
             $mainHeadingArr = array("Fixed","Outreach","Mobile","Health House (LHW)","Total Vaccinated");
             $Nrow = 1;
@@ -696,12 +696,12 @@
             </tr>
           <?php }  ?> 
           </tbody>
-                      </table>
-                  </div>
-                   <div class="tab-pane" id="tab-5">
-                                  <table class="table table-bordered table-condensed table-striped table-hover mytable3">
-                        <thead class="trans">
-                              <tr>
+											</table>
+									</div>
+									 <div class="tab-pane" id="tab-5">
+																	<table class="table table-bordered table-condensed table-striped table-hover mytable3">
+												<thead class="trans">
+													    <tr>
                 <th rowspan="2">Vaccination by</th>
                 <th rowspan="2" style="min-width: 230px;">Vaccination Given to Children</th>
                 <th colspan="6">Vaccines</th>
@@ -714,9 +714,9 @@
                 <th>TT-5</th>
                 <th>Children Protected<br>at Birth</th>
               </tr>
-                        </thead>
-                        <tbody>
-                     
+												</thead>
+												<tbody>
+										 
           <?php
             $mainHeadingArr = array("Fixed ","Outreach","Mobile","Health House (LHW)","Total Vaccinated");
             $Nrow = 1;
@@ -767,13 +767,13 @@
             </tr>
           <?php }  ?> 
           </tbody>
-      </table>
-                  </div>
-                  
-      <div class="tab-pane" id="tab-6">
-                                  <table class="table table-bordered table-condensed table-striped table-hover mytable3">
-                        <thead class="trans">
-                              <tr>
+		  </table>
+									</div>
+									
+			<div class="tab-pane" id="tab-6">
+																	<table class="table table-bordered table-condensed table-striped table-hover mytable3">
+												<thead class="trans">
+													    <tr>
                 <th rowspan="2">Vaccination by</th>
                 <th rowspan="2" style="min-width: 230px;">Vaccination Given to Children</th>
                 <th colspan="6">Vaccines</th>
@@ -786,9 +786,9 @@
                 <th>TT-5</th>
                 <th>Children Protected<br>at Birth</th>
               </tr>
-                        </thead>
-                        <tbody>
-                     
+												</thead>
+												<tbody>
+										 
           <?php
             $mainHeadingArr = array("Fixed","Outreach","Mobile","Health House (LHW)","Total Vaccinated");
             $Nrow = 1;
@@ -839,20 +839,20 @@
             </tr>
           <?php }  ?> 
           </tbody>
-      </table>
-                  </div>
-                  
-                </div>
-              </td>
-            </tr>
-          </tbody>
-      </table>
-                  </div>
-                  
-                </div>
-              </td>
-            </tr>
-          </tbody>
+		  </table>
+									</div>
+									
+								</div>
+							</td>
+						</tr>
+					</tbody>
+		  </table>
+									</div>
+									
+								</div>
+							</td>
+						</tr>
+					</tbody>
         </table>
         <table class="table table-bordered   table-striped table-hover    mytable2">
           <tbody>
@@ -875,25 +875,25 @@
             </tr>
           </tbody>
         </table>
-    <?php// print_r($_SESSION['utype']);exit; ?>
+		<?php// print_r($_SESSION['utype']);exit; ?>
          <?php if ( ($_SESSION['UserLevel']=='3') || ($_SESSION['utype']=='DEO') ){?>                     
                       <div class="row">
                             <div class="col-xs-4 col-xs-offset-8">
                             <?php if(($this -> session -> UserLevel=='3') ){ ?>                         
-               
+							 
                               <a href=" <?php echo base_url(); ?>FLCF-MVRF/Edit/<?php echo $fmvrf_info["facode"]; ?>/<?php echo $fmvrf_info["fmonth"]; ?>" class="btn btn-md btn-success "><i class="fa fa-pencil-square-o"></i> Update </a>
   
                               <a href="<?php echo base_url(); ?>FLCF-MVRF/List" type="reset" class="btn btn-md btn-success "><i class="fa fa-arrow-left"></i> Back </a>
 
                            <?php } ?>
-                 </div>
-              </div>
+				     		 </div>
+						  </div>
                         <?php } ?>
-            <?php if ( ($_SESSION['UserLevel']=='2') || ($_SESSION['utype']=='manager') ){ ?>
-             <div class="col-xs-4 col-xs-offset-8">
-               <a onclick="history.go(-1);" style="background: rgb(22, 108, 29) none repeat scroll 0% 0%;" class="btn btn-primary btn-md"><i class="fa fa-arrow-left"></i> Back </a>
-          </div>
-            <?php } ?>
+						<?php if ( ($_SESSION['UserLevel']=='2') || ($_SESSION['utype']=='manager') ){ ?>
+						 <div class="col-xs-4 col-xs-offset-8">
+							 <a onclick="history.go(-1);" style="background: rgb(22, 108, 29) none repeat scroll 0% 0%;" class="btn btn-primary btn-md"><i class="fa fa-arrow-left"></i> Back </a>
+					</div>
+						<?php } ?>
       </form>
     </div> <!--end of panel body-->
  </div> <!--end of panel panel-primary-->

@@ -7,7 +7,7 @@
    <div class="panel-heading"> Coronavirus Investigation Form View</div>
      <div class="panel-body">
        <form class="form-horizontal" method="post" onsubmit="return confirm('Do you really want to Approve this cross notified case?')" action="<?php echo base_url(); ?>Coronavirus_investigation/coronavirusInvestigation_Approve">
-	   <input type="hidden" name="id" value="<?php echo $a->id; ?>">
+     <input type="hidden" name="id" value="<?php echo $a->id; ?>">
      <input type="hidden" name="cross_case_id" value="<?php echo $a->cross_case_id; ?>" />
         <table class="table table-bordered table-striped table-hover mytable2 mytable3">
             <thead>
@@ -34,53 +34,53 @@
                 </tr>                           
             </tbody>
         </table>
-	   <?php if(isset($a->rb_distcode) && $a->rb_distcode>0){ ?>
-	   <table id="rb_info" class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass">
-			<thead>
-				<tr>
-					<th colspan="4" style="text-align:center; padding-top: 10px; padding-bottom: 10px;">Case Referring Facility Information</th>
-				</tr>
-			</thead>
-			<tbody>           
-				<tr>
-					<td><p>Province / Area</p></td>
-					<td>
-				    <p> <?php
-						$procode = substr($a->rb_distcode, 0,1);
-						echo get_Province_Name($procode);
-						
-					?><p>
-							   
-				    </td>
-					<td><p>District</p></td>
-					<td>
-						<p><?php 
+     <?php if(isset($a->rb_distcode) && $a->rb_distcode>0){ ?>
+     <table id="rb_info" class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass">
+      <thead>
+        <tr>
+          <th colspan="4" style="text-align:center; padding-top: 10px; padding-bottom: 10px;">Case Referring Facility Information</th>
+        </tr>
+      </thead>
+      <tbody>           
+        <tr>
+          <td><p>Province / Area</p></td>
+          <td>
+            <p> <?php
+            $procode = substr($a->rb_distcode, 0,1);
+            echo get_Province_Name($procode);
+            
+          ?><p>
+                 
+            </td>
+          <td><p>District</p></td>
+          <td>
+            <p><?php 
                   if(isset($a)){ echo CrossProvince_DistrictName($a -> rb_distcode);} ?></p>
-					</td>            
-				</tr>
-				<tr>
-					<td><p>Tehsil / City</p></td>
-					<td>
-						<p><?php if(isset($a)){ echo CrossProvince_TehsilName($a -> rb_tcode);} ?></p>
-					</td>
-					<td><p>Union Council</p></td>
-					<td>
-						<p><?php if(isset($a)){ echo CrossProvince_UCName($a -> rb_uncode);} ?></p>
-					</td>
-				</tr>
-				<tr>
-					<td><p>Name of Reporting Health Facility</p></td>
-					<td>
-						<p><?php if(isset($a)){ echo CrossProvince_FacilityName($a -> rb_facode);} ?></p>
-					</td>
-					<td><p>Address of Health Facility</p></td>
-					<td>
-						<p><?php if(isset($a)){ echo $a -> rb_faddress;} ?></p>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	   <?php } ?>
+          </td>            
+        </tr>
+        <tr>
+          <td><p>Tehsil / City</p></td>
+          <td>
+            <p><?php if(isset($a)){ echo CrossProvince_TehsilName($a -> rb_tcode);} ?></p>
+          </td>
+          <td><p>Union Council</p></td>
+          <td>
+            <p><?php if(isset($a)){ echo CrossProvince_UCName($a -> rb_uncode);} ?></p>
+          </td>
+        </tr>
+        <tr>
+          <td><p>Name of Reporting Health Facility</p></td>
+          <td>
+            <p><?php if(isset($a)){ echo CrossProvince_FacilityName($a -> rb_facode);} ?></p>
+          </td>
+          <td><p>Address of Health Facility</p></td>
+          <td>
+            <p><?php if(isset($a)){ echo $a -> rb_faddress;} ?></p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+     <?php } ?>
         <table class="table table-bordered table-striped table-hover mytable2 mytable3">
           <thead>
             <tr>
@@ -90,8 +90,8 @@
           <tbody>
       <?php if($a->cross_notified != 1 && $a->distcode == $this -> session -> District){ ?>
          <?php if($a->distcode != ''){ ?>
-			<tr>
-			  <td><p>Province/Area</p></td>
+      <tr>
+        <td><p>Province/Area</p></td>
               <td><?php if(isset($a)){ echo  $this -> session -> provincename; }  ?></td>
               <td><p>District</p></td>
               <td><?php if(isset($a)){ echo CrossProvince_DistrictName($a -> distcode);} ?></td>
@@ -103,14 +103,14 @@
               <td><?php if(isset($a)){ echo CrossProvince_UCName($a -> uncode);} ?></td> 
             </tr>
            <?php } } ?> 
-			<?php if($a->facode != ''){ ?>
-			 <tr>
+      <?php if($a->facode != ''){ ?>
+       <tr>
               <td><p>Name of Reporting Health Facility</p></td>
               <td><?php if(isset($a)){ echo CrossProvince_FacilityName($a -> facode);} ?></td>
               <td><p>Address of Health Facility</p></td>
               <td> <?php if(isset($a)){ echo $a -> faddress;} ?></td>
             </tr>
-			<?php }else if($a->facode == '' && $a->cross_notified==1 && $a->distcode == $this -> session -> District){ ?>
+      <?php }else if($a->facode == '' && $a->cross_notified==1 && $a->distcode == $this -> session -> District){ ?>
          
          <tr>
             <td><p>Tehsil/City <span style="color:red;">*</span></p></td>
@@ -121,15 +121,15 @@
                   //echo $ppcode;exit();
                ?>
                <input type="hidden" name="procode" value="<?php echo $ppcode; ?>">
-				<!--parameter for sync by usama sher-->
-				<input type="hidden" name="distcode" value="<?php if(isset($a)){ echo $a -> distcode;} ?>">
-				<input type="hidden" name="year" value="<?php if(isset($a)){ echo $a -> year;} ?>">
-				<input type="hidden" name="week" value="<?php if(isset($a)){ echo $a -> week;} ?>">
-				<input type="hidden" name="gender" value="<?php if(isset($a)){ echo $a -> gender;} ?>">
-				<input type="hidden" name="case_type" value="<?php if(isset($a)){ echo $a -> case_type;} ?>">
-				<input type="hidden" value="<?php //if(isset($a)){ echo $a -> doses_received;} ?>">
-				<!--end-->
-				<select name="tcode" id="tcode" required="required" class="form-control">
+        <!--parameter for sync by usama sher-->
+        <input type="hidden" name="distcode" value="<?php if(isset($a)){ echo $a -> distcode;} ?>">
+        <input type="hidden" name="year" value="<?php if(isset($a)){ echo $a -> year;} ?>">
+        <input type="hidden" name="week" value="<?php if(isset($a)){ echo $a -> week;} ?>">
+        <input type="hidden" name="gender" value="<?php if(isset($a)){ echo $a -> gender;} ?>">
+        <input type="hidden" name="case_type" value="<?php if(isset($a)){ echo $a -> case_type;} ?>">
+        <input type="hidden" value="<?php //if(isset($a)){ echo $a -> doses_received;} ?>">
+        <!--end-->
+        <select name="tcode" id="tcode" required="required" class="form-control">
                   <?php echo getTehsils_options(false,$a-> patient_address_tcode,$a-> patient_address_distcode); ?>
                </select>
             </td>
@@ -150,21 +150,21 @@
             <td><p style="color:#008d4c;">Select Health Facility and approve Below</p></td>
             <td></td>
          </tr>
-			<?php } ?>
+      <?php } ?>
             <tr>
-			<td><p>Year</p></td>
+      <td><p>Year</p></td>
               <td><?php if(isset($a)){ echo $a -> year;} ?></td>
               <td><p>EPI Week No</p></td>
               <td><?php if(isset($a)){ echo $a -> week;} ?></td>
-			</tr>
-			<tr>
+      </tr>
+      <tr>
                 <td><p>Date From</p></td>
                 <td><?php if(isset($a)){ echo date('d-M-Y',strtotime($a -> datefrom));} ?></td>
                 <td><p>Date To</p></td>
                 <td><?php if(isset($a)){ echo date('d-M-Y',strtotime($a -> dateto));} ?></td>
-			</tr>
+      </tr>
             <tr>
-			  <!-- <td><p>Case Reported</p></td>
+        <!-- <td><p>Case Reported</p></td>
               <td><?php //echo isset($a)?(($a->case_reported=="0")?'No':'Yes'):''; ?></td> -->  
               <td><p>Date Patient Visited Hospital</p></td>
               <td><?php if(isset($a) && $a -> pvh_date != NULL ){ echo date('d-m-Y',strtotime($a -> pvh_date));} ?></td>
@@ -231,8 +231,8 @@
          </thead>
          <tbody> 
           <?php if(isset($a) && $a->procode == $_SESSION["Province"]) { ?>            
-   			<tr>
-   			   <td><p>Province / Area</p></td>
+        <tr>
+           <td><p>Province / Area</p></td>
                <td><?php if(isset($a)){ echo $this -> session -> provincename; } ?></td>
                <td><p>District</p></td>
                <td><?php if(isset($a) && ($a -> patient_address_distcode != NULL)){ echo CrossProvince_DistrictName($a -> patient_address_distcode);} ?></td>
@@ -299,9 +299,9 @@
                <td><p>Village / Street / Mahalla</p></td>
                <td colspan="3"><?php if(isset($a)){ echo $a -> patient_address;} ?></td>
             </tr>
-			</tbody>
-		</table>
-		<table class="table table-bordered table-striped table-hover mytable2 mytable3">
+      </tbody>
+    </table>
+    <table class="table table-bordered table-striped table-hover mytable2 mytable3">
            <thead>
             <tr>
               <th colspan="4" style="text-align:center; padding-top: 10px; padding-bottom: 10px;">Travel History</th>
@@ -726,7 +726,7 @@
                 <?php } ?> 
             </tbody>
         </table>        
-	    <table class="table table-bordered table-condensed table-striped table-hover mytable3">
+      <table class="table table-bordered table-condensed table-striped table-hover mytable3">
           <thead>
             <tr>
               <th colspan="8" style="text-align: center; padding-top: 10px; padding-bottom: 10px;"></th>
@@ -734,28 +734,26 @@
           </thead>
           <tbody>
            <tr>
-          	<td><p>Submission Date</p></td>
-          	<td><p><?php if(isset($a) && $a->submitted_date != "" && $a->editted_date != ""){ echo date('d-m-Y',strtotime($a->editted_date)); } else { if($a->submitted_date != "" && $a->submitted_date != "1970-01-01"){ echo date('d-m-Y',strtotime($a->submitted_date)); } }  ?></p></td>
+            <td><p>Submission Date</p></td>
+            <td><p><?php if(isset($a) && $a->submitted_date != "" && $a->editted_date != ""){ echo date('d-m-Y',strtotime($a->editted_date)); } else { if($a->submitted_date != "" && $a->submitted_date != "1970-01-01"){ echo date('d-m-Y',strtotime($a->submitted_date)); } }  ?></p></td>
           </tr>
          </tbody>
         </table>
       <div class="row">
          <hr>
-		 <?php if (($this -> session -> UserLevel =='3') && ($this -> session -> utype=='DEO') ){ ?>
+     <?php if (($this -> session -> UserLevel =='3') && ($this -> session -> utype=='DEO') ){ ?>
             <div style="text-align: right;" class="col-md-4 col-md-offset-8">
                 
         <?php if($a->cross_notified != 1){ ?>
         <a href="<?php echo base_url(); ?>Coronavirus_investigation/coronavirus_investigation_edit/<?php echo $a->id; ?>/<?php echo $a->year; ?>" style="background:#008d4c none repeat scroll 0% 0%;" class="btn btn-primary btn-md" ><i class="fa fa-pencil-square-o"></i> Update </a>
-			  <?php }else if($a->cross_notified == 1 && $a->distcode == $this -> session -> District && $a->approval_status != "Approved"){ ?>
-			  <button style="background:#008d4c none repeat scroll 0% 0%;" type="submit" class="btn btn-primary btn-md" role="button"><i class="fa fa-check"></i> Approve Case</button>
-			  <?php 
-			  $this->session->set_flashdata('redirectToCurrent', current_url());
-			  } ?>
+        <?php }else if($a->cross_notified == 1 && $a->distcode == $this -> session -> District && $a->approval_status != "Approved"){ ?>
+        <button style="background:#008d4c none repeat scroll 0% 0%;" type="submit" class="btn btn-primary btn-md" role="button"><i class="fa fa-check"></i> Approve Case</button>
+        <?php 
+        $this->session->set_flashdata('redirectToCurrent', current_url());
+        } ?>
               <a href="<?php echo base_url(); ?>Coronavirus_investigation/coronavirus_investigation_list" style="background:#008d4c none repeat scroll 0% 0%;" class="btn btn-primary btn-md"><i class="fa fa-arrow-left"></i> Back </a>
             </div>
-		 <?php }else{ ?>
-			<a href="<?php echo base_url(); ?>Coronavirus_investigation/coronavirus_investigation_list" style="background:#008d4c none repeat scroll 0% 0%;" class="btn btn-primary btn-md"><i class="fa fa-arrow-left"></i> Back </a>
-		 <?php } ?>
+     <?php } ?>
         </div>
          
 </form>

@@ -12,7 +12,6 @@
 
 <script type="text/javascript">
 	function formatter(e,ucwisemap='false'){
-		
 		var text= 'District';
 		if(ucwisemap == 'true'){
 			text = 'Union Council';
@@ -23,7 +22,8 @@
 		var dataId = e.point.id;
 		if(run){
         	//var url = 'http://epiict.pacemis.com/Cerv/Dashboard/defaulters_map/'+dataId;
-        	var url = 'http://epikp.pacemis.com/Cerv/Dashboard/defaulters_map/'+dataId;
+        	//var url = 'http://epikp.pacemis.com/Cerv/Dashboard/defaulters_map/'+dataId;
+        	var url = 'http://epimis.cres.pk//Cerv/Dashboard/defaulters_map/'+dataId;
         	window.open(url, '_blank');
 		}
 	}

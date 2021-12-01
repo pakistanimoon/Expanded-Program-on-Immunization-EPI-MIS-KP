@@ -192,16 +192,22 @@ if( ! function_exists('get_funding_sources')){
 	}
 }
 if( ! function_exists('get_purposes')){
-	function get_purposes($returnResult=FALSE,$selected=NULL){
+	function get_purposes($returnResult=FALSE,$selected=NULL,$createoption=TRUE){
 		$CI = & get_instance();
 		$option = "";
 		$CI -> db -> select('pk_id,activity');
 		$CI -> db -> from('epi_stakeholder_activities');
 		$CI -> db -> where('status',1);
 		$result = $CI -> db -> get() -> result_array();
+		if($createoption){
 		foreach($result as $key => $value){
 			$selectedtext = ($selected and $selected==$value['pk_id'])?'selected="selected"':'';
 			$option .= '<option value="' . $value['pk_id'] . '" '.$selectedtext.'>' . $value	['activity'] .'</option>';
+		}
+		}
+		else
+		{
+			$option=$result;
 		}
 		if($returnResult)
 			return $option;
@@ -308,6 +314,28 @@ if( ! function_exists('get_product_name')){
 			return $result["item_name"];
 		else
 			echo $result["item_name"];
+	}
+}
+/*
+@ Author:        		Omer butt
+@ Email:         		omerbutt2521@gmail.com
+@ Function:      		get_purpose_name
+@ Description:   		Returns name of purpose depending upon id in parameter
+*/
+if( ! function_exists('get_purpose_name')){
+	function get_purpose_name($returnResult=FALSE,$prodid){
+		$CI = & get_instance();
+		$whereCondition = array(
+			'pk_id' => $prodid
+		);
+		$CI -> db -> select('pk_id,activity');
+		$CI -> db -> from('epi_stakeholder_activities');
+		$CI -> db -> where($whereCondition);
+		$result = $CI -> db -> get() -> row_array();
+		if($returnResult)
+			return $result["activity"];
+		else
+			echo $result["activity"];
 	}
 }
 /*

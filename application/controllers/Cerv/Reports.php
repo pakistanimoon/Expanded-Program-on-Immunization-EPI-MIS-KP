@@ -1,5 +1,4 @@
 <?php
-//local
 class Reports extends CI_Controller 
 {
 	
@@ -20,7 +19,6 @@ class Reports extends CI_Controller
 				break;
 			case "dropouts":
 				$title = "CERV Dropout Report";
-				break;
 			case "cervMonthlyReport":
 				$title = "Cerv Monthly Report";
 				break;
@@ -113,8 +111,9 @@ class Reports extends CI_Controller
 		$innerQueryResult = $this -> cerv -> dropouts_inner_query($distcode,$tcode,$uncode,$dropout_type);
 		$innerQuery = $this -> db -> last_query();
 		$data['dropout'] = $this -> cerv -> dropout_outer_query($innerQuery, $dropout_type);
-		//echo $outerQuery = $this -> db -> last_query();exit;
+		$outerQuery = $this -> db -> last_query();
 		$data['totalDropout'] = $this -> cerv -> dropout_total_query($outerQuery, $dropout_type);
+		//echo $this -> db -> last_query();
 		$data['pageTitle']='Dropout Report';
 		$data['tableData'] = getListingReportTable($data['dropout'], 'Dropout Report', $data['totalDropout'], 'Yes', 'Yes');
 		$data['TopInfo'] = reportsTopInfo($data['pageTitle'], $topInfoData);
@@ -132,7 +131,6 @@ class Reports extends CI_Controller
 		$data['fileToLoad'] = 'cervReports/showReport';
 		$this -> load -> view('template/reports_template',$data);
 	}
-	
 		public function cervMonthlyReport()
 		{
 			$this -> load -> library('reportfilters');
@@ -140,7 +138,7 @@ class Reports extends CI_Controller
 			$functionName = str_replace("-", "_", $functionName);
 			$reportPath = base_url()."Cerv/Reports/MVRFV/".$functionName;
 			$reportTitle = $this -> reportTitle($functionName);
-			$reportPeriod = array("month-from"); 
+			$reportPeriod = array("month-from");
 			
 			$dataHtml = $this -> reportfilters -> filtersHeader($reportPath,$reportTitle);
 			$dataHtml .= $this->reportfilters->createReportFilters(true,true,true,false,$reportPeriod,false,NULL,NULL,"No","No",NULL);
@@ -186,4 +184,5 @@ class Reports extends CI_Controller
 		return $data;
 	}
 }
+
 ?>

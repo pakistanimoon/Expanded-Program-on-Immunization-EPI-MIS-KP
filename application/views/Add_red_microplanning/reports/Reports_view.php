@@ -152,7 +152,7 @@
 						if($currentuc==0){}else{
 							echo '<tr><td class="uc" data-ucode="'.$prevuccode.'">'.$prevucname.'</td>';
 							if(($key+1)==1){
-								echo '<td rowspan="3">'.$prevtechniciancode.'</td>';echo '$prevtechniciancode';
+								echo '<td rowspan="3">'.$prevtechniciancode.'</td>';
 							}
 							echo '<td>'.$months.'</td><td><input type="text" value="Session Type" disabled ><br><input type="text" value="Session Site" disabled ></td>'.implode('',${"htmlofm".($key+1)}).'</tr>';
 						}

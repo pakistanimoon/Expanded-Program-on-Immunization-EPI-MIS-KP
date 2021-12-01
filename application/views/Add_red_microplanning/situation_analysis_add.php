@@ -1,7 +1,6 @@
 <?php 
 	date_default_timezone_set('Asia/Karachi'); // CDT
 	$current_date = date('Y-m-d');
-	//echo get_indicator_periodic_multiplier('newborn','2018');
 ?>
 <!-- <div class="content-wrapper"> -->
 <section class="content">			
@@ -278,8 +277,8 @@
 		//row.find("td:nth-child(19)").find('input').attr('name','priority['+currentIndex+']');
 		row.find("td:nth-child(19)").find('input').val('');					
 		$(obj).closest("tr").after(row);//alert(row.index());
-  		$(obj).closest("tr").find('td:last').html('<button type="button" onclick="deleteRow(this)" class="minus"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>');
-  		$('#trRow').find('tr:last').find('td:last').html('<button type="button" onclick="deleteRow(this)" class="minus"><i class="fa fa-minus-circle" aria-hidden="true"></i></button><button onclick="addRow(this)" id="addButton1" type="button" class="plus" style="background:#057140;"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>');
+  $(obj).closest("tr").find('td:last').html('<button type="button" onclick="deleteRow(this)" class="minus"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>');
+  $('#trRow').find('tr:last').find('td:last').html('<button type="button" onclick="deleteRow(this)" class="minus"><i class="fa fa-minus-circle" aria-hidden="true"></i></button><button onclick="addRow(this)" id="addButton1" type="button" class="plus" style="background:#057140;"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>');
 		reindex_serialnumber_and_trainingCompleted();
 		getPriority();			
 	}
@@ -336,8 +335,7 @@
 		
 	}
 	$(document).ready(function(){
-	//	 var test = '<?php echo get_indicator_periodic_multiplier('newborn','2019'); ?>';
-	 //  alert(test);
+		
 
 		$(function () {
 				var x;
@@ -374,15 +372,15 @@
 						url: "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_analysis_save",
 						data: $('form').serialize(),
 						success: function (data) {
-									/* if(data == "yes"){
+									 if(data == "yes"){
 										alert("Cannot save data because data already exists for this Technician and Year!")
 										window.location = "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/Situation_analysis_list";
 									}            	        
-								   else{ */
+								   else{ 
 									   if(save_next == "sclose" ) { 
 										   window.location = "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/Situation_analysis_list";
 										}
-									
+								}									
 						}
 					});
 				});
@@ -436,15 +434,16 @@
              url: "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/situation_analysis_save",
             data: $('form').serialize(),
             success: function (data) {
-                     /*    if(data == "yes"){
+                         if(data == "yes"){
 							alert("Cannot save data because data already exists for this Technician and Year!")
 							window.location = "<?php echo base_url(); ?>red_rec_microplan/Situation_analysis/Situation_analysis_list";
 						}            	        
-                       else{ */
+                       else{ 
 						   if(save_next == "snext" ){
 							   x = data;
 							 $( "#b").trigger( "click", [x] );
-						   }	
+						   }
+					   }						   
 						
             }
           });
@@ -481,11 +480,9 @@ $('.village').on('change' , function (){
 				if(result1 != null)
 				{
 					var population_less_year = result1.population_less_year;
-					var newborn = result1.newborn;
-					var survivinginfants = result1.survivinginfants;
 					var f3_total_population = result1.population;
-					var population1 =((newborn/100)*f3_total_population);
-					population1 =Math.ceil((survivinginfants/100)*population1);
+					var population1 =(0.0353*f3_total_population);
+					population1 =Math.ceil(0.942*population1);
 					$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=text]').val(population1);
 					$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=hidden]').val(f3_total_population);
 					$(selectedobj).closest("tr").find("td:nth-child(2)").find('select').css("background-color","#FFF");
@@ -509,7 +506,7 @@ $('.village').on('change' , function (){
 			//Percentage Calculations............ columns g,h,i j //	
 			//alert($(this).closest('tr').find(".less_one_year").val());
 			
-			var g = Math.ceil((parseFloat($(this).closest('tr').find(".penta1").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);		
+			var g = Math.round((parseFloat($(this).closest('tr').find(".penta1").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);		
 			if( ! isNaN(g)){
 				//alert(g);
 			   $(this).closest('tr').find(".penta1_percent").val(g);
@@ -524,7 +521,7 @@ $('.village').on('change' , function (){
 				$(this).closest('tr').find(".penta1_percent").val(0);
 			}
 
-			var h = Math.ceil((parseFloat($(this).closest('tr').find(".penta3").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
+			var h = Math.round((parseFloat($(this).closest('tr').find(".penta3").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
 			if( ! isNaN(h)){
 				$(this).closest('tr').find(".penta3_percent").val(h);
 			}
@@ -532,7 +529,7 @@ $('.village').on('change' , function (){
 				$(this).closest('tr').find(".penta3_percent").val(0);
 			}
 
-			var i = Math.ceil((parseFloat($(this).closest('tr').find(".measles").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
+			var i = Math.round((parseFloat($(this).closest('tr').find(".measles").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
 			if( ! isNaN(i)){
 				$(this).closest('tr').find(".measles_percent").val(i);
 			}
@@ -540,7 +537,7 @@ $('.village').on('change' , function (){
 				$(this).closest('tr').find(".measles_percent").val(0);
 			}
 
-			var j = Math.ceil((parseFloat($(this).closest('tr').find(".tt2").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
+			var j = Math.round((parseFloat($(this).closest('tr').find(".tt2").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
 			if( ! isNaN(j)){
 				$(this).closest('tr').find(".tt2_percent").val(j);
 			}
@@ -551,11 +548,7 @@ $('.village').on('change' , function (){
 			//Subtractions.............. columns k,l //
 			var k = parseInt($(this).closest('tr').find(".less_one_year").val())-parseInt($(this).closest('tr').find(".penta3").val());
 			if( ! isNaN(k)){
-			 if(k < 0){
-					$(this).closest('tr').find(".penta3_not").val(0);
-				}else{
-					$(this).closest('tr').find(".penta3_not").val(k);
-				}
+				$(this).closest('tr').find(".penta3_not").val(k);
 			}
 			else{
 				$(this).closest('tr').find(".penta3_not").val(0);
@@ -563,19 +556,15 @@ $('.village').on('change' , function (){
 
 			var l = parseInt($(this).closest('tr').find(".less_one_year").val())-parseInt($(this).closest('tr').find(".measles").val());
 			if( ! isNaN(l)){
-			  if(l < 0){
-					$(this).closest('tr').find(".measles_not").val(0);
-				}else{
-					$(this).closest('tr').find(".measles_not").val(l);
-				}
+				$(this).closest('tr').find(".measles_not").val(l);
 			}
 			else{
 				$(this).closest('tr').find(".measles_not").val(0);
 			}
 
 			//Percentage and Subtractions.............. columns m,n //
-			var m = Math.ceil(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".penta3").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
-			if( ! isNaN(m) && m != '-Infinity' && m != 'Infinity'){
+			var m = Math.round(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".penta3").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
+			if( ! isNaN(m)){
 				$(this).closest('tr').find(".penta1penta3").val(m);
 				if(m < 10){
 			   	$(this).closest('tr').find(".utilization").val('Good');
@@ -585,12 +574,11 @@ $('.village').on('change' , function (){
 			   }
 			}
 			else{
-				$(this).closest('tr').find(".utilization").val('Good');														 
 				$(this).closest('tr').find(".penta1penta3").val(0);
 			}
 
-			var n = Math.ceil(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".measles").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
-			if( ! isNaN(n) && n != '-Infinity' && n != 'Infinity' ){
+			var n = Math.round(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".measles").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
+			if( ! isNaN(n)){
 				$(this).closest('tr').find(".penta1measles").val(n);
 			}
 			else{

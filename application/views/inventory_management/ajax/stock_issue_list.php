@@ -16,7 +16,7 @@ if($batchexist){
 			<td>'.$onebatch["expiry_date"].'</td>
 			<td>';
 		if($onebatch["status"]!='Finished'){
-			$outputdata .= '<span data-id="'.$onebatch["pk_id"].'" data-masterid="'.$draftdata["master"]->pk_id.'" class="fa fa-times cursor-hand actiondel" style="cursor:pointer"></span>';
+			$outputdata .= '<span data-id="'.$onebatch["pk_id"].'" data-masterid="'.$draftdata["master"]->pk_id.'" data-batchnum="'.$onebatch["number"].'" class="fa fa-times cursor-hand actiondel" style="cursor:pointer"></span>';
 		}
 		$outputdata .= '</td>
 		</tr>';
@@ -32,7 +32,7 @@ if($batchexist){
 					</div>
 					<div style="text-align: right;margin-top:10px" class="col-md-6 col-sm-6 col-xs-6">
 						<button style="background:#008d4c;" id="stock_issue_dispatch_list" type="button" class="btn btn-primary btn-md" role="button"><i class="fa fa-print "></i> Print</button>
-						<button style="background:#008d4c;" type="submit" class="btn btn-primary btn-md" role="button" onclick="return confirm(\'Are you sure you want to save the list?\');"><i class="fa fa-floppy-o"></i> Dispatch </button>
+						<button style="background:#008d4c;" type="submit" class="btn btn-primary btn-md batch_masterid" role="button" ><i class="fa fa-floppy-o"></i> Dispatch </button>
 					</div>
 				</div>
 			</form>

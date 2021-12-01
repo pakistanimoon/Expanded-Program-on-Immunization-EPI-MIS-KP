@@ -11,63 +11,132 @@
 	   else{
 	   echo $store = get_store_name(TRUE,$wh_type,$wh_code);} } ?> for (<?php if(isset($monthfrom)){ echo $monthfrom; } ?>) to (<?php if(isset($monthto)){ echo $monthto; } ?>) - Vials</div>
      <div class="panel-body">
-       <form class="form-horizontal">
+       <form class="form-horizontal"> 
         <table class="table table-bordered   table-striped table-hover  mytable">
 			<tr>
-				<td><label>Warehouse Level</label></td> 
-				<td><?php if(isset($wh_type)){ echo get_warehouse_type_name(FALSE,$wh_type); } ?></td>
-				<td><label>Warehouse Store</label></td>
-				<td><?php echo $store; ?></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><label>Warehouse Level</label></td> 
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><?php if(isset($wh_type)){ echo get_warehouse_type_name(FALSE,$wh_type); } ?></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><label>Warehouse Store</label></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><?php echo $store; ?></td>
 			</tr>
 			<tr>
-				<td><label>Month From</label></td>
-				<td><?php if(isset($monthfrom)){ echo $monthfrom; } ?></td>
-				<td><label>Month To</label></td>
-				<td><?php if(isset($monthto)){ echo $monthto; } ?></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><label>Month From</label></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><?php if(isset($monthfrom)){ echo $monthfrom; } ?></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><label>Month To</label></td>
+				<td style="text-align:center; border: 1px solid black;" class="text-center"><?php if(isset($monthto)){ echo $monthto; } ?></td>
 			</tr>
 		</table>
   <?php }?>
-		<table class="table table-bordered table-condensed table-striped table-hover mytable" border="1">
+  <table class="table table-bordered table-condensed table-striped table-hover mytable" border="1">
+	<thead>
+		<tr>				
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2" ><label>Purpose</label></th>	
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2" ><label>Product</label></th>	
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2" ><label>Opening Balance</label></th>	
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2" ><label>Received</label></th>		
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2" ><label>Issue</label></th>		
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" colspan="2" style="text-align:center;"><label>Adjustment</label></th>
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" rowspan="2" ><label>Closing Balance</label></th>
+		</tr>
+  
+		<tr>							
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" ><label>Positive</label></th>		
+			<th class="Heading text-center" style="background: #008d4c; color: white; width: 200px; border: 1px solid black;" ><label>Negative</label></th>						
+		</tr>	
+			
+			
+		
+		
+	
+			<tbody>
+		<?php 
+		$i = 1;
+		$titlerow = $receiverow = $issuerow = $closingbalancerow = $openingbalancerow = ''; 
+		foreach($reportdata as $key=>$row){
+				if($i == 1 ) {
+					 echo   "<tr><td style='text-align:center; font-weight: bold' class='text-center' rowspan='14'>".$row['activity'].'</td>';
+				 }
+			    else  if($i == 15 ) {
+					 echo   "<td style='text-align:center; font-weight: bold' class='text-center' rowspan='6'>".$row['activity'].'</td>';
+				 }
+				else if($i >= 21 and $i < 23){
+					 echo   "<td style='text-align:center; font-weight: bold' class='text-center' rowspan=''>".$row['activity'].'</td>';
+				}
+				else if($i == 23){
+					 echo   "<td style='text-align:center; font-weight: bold' class='text-center' rowspan='6'>".$row['activity'].'</td>';
+				}
+				else{
+					
+				}
+			     echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.$row['name'].'</td>';
+			     echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.$row['prevbalance'].'</td>';
+			     echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.$row['receivebalance'].'</td>';
+			     echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.$row['issuebalance'].'</td>';	
+				 echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.$row['adjustment_post'].'</td>';		
+				 echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.$row['adjustment_negat'].'</td>';
+				 
+			     echo   '<td style="text-align:center; border: 1px solid black;" class="text-center">'.($row['prevbalance']+$row['receivebalance']-$row['issuebalance']+$row['adjustment_post']-$row['adjustment_negat']).'</td>';	 
+				 
+	//	+$row['adjustment_post']		 
+
+			
+			$i++;
+		//exit;		
+		?>
+		</tr>
+		
+		<?php } ?>
+		</tbody>
+  </thead>
+  </table>
+  
+	<!---	<table class="table table-bordered table-condensed table-striped table-hover mytable" border="1">
 			<thead>
 				<tr>
 					<th>Purpose</th>
-					<?php foreach($purpose as $key=>$row){
-						echo '<th colspan="'.$row['items'].'">'.$row['name'].'</th>';
-					} ?>
+				<!---	<php/*  foreach($reportdata as $key=>$row){
+						echo 	$row['activity'];
+					} */ ?> ----<
 				</tr>
-				<?php 
+				<php 
+				
 				$titlerow = $receiverow = $issuerow = $closingbalancerow = $openingbalancerow = '';
 				foreach($reportdata as $key=>$row){
+					
+					//$activity 	= '<th>' .$row['activity']. '</th>';
+					//echo "<pre>"; print_r($reportdata);exit;
+					
 					$titlerow 	.= '<th>'.$row['name'].'</th>';
 					$openingbalancerow .= '<td>'.$row['prevbalance'].'</td>';
 					$receiverow .= '<td>'.$row['receivebalance'].'</td>';
 					$issuerow .= '<td>'.$row['issuebalance'].'</td>';
 					$closingbalancerow .= '<td>'.($row['prevbalance']+$row['receivebalance']-$row['issuebalance']).'</td>';
-				} ?>
+				} ?> 
 				<tr>
 					<th>Product</th>
-					<?php echo $titlerow; ?>
+					<php echo $titlerow; ?>
 				</tr>
 			</thead>
 			<tbody>
+			
 				<tr class="drilldownview">
 					<td>Opening Balance</td>
-			 		<?php echo $openingbalancerow; ?>
+			 		<php echo $openingbalancerow; ?>
 				</tr>
 				<tr class="drilldownview">
 					<td>Received</td>
-					<?php echo $receiverow; ?>
+					<php echo $receiverow; ?>
 				</tr>
 				<tr class="drilldownview">
 					<td>Issue</td>
-					<?php echo $issuerow; ?>
+					<php echo $issuerow; ?>
 				</tr>
 				<tr class="drilldownview">
 					<td>closing Balance</td>
-			 		<?php echo $closingbalancerow; ?>
+			 		<php echo $closingbalancerow; ?>
 				</tr>
 			</tbody>
-		</table>
+		</table>----->
 		<?php 	if (!$this -> input -> post('export_excel')) {?>
 </form>
     </div> <!--end of panel body-->

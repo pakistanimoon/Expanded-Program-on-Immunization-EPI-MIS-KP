@@ -113,28 +113,19 @@ class Dashboard_model extends CI_Model {
 		$result = $this -> db -> get('districts_population') -> row();
 		//echo $this->db->last_query();exit;
 		// --------------------------------------------------------------------------------------------- //
-		$data['provincePopulation']		 = isset($result) ? (int)$result->pop : 0;
-		//$data['anuualTargetPopulation']  = round(($data['provincePopulation']*3.533)/100);
-		$data['anuualTargetPopulation']  = round(($data['provincePopulation']*get_indicator_periodic_multiplier('newborn',$year))/100);
+		$data['provincePopulation']		 = (isset($result->pop) && $result->pop > 0)?(int)$result->pop:0;
+		$data['anuualTargetPopulation']  = round(($data['provincePopulation']*3.533)/100);
 		$data['monthlyTargetPopulation'] = round($data['anuualTargetPopulation']/12);
-		//$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
-		//echo $data['monthlyTargetPopulation'];
-		//$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
-		$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*get_indicator_periodic_multiplier('survivinginfant',$year))/100);
-		//echo  $data['annualSurvivingInfants'];
+		$data['annualSurvivingInfants']  = round(($data['anuualTargetPopulation']*94.2)/100);
 		$data['monthlySurvivingInfants'] = round($data['annualSurvivingInfants']/12);
-		//$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*1.02);
-		$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*get_indicator_periodic_multiplier('plwomen',$year));
+		$data['annualPregnantLactatingPlWomen'] = round($data['anuualTargetPopulation']*1.02);
 		$data['monthlyPregnantLactatingPlWomen'] = round($data['annualPregnantLactatingPlWomen']/12);
 		// --------------------------------------------------------------------------------------------- //
 		$data['annualPnnMortality'] = round(($data['annualSurvivingInfants']*98.3)/100);
 		$data['monthlyPnnMortality'] = round($data['annualPnnMortality']/12);
-		//$data['childrenLessThan5Years'] = round(($data['provincePopulation']*16)/100);
-		$data['childrenLessThan5Years'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less5year',$year))/100);
-		//$data['cbaLadies'] = round(($data['provincePopulation']*22)/100);
-		$data['cbaLadies'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('cba',$year))/100);
-		//$data['below15Years'] = round(($data['provincePopulation']*45)/100);
-		$data['below15Years'] = round(($data['provincePopulation']*get_indicator_periodic_multiplier('less15year',$year))/100);
+		$data['childrenLessThan5Years'] = round(($data['provincePopulation']*16)/100);
+		$data['cbaLadies'] = round(($data['provincePopulation']*22)/100);
+		$data['below15Years'] = round(($data['provincePopulation']*45)/100);
 		// --------------------------------------------------------------------------------------------- //
 		$this -> db -> select('sum(tot_lhw_involved_vacc) as tot_lhws');
 		if($this -> session -> District){
@@ -266,7 +257,7 @@ class Dashboard_model extends CI_Model {
 		$result = $result->result();
 		return $result;
 	}
-	public function sessionInfoFac($year,$dist,$month,$reportType,$session_type,$quarter,$tcode){
+	public function sessionInfoFac($year,$dist,$month,$reportType,$session_type,$quarter){
 		if($reportType == "yearly")
 		{
 			$wClause = " fmonth like '$year%' ";
@@ -321,11 +312,7 @@ class Dashboard_model extends CI_Model {
 						sum(mv_vacc_held)*100/NULLIF(sum(mv_vacc_planned),0) as perc  ,
 			";
 		}
-		if($this -> session -> UserLevel==4){
-			$queryForDist = "select $selct facilityname(facode) as name,facode as code from fac_mvrf_db where $wClause and tcode='$tcode' group by facode order by facilityname(facode) asc";
-		}else{
-			$queryForDist = "select $selct facilityname(facode) as name,facode as code from fac_mvrf_db where $wClause and distcode='$dist' group by facode order by facilityname(facode) asc";
-		}
+		$queryForDist = "select $selct facilityname(facode) as name,facode as code from fac_mvrf_db where $wClause and distcode='$dist' group by facode order by facilityname(facode) asc";
 		//queryForMonth = "select fixed_vacc_planned as planned,fixed_vacc_held as conducted,facilities.fac_name as name,CASE WHEN fmonth = '2016-01' THEN 'JANUARY' WHEN fmonth = '2016-02' THEN 'FEBRUARY' WHEN fmonth = '2016-03' THEN 'MARCH' WHEN fmonth = '2016-04' THEN 'APRIL' WHEN fmonth = '2016-05' THEN 'MAY' WHEN fmonth = '2016-06' THEN 'JUNE' WHEN fmonth = '2016-07' THEN 'JULY' WHEN fmonth = '2016-08' THEN 'AUGUST' WHEN fmonth = '2016-09' THEN 'SEPTEMBER' WHEN fmonth = '2016-10' THEN 'OCTOBER' WHEN fmonth = '2016-11' THEN 'NOVEMBER' WHEN fmonth = '2016-12' THEN 'DECEMBER' END  as month from fac_mvrf_db join facilities on fac_mvrf_db.facode = facilities.facode where fmonth like '2016%' and facilities.facode='332086'";
 		//echo $queryForDist;exit;
 		$result = $this->db->query($queryForDist);
@@ -427,10 +414,8 @@ class Dashboard_model extends CI_Model {
 		$where = ((!empty($wc))? 'where '.implode(" AND ",$wc):'  '); 
 		if($UserLevel==2){
 			$query = 'SELECT post_hr_sub_type_id,COUNT(*) from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery '.$where.' group by post_hr_sub_type_id ';
-		}else if($UserLevel==3){
-			$query = 'SELECT post_distcode,post_hr_sub_type_id,COUNT(*) from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery '.$where.' group by post_distcode,post_hr_sub_type_id ';
 		}else{
-			$query = 'SELECT post_tcode,post_hr_sub_type_id,COUNT(*) from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery '.$where.' group by post_tcode,post_hr_sub_type_id ';
+			$query = 'SELECT post_distcode,post_hr_sub_type_id,COUNT(*) from (SELECT DISTINCT ON (code) code, * FROM hr_db_history ORDER BY code DESC, id DESC) subquery '.$where.' group by post_distcode,post_hr_sub_type_id ';
 		}
 		$result=$this->db->query($query);    
 		$data=$result->result_array();

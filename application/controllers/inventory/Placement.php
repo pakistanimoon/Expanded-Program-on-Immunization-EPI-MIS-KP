@@ -46,12 +46,11 @@ class Placement extends CI_Controller {
 		$area=$this->input->post('area');
 		$level=$this->input->post('level');
 		$data['data']=array();
-		/* if($area > 0 && $level !="" )
-		{
-			
-		} */
+		//if($area > 0 && $level !="" )
+		//{
 		$where = array(
 			"warehouse_type_id" => $this->session->curr_wh_type,
+
 			"warehouse_code" => $this->session->curr_wh_code
 		);
 		if($area){
@@ -60,8 +59,10 @@ class Placement extends CI_Controller {
 		if($level){
 			$where["row"] = $level;
 		}
-		$data['data']['searchResult'] = $this->common->fetchall("epi_non_ccm_locations",NULL,NULL,$where);
+		$data['data']['searchResult']=$this->common->fetchall("epi_non_ccm_locations",NULL,NULL,$where);
 		//print_r($data);exit;
+			
+		//}
 		$template = 'template/epi_template';
 		$data['fileToLoad'] = 'inventory_management/capacity/dry_store_status';
 		$data['pageTitle']='Vaccine Distribution Report';

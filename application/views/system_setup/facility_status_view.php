@@ -244,7 +244,7 @@
 				var year_key = data.year[year_index];
 				$('#epi_week').html('');
 				$('#epi_week').append(data['html_week_'+year_key]);
-			}			
+			}
 		});
 		$(document).on('click','.tabpanea',function(){
 			if($('#tab-2').hasClass('active') == true){

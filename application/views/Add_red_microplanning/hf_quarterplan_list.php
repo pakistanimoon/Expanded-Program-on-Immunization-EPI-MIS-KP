@@ -24,13 +24,7 @@
 							<div class="col-md-3">
 								<?php
 									$distcode = $this-> session-> District; 
-									$tcode = $this-> session->Tehsil;
-									if($this-> session->Tehsil){
-										$tcode = "and tcode='$tcode'";
-									}else{
-										$tcode='';
-									}
-									$query="SELECT distinct tcode, tehsilname(tcode) as tehsil from hf_quarterplan_db where distcode='{$distcode}' $tcode order by tehsil ASC";
+									$query="SELECT distinct tcode, tehsilname(tcode) as tehsil from hf_quarterplan_db where distcode='{$distcode}' order by tehsil ASC";
 									$result = $this->db->query($query)->result_array();
 								?>
 								<select class="form-control filter-status" name="tcode" id="ticode">
@@ -46,13 +40,7 @@
 							<div class="col-md-3">
 								<?php
 									$distcode = $this-> session-> District; 
-									$tcode = $this-> session->Tehsil;
-									if($this-> session->Tehsil){
-										$tcode = "and tcode='$tcode'";
-									}else{
-										$tcode='';
-									}
-									$query="SELECT distinct uncode, unname(uncode) as uc_name from hf_quarterplan_db where distcode='{$distcode}' $tcode order by uc_name ASC";
+									$query="SELECT distinct uncode, unname(uncode) as uc_name from hf_quarterplan_db where distcode='{$distcode}' order by uc_name ASC";
 									$result = $this->db->query($query)->result_array();
 								?>
 								<select class="form-control filter-status" name="uncode" id="unicode">
@@ -115,7 +103,6 @@
 								</select>
 							</div>				
 						</div>
-						
 					</form>
 					<table style="width:40%; position:relative; top:74px; left:26%;">
 						<thead>					
@@ -126,9 +113,7 @@
 						</thead>
 					</table> 
 					<table class="table footable table-bordered table-hover table-sessiontype" data-filter="#filter" data-filter-text-only="true">
-						
 						<thead>
-						
 							<tr>
 								<th>S.No.</th>
 								<th>Facility Name</th>
@@ -140,21 +125,13 @@
 								<th>Year</th>
 								<th>Quarter</th>
 								<th class="text-center Heading">
-									<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-										<a href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_add" data-toggle="tooltip" title="Add New Supervisor">
-										<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
+									<a href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_add" data-toggle="tooltip" title="Add New Supervisor">
+									<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
 									</a>
-									<?php } else{?>
-										Action
-									<?php }?>
 								</th>
 							</tr>
 						</thead>
-							
-								
-							
 						<tbody id="tbody"> 
-						
 							<?php
 								$i=0;
 								foreach($data as $row){
@@ -165,8 +142,7 @@
 										$color ='';
 								}
 							?>
-						
-								<tr <?php echo $color; ?> >
+								<tr <?php echo $color; ?>>
 									<td class="text-center"><?php echo $i; ?></td>
 									<td><?php echo $row['facility']; ?></td>
 									<?php if($row['year'] == '2019' OR $row['year'] == '2018'){?>
@@ -175,7 +151,7 @@
 										<td><?php echo get_Hr_Name($row['techniciancode'],'01'); ?></td>
 									<?php } ?>
 									<!--<td><?php echo get_Technician_Name($row['techniciancode']); ?></td>-->
-							      <!--<td class="text-center"><?php   //echo get_Technician_status($row['techniciancode']);//   echo $row['facode']; ?></td>-->
+							      <!--<td class="text-center"><?php echo $row['facode']; ?></td>-->
 							      <td><?php echo $row['uc_name']; ?></td>
 							      <td><?php echo $row['tehsil']; ?></td>
 							      <td class="text-center"><?php echo date('d-m-Y', strtotime($row['submitted_date'])); ?></td>
@@ -183,15 +159,12 @@
 							      <td class="text-center"><?php echo $row['quarter']; ?></td>
 							      <td class="text-center">
 								      <a href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_view/<?php echo $row['facode']; ?>/<?php echo $row['year']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['techniciancode'];?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-								       <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){?>
-										<a href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_edit/<?php echo $row['facode']; ?>/<?php echo $row['year']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['techniciancode'];?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-									  <?php } ?>
-								  </td>
+								      <a href="<?php echo base_url(); ?>red_rec_microplan/Facility_quarterplan/hf_quarterplan_edit/<?php echo $row['facode']; ?>/<?php echo $row['year']; ?>/<?php echo $row['quarter']; ?>/<?php echo $row['techniciancode'];?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+							      </td>
 						 		</tr>
 							<?php } ?>
 						</tbody>
 					</table>	
-					
 					<br>
 					<div class="row">
 						<div class="col-sm-12" align="center">

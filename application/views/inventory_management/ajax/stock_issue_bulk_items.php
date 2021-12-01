@@ -1,4 +1,4 @@
-<?php 
+<?php
 $showreq = $showbothavailable = false;
 $rowspan = $colspan = $noOfDays = "";
 $currwhtype = $this->session->curr_wh_type;
@@ -114,8 +114,8 @@ if(($currwhtype==4 && $towhtype==6) || ($currwhtype==2 && $towhtype==4)){
 </div>
 <div class="row">      
 	<div style="text-align: right;" class="col-md-12">
-	<span style="color:red" class="pull-left">Above Requistion was generated on <span id="rec_date"></span> , <b><a data-code="<?php echo $towhcode; ?>" data-type="<?php echo $towhtype; ?>" style="color:red;" href="javascript:void(0)" onclick="refresh(this)"><u> Click here</a></u></b> to Regenerate</span><br>
-		<span style="color:red" class="pull-left"><b>Note: </b>Only those products/batches are showing in above table which have atleast 1 vials/pieces available in stock.</span>
+		<span style="color:red" class="pull-left">Above Requistion was generated on <span id="rec_date"></span> , <b><a data-code="<?php echo $towhcode; ?>" data-type="<?php echo $towhtype; ?>" style="color:red;" href="javascript:void(0)" onclick="refresh(this)"><u> Click here</a></u></b> to Regenerate</span><br>
+		<span style="color:red; margin-top:5px;" class="pull-left"><b>Note: </b>Only those products/batches are showing in above table which have atleast 1 vials/pieces available in stock.</span>
 		<button style="background:#008d4c;" type="button" id="issuebtn" class="btn btn-primary btn-md" role="button"><i class="fa fa-plus "></i> Add Issue </button>
 	</div>
 </div>

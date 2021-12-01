@@ -18,7 +18,7 @@
 			</div>
 	<?php } ?>			
 	<?php echo $tableData; ?>
-
+		
 </div><!--End of page content or body-->
 
 
@@ -57,7 +57,7 @@
 			if(code.toString().length == 6){
 				//url = "<?php echo base_url();?>HF-Consumption-Requisition/View/"+year+"-"+month+"/"+code;
 				//url = "<?php echo base_url();?>consumption/view/"+fmonth+"/"+code;
-				url = "<?php echo base_url();?>vaccination/view/"+fmonth+"/"+code;
+				url = "<?php echo base_url();?>vaccination/view/"+fmonth+"/"+code; 
 				//alert(url);
 				var win = window.open(url,'_blank');
 				if(win){

@@ -115,7 +115,6 @@
                       <option <?php if($cctdata['lastqualification'] == 'FA') { echo 'selected="selected"'; }else echo ''; ?> value="FA">F.A/F.Sc</option>
                       <option <?php if($cctdata['lastqualification'] == 'BA') { echo 'selected="selected"'; }else echo ''; ?> value="BA">B.A/B.Sc/B.Ed</option>
                       <option <?php if($cctdata['lastqualification'] == 'MA') { echo 'selected="selected"'; }else echo ''; ?> value="MA">M.A/M.Sc/M.Ed</option> 
-					   <option <?php if($cctdata['lastqualification'] == 'SE') { echo 'selected="selected"'; } else { echo ''; } ?> value="SE">Software Engineering</option>
                     </select>
                       </div>
                       <label class="col-xs-2 control-label"  for = "passingyear" > Passing Out Year </label>
@@ -299,7 +298,7 @@
  <hr>
 <input type="hidden" name="edit" value="edit />
                       <div class="row">
-                       <div class="col-xs-11" style="padding:0px; text-align:right;">
+                             <div class="col-xs-7"  style="margin-left:62.5%;">
                         <button type="submit" class="btn btn-md btn-success bc1"><i class="fa fa-floppy-o "></i> Save Form  </button>
                         <button type="reset" class="btn btn-md btn-success"><i class="fa fa-repeat"></i> Reset Form </button>
                         <a href="<?php echo base_url();?>CCTList" class="btn btn-md btn-success"><i class="fa fa-times"></i> Cancel </a>

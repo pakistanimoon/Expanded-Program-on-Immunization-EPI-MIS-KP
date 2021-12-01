@@ -222,7 +222,7 @@ class Receiver_model extends CI_Model {
 	}
 
 	//for drilldown at provicial level 
-	public function get_str_stock_out_data($fmonth,$itemCategory)
+	/*public function get_str_stock_out_data_new($fmonth,$itemCategory)
 	{
 		$parts = explode("-",$fmonth);
 		if(isset($parts[0]) && isset($parts[1])){
@@ -260,21 +260,55 @@ class Receiver_model extends CI_Model {
 			order by pk_id asc";
 			$query = $this->db->query($query);
 			return $query->result_array();
-			//print_r($this->db->last_query());exit;
 		}
 		return array();
-	}	
+	}*/
 
-	public function get_technicians_data($year)
+	public function get_str_stock_out_data_new($fmonth,$itemCategory)
 	{
-		$query = "select tot_technician,(SELECT round(((sum(duem1+duem2+duem3+duem4+duem5+duem6+duem7+duem8+duem9+duem10+duem11+duem12))//12)::numeric,0) FROM consumptioncompliance ccp where year = '{$year}') as centers,pop,round(((pop::numeric)//tot_technician::numeric)::numeric,0) as technicianratio 
-					from (
-						select count(techniciancode) as tot_technician,
-						(select sum(population) from districts_population where year='{$year}') as pop 
-						from techniciandb where status='Active'
-					) as tbl";
-		$query = $this->db->query($query);
-		return $query->row();
+		$parts = explode("-",$fmonth);
+		if(isset($parts[0]) && isset($parts[1])){
+			$year = $parts[0];
+			$distwhere = '';
+			$distcode=$this->session->District;
+			if($distcode){
+				$distwhere = " and distcode = '$distcode'";
+			}
+			$duemonthnum = 'duem'.ltrim($parts[1], '0');
+			$submonthnum = 'subm'.ltrim($parts[1], '0');
+			$queryduesub ="SELECT sum($duemonthnum) as due,sum($submonthnum) as sub FROM consumptioncompliance where year = '".$year."' $distwhere group by year";
+			$queryobj = $this->db->query($queryduesub);
+			$result = $queryobj->row();
+			$query ="
+			select 
+			epi_items.pk_id as id,
+			epi_items.description as name,
+			'".$result->due."' as due,
+			'".$result->sub."' as submitted,
+			array_agg('epi_consumption_detail.item_id='||epi_item_pack_sizes.pk_id) as cr_table_row_numb,
+			(
+				select count(*) from(
+					select main_id as balance from epi_consumption_detail join epi_consumption_master on 
+					epi_consumption_master.pk_id = epi_consumption_detail.main_id 
+					where item_id in (
+						select pk_id from epi_item_pack_sizes where item_id = epi_items.pk_id
+					)
+					and fmonth = '$fmonth' 
+					$distwhere 
+					group by fmonth,main_id having sum(closing_doses) < 1
+				) as innerq
+			) as stockout 
+			from epi_items 
+			join epi_item_pack_sizes on item_id = epi_items.pk_id
+            where epi_item_pack_sizes.cr_table_row_numb is not NULL 
+			and epi_items.item_category_id = $itemCategory 
+			group by epi_items.pk_id 
+			order by epi_items.pk_id asc";
+			$query = $this->db->query($query);
+			return $query->result_array();
+		}
+		return array();
+		//cr_table_row_numb blunder should be removed from above table
 	}
 	
 	public function get_vacc_stock_out_data($fmonth,$itemId)
@@ -302,37 +336,20 @@ class Receiver_model extends CI_Model {
 			where cr_table_row_numb is not NULL and pk_id = $itemId";
 			$query = $this->db->query($query);
 			return $query->result_array();
-			//(SELECT count(*) FROM epi_consumption_master where fmonth = '".$fmonth."') as submitted,
 		}
 		return array();
 	}
 	
-	/* public function get_vacc_stock_out_data($fmonth,$itemId)
+	public function get_technicians_data($year)
 	{
-		$parts = explode("-",$fmonth);
-		if(isset($parts[0]) && isset($parts[1])){
-			$year = $parts[0];
-			$monthnum = 'duem'.ltrim($parts[1], '0');
-			$query ="
-			select 
-			pk_id as id,
-			item_name as name,
-			(SELECT sum($monthnum) FROM consumptioncompliance where year = '".$year."') as due,
-			(SELECT count(*) FROM form_b_cr where fmonth = '".$fmonth."') as submitted,
-			get_pro_level_all_fac_stock_out(aggtable.ids,'$fmonth') as stockout 
-			from 
-			(
-				select pk_id,item_name,array_agg('cr_r' || cr_table_row_numb || '_f6<1') ids 
-				from epi_item_pack_sizes 
-				where cr_table_row_numb is not NULL and pk_id = $itemId
-				group by pk_id 
-			) aggtable
-			where aggtable.ids is not null
-			order by pk_id asc";
-			$query = $this->db->query($query);
-			return $query->result_array();
-		}
-		return array();
-	} */
+		$query = "select tot_technician,(SELECT round(((sum(duem1+duem2+duem3+duem4+duem5+duem6+duem7+duem8+duem9+duem10+duem11+duem12))//12)::numeric,0) FROM consumptioncompliance ccp where year = '{$year}') as centers,pop,round(((pop::numeric)//tot_technician::numeric)::numeric,0) as technicianratio 
+					from (
+						select count(techniciancode) as tot_technician,
+						(select sum(population) from districts_population where year='{$year}') as pop 
+						from techniciandb where status='Active'
+					) as tbl";
+		$query = $this->db->query($query);
+		return $query->row();
+	}
 }
 ?>

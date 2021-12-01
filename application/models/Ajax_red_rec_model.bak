@@ -301,7 +301,8 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 
 		//print_r($query);exit;
-		$query="SELECT tcode,uncode,facode,techniciancode,year, tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil, facilityname(facode) as facility, technicianname(techniciancode) as technician, year from situation_analysis_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year DESC, facode, priority ASC LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT tcode,uncode,facode,techniciancode,year, tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil, facilityname(facode) as facility, (case when (year ='2019' OR year ='2018')  then technicianname(techniciancode) else hr_name(techniciancode) end) as technician, year from situation_analysis_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " group by techniciancode,tcode,uncode,facode,year order by year DESC, facode ASC LIMIT {$per_page} OFFSET {$startpoint}";
+		//$query="SELECT tcode,uncode,facode,techniciancode,year, tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil, facilityname(facode) as facility, technicianname(techniciancode) as technician, year from situation_analysis_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year DESC, facode, priority ASC LIMIT {$per_page} OFFSET {$startpoint}";
 		$result = $this -> db -> query($query);		
 		$result = $result -> result_array();
 		//print_r($result);exit;
@@ -319,8 +320,8 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-center">' . $row['technician'] . '</td>
 							<td class="text-left">' . $row['year'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_microplan/Situation_analysis/situation_analysis_view/' . $row['techniciancode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-								<a href="' . base_url() . 'red_microplan/Situation_analysis/situation_analysis_edit/' . $row['techniciancode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Situation_analysis/situation_analysis_view/' . $row['techniciancode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Situation_analysis/situation_analysis_edit/' . $row['techniciancode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 							</td>
 						</tr>';
 		}
@@ -382,8 +383,8 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-left">' . $row['tehsil'] . '</td>
 							<td class="text-left">' . $row['facility'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_microplan/Special_activities/special_activities_view/' . $row['facode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-								<a href="' . base_url() . 'red_microplan/Special_activities/special_activities_edit/' . $row['facode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Special_activities/special_activities_view/' . $row['facode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Special_activities/special_activities_edit/' . $row['facode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 							</td>
 						</tr>';
 		}
@@ -447,8 +448,8 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-left">' . $row['tehsil'] . '</td>
 							<td class="text-left">' . $row['facility'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_microplan/Session_plan/session_plan_view/' . $row['facode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-								<a href="' . base_url() . 'red_microplan/Session_plan/session_plan_edit/' . $row['facode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Session_plan/session_plan_view/' . $row['facode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Session_plan/session_plan_edit/' . $row['facode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 							</td>
 						</tr>';
 		}
@@ -509,8 +510,8 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-center">' . date('d-m-Y', strtotime($row['submitted_date'])) . '</td>
 							<td class="text-center">' . $row['year'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_microplan/Red_strategy/red_strategy_view/' . $row['facode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-								<a href="' . base_url() . 'red_microplan/Red_strategy/red_strategy_edit/' . $row['facode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Red_strategy/red_strategy_view/' . $row['facode'] . '/'. $row['year'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Red_strategy/red_strategy_edit/' . $row['facode'] .'/'. $row['year'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 							</td>
 						</tr>';
 		}
@@ -554,7 +555,7 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 
 		//print_r($query);exit;
-		$query="SELECT tcode, uncode, facode, facilityname(facode) as facility, unname(uncode) as uc_name, tehsilname(tcode) as tehsil, submitted_date, year, quarter from hf_quarterplan_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year DESC, facode ASC LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT tcode, uncode, facode, facilityname(facode) as facility,(case when (year ='2019' OR year ='2018')  then technicianname(techniciancode) else hr_name(techniciancode) end) as technician,techniciancode, unname(uncode) as uc_name, tehsilname(tcode) as tehsil, submitted_date, year, quarter from hf_quarterplan_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by year DESC, facode ASC LIMIT {$per_page} OFFSET {$startpoint}";
 		//print_r($query); exit();
 		$result = $this -> db -> query($query);		
 		$result = $result -> result_array();
@@ -568,15 +569,15 @@ class Ajax_red_rec_model extends CI_Model {
 			$tbody .= '<tr>
 							<td class="text-center">' . $i . '</td>	
 							<td>' . $row['facility'] . '</td>			
-							<td class="text-center">' . $row['facode'] . '</td>
+							<td class="text-center">' . $row['technician'] . '</td>
 							<td>' . $row['uc_name'] . '</td>
 							<td>' . $row['tehsil'] . '</td>
 							<td class="text-center">' . date('d-m-Y', strtotime($row['submitted_date'])) . '</td>
 							<td class="text-center">' . $row['year'] . '</td>
 							<td class="text-center">' . $row['quarter'] . '</td>
 							<td class="text-center">
-								<a href="' . base_url() . 'red_microplan/Facility_quarterplan/hf_quarterplan_view/' . $row['facode'] . '/'. $row['year'].'/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-								<a href="' . base_url() . 'red_microplan/Facility_quarterplan/hf_quarterplan_edit/' . $row['facode'] .'/'. $row['year'].'/'. $row['quarter'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Facility_quarterplan/hf_quarterplan_view/' . $row['facode'] . '/'. $row['year'].'/'. $row['quarter'].'/'. $row['techniciancode'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+								<a href="' . base_url() . 'red_rec_microplan/Facility_quarterplan/hf_quarterplan_edit/' . $row['facode'] .'/'. $row['year'].'/'. $row['quarter'].'/'. $row['techniciancode'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
 							</td>
 						</tr>';
 		}
@@ -589,7 +590,7 @@ class Ajax_red_rec_model extends CI_Model {
 	//--------------- HF Quarterplan Filter End -----------------------------//
 	
 	//--------------- supervisory_plan Filter start -----------------------------//
-	public function superviosry_plan_filter($supervisor_type, $fmonth) {
+	public function superviosry_plan_filter($supervisor_type, $quarter) {
 		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];		
 		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
 		if ($page <= 0)
@@ -598,15 +599,19 @@ class Ajax_red_rec_model extends CI_Model {
 		// Set how many records do you want to display per page.
 		$startpoint = ($page * $per_page) - $per_page;
 		$statement = "supervisory_plan";
+		$distcode = $this -> session -> District;
 		if($supervisor_type != ''){
-			$wc[] = " designation = '$supervisor_type' ";
+			$wc[] = " designation = '$supervisor_type' and distcode='$distcode' ";
+		}else{
+			$wc[] = "distcode='$distcode' ";
 		}
-		if($fmonth != ''){
-			$wc[] = " fmonth = '$fmonth' ";
+		if($quarter != ''){
+			$wc[] = " quarter = '$quarter' ";
 		}
 		//print_r($query);exit;
-		$query="SELECT supervisorcode,designation,fmonth,area_name,status from supervisory_plan " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . "   LIMIT {$per_page} OFFSET {$startpoint}";
-		//print_r($query); exit();
+		$query="SELECT supervisorcode,designation,quarter,status,CASE WHEN quarter='01' then 'Quarter 1' WHEN quarter ='02' then 'Quarter 2' WHEN  quarter='03' then 'Quarter 3' WHEN  quarter='04' then 'Quarter 4' ELSE '' END from supervisory_plan " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . "group by supervisorcode,quarter,designation,status order by supervisorcode asc   LIMIT {$per_page} OFFSET {$startpoint}";
+		//$str = $this->db->last_query();
+		//print_r($str); exit;
 		$result = $this -> db -> query($query);		
 		$result = $result -> result_array();
 		//print_r($result);exit;
@@ -620,18 +625,18 @@ class Ajax_red_rec_model extends CI_Model {
 							<td class="text-center">' . $i . '</td>	
 							<td>' . get_supervisor_Name($row['supervisorcode']) . '</td>			
 							<td class="text-center">' . $row['designation'] . '</td>
-							<td>' . $row['fmonth'] . '</td>
-							<td>' . get_Village_Name($row['area_name']) . '</td>
+							<td>' . $row['case'] . '</td>
+							
 							<td class="text-center">';
 									
 							  if($row['status'] == 1) { 
 									$tbody .='
-										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['fmonth'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> 
-										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['fmonth'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
+										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a> 
+										<a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
 								     } else {  
-									$tbody .='   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['fmonth'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
-									   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_edit/' . $row['supervisorcode'] . '/'. $row['fmonth'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
-									   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['fmonth'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
+									$tbody .='   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_view/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+									   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_edit/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+									   <a href="'.base_url().'micro_plan/Micro_plan_controller/supervisory_plan_conducted/' . $row['supervisorcode'] . '/'. $row['quarter'].'" data-toggle="tooltip" title="Conducted" class="btn btn-xs btn-default"><i class="fa fa-calendar-check-o" aria-hidden="true" style="background:#057140; font-size:20px; color:white;"></i></a>';
 								     }  
                             $tbody .= '</td>
 		            </tr>';
@@ -895,7 +900,7 @@ class Ajax_red_rec_model extends CI_Model {
 		//print_r($wc);exit;
 		// Change `records` according to your table name.
 		//echo
-		$query="SELECT id, cross_notified,approval_status,year, cross_notified_from_distcode,facode, uncode, tcode, distcode,procode, is_temp_saved, patient_name,fweek, case_epi_no, case_type, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified,approval_status,year, cross_notified_from_distcode,facode, uncode, tcode, distcode,procode, is_temp_saved, patient_name,fweek, case_epi_no, case_type, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
@@ -1158,7 +1163,7 @@ class Ajax_red_rec_model extends CI_Model {
 		//print_r($wc);exit;
 		// Change `records` according to your table name.
 		//echo 
-		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name,fweek, case_epi_no, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified, approval_status, year, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, is_temp_saved, patient_name,fweek, case_epi_no, pvh_date from case_investigation_db " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();
@@ -1539,7 +1544,7 @@ class Ajax_red_rec_model extends CI_Model {
 		//OR cross_notified_from_distcode='". $this -> session -> District ."'
 		// Change `records` according to your table name.
 		//echo
-		$query="SELECT id, cross_notified, approval_status, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, patient_name, fweek, is_temp_saved, case_epi_no from afp_case_investigation " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by id desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified, approval_status, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, patient_name, fweek, is_temp_saved, case_epi_no from afp_case_investigation " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//exit();
 		
 		//print_r($query);exit;
@@ -1795,7 +1800,7 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 		//print_r($query);exit;
 		//echo
-		$query="SELECT id, cross_notified, approval_status, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, date_investigation, full_mother_name, fweek,is_temp_saved, investigated_by, date_notification from nnt_investigation_form " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " OR (cross_notified_from_distcode='". $this -> session -> District ."' " . (empty($wc) ? '' : ' and ' . implode(" AND ", $wc)) . ")  order by id desc LIMIT {$per_page} OFFSET {$startpoint}";
+		$query="SELECT id, cross_notified, approval_status, cross_notified_from_distcode, facode, uncode, tcode, distcode, procode, date_investigation, full_mother_name, fweek,is_temp_saved, investigated_by, date_notification from nnt_investigation_form " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " OR (cross_notified_from_distcode='". $this -> session -> District ."' " . (empty($wc) ? '' : ' and ' . implode(" AND ", $wc)) . ")  order by fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
 		//print_r($query);
 		//exit();
 		$result = $this -> db -> query($query);
@@ -2010,7 +2015,9 @@ class Ajax_red_rec_model extends CI_Model {
 		return $data;
 	}
 	public function getTechnicians($facode) {
-		$query = "SELECT techniciancode,technicianname from techniciandb where facode = '$facode' order by technicianname ASC ";
+		//$query = "SELECT techniciancode,technicianname from techniciandb where facode = '$facode' and status='Active' order by technicianname ASC ";
+		//$query = "SELECT code as techniciancode,name as technicianname   from hr_db where facode = '$facode' order by technicianname ASC ";
+		$query = "SELECT new as techniciancode,name as technicianname from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_facode = '$facode' and  post_status='Active' and post_hr_sub_type_id='01'";
 		$result = $this-> db-> query($query);
 		$result = $result-> result_array();
 		$data = '<option value="">--Select--</option>';
@@ -2019,8 +2026,8 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 		return $data;
 	}
-	public function getTechredrec($facode) {
-		$query = "SELECT  DISTINCT techniciancode, technicianname(techniciancode)  as technicianname from situation_analysis_db where facode = '$facode' order by technicianname ASC ";
+	public function getTechredrec($facode,$year) {
+		$query = "SELECT DISTINCT techniciancode, (case when (year='2019' OR year='2018') then technicianname(techniciancode) else hr_name(techniciancode) end) as technicianname from situation_analysis_db where facode = '$facode' and year='$year' order by technicianname ASC ";
 		$result = $this-> db-> query($query);
 		$result = $result-> result_array();
 		$data = '<option value="">--Select--</option>';
@@ -2029,17 +2036,23 @@ class Ajax_red_rec_model extends CI_Model {
 		}
 		return $data;
 	}
-	public function getAreaAndSession($techniciancode) {
-		$query = "SELECT * ,technicianname(techniciancode) as technicianname ,area_name, f3_actual_sessions_plan,f3_session_type,facode from situation_analysis_db where techniciancode = '$techniciancode' order by area_name ASC ";
+	public function getAreaAndSession($techniciancode,$year,$quarter) {
+		$query = "SELECT * ,(case when (year='2019' OR year='2018') then technicianname(techniciancode) else hr_name(techniciancode) end) as technicianname ,area_name, f3_actual_sessions_plan,f3_session_type,facode from situation_analysis_db where techniciancode = '$techniciancode' and year='$year' order by area_name ASC ";
 		$result = $this-> db-> query($query);
 		$data['row'] = $result-> result_array();
+		$data['quarter'] =$quarter;
+		//print_r($data['row']); exit;
 		$var =  $this-> load-> view('Add_red_microplanning/hf_quaterplan_row',$data);
 		
 	}
-	public function checkTechnician_avalible($techniciancode) {
+	public function checkTechnician_avalible($techniciancode,$selectedYear=NULL) {
 		$checkquery = "SELECT count(*) as recordnum from situation_analysis_db where techniciancode='$techniciancode'";
+		if($selectedYear){
+			$checkquery .= " and year = '$selectedYear'";
+		}
 		$result = $this-> db->query($checkquery);
 		$record = $result-> row_array();
+		//print_r($record); exit;
 		$num_of_records = $record['recordnum'];
 		if($num_of_records > 0){
 			//$location = base_url().'red_rec_microplan/Situation_analysis/situation_analysis_list';
@@ -2054,6 +2067,142 @@ class Ajax_red_rec_model extends CI_Model {
 		else{
 			return json_encode("no");
 		}
+	}
+	public function checkTechnician_avalible_list($techniciancode,$quarter,$facode,$year) {
+		//echo'test'; exit;
+		$checkquery = "SELECT count(*) as recordnum from hf_quarterplan_db where techniciancode='$techniciancode' AND facode = '$facode' AND quarter = '$quarter' AND year = '$year'";
+	    $result = $this-> db->query($checkquery);
+		$record = $result-> row_array();
+		$num_of_records = $record['recordnum'];
+		//$str = $this->db->last_query();
+		//print_r($str); exit;
+		if($num_of_records > 0){
+			return json_encode("yes");
+			//echo "1";		
+			exit();
+		}
+		else{
+			return json_encode("no");
+		}
+	}
+	public function checkQuarter_avalible_list($techniciancode,$quarter,$facode,$year) {
+		//echo'test'; exit;
+		$checkquery = "SELECT count(*) as recordnum from hf_quarterplan_db where techniciancode='$techniciancode' AND facode = '$facode' AND quarter = '$quarter' AND year = '$year'";
+	    $result = $this-> db->query($checkquery);
+		$record = $result-> row_array();
+		$num_of_records = $record['recordnum'];
+		//$str = $this->db->last_query();
+		//print_r($str); exit;
+		if($num_of_records > 0){
+			return json_encode("yes");
+			//echo "1";		
+			exit();
+		}
+		else{
+			return json_encode("no");
+		}
+	}
+	public function aefi_filter($tcode,$uncode,$facode,$year,$week,$complaints) {
+		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
+		$pro_code = $_SESSION['Province'];
+		$yearr = $year;
+		$weekk = $week;
+		if(($yearr > 0) && ($weekk > 0)){
+			$yearWk = "year = '".$yearr."' AND week = '".$weekk."' AND ";
+		}
+		else if(($yearr > 0) && ($weekk == 0)){
+			$yearWk = "year = '".$yearr."' AND ";
+		}
+		else if(($yearr == 0) && ($weekk > 0)){
+			$yearWk = "week = '".$weekk."' AND ";
+		}
+		else{
+			$yearWk = '';
+		}
+		
+		//Code for Pagination Updated by Nouman
+		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
+		if ($page <= 0)
+			$page = 1;
+		$per_page = 15;
+		// Set how many records do you want to display per page.
+		$startpoint = ($page * $per_page) - $per_page;
+		$statement = "aefi_rep";
+		if($tcode > 0){
+			$wc[] = " tcode = '$tcode' ";
+		}
+		if($uncode > 0){
+			$wc[] = " uncode = '$uncode' ";
+		}
+		if($facode > 0){
+			$wc[] = " facode = '$facode' ";
+		}
+		if($year != "0"){
+			$wc[] = " year = '$year' ";
+		}				
+		if($week != "0"){
+			$wc[] = " week = '$week' ";
+		}
+		if($complaints != ""){
+			$wc[] = " complaints = '$complaints' ";
+		}
+		if($this -> session -> District){
+			$distcode = $this -> session -> District;
+			$wc[] = "distcode = '$distcode' ";
+		}
+		//print_r($wc);exit;
+		// Change `records` according to your table name.
+		//echo 
+		$query="SELECT id,year,casename,age,facilityname(facode) as facilityname,unname(uncode) as unioncouncil,tehsilname(tcode) as tehsilname,		
+		trim(trailing ', ' from  
+			case when mc_bcg = 1 then 'BCG Lymphadenitis , ' else '' END || 
+			case when mc_convulsion = 1 then 'Convulsion , ' else '' END || 
+			case when mc_severe = 1 then 'Severe Local Reaction , ' else '' END || 
+			case when mc_unconscious = 1 then 'Unconsciousness , ' else '' END || 
+			case when mc_abscess = 1 then 'Injection site abscess , ' else '' END || 
+			case when mc_respiratory = 1 then 'Respiratory Distress , ' else '' END || 
+			case when mc_fever = 1 then 'Fever , ' else '' END || 
+			case when mc_swelling = 1 then 'Swelling of body or face , ' else '' END || 
+			case when mc_rash = 1 then 'Rash , ' else '' END || 
+			case when mc_other IS NULL then '' else mc_other END
+		) as complaints,		
+		vacc_name,vacc_vaccinator,is_temp_saved,fweek,rep_date from aefi_rep " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . " order by fweek desc LIMIT {$per_page} OFFSET {$startpoint}";
+		//exit();
+		$result = $this -> db -> query($query);
+		$result = $result -> result_array();
+		$i = $startpoint;
+		$resultJson = array();
+		$tbody = '';
+		foreach ($result as $row) {
+			$is_temp_saved = $row['is_temp_saved'] == '0' ? 'Submitted' : '';
+			$i++;				
+			$tbody .= '<tr>
+			    <td class="text-center">'.$i.'</td>
+				<td class="text-left">'.$row['casename'].'</td>
+			    <td class="text-left">'.$row['age'].'</td>
+			    <td class="text-left">'.$row['facilityname'].'</td>
+			    <td class="text-left">'.$row['unioncouncil'].'</td>
+				<td class="text-left">'.$row['tehsilname'].'</td>
+				<td class="text-left">'.$row['complaints'].'</td>
+				<td class="text-left">'.$row['vacc_name'].'</td>
+				<td class="text-left">'.$row['vacc_vaccinator'].'</td>
+				<td class="text-center">'.$row['fweek'].'</td>
+				<td class="text-center">'.date("d-M-Y",strtotime($row['rep_date'])).'</td>
+				<td class="text-center">'.$is_temp_saved.'</td>			    
+			    <td class="text-center">
+					<a href="' . base_url() . 'AEFI-CIF/View/'. $row['id'] .'" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>';
+					if($row['year'] >= "2018"){
+						$tbody .= '<a href="' . base_url() . 'AEFI-CIF/Edit/'. $row['id'] .'" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>';
+					}
+			  	$tbody .= '</td>
+		    </tr>';
+		}
+		$resultJson["tbody"] = $tbody;		
+				//$wc = getWC(); this condition results in extra pages when specific filter is selected
+				//print_r($wc);exit();
+		$wc = implode(" AND ", $wc);
+		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
+		return json_encode($resultJson,true);
 	}
 }
 ?>

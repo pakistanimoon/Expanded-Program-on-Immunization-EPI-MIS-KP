@@ -78,7 +78,7 @@ a.btn{
 			<div class="col-md-5 text-right" >
 			<a href="<?php echo base_url(); ?>Coldchain/coldroom_add" data-toggle="tooltip" title=" Add Asset">
 				<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add Asset</button>
-			 </a>
+			</a>
 			</div>
 			<?php }?>
 		</div> 
@@ -96,7 +96,7 @@ a.btn{
 					<option value="0">--Select--</option>
 					<?php if($this->session->UserLevel=='2'){ ?>
 					<option value="2">Provicial</option>
-					<?php } else { ?>
+					<?php } else {?>
                     <?php if($this->session->UserLevel!='4' and $this->session->UserLevel!='6'){ ?>
 					<option value="4">District</option>
 					<?php } ?>
@@ -132,7 +132,7 @@ a.btn{
 			<div class="col-md-5 text-right" >
 			<a href="<?php echo base_url(); ?>Coldchain/coldroom_add" data-toggle="tooltip" title=" Add Asset">
 				<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add Asset</button>
-			 </a>
+			</a>
 			</div>
 			<?php } 
 			?>
@@ -571,7 +571,7 @@ function getDetail(id,storetype)
 		});
 	
 
- }
+}
 ///satsus detail///
 $('#btn-modalForm-submit-status').on('click', function(e) {
 	//var requiredfields = checkRequired(true);

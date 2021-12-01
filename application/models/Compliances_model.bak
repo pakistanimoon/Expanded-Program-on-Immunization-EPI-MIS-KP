@@ -39,7 +39,7 @@ class Compliances_model extends CI_Model {
 				if( ! (($year == $currYear) && ($i >= $currMonth)) )
 				{
 					$mon = sprintf("%02d", $i);
-					$date = $year.'-'.$mon.'-'.'05';
+					$date = $year.'-'.$mon.'-'.'10';
 					$date = date('Y-m-d',strtotime($date.'next month'));
 					$asValueHead=$headNames[$i-1];
 					$queryForYearlyData .= "CASE WHEN CAST((select facode  from fac_mvrf_db where fmonth = '$year-$mon' and facode = flcf1.facode and getfstatus_vacc('$year-$mon',facode) = 'F') AS INTEGER) > 0 THEN 
@@ -51,8 +51,8 @@ class Compliances_model extends CI_Model {
 				}
 				$i++;
 			}
-			$queryForYearlyData .= "(select count(facode) from fac_mvrf_db where fmonth like '$year-%' and facode = flcf1.facode and submitted_date>= '".$year."-02-01' and extract(day from submitted_date)<=5 and extract(Month from submitted_date - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer) AS Timeliness,";
-			$queryForYearlyData .= "(select count(facode) from fac_mvrf_db where fmonth like '$year-%' and facode = flcf1.facode) AS Completeness,";
+			$queryForYearlyData .= "(select count(facode) from fac_mvrf_db where fmonth like '$year-%' and facode = flcf1.facode and getfstatus_vacc(fmonth,facode)='F' and submitted_date>= '".$year."-02-01' and extract(day from submitted_date)<=10 and extract(Month from submitted_date - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer) AS Timeliness,";
+			$queryForYearlyData .= "(select count(facode) from fac_mvrf_db where fmonth like '$year-%' and facode = flcf1.facode and getfstatus_vacc(fmonth,facode)='F') AS Completeness,";
 			
 			$queryForYearlyData .= " CASE WHEN get_commulative_fstatus_vacc ('{$year}-{$mmonnth}', flcf1.facode)::integer = 0 THEN NULL ELSE get_commulative_fstatus_vacc ('{$year}-{$mmonnth}', flcf1.facode)::integer END AS total,";
 			$queryForYearlyData = rtrim($queryForYearlyData,",");
@@ -78,9 +78,16 @@ class Compliances_model extends CI_Model {
 			
 			$data['allDataTotal'] = $resultTotal -> result_array();
 			foreach ($data['allDataTotal'] as $index => $value_arr) {
+					if($value_arr['total'] > 0){
 				$percentageTotalTime = round(($value_arr['timeliness']/$value_arr['total'])*100);
 				$percentageTotalComp = round(($value_arr['completeness']/$value_arr['total'])*100);			
+			
 				$data['allDataTotal'][$index]['timeliness'] = $value_arr['timeliness'].'/'.$value_arr['total'].' ='.$percentageTotalTime.'%';
+				}
+				else
+				{
+				$data['allDataTotal'][$index]['timeliness']=0;	
+				}
 				$data['allDataTotal'][$index]['completeness'] = "";
 				$data['allDataTotal'][$index+1]['tot'] = "";
 				$i = 1;
@@ -111,8 +118,11 @@ class Compliances_model extends CI_Model {
 					}
 				}
 				$data['allDataTotal'][$index+1]['timeliness'] = "";
-				$data['allDataTotal'][$index+1]['completeness'] = $value_arr['completeness'].'/'.$value_arr['total'].' ='.$percentageTotalComp.'%';
-				unset($data['allDataTotal'][$index]['total']);
+				if($value_arr['total'] > 0)
+					$data['allDataTotal'][$index+1]['completeness'] = $value_arr['completeness'].'/'.$value_arr['total'].' ='.$percentageTotalComp.'%';
+				else
+					$data['allDataTotal'][$index+1]['completeness']=0;
+			unset($data['allDataTotal'][$index]['total']);
 			}
 			$result1 = getDistComplianceFMVRReportTable($result,$data['allDataTotal'],NULL,'yes');
 		}else{
@@ -126,51 +136,71 @@ class Compliances_model extends CI_Model {
 			for ($ind = 1; $ind < 13; $ind++) {
 				$i=$ind;
 				$ind = sprintf("%02d", $ind);
-				$submittedDateMonth = ($ind==12)?'01':sprintf('%02d',$ind+1);//sprintf('%02d',date('m',strtotime('+1 month')));
+$submittedDateMonth = ($ind==12)?'01':sprintf('%02d',$ind+1);
 				if(($year == $currYear) && ($ind >= $currMonth)){}else{
-					$date =$year.'-'.$ind.'-'.'05';
+					$date =$year.'-'.$ind.'-'.'10';
 					$date = date('Y-m-d',strtotime($date.'next month'));
 					$headerArray[]=$topHead[$i-1];
-					$monthlyPortion .= "(select get_monthly_fstatus_vacc ('$year-$ind',districts.distcode)::integer) AS  due$ind,
-										(select count(fac_mvrf_db.facode)  from fac_mvrf_db join facilities fac on fac.facode = fac_mvrf_db.facode where fac_mvrf_db.fmonth = '$year-$ind' and fac.is_vacc_fac='1' and fac.hf_type='e' and fac_mvrf_db.distcode = districts.distcode and getfstatus_vacc('$year-$ind',fac_mvrf_db.facode) = 'F' and fac_mvrf_db.submitted_date <= '$date') AS  timelysub$ind,
-										(select count(fac_mvrf_db.facode)  from fac_mvrf_db join facilities fac on fac.facode = fac_mvrf_db.facode where fac_mvrf_db.fmonth = '$year-$ind' and fac.is_vacc_fac='1' and fac.hf_type='e' and fac_mvrf_db.distcode = districts.distcode and getfstatus_vacc('$year-$ind',fac_mvrf_db.facode) = 'F') AS  completesub$ind,";
+					$monthlyPortion.="
+						(select duem$i  from vaccinationcompliance where vaccinationcompliance.distcode= districts.distcode and vaccinationcompliance.year='$year') as due$ind ,
+						(select tsubm$i from vaccinationcompliance where vaccinationcompliance.distcode= districts.distcode and vaccinationcompliance.year='$year')as timelysub$ind,
+						(select subm$i  from vaccinationcompliance where vaccinationcompliance.distcode= districts.distcode and vaccinationcompliance.year='$year') as completesub$ind,";		
 										
-					$outerPortion .= "	due$ind,timelysub$ind,completesub$ind,
-										timelysub$ind||'/'||due$ind||'='||round((timelysub$ind::float//due$ind)::numeric*100,0) || '%' as \"totaltimely%$ind\",
-										completesub$ind||'/'||due$ind||'='||round((completesub$ind::float//due$ind)::numeric*100,0) || '%' as \"totalcomplete%$ind\",";
+					$outerPortion .= "
+						due$ind,timelysub$ind,completesub$ind as sub$ind,completesub$ind,
+						round((timelysub$ind::float//due$ind)::numeric*100,0) || '%' as \"Timely %$ind\",
+						round((completesub$ind::float//due$ind)::numeric*100,0) || '%' as \"Completely %$ind\",";
 			
-					$allouterPortion .= "	sum(due$ind) as totalDue$ind, 
-											round((sum(timelysub$ind)::float//sum(due$ind))::numeric*100,1) as TotalTimelyPerc$ind,
-											round((sum(completesub$ind)::float//sum(due$ind))::numeric*100,1) as TotalCompletePerc$ind,";
+					$allouterPortion .= "
+						sum(due$ind) as totalDue$ind,
+						sum(sub$ind) as totalSub$ind,
+						round((sum(timelysub$ind)::float//sum(due$ind))::numeric*100,1) as TimelyPerc$ind,
+						round((sum(completesub$ind)::float//sum(due$ind))::numeric*100,1) as CompletePerc$ind,";						
 				}
 			}
-			$monthlyPortion .= "(Select get_commulative_fstatus_vacc('$year-$mmonnth',districts.distcode)::integer) as totaldue,
-								(Select count(fac_mvrf_db.facode)  from fac_mvrf_db join facilities fac on fac.facode = fac_mvrf_db.facode where fac_mvrf_db.distcode = districts.distcode and fac.is_vacc_fac='1' and fac.hf_type='e' and fac_mvrf_db.fmonth like '$year-%' and extract(day from submitted_date)<=5 and extract(Month from submitted_date - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer and getfstatus_vacc(fmonth,fac_mvrf_db.facode)='F') as totaltimelysub,
-								(Select count(fac_mvrf_db.facode)  from fac_mvrf_db join facilities fac on fac.facode = fac_mvrf_db.facode where fac_mvrf_db.distcode = districts.distcode and fac.is_vacc_fac='1' and fac.hf_type='e' and fac_mvrf_db.fmonth like '$year-%' and getfstatus_vacc(fmonth,fac_mvrf_db.facode)='F')as totalcompletesub";
-								
-			$outerPortion .= "	totaldue as due$ind,totaltimelysub,totalcompletesub,
-								totaltimelysub || '/' || totaldue || '=' || round((totaltimelysub::float//totaldue)::numeric*100,0) || '%' as \"totaltimely%$ind\",
-								totalcompletesub || '/' || totaldue || '=' || round((totalcompletesub::float//totaldue)::numeric*100,0) || '%' as \"totalcomplete%$ind\" ";
-			
-			$allouterPortion .= "	sum(due$ind) as totalDue$ind,
-									round((sum(totaltimelysub)::float//sum(due$ind))::numeric*100,1) as TotalTimelyPerc$ind,
-									round((sum(totalcompletesub)::float//sum(due$ind))::numeric*100,1) as TotalCompletePerc$ind";
-			
+			$curr_year=date("Y");
+			$month=date('m', strtotime('first day of previous month'));
+			$j=12;
+			$due="";$sub="";$timely="";
+			if($year==$curr_year)
+				$j=$month;
+			for($i=1;$i<=$j;$i++){
+				$due.='COALESCE(duem'.$i.',0) +';
+				$sub.='COALESCE(subm'.$i.',0) +';
+				$timely.='COALESCE(tsubm'.$i.',0) +';
+			}
+			$due=rtrim($due,'+');
+			$sub=rtrim($sub,'+');
+			$timely=rtrim($timely,'+');
+			$monthlyPortion.="
+				(select $due  from vaccinationcompliance where vaccinationcompliance.distcode= districts.distcode and vaccinationcompliance.year='$year'  ) as totaldue ,
+				(select $timely  from vaccinationcompliance where vaccinationcompliance.distcode= districts.distcode and vaccinationcompliance.year='$year')as totaltimelysub,
+				(select $sub  from vaccinationcompliance where vaccinationcompliance.distcode= districts.distcode and vaccinationcompliance.year='$year') as totalcompletesub";				
+			$outerPortion .= "	
+				totaldue as due$ind,totalcompletesub as sub$ind,totaltimelysub,totalcompletesub, 
+				 round((totaltimelysub::float//totaldue)::numeric*100,0) || '%' as \"totaltimely %$ind\",
+				 round((totalcompletesub::float//totaldue)::numeric*100,0) || '%' as \"totalcomplete %$ind\" ";
+			$allouterPortion .= "
+				sum(due$ind) as totalDue$ind,
+				sum(sub$ind) as totalSub$ind,
+		round((sum(totaltimelysub)::float//sum(due$ind))::numeric*100,1) as TotalTimelyPerc$ind,
+				round((sum(totalcompletesub)::float//sum(due$ind))::numeric*100,1) as TotalCompletePerc$ind";
+				
 			$headerArray[]="total";
 			//month wise end
 			//main query for flcf wise reporting
-			$query = 'select distcode  , district,  ' . $monthlyPortion . '  from districts ' . ((!empty($neWc)) ? ' where ' . implode(" AND ", $neWc) : '') . 'Order by district';
+			 $query = 'select distcode  , district,  ' . $monthlyPortion . '  from districts ' . ((!empty($neWc)) ? ' where ' . implode(" AND ", $neWc) : '') . 'Order by district';
 			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a';
 			$result = $this -> db -> query($query);
 			$data['allData'] = $result -> result_array();
-			//print_r($data['allData']);exit;
+									
 			//for vertical total of all rows.
-			//echo $this -> db -> last_query();exit;
+										   
 			$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
 			$resultTotal = $this -> db -> query($queryForTotal);
 			$data['allDataTotal'] = $resultTotal -> result_array();
-			
-			//print_r($data['allDataTotal']);exit;
+   
+										 
 			$this -> db -> select('count(*) as num');
 			$districtsCount = $this -> db -> get('districts') -> row();
 			for($k=1;$k<=13;$k++){
@@ -188,8 +218,8 @@ class Compliances_model extends CI_Model {
 		$dataReturned['pageTitle']='Health Facility Monthly Report Compliance';
 		$dataReturned['TopInfo'] = reportsTopInfo($title, $data);
 		$dataReturned['exportIcons']=exportIcons($_REQUEST);
-		return $dataReturned;	
-	}		
+		return $dataReturned;
+	}	
 	function HF_Consumption_Requisition($data,$title){
 		$wc = $data;
 		$wc['hf_type'] = 'e';
@@ -242,8 +272,8 @@ class Compliances_model extends CI_Model {
 				}
 				$i++;
 			}
-			$queryForYearlyData .= "(select count(facode) from $table where fmonth like '$year-%' and facode = flcf1.facode and $datcol >= '".$year."-02-01' and extract(day from $datcol)<=10 and extract(Month from $datcol - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer) AS Timeliness,";
-			$queryForYearlyData .= "(select count(facode) from $table where fmonth like '$year-%' and facode = flcf1.facode) AS Completeness,";
+			$queryForYearlyData .= "(select count(facode) from $table where fmonth like '$year-%' and facode = flcf1.facode and getfstatus_vacc(fmonth,facode)='F' and $datcol >= '".$year."-02-01' and extract(day from $datcol)<=10 and extract(Month from $datcol - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer) AS Timeliness,";
+			$queryForYearlyData .= "(select count(facode) from $table where fmonth like '$year-%' and facode = flcf1.facode and getfstatus_vacc(fmonth,facode)='F' ) AS Completeness,";
 			$fmonth = date('Y-m', strtotime('first day of previous month'));
 			$mmonnth = ($year==date('Y'))?explode("-",$fmonth):array('1'=>12);
 			$mmonnth = $mmonnth[1];
@@ -272,9 +302,16 @@ class Compliances_model extends CI_Model {
 				unset($result[$key]['total']);
 			}
 			foreach ($data['allDataTotal'] as $index => $value_arr) {
+				if($value_arr['total'] > 0 ){
 				$percentageTotalTime = round(($value_arr['timeliness']/$value_arr['total'])*100);
 				$percentageTotalComp = round(($value_arr['completeness']/$value_arr['total'])*100);			
 				$data['allDataTotal'][$index]['timeliness'] = $value_arr['timeliness'].'/'.$value_arr['total'].' ='.$percentageTotalTime.'%';
+				}
+				else
+				{
+					$data['allDataTotal'][$index]['timeliness']=0;
+					
+				}
 				$data['allDataTotal'][$index]['completeness'] = "";
 				$data['allDataTotal'][$index+1]['tot'] = "";
 				$i = 1;
@@ -305,7 +342,13 @@ class Compliances_model extends CI_Model {
 					}
 				}
 				$data['allDataTotal'][$index+1]['timeliness'] = "";
-				$data['allDataTotal'][$index+1]['completeness'] = $value_arr['completeness'].'/'.$value_arr['total'].' ='.$percentageTotalComp.'%';
+				if($value_arr['total'] > 0) {
+					$data['allDataTotal'][$index+1]['completeness'] = $value_arr['completeness'].'/'.$value_arr['total'].' ='.$percentageTotalComp.'%';
+				}
+				else
+				{
+					$data['allDataTotal'][$index+1]['completeness']	=0;
+				}
 				unset($data['allDataTotal'][$index]['total']);
 			}
 			$result1 = getDistComplianceFMVRReportTable($result,$data['allDataTotal'],NULL,'yes');
@@ -333,13 +376,16 @@ class Compliances_model extends CI_Model {
 										(select count($table.facode)  from $table join facilities fac on fac.facode = $table.facode where $table.fmonth = '$year-$ind' and fac.is_vacc_fac='1' and fac.hf_type='e' and $table.distcode = districts.distcode and getfstatus_vacc('$year-$ind',$table.facode) = 'F' and $table.$datcol >='$datefrom' and $table.$datcol<='$date') AS  timelysub$ind,
 										(select count($table.facode)  from $table join facilities fac on fac.facode = $table.facode where $table.fmonth = '$year-$ind' and fac.is_vacc_fac='1' and fac.hf_type='e' and $table.distcode = districts.distcode and getfstatus_vacc('$year-$ind',$table.facode) = 'F') AS  completesub$ind,";
 						*/
-					$monthlyPortion.="(select duem$i  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year') as due$ind  ,(select tsubm$i from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year')as timelysub$ind,(select subm$i  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year') as completesub$ind,";		
+					$monthlyPortion.="(select duem$i  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year') as due$ind  ,
+										(select tsubm$i from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year')as timelysub$ind,
+										(select subm$i  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year') as completesub$ind,";		
 										
-					$outerPortion .= "	due$ind,timelysub$ind,completesub$ind,
-										timelysub$ind||'/'||due$ind||'='||round((timelysub$ind::float//due$ind)::numeric*100,0) || '%' as \"totaltimely%$ind\",
-										completesub$ind||'/'||due$ind||'='||round((completesub$ind::float//due$ind)::numeric*100,0) || '%' as \"totalcomplete%$ind\",";
+					$outerPortion .= "	due$ind,timelysub$ind,completesub$ind as sub$ind,completesub$ind,
+										round((timelysub$ind::float//due$ind)::numeric*100,0) || '%' as \"Timely %$ind\",
+										round((completesub$ind::float//due$ind)::numeric*100,0) || '%' as \"Completely %$ind\",";
 			
-					$allouterPortion .= "	sum(due$ind) as totalDue$ind, 
+					$allouterPortion .= "	sum(due$ind) as totalDue$ind,
+											sum(sub$ind) as totalSub$ind,
 											round((sum(timelysub$ind)::float//sum(due$ind))::numeric*100,1) as TotalTimelyPerc$ind,
 											round((sum(completesub$ind)::float//sum(due$ind))::numeric*100,1) as TotalCompletePerc$ind,";
 				}
@@ -348,9 +394,9 @@ class Compliances_model extends CI_Model {
 			/* $abc= "(Select get_commulative_fstatus_vacc('$year-$mmonnth',districts.distcode)::integer) as totaldue,
 								(Select count($table.facode)  from $table join facilities fac on fac.facode = $table.facode where $table.distcode = districts.distcode and fac.is_vacc_fac='1' and fac.hf_type='e' and $table.fmonth like '$year-%' and extract(day from $datcol)<=10 and extract(Month from $datcol - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer and getfstatus_vacc(fmonth,$table.facode)='F') as totaltimelysub,
 								(Select count($table.facode)  from $table join facilities fac on fac.facode = $table.facode where $table.distcode = districts.distcode and fac.is_vacc_fac='1' and fac.hf_type='e' and $table.fmonth like '$year-%' and getfstatus_vacc(fmonth,$table.facode)='F') as totalcompletesub"; */
-					//print_r($abc);	exit;		
-		$curr_year=date("Y");
-					$month=date("m",strtotime("-1 month"));
+					//print_r($abc);	exit;
+					$curr_year=date("Y");
+					$month=date('m', strtotime('first day of previous month'));
 					$j=12;
 					$due="";$sub="";$timely="";
 					if($year==$curr_year)
@@ -366,12 +412,13 @@ class Compliances_model extends CI_Model {
 					$timely=rtrim($timely,'+');
 					///cho '<pre>';print_r(rtrim($subquery,'+'));exit;
 	$monthlyPortion.="(select $due  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year'  ) as totaldue ,(select $timely  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year')as totaltimelysub,(select $sub  from consumptioncompliance where consumptioncompliance.distcode= districts.distcode and consumptioncompliance.year='$year') as totalcompletesub";					
-								
-			$outerPortion .= "	totaldue as due$ind,totaltimelysub,totalcompletesub,
-								totaltimelysub || '/' || totaldue || '=' || round((totaltimelysub::float//totaldue)::numeric*100,0) || '%' as \"totaltimely%$ind\",
-								totalcompletesub || '/' || totaldue || '=' || round((totalcompletesub::float//totaldue)::numeric*100,0) || '%' as \"totalcomplete%$ind\" ";
+				//	print_r($monthlyPortion);exit;			
+			$outerPortion .= "	totaldue as due$ind,totalcompletesub as sub$ind,totaltimelysub,totalcompletesub,
+								round((totaltimelysub::float//totaldue)::numeric*100,0) || '%' as \"totaltimely %$ind\",
+								round((totalcompletesub::float//totaldue)::numeric*100,0) || '%' as \"totalcomplete %$ind\" ";
 			
 			$allouterPortion .= "	sum(due$ind) as totalDue$ind,
+									sum(sub$ind) as totalSub$ind,
 									round((sum(totaltimelysub)::float//sum(due$ind))::numeric*100,1) as TotalTimelyPerc$ind,
 									round((sum(totalcompletesub)::float//sum(due$ind))::numeric*100,1) as TotalCompletePerc$ind";
 			
@@ -460,6 +507,174 @@ class Compliances_model extends CI_Model {
 	function Demand_Consumption_Receipt($data,$title){
 		echo "here";exit;
 	} */
+
+	function Coronavirus_Compliance($data,$title){
+		$wc = $data;
+		$wc['hf_type'] = 'e';
+		$wc['is_ds_fac'] = '1';				 
+		unset($wc['year']);
+		unset($wc['week']);
+		if(!isset($data['year'])){
+			redirect('Compliance-Filter/Coronavirus-Compliance');
+		}
+		$year = ($data['year']>0)?$data['year']:date('Y');
+		if($this->input->post('export_excel'))
+		{
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=Coronavirus_Weekly_Compliance.xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
+		}
+		unset($wc['export_excel']);
+		$weeks = lastWeek($data['year'],true);
+		$week = isset($data['week'])?$data['week']:0;
+		if(array_key_exists("distcode", $data) && $data['distcode'] > 0){
+			if(array_key_exists("facode", $data) && $data['facode'] > 0)
+				$wcc = " where facode='{$data['facode']}'";
+			elseif(array_key_exists("uncode", $data) && $data['uncode'] > 0)
+				$wcc = " where uncode='{$data['uncode']}'";
+			elseif(array_key_exists("tcode", $data) && $data['tcode'] > 0)
+				$wcc = " where tcode = '{$data['tcode']}'";
+			else
+				$wcc = " where distcode='{$data['distcode']}'";
+			$distcode = $data['distcode'];
+			$monthlyPortion = "";
+			$outerPortion = "";
+			$allouterPortion = "";
+			$complianceTotalF = $week;
+			for ($ind = 1; $ind <= $weeks; $ind++) {
+				if(isset($week) && $week>0){
+					$ind = $week;
+				}
+				
+				$ind = sprintf("%02d", $ind);
+				$fweekk = $year."-".$ind;
+				$monthlyPortion .= "(select sum(covid_cases)  from zero_report where fweek = '$fweekk' and facode = facilities.facode and distcode = '$distcode') AS  due$ind,
+									(select count(covid.facode)  from corona_case_investigation_form_db covid where covid.case_type='Covid' AND covid.fweek = '$fweekk' and covid.facode = facilities.facode and distcode = '$distcode' ) AS  sub$ind,";
+				if($week > 0)
+					$outerPortion .= "due$ind,sub$ind, round((sub$ind::float//due$ind)::numeric*100,0) as \"%$ind\"";
+				else
+					$outerPortion .= "due$ind,sub$ind, round((sub$ind::float//due$ind)::numeric*100,0) as \"%$ind\",";
+				$allouterPortion .= "sum(due$ind) as totalDue$ind,sum(sub$ind) as totalSub$ind, round((sum(sub$ind)::float//sum(due$ind))::numeric*100) as TotalPerc$ind,";
+				if($week > 0)
+					break;
+			}
+			$monthlyPortion .= "(select sum(covid_cases) from zero_report where fweek like '$year-%' and facode = facilities.facode and distcode = '$distcode' ) AS  totaldue,
+								(select count(covid.facode)  from corona_case_investigation_form_db covid where covid.case_type='Covid' AND covid.fweek like '$year-%' and covid.facode = facilities.facode and distcode = '$distcode' ) as totalsub";
+			if($week <= 0)
+				$outerPortion .= "totaldue as due$ind,totalsub as sub$ind, round((totalsub::float//totaldue)::numeric*100,1) as \"%$ind\"";
+			$allouterPortion .= "sum(due$ind) as totalDue$ind,sum(sub$ind) as totalSub$ind, round((sum(sub$ind)::float//sum(due$ind))::numeric*100) as TotalPerc$ind";
+			//month wise end
+			//main query for flcf wise reporting
+			$query = "SELECT facode, fac_name,  $monthlyPortion from facilities $wcc";
+			$query = 'SELECT facode as "EPI Center Code", fac_name as "EPI Center", ' . $outerPortion . ' from (' . $query . ') as a';
+			$result = $this -> db -> query($query);
+			$data['allData'] = $result -> result_array();
+			$sum = 0;
+			if($week <= 0){
+				foreach ($data['allData'] as $key => $value) 
+				{
+					foreach ($value as $key2 => $value2)
+					{
+						if($key2 == 'due'.$ind)
+						{
+							$data['allData'][$key][$key2] = $sum;
+							$sum = 0;
+						}
+						elseif(substr($key2, 0,3) == 'due')
+						{
+							$sum += $value2;
+						}
+					}
+				}	
+			}				
+			//for vertical total of all rows.
+			if($week <= 0){
+				$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
+				$resultTotal = $this -> db -> query($queryForTotal);
+				$data['allDataTotal'] = $resultTotal -> result_array();
+				$result1 = getComplianceReportTable($data['allData'], $data['allDataTotal'],$weeks);
+			}
+			else{
+				$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
+				$resultTotal = $this -> db -> query($queryForTotal);
+				$data['allDataTotal'] = $resultTotal -> result_array();
+				$result1 = getComplianceReportTable($data['allData'], $data['allDataTotal'],NULL,NULL,NULL,NULL,$complianceTotalF);				
+			}
+		}
+		else{
+			$monthlyPortion = "";
+			$outerPortion = "";
+			$allouterPortion = "";
+			$complianceTotalF = $week;
+			for ($ind = 1; $ind <= $weeks; $ind++) {
+				if(isset($week) && $week>0){
+					$ind = $week;
+				}
+				$ind = sprintf("%02d", $ind);
+				$fweekk = $year."-".$ind;
+				$monthlyPortion .= "(select sum(case when getfstatus_ds('$fweekk', facode)='F' then covid_cases else 0 end)  from zero_report where fweek = '$fweekk' and distcode = districts.distcode ) AS  due$ind,
+									(select count(covid.facode)  from corona_case_investigation_form_db covid where covid.case_type='Covid' AND covid.fweek = '$fweekk' and covid.distcode = districts.distcode ) AS  sub$ind,";
+				if($week > 0)
+					$outerPortion .= "due$ind,sub$ind, round((sub$ind::float//due$ind)::numeric*100,0) as \"%$ind\"";
+				else
+					$outerPortion .= "due$ind,sub$ind, round((sub$ind::float//due$ind)::numeric*100,0) as \"%$ind\",";
+				$allouterPortion .= "sum(due$ind) as totalDue$ind,sum(sub$ind) as totalSub$ind, round((sum(sub$ind)::float//sum(due$ind))::numeric*100) as TotalPerc$ind,";
+				if($week > 0)
+					break;
+			}
+			$monthlyPortion .= "(select sum(covid_cases) from zero_report where fweek like '$year-%' and distcode = districts.distcode ) AS  totaldue,
+								(select count(covid.facode)  from corona_case_investigation_form_db covid where covid.case_type='Covid' AND covid.fweek like '$year-%' and covid.distcode = districts.distcode ) as totalsub";
+			if($week <= 0)
+				$outerPortion .= "totaldue as due$ind,totalsub as sub$ind, round((totalsub::float//totaldue)::numeric*100,1) as \"%$ind\"";
+			$allouterPortion .= "sum(due$ind) as totalDue$ind,sum(sub$ind) as totalSub$ind, round((sum(sub$ind)::float//sum(due$ind))::numeric*100) as TotalPerc$ind";
+			//month wise end
+			//main query for flcf wise reporting
+			$query = 'select distcode, district,  ' . $monthlyPortion . '  from districts ' . ((!empty($neWc)) ? ' where ' . implode(" AND ", $neWc) : '');
+			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a order by district';
+			$result = $this -> db -> query($query);
+			$data['allData'] = $result -> result_array();
+			$sum=0;
+			if($week <= 0){
+				foreach ($data['allData'] as $key => $value) 
+				{
+					foreach ($value as $key2 => $value2)
+					{						
+						if($key2 == 'due'.$ind)
+						{
+							$data['allData'][$key][$key2] = $sum;
+							$sum = 0;
+						}
+						elseif(substr($key2, 0,3) == 'due')
+						{
+							$sum += $value2;
+						}
+					}					
+				}	
+			}
+			//for vertical total of all rows.
+			if($week <= 0){
+			$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
+			$resultTotal = $this -> db -> query($queryForTotal);
+			$data['allDataTotal'] = $resultTotal -> result_array();
+			$result1 = getComplianceReportTable($data['allData'], $data['allDataTotal'],$weeks);
+			}
+			else{
+				$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
+				$resultTotal = $this -> db -> query($queryForTotal);
+				$data['allDataTotal'] = $resultTotal -> result_array();
+				$result1 = getComplianceReportTable($data['allData'], $data['allDataTotal'],NULL,NULL,NULL,NULL,$complianceTotalF);
+			}
+		}
+		$dataReturned["year"] = $year;
+		$dataReturned["tableData"]	= $result1;
+		$dataReturned['pageTitle']	= 'Coronavirus Weekly Compliance';
+		$dataReturned['TopInfo'] 	= reportsTopInfo($title, $data);		
+		$dataReturned['exportIcons']= exportIcons($_REQUEST);
+		return $dataReturned;
+	}
 	function Measles_Compliance($data,$title){
 		$wc = $data;
 		$wc['hf_type'] = 'e';
@@ -585,7 +800,7 @@ class Compliances_model extends CI_Model {
 			//month wise end
 			//main query for flcf wise reporting
 			$query = 'select distcode, district,  ' . $monthlyPortion . '  from districts ' . ((!empty($neWc)) ? ' where ' . implode(" AND ", $neWc) : '');
-			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a';
+			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a order by district';
 			$result = $this -> db -> query($query);
 			$data['allData'] = $result -> result_array();
 			$sum=0;
@@ -1422,60 +1637,91 @@ class Compliances_model extends CI_Model {
 			}
 			$result1 = getDistComplianceFMVRReportTable($result ,$data['allDataTotal'],NULL, TRUE);
 		}else{
+			//echo "as";exit;
 			$monthlyPortion = "";
 			$outerPortion = "";
-			$allouterPortion = ""; 
-			//code by moon just to show zero zero instead of counts
-			for ($ind = 1; $ind <= $weeks; $ind++) {
+			$allouterPortion = "";
+			//$topHead = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
+			/* $fmonth = date('Y-m', strtotime('first day of previous month'));
+			$mmonnth = ($year==date('Y'))?explode("-",$fmonth):array('1'=>12);
+			$mmonnth = $mmonnth[1]; */
+				for ($ind = 1; $ind <= $weeks; $ind++) {
 				$ind = sprintf("%02d", $ind);
+				//$i=$ind
 				$fweekk = $year."-".$ind;
-				$monthlyPortion .= "0 AS  \"Timeliness$ind\",
-									0 AS  \"Completeness$ind\",
-									0 AS  \"Not Submitted$ind\",";
-				$allouterPortion .= "0 AS  \"Timeliness$ind\",
-									0 AS  \"Completeness$ind\",
-									0 AS  \"Not Submitted$ind\",";
+					//$headerArray[]=$topHead[$i-1];
+					$monthlyPortion.="
+						(select duewk$ind  from zeroreportcompliance where zeroreportcompliance.distcode= districts.distcode and zeroreportcompliance.year='$year') as due$ind ,
+						(select tsubwk$ind from zeroreportcompliance where zeroreportcompliance.distcode= districts.distcode and zeroreportcompliance.year='$year')as timelysub$ind,
+						(select subwk$ind  from zeroreportcompliance where zeroreportcompliance.distcode= districts.distcode and zeroreportcompliance.year='$year') as completesub$ind,";		
+										
+					$outerPortion .= "
+						due$ind,timelysub$ind,completesub$ind as sub$ind,completesub$ind,
+						round((timelysub$ind::float//due$ind)::numeric*100,0) || '%' as \"Timely %$ind\",
+						round((completesub$ind::float//due$ind)::numeric*100,0) || '%' as \"Completely %$ind\",round((due$ind-completesub$ind::float//due$ind)::numeric*100,0) || '%' as \"Not Submitted %$ind\",";
+			
+					$allouterPortion .= "
+						sum(due$ind) as totalDue$ind,
+						sum(sub$ind) as totalSub$ind,
+						round((sum(timelysub$ind)::float//sum(due$ind))::numeric*100,1) as TimelyPerc$ind,
+						round((sum(completesub$ind)::float//sum(due$ind))::numeric*100,1) as CompletePerc$ind,round((sum(due$ind)-sum(completesub$ind)::float//sum(due$ind))::numeric*100,1) as NotSubmittedPerc$ind,";						
+				}
+			//}
+			
+			$due="";$sub="";$timely="";
+			for ($ind = 1; $ind <= $weeks; $ind++) {
+			$ind = sprintf("%02d", $ind);
+			$fweekk = $year."-".$ind;
+				$due.='COALESCE(duewk'.$ind.',0) +';
+				$sub.='COALESCE(subwk'.$ind.',0) +';
+				$timely.='COALESCE(tsubwk'.$ind.',0) +';
 			}
-			$monthlyPortion .= "0 AS  \"Total Timeliness$ind\",
-								0 AS  \"Total Completeness$ind\",
-								0 AS  \"Total Not Submitted$ind\"";
-			$allouterPortion .= "0 as \"Total Timeliness$ind\",
-								 0 as \"Total Completeness$ind\", 
-								 0 as \"Total Not Submitted$ind\"";
-			$query = "select districts.distcode , districts.district,   $monthlyPortion   from districts   ORDER BY districts.district";
+			$due=rtrim($due,'+');
+			$sub=rtrim($sub,'+');
+			$timely=rtrim($timely,'+');
+			$monthlyPortion.="
+				(select $due  from zeroreportcompliance where zeroreportcompliance.distcode= districts.distcode and zeroreportcompliance.year='$year'  ) as totaldue ,
+				(select $timely  from zeroreportcompliance where zeroreportcompliance.distcode= districts.distcode and zeroreportcompliance.year='$year')as totaltimelysub,
+				(select $sub  from zeroreportcompliance where zeroreportcompliance.distcode= districts.distcode and zeroreportcompliance.year='$year') as totalcompletesub";				
+			$outerPortion .= "	
+				totaldue as due$ind,totalcompletesub as sub$ind,totaltimelysub,totalcompletesub, 
+				 round((totaltimelysub::float//totaldue)::numeric*100,0) || '%' as \"totaltimely %$ind\",
+				 round((totalcompletesub::float//totaldue)::numeric*100,0) || '%' as \"totalcomplete %$ind\",round((totaldue-totalcompletesub::float//totaldue)::numeric*100,0) || '%' as \"totalnotsubmitted %$ind\"  ";
+			$allouterPortion .= "
+				sum(due$ind) as totalDue$ind,
+				sum(sub$ind) as totalSub$ind,
+		round((sum(totaltimelysub)::float//sum(due$ind))::numeric*100,1) as TotalTimelyPerc$ind,
+				round((sum(totalcompletesub)::float//sum(due$ind))::numeric*100,1) as TotalCompletePerc$ind,round((sum(due$ind)-sum(totalcompletesub)::float//sum(due$ind))::numeric*100,1) as TotalnotsubmittedPerc$ind";
+				
+			//$headerArray[]="total";
+			//month wise end
+			//main query for flcf wise reporting
+			 $query = 'select distcode  , district,  ' . $monthlyPortion . '  from districts ' . ((!empty($neWc)) ? ' where ' . implode(" AND ", $neWc) : '') . 'Order by district';
+			$query = 'select distcode, district, ' . $outerPortion . ' from (' . $query . ') as a';
 			$result = $this -> db -> query($query);
 			$data['allData'] = $result -> result_array();
+									
 			//for vertical total of all rows.
-			if($data['year'] == date('Y')){
-				$queryForTotal = 'select ' . $allouterPortion;
-				$resultTotal = $this -> db -> query($queryForTotal);
-				$queryTotal = "";
-				$monthlyPortion="";
-				$allouterPortion="";
-				for ($ind = 1; $ind <= $weeks; $ind++) {
-					$ind = sprintf("%02d", $ind);
-					$fweekk = $year."-".$ind;
-					$q = "select sum(case when getfstatus_ds('$fweekk', facode)='F' then 1 else 0 end) as cnt from facilities where hf_type='e' and is_ds_fac='1'";
-					$t_fac = $this->db->query($q)->row_array();
-					$t_fac = $t_fac['cnt'];
-					$monthlyPortion .= "(select round((count(zero_report.facode)::float//($t_fac))::numeric*100,1) from zero_report where report_submitted = '1' and submitted_date IS NOT NULL and fweek = '$fweekk' ) AS  \"Timeliness$ind\",
-									(select round((count(zero_report.facode)::float//($t_fac))::numeric*100,1) from zero_report where report_submitted = '1' and fweek = '$fweekk'  ) AS  \"Completeness$ind\",
-									(select round(((($t_fac) - (SELECT count(zero_report.facode) FROM zero_report where fweek = '$fweekk' ) + (SELECT count(zero_report.facode) FROM zero_report where report_submitted = '0' and fweek = '$fweekk' ))::integer//($t_fac))::numeric*100,1) ) AS  \"Not Submitted$ind\","; 
-				
+										   
+			$queryForTotal = 'select ' . $allouterPortion . ' from (' . $query . ') as b';
+			$resultTotal = $this -> db -> query($queryForTotal);
+			$data['allDataTotal'] = $resultTotal -> result_array();
+			$this -> db -> select('count(*) as num');
+			$districtsCount = $this -> db -> get('districts') -> row();
+			for($k=1;$k<=$weeks;$k++){
+				for($count=0;$count<$districtsCount->num;$count++){
+					unset($data['allData'][$count]['timelysub'.sprintf('%02d',$k)]);
+					unset($data['allData'][$count]['completesub'.sprintf('%02d',$k)]);
+					unset($data['allData'][$count]['totaltimelysub']);
+					unset($data['allData'][$count]['totalcompletesub']);
 				}
-				$q = "select get_commulative_fstatus_ds(".$year.",".$weeks."::integer,'0') as cnt";
-				$t_fac = $this->db->query($q)->row_array();
-				$t_fac = $t_fac['cnt'];
-				$monthlyPortion .= "(select round((count(facode)::float//(".$t_fac.")::numeric)::numeric*100,1) from zero_report 				where report_submitted = '1' and submitted_date IS NOT NULL and fweek like '$year-%'  ) AS \"Total Timeliness$ind\",
-									(select round((count(facode)::float//(".$t_fac.")::numeric)::numeric*100,1) from zero_report where report_submitted = '1' and fweek like '$year-%'  ) AS  \"Total Completeness$ind\",
-									(select round((( (".$t_fac.")::numeric - (SELECT count(zero_report.facode) FROM zero_report where fweek like '$year-%' ) + (SELECT count(zero_report.facode) FROM zero_report where report_submitted = '0' and fweek like '$year-%' ))::integer//".$t_fac."::numeric)::numeric*100,1) ) AS  \"Total Not Submitted$ind\"";
-				$query = "select $monthlyPortion from facilities where facilities.hf_type='e' and is_ds_fac='1' limit 1";
-				$totalResult = $this -> db -> query($query);
-				$data['allTotal'] = $totalResult->result_array();
-			}else{
-				$data['allTotal'] = "";
 			}
-			$result1 = getComplianceReportTable($data['allData'], $data['allTotal'],$weeks,'','','yes');
+										 
+			$this -> db -> select('count(*) as num');
+			$districtsCount = $this -> db -> get('districts') -> row();
+//print_r($data);exit;
+	//}
+			$result1 = getComplianceReportTable($data['allData'], $data['allDataTotal'],$weeks,'','',null,null,'zero');
 		}
 		$dataReturned["year"] = $year;
 		$dataReturned["tableData"]=$result1;

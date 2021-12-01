@@ -125,7 +125,6 @@ class Ajax_cross_notified extends CI_Controller {
 	public function getOtherProvinceTehsils() {
 		$distcode = $this-> input-> post('distcode');
 		$procode = substr($distcode,0,1);		
-		//$procode = $this -> session -> Province;		
 		// $data = $this-> Ajax_cross_notified_model-> getOtherProvinceDistricts($procode);
 		// echo $data;
 		// echo $procode;
@@ -137,10 +136,8 @@ class Ajax_cross_notified extends CI_Controller {
 	}
 	public function getOtherProvinceUCs() {
 		$tcode = $this-> input-> post('tcode');
-		//$distcode =$this -> session -> District;
 		$distcode = substr($tcode,0,3);
 		$procode = substr($tcode,0,1);				
-		//$procode = $this -> session -> Province;				
 		// $data = $this-> Ajax_cross_notified_model-> getOtherProvinceDistricts($procode);
 		// echo $data;
 		// echo $procode;
@@ -274,6 +271,7 @@ class Ajax_cross_notified extends CI_Controller {
 		$data['LinkedCase'] = $this -> Ajax_cross_notified_model -> getLinked_CaseInformation($linked_epid_number);
 		//print_r($data);
 		echo json_encode($data['LinkedCase']);
-	} 
+	}
+		
 }
 ?>

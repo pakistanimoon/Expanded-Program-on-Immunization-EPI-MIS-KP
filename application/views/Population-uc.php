@@ -19,8 +19,9 @@
                 <th class="text-center Heading">UC Code</th> 
                 <th class="text-center Heading">Previous Year (<?php echo date("Y")-1;?>)</th>
                 <th class="text-center Heading">Current Year Population (<?php echo date("Y");?>)</th> 
-                <th class="text-center Heading">Next Year Population (<?php echo date("Y")+1;?>)</th>
+                <th class="text-center Heading">Next Year Population (<?php echo date("Y")+1;?>)
 				<!--<input type="checkbox" id="nextYear" onclick="EnableDisableTextBox(this)"  style="display: inline-block;vertical-align:text-bottom; margin-bottom:2px; margin-left:6px;" />-->
+          </th>
                 <form method="post" action="<?php echo site_url('Population/addUC'); ?>">
 				        
                 <label for="nextYear">
@@ -37,24 +38,12 @@
             <?php foreach ($data as $i => $value) { ?>
             <tr class="<?php echo substr($value->uncode,0,6);?>">
                <td class='text-center Heading'><?php echo $index; ?></td>
-               <td class='text-left'> <?php echo $value->un_name; ?></td>
+               <td class='text-left'><?php echo $value->un_name; ?></td>
                <td class='text-center' ><?php echo $value->uncode; ?></td>
-               <td class='text-center'><span class='previous'><?php if(isset($value->previous) && !empty($value->previous)){echo $value->previous;}else{ echo 0; } ?></span></td>
-			   
-               <td class='text-center'><span  class='current' name='current[]'> <?php if(isset($value->current) && !empty($value->current)){echo $value->current ;} else echo 0; ?></span></td>
-              <!-- <td class='text-center'><span  class='group1 next'   name='next[]' id='textNextYear'><php if(isset($value->next) && !empty($value->next)){echo $value->next;} else echo 0; ?></span></td>--> 
-			   
-			    <!--- <td class='text-center'><span  class='form-control text-center group1 numberclass next' name='next[]' id='textNextYear'> <php if(isset($value->next) && !empty($value->next)){echo $value->next ;} else echo 0; ?></span></td> 
-				
-				 <td class='text-left'><s class='form-control text-center group1 numberclass next'   name='next[]' id='textNextYear' value =' <?php if(isset($value->next) && !empty($value->next)){echo $value->next;} else echo 0; ?>'></span></td>---> 
-				 
-				<td class='text-left'><input onchange='dosum()' class='form-control text-center group1 numberclass next' type="text"   name='next[]' id='textNextYear' value='<?php if(isset($value->next) && !empty($value->next)){echo $value->next;} else echo 0; ?>'> </input></td> 
-				
-			   
-				
-			    
+               <td class='text-center'><span  class='previous'><?php if(isset($value->previous) && !empty($value->previous)){echo $value->previous;}else{ echo 0; } ?></span></td>
+               <td class='text-center'><span class='current' name='current[]'><?php if(isset($value->current) && !empty($value->current)){echo $value->current ;} else echo 0; ?></span></td>
+               <td class='text-center'><span class='next'   name='next[]'><?php if(isset($value->next) && !empty($value->next)){echo $value->next;} else echo 0; ?></span></td> 
             </tr>
-			
             <input type='hidden' name='addeddate[]' value='<?php echo $value->addeddate; ?>'>
             <?php $index++;$tehsilcount[$i] =  substr($value->uncode,0,6);
           }
@@ -129,10 +118,6 @@
 		}
 	});
 	$(document).ready(function(){dosum();});
-	$(document).on('keyup','.next,.current',function(){
-		
-		dosum();
-		});
 	function dosum(){
 		var distcurrsum = tehsilcurrsum = distprevsum = tehsilprevsum = distnextsum = tehsilnextsum = 0;
 		$('.tehsiltotal').each(function(){
@@ -143,8 +128,8 @@
 				distcurrsum+=parseInt($(this).find("span[name^=current]").text());
 				tehsilprevsum+=parseInt($(this).find(".previous").text());
 				distprevsum+=parseInt($(this).find(".previous").text());
-				tehsilnextsum+=parseInt($(this).find("input[name^=next]").val());
-				distnextsum+=parseInt($(this).find("input[name^=next]").val());
+				tehsilnextsum+=parseInt($(this).find("span[name^=next]").text());
+				distnextsum+=parseInt($(this).find("span[name^=next]").text());
 				tehsilcurrsum = tehsilcurrsum || 0;
 				distcurrsum = distcurrsum || 0;
 				tehsilprevsum = tehsilprevsum || 0;
@@ -152,7 +137,6 @@
 				tehsilnextsum = tehsilnextsum || 0;
 				distnextsum = distnextsum || 0;
 			});
-		//	alert(tehsilnextsum);	
 			$(this).find(".currtot").text(tehsilcurrsum);
 			$(this).find(".prevtot").text(tehsilprevsum);
 			$(this).find(".nexttot").text(tehsilnextsum);
@@ -160,10 +144,45 @@
 		$('#currenttotal').text(distcurrsum);
 		$('#previoustotal').text(distprevsum);
 		$('#nexttotal').text(distnextsum);
-		
+		//alert(tsum);
+		//alert(sum);
+		/*var $previoussum = 0;
+		$('.previous').each(function(k,v){
+			$previoussum += parseInt($(this).val());
+		});
+		var $currentsum = 0;
+		$('.current').each(function(k,v){
+			$currentsum += parseInt($(this).val());
+		});
+		var $nextsum = 0;
+		$('.next').each(function(k,v){
+			$nextsum += parseInt($(this).val());
+		});
+		$('#previoustotal').text($previoussum);
+		$('#currenttotal').text($currentsum);
+		$('#nexttotal').text($nextsum);*/
 	}
-	
-	
-	
-	
+	/*$(document).on('blur','.next,.current',function(){
+		if($(this).val.trim().length==0)
+			$(this).val("0");
+	});*/
+	$(document).on('keyup','.next,.current',function(){
+		dosum();
+		/* var $previoussum = 0;
+		$('.previous').each(function(k,v){
+			$previoussum += parseInt($(this).val());
+		});
+		var $currentsum = 0;
+		$('.current').each(function(k,v){
+			$currentsum += parseInt($(this).val());
+		});
+		var $nextsum = 0;
+		$('.next').each(function(k,v){
+			$nextsum += parseInt($(this).val());
+		});
+		$('#previoustotal').text($previoussum);
+		$('#currenttotal').text($currentsum);
+		$('#nexttotal').text($nextsum); */
+		
+	});
 </script>

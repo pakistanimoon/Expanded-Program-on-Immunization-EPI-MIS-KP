@@ -346,6 +346,7 @@
 			}
 		});
 		$(document).on('click','#issuebtn',function(){
+			$('#issuebtn').prop('disabled', true);
 			//validating selected batches must not be repeat, mean one batch can be selected in one row only.
 			//collect the values from all selected options;
 	     	var  arr = $.map($('.batch option:selected'), function(n){
@@ -358,6 +359,7 @@
                 	dupnotexist = false;
 					alert("You have selected same batches in multiple rows, please choose one batch in a row.");
 					$(".batch option:selected[value^="+sorted_arr[i]+"]").closest(".batch").css("border",'1px solid red');
+					$('#issuebtn').prop('disabled', false);
 					break;
            		}else{
 					$(".batch option:selected[value^="+sorted_arr[i]+"]").closest(".batch").css("border",'');
@@ -376,7 +378,7 @@
 						if(askedquantity>0){
 							$.ajax({
 								type: "POST",
-								//async: false,
+								async: false,
 								data: {
 									to_warehouse_type_id:$("#to_warehouse_type_id").find("option:selected").val(),
 									code:$("#code").find("option:selected").val(),
@@ -408,6 +410,7 @@
 					else {
 						var messages = errorproducts.join("\n");
 						alert("There are error(s) in adding some Item(s) to voucher!!!!\n"+messages);
+						$('#issuebtn').prop('disabled', false);
 					}
 				}
 			}
@@ -416,10 +419,11 @@
 			if(confirm("Do You realy want to delete this?")){
 				var batchId = $(this).data("id");
 				var masterId = $(this).data("masterid");
+				var batchnum = $(this).data("batchnum");
 				$.ajax({
 					type: "POST",
 					datatype: "JSON",
-					data: {batch: batchId,master: masterId},
+					data: {batch: batchId,master: masterId,batchnum: batchnum},
 					url: "<?php echo base_url("delinvnIssue"); ?>",
 					success: function(result){
 						var output = JSON.parse(result);
@@ -433,6 +437,23 @@
 				});
 			}
 		});
+		  //code  here for restrict double click on button when confirmation yes to dispacth button
+			$(document).on('click','.batch_masterid',function(){
+				$(this).attr("disabled","disabled");
+				$(this).prop('disabled', true);
+				var res=confirm('Are you sure you want to save the list?');
+				if(res)
+				{
+					$(this).prop('disabled', true);
+					$(this.form).submit();
+					
+				}
+				else
+				{
+					$(this).removeAttr("disabled");
+					return false;
+				}
+			});
 		$(document).on('change','#trans_date_time',function(){
 			$('#additemsbtn').trigger("click");
 		});
@@ -443,56 +464,8 @@
 		$('.invndp').datepicker(options);
 	});
 	function showAutoReqPanel(){
-		
-		// $(".product").each(function(){
-		// 	var productId = $(this).val();
-		// 	var formrownum = $("#product"+productId).data("formrownum");
-		// 	if(formrownum>0){
-		// 		var selectedStoreCode = $("#code").find("option:selected").val();
-		// 		var selectedStoreType = $("#to_warehouse_type_id").find("option:selected").val();
-		// 		var doses = $("#product"+productId).data("doses");
-		// 		var categoryid = $("#product"+productId).data("categoryid");
-		// 		var trans_date_time = $("#trans_date_time").val();
-				
-		// 		if((selectedStoreType==6 || selectedStoreType==4) && productId>0 && selectedStoreCode>0){
-		// 			//get suggestion values via ajax
-					
-		// 			$.ajax({
-		// 				type: "POST",
-		// 				datatype: "JSON",
-		// 				data: {storecode: selectedStoreCode,storetype:selectedStoreType,product:productId,rownum:formrownum,doses:doses,category:categoryid,trans_date_time:trans_date_time},
-		// 				url: "<?php //echo base_url("autoProdRequisition"); ?>",
-		// 				success: function(result){
-		// 					//alert("ajaxcehck");
-		// 					result = JSON.parse(result);
-		// 					var unit = $("#product"+productId).closest("tr").find(".unittext").text();							
-		// 					if (typeof result.balanceParts != "undefined") {
-		// 						var partsdata = result.balanceParts;
-		// 						$("#product"+productId).closest("tr").find(".diststoreavail").text(partsdata.distbalance);
-		// 						$("#product"+productId).closest("tr").find(".facstoreavail").text(partsdata.facbalance);
-		// 					}else{
-		// 						$("#product"+productId).closest("tr").find(".availablecard").text(result.balance+' '+unit);
-		// 					}
-		// 					if(categoryid==3){
-		// 						$("#product"+productId).closest("tr").find(".requiredcard").html("");
-		// 						$("#product"+productId).closest("tr").find(".requestcard").html("");
-		// 					}else{
-		// 						$("#product"+productId).closest("tr").find(".requiredcard").html("&#8776; "+result.required+' '+unit);
-		// 						$("#product"+productId).closest("tr").find(".requestcard").html("&#8776; "+result.requisition+' '+unit);
-		// 					}
-							
-		// 				},
-					
-		// 			});
-		// 		}else{
-		// 			////$("#auto_req_panel").hide();
-		// 		}			
-		// 	}else{
-		// 		////$("#auto_req_panel").hide();
-		// 	}
-			
-		// });
-		
+		//$(".product").each(function(){
+			//var productId = $(this).val();
 			//var formrownum = $("#product"+productId).data("formrownum");
 			//if(formrownum>0){
 				var selectedStoreCode = $("#code").find("option:selected").val();
@@ -500,29 +473,21 @@
 				//var doses = $("#product"+productId).data("doses");
 				//var categoryid = $("#product"+productId).data("categoryid");
 				//var trans_date_time = $("#trans_date_time").val();
-				
-				if((selectedStoreType==6 || selectedStoreType==4) && selectedStoreCode>0){
+				if((selectedStoreType==6 || selectedStoreType==4) /* && productId>0  */ &&selectedStoreCode>0){
 					//get suggestion values via ajax
-					
 					$.ajax({
 						type: "POST",
-						datatype: "json",
+						datatype: "JSON",
 						data: {storecode: selectedStoreCode, storetype: selectedStoreType},
 						url: "<?php echo base_url("fetch_req_cache"); ?>",
 						success: function(result){
 							result = JSON.parse(result);
-							//console.log(result);
-							//$("#rec_date").html(result[0]['rec_datetime']);
+							//var unit = $("#product"+productId).closest("tr").find(".unittext").text();							
 							if (typeof result.balanceParts == "undefined") {
-								if (typeof result[0]['rec_datetime'] != "undefined") {
-									$("#rec_date").html(result[0]['rec_datetime']);
-								}else{
-									$("#rec_date").html("----/--/-- --:--");
-								}
+								$("#rec_date").html(result[0]['rec_datetime']);
 								$.each(result, function (index, value) {
 									//console.log(value);
 									var unit = $("#product"+value.item_id).closest("tr").find(".unittext").text();
-									//alert(unit);
 									$("#product"+value.item_id).closest("tr").find(".availablecard").text(value.available+' '+unit);
 									$("#product"+value.item_id).closest("tr").find(".requiredcard").html("&#8776; "+value.suggested+' '+unit);
 									$("#product"+value.item_id).closest("tr").find(".requestcard").html("&#8776; "+value.requisition+' '+unit);
@@ -535,7 +500,6 @@
 									// });
 								});
 							}else{
-								//console.log('hi');
 							var partsdata = result.balanceParts;
 							$("#rec_date").html(partsdata['distbalance'][0]['rec_datetime']);
 							//console.log(partsdata);
@@ -557,27 +521,6 @@
 							});
 								
 						}
-							
-							//alert("ajaxcehck");
-							//result = JSON.parse(result);
-							//alert(result[0]['item_id']);
-							//var unit = $("#product"+result.item_id).closest("tr").find(".unittext").text();	
-							//console.log(result);						
-							// if (typeof result.balanceParts != "undefined") {
-							// 	var partsdata = result.balanceParts;
-							// 	$("#product"+productId).closest("tr").find(".diststoreavail").text(partsdata.distbalance);
-							// 	$("#product"+productId).closest("tr").find(".facstoreavail").text(partsdata.facbalance);
-							// }else{
-							// 	$("#product"+productId).closest("tr").find(".availablecard").text(result.balance+' '+unit);
-							// }
-							// if(categoryid==3){
-							// 	$("#product"+productId).closest("tr").find(".requiredcard").html("");
-							// 	$("#product"+productId).closest("tr").find(".requestcard").html("");
-							// }else{
-							// 	$("#product"+productId).closest("tr").find(".requiredcard").html("&#8776; "+result.required+' '+unit);
-							// 	$("#product"+productId).closest("tr").find(".requestcard").html("&#8776; "+result.requisition+' '+unit);
-							// }
-							
 						},
 					
 					});
@@ -587,6 +530,7 @@
 			//}else{
 				////$("#auto_req_panel").hide();
 			//}
+		//});
 	}	
 </script>
 <?php if($batchexist){?>
@@ -642,6 +586,7 @@
 		if(confirm("Do You realy want to refresh this?")){
 			var code = obj.getAttribute('data-code');
 			var type = obj.getAttribute('data-type');
+
             $.ajax({
             type: "POST",
             url: '<?php echo base_url("/requisition_refresh"); ?>',

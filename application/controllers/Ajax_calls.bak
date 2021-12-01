@@ -16,7 +16,7 @@ class Ajax_calls extends CI_Controller {
 		$epiweek = $this -> input -> post('epiweek');
 		if($epiweek > 0){
 			$year = $this -> input -> post('year');
-			$query = "select date_from, date_to from epi_weeks where year='$year' and epi_week_numb=$epiweek";
+			$query = "SELECT date_from, date_to from epi_weeks where year='$year' and epi_week_numb=$epiweek";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekDates = array(
@@ -71,7 +71,7 @@ class Ajax_calls extends CI_Controller {
 	public function getEpiWeeks(){
 		/* $current_date = date("Y-m-d");
 		$year = $this -> input -> post('year');
-		$query = "select max(epi_week_numb) as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date' and year='$year'";
+		$query = "SELECT max(epi_week_numb) as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date' and year='$year'";
 		$query = $this -> db -> query($query);
 		$result = $query -> row();
 		date_default_timezone_set('Asia/Karachi');
@@ -83,12 +83,14 @@ class Ajax_calls extends CI_Controller {
 			$weekOptions .= '<option '.$isSelected.' value="'.$i.'">Week '.$month.'</option>';
 		}
 		echo $weekOptions; */
+		//$current_date = date("Y-m-d");
+		//$current_date = date("Y-m-d",strtotime(date("Y-m-d")." -7 days"));
 		$current_date = date("Y-m-d");
 		$year = $this -> input -> post('year');
 		$week = $this -> input -> post('week');
-		$curr_year = date("Y");
+		$curr_year = getWeekYearAccordingToCurrentDate($current_date);
 		if($year == $curr_year || $year == "" ){
-			$query = "select epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
+			$query = "SELECT epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option value="0">--Select Week--</option>';
@@ -101,7 +103,7 @@ class Ajax_calls extends CI_Controller {
 		}
 		else if(($year+1) == $curr_year ){
 			//weeks of previous year
-			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year' ";
+			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year' ";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option value="0">--Select Week--</option>';
@@ -112,7 +114,7 @@ class Ajax_calls extends CI_Controller {
 			}
 			echo $weekOptions;
 		}else if($year < $curr_year ){
-			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
+			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option value="0">--Select Week--</option>';
@@ -169,7 +171,7 @@ class Ajax_calls extends CI_Controller {
 			$wc = " where year ='$year' and epi_week_numb ='$epiweek'  ";
 		}
 		
-		$query = "select date_from, date_to from epi_weeks $wc";
+		$query = "SELECT date_from, date_to from epi_weeks $wc";
 		$query = $this -> db -> query($query);
 		$result = $query -> row();
 		$weekDates = array(
@@ -189,8 +191,8 @@ class Ajax_calls extends CI_Controller {
 		$year = $this -> input -> post('year');
 		$curr_year = date("Y");////date("Y")////,strtotime("-1 week")
 		if($year == $curr_year || $year == "" ){
-			$query = "select epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
-			////$query = "select epi_week_numb as num from epi_weeks";
+			$query = "SELECT epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
+			////$query = "SELECT epi_week_numb as num from epi_weeks";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			////date_default_timezone_set('Asia/Karachi');
@@ -205,7 +207,7 @@ class Ajax_calls extends CI_Controller {
 		}
 		else if(($year+1) == $curr_year ){
 			//weeks of previous year
-			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
+			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			//$weekOptions='<option value="0">--Select Week--</option>';
@@ -218,7 +220,7 @@ class Ajax_calls extends CI_Controller {
 			echo $weekOptions;
 		}
 		else if($year < $curr_year ){
-			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
+			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			//$weekOptions='<option value="0">--Select Week--</option>';
@@ -291,11 +293,11 @@ class Ajax_calls extends CI_Controller {
 	public function getcase_investWeeksforCurrentYear(){
 		$current_date = date("Y-m-d");
 		$year = $this -> input -> post('year');
-		$curr_year = date("Y");////date("Y")////
+		$curr_year = getWeekYearAccordingToCurrentDate($current_date);////date("Y")////
 
 		if($year == $curr_year || $year == "" ){
-			$query = "select epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
-			////$query = "select epi_week_numb as num from epi_weeks";
+			$query = "SELECT epi_week_numb as num from epi_weeks where date_from <= '$current_date' and date_to >= '$current_date'";
+			////$query = "SELECT epi_week_numb as num from epi_weeks";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			////date_default_timezone_set('Asia/Karachi');
@@ -315,7 +317,7 @@ class Ajax_calls extends CI_Controller {
 		}
 		else if(($year+1) == $curr_year ){
 			//weeks of previous year
-			$query = "select MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
+			$query = "SELECT MAX(epi_week_numb) as num from epi_weeks where year = '$year'";
 			$query = $this -> db -> query($query);
 			$result = $query -> row();
 			$weekOptions='<option value="0">--Select Week--</option>';
@@ -331,6 +333,7 @@ class Ajax_calls extends CI_Controller {
 			echo $weekOptions;
 		}
 	}
+	
 	public function getidsrsEpiWeeks(){
 		$current_date = date("Y-m-d",strtotime("-1 week"));
 		$year = $this -> input -> post('year');
@@ -376,7 +379,7 @@ class Ajax_calls extends CI_Controller {
 		$query = $this -> db -> query($query);
 		$result = $query -> row();
 		$date_from  = $result->date_from;
-		$query = "SELECT epi_week_numb as num from epi_weeks where epi_week_numb >= '$from_week' and year='$year' and date_from BETWEEN  '$date_from' and '$current_date'";
+		$query = "SELECT epi_week_numb as num from epi_weeks where epi_week_numb >= '$from_week' and year='$year' and date_from BETWEEN  '$date_from' and '$current_date' order by epi_week_numb";
 		$query = $this -> db -> query($query);
 		$result = $query -> result_array();
 		date_default_timezone_set('Asia/Karachi');
@@ -495,6 +498,14 @@ class Ajax_calls extends CI_Controller {
 		echo $data;
 
 	}
+		public function checkMfpNIC(){
+
+		$nic = $this->input->post('nic');
+		$code = $this->input->post('code');
+		$data=$this -> Ajax_calls_model -> checkMfpNIC($nic,$code);
+		echo $data;
+
+	}
 	public function checkgoNIC(){
 
 		$nic = $this->input->post('nic');
@@ -543,6 +554,19 @@ class Ajax_calls extends CI_Controller {
 	public function codb_filter_cnic(){
 		$cnic = $this -> uri -> segment(3);
 		$data = $this -> Ajax_calls_model ->codb_filter_cnic($cnic);
+		echo $data;
+	}
+	public function mfpdb_filter() {
+
+		$page = $this -> uri -> segment(3);
+		$status = $this -> uri -> segment(4);
+		$distcode = $this -> uri -> segment(5);
+		$data = $this -> Ajax_calls_model -> mfpdb_filter($page,$status,$distcode);
+		echo $data;
+	}
+	public function mfpdb_filter_cnic(){
+		$cnic = $this -> uri -> segment(3);
+		$data = $this -> Ajax_calls_model ->mfpdb_filter_cnic($cnic);
 		echo $data;
 	}
 	public function getBranches() {	
@@ -722,7 +746,8 @@ class Ajax_calls extends CI_Controller {
 		$hrcode = $this->input->get('hrcode');
 		$cocode = $this->input->get('cocode');
 		$spcode = $this->input->get('spcode');
-		$data=$this -> Ajax_calls_model -> checkCodes($spcode,$cocode,$hrcode,$supervisornewcode,$supervisorcode,$techniciancode,$facodew,$distcodedriver,$distcodeas,$distcodeco,$distcodeccm,$distcodego,$distcodecco,$distcodecct,$facodecct,$chkdsocode,$dsocode,$chkcctcode,$cctcode, $chkccmcode,$ccmcode, $chkccgcode,$ccgcode, $chkccdcode,$ccdcode,$facodem,$deodcode,$skdcode);
+		$mfpcode = $this->input->get('distcodemfp');
+		$data=$this -> Ajax_calls_model -> checkCodes($spcode,$cocode,$hrcode,$supervisornewcode,$supervisorcode,$techniciancode,$facodew,$distcodedriver,$distcodeas,$distcodeco,$distcodeccm,$distcodego,$distcodecco,$distcodecct,$facodecct,$chkdsocode,$dsocode,$chkcctcode,$cctcode, $chkccmcode,$ccmcode, $chkccgcode,$ccgcode, $chkccdcode,$ccdcode,$facodem,$deodcode,$skdcode,$mfpcode);
 		echo $data;
 	}	
 		public function skdb_filter_cnic(){
@@ -1540,6 +1565,185 @@ class Ajax_calls extends CI_Controller {
 		echo $data = '<td style="color:black;">'.implode("</td><td style=\"color:black;\">",$data).'</td>';
 		//echo json_encode($data);		
 	}
+	public function moonzerorepcomp_data(){
+		$year=$this->input->post('fyear');
+		$distcode=$this->input->post('distcode');
+		$dataresult=$this->Ajax_calls_model->moonzerorepcomp_data($year,$distcode);
+		$data="insert into zeroreportcompliance(";
+		$data.=implode(", ", array_keys($dataresult));
+		$data.=",distcode,year) values (";
+		$data.=implode(", ", array_values($dataresult));
+		$data.=",$distcode,$year);";
+		echo $data;
+		echo '<br>';
+		//print_r($data);exit;
+		//$data ='<td style="color:black;">'.$data.'</td>';
+		//echo json_encode($data);		
+	}
+	public function flcf_dataTables(){
+		$wc = getWC();
+		$draw = intval($this->input->get("draw"));
+        $start = intval($this->input->get("start"));
+        $length = intval($this->input->get("length"));
+        $order = $this->input->get("order");
+        $search = $this->input->get("search");
+        $columns = $this->input->get("columns");
+      	$multiple_search = "";
+      	if(isset($columns) AND is_array($columns)){
+      		foreach ($columns as $key => $value) {
+      			$search_value = $value['search']['value'];
+      			$search_value = str_replace('_', ' ', $search_value);
+      			$column = $value['data'];
+				 
+      			if($_SESSION['UserLevel']=='2'){
+      				$column = str_replace('districtname', 'distcode', $column);
+      			}elseif ($_SESSION['UserLevel']=='3'){
+      				$column = str_replace('tehsilname', 'tcode', $column);
+				}if( ! empty($search_value)){
+      				$multiple_search .= " AND ";
+      				$multiple_search .= "$column='$search_value'";
+      			}
+      		}
+      	}if(isset($search)){
+  			$keyword = $search['value'];
+      		$keyword = str_replace('_', ' ', $keyword);
+      		$keyword = strtolower($keyword);
+      		$search = " AND (lower(fac_name) LIKE '$keyword%' OR 
+      					lower(fatype) LIKE '$keyword%' OR 
+      					facode LIKE '$keyword%' OR 
+      					areatype LIKE '$keyword%' OR
+						uncode LIKE '$keyword%' OR 
+      					tcode LIKE '$keyword%' OR
+						func_status LIKE '$keyword%' OR 
+      					rep_status LIKE '$keyword%' OR 
+      					is_vacc_fac LIKE '$keyword%' OR 
+      					is_ds_fac LIKE '$keyword%' )";
+	  	}else{
+      		$search = "";
+      	}
+        $col = 0;
+        $dir = "";
+		if(!empty($order)){
+            foreach($order as $o){
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+
+        if($dir != "asc" && $dir != "desc") {
+            $dir = "asc";
+        }
+		if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
+				$columns_valid = array(
+					"serial",
+					"fac_name",
+					"fatype",
+					"facode",
+					"areatype",
+					"unioncouncil",
+					"tcode",         
+					"is_vacc_fac",
+					"is_ds_fac",
+					"total_technicians",
+					
+				);
+		}else{
+			$columns_valid = array(
+					"serial",
+					"fac_name",
+					"fatype",
+					"facode",
+					"areatype",
+					"unioncouncil",
+					"tcode",
+					"is_vacc_fac",
+					"is_ds_fac",
+					"total_technicians",
+			);
+		}
+
+        if(!isset($columns_valid[$col])) {
+            $order = '';
+        } elseif($draw == 1) {
+            $order = " order by fac_name ";// "order by ".$columns_valid[$col].' '.$dir;
+        }else{
+        	$order = "order by ".$columns_valid[$col].' '.$dir;
+        }
+		$fmonth = date('Y-m');
+		$curr_date = date('Y-m-d');
+		$q = "SELECT epi_week_numb FROM epi_weeks WHERE date_from >='$curr_date' ORDER BY epi_week_numb LIMIT 1";
+		$result = $this ->db->query($q)->row();
+		$fweek = date('Y').'-'.sprintf("%02d", $result->epi_week_numb);
+		$query = "select fac_name,fatype,facode,areatype,unname(uncode) as unioncouncil,tehsilname(tcode)as tehsil,catchment_area_pop,getfstatus_vacc('$fmonth',facode) as vacc_status,getfstatus_ds('$fweek',facode) as ds_status, is_vacc_fac,is_ds_fac,(select count(facode) from techniciandb where techniciandb.facode=facilities.facode) as total_technicians from facilities where $wc $search $multiple_search $order LIMIT {$length} OFFSET {$start}  ";
+		$facilities = $this->db->query($query);
+		$str = $this->db->last_query();
+		$data = array();
+        $i=$start+1;
+        foreach($facilities->result() as $r) {
+        	if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
+	       		$data[] = array(
+	                "serial" => $i,
+	                "fac_name" => $r->fac_name,
+	                "fatype" => $r->fatype,
+	                "facode" => $r->facode,
+	                "areatype" => $r->areatype,
+					"unioncouncil" => $r->unioncouncil,
+	                "tehsil" => $r->tehsil,
+	                "vacc_status"  => $r->vacc_status,
+					"ds_status" => $r->ds_status,
+					"is_vacc_fac" => $r->is_vacc_fac,
+					"is_ds_fac" => $r->is_ds_fac,
+					"total_technicians" => $r->total_technicians
+	               
+	              
+	            );
+	     	}elseif (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='Manager') )
+			{
+	       		$data[] = array(
+	                "serial" => $i,
+	                "fac_name" => $r->fac_name,
+	                "fatype" => $r->fatype,
+	                "facode" => $r->facode,
+	                "areatype" => $r->areatype,
+					"unioncouncil" => $r->unioncouncil,
+	                "tehsil" => $r->tehsil,
+					"vacc_status"  => $r->vacc_status,
+					"ds_status" => $r->ds_status,
+					"is_vacc_fac" => $r->is_vacc_fac,
+					"is_ds_fac" => $r->is_ds_fac,
+					"total_technicians" => $r->total_technicians
+	              
+	            );
+	     	}else{
+	     		$data[] = array(
+	                "serial" => $i,
+	                "fac_name" => $r->fac_name,
+	                "fatype" => $r->fatype,
+	                "facode" => $r->facode,
+	                "areatype" => $r->areatype,
+					"unioncouncil" => $r->uncode,
+	                "tehsil" => $r->tcode,
+					"vacc_status"  => $r->vacc_status,
+					"ds_status" => $r->ds_status,
+					"is_vacc_fac" => $r->is_vacc_fac,
+					"is_ds_fac" => $r->is_ds_fac,
+					"total_technicians" => $r->total_technicians
+	            );
+	     	}
+            
+            $i++;
+        }
+		$query = "SELECT COUNT(*) AS num FROM facilities WHERE $wc $search $multiple_search";
+		$total_facilities = $this->db->query($query)->row();
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $total_facilities->num,
+            "recordsFiltered" => $total_facilities->num,
+            "data" => $data
+        );
+		echo json_encode($output);
+        exit();
+	}
 	public function supervisor_dataTables()
 	{
 		$wc = getWC();//helper function
@@ -2185,6 +2389,168 @@ public function dso_dataTables()
         echo json_encode($output);
         exit();
 	}
+	public function mfp_dataTables()
+	{
+		$wc = getWC();//helper function
+		//$query = "SELECT COUNT(*) AS num FROM codb WHERE $wc";//$this->db->select("COUNT(*) as num")->get("supervisordb");
+	  	//$total_codb = $this->db->query($query)->row();
+	  	//echo json_encode($total_dsodb);exit;
+	  	$draw = intval($this->input->get("draw"));
+        $start = intval($this->input->get("start"));
+        $length = intval($this->input->get("length"));
+        $order = $this->input->get("order");
+        $search = $this->input->get("search");
+        $columns = $this->input->get("columns");
+      	//echo json_encode($_GET);exit;
+      	$multiple_search = "";
+      	if(isset($columns) AND is_array($columns))
+      	{
+      		foreach ($columns as $key => $value) 
+      		{
+      			$search_value = $value['search']['value'];
+      			$search_value = str_replace('_', ' ', $search_value);
+      			$column = $value['data'];
+      			if($_SESSION['UserLevel']=='2')
+      			{
+      				$column = str_replace('districtname', 'distcode', $column);
+      			}
+      			elseif ($_SESSION['UserLevel']=='3') 
+      			{
+      				$column = str_replace('tehsilname', 'tcode', $column);
+      			}
+      			if( ! empty($search_value))
+      			{
+      				$multiple_search .= " AND ";
+      				$multiple_search .= "$column='$search_value'";
+      			}
+      		}
+      	}
+      	//echo $multiple_search;exit;
+      	if(isset($search))
+      	{
+  			$keyword = $search['value'];
+      		$keyword = str_replace('_', ' ', $keyword);
+      		$keyword = strtolower($keyword);
+      		$search = " AND (lower(mfpname) LIKE '$keyword%' OR 
+      					lower(employee_type) LIKE '$keyword%' OR 
+      					mfpcode LIKE '$keyword%' OR 
+      					nic LIKE '$keyword%' OR 
+      					lower(status) LIKE '$keyword%' OR
+						phone LIKE '$keyword%') ";
+      		
+      	}
+      	else
+      	{
+      		$search = "";
+      	}
+        $col = 0;
+        $dir = "";
+        if(!empty($order))
+        {
+            foreach($order as $o) 
+            {
+                $col = $o['column'];
+                $dir= $o['dir'];
+            }
+        }
+
+        if($dir != "asc" && $dir != "desc") {
+            $dir = "asc";
+        }
+	if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') ){
+        $columns_valid = array(
+            "serial",
+            "mfpname",
+            "nic",
+			"phone",
+            "employee_type",
+			"tehsilname",
+            "status",
+            "is_temp_saved",
+            "mfpcode",
+        );
+	}
+	else{
+			$columns_valid = array(
+            "serial",
+            "mfpname",
+			"nic",
+			"phone",
+			"employee_type",
+			"districtname",
+            "status",
+            "is_temp_saved",
+            "mfpcode",
+        );
+	}
+        if(!isset($columns_valid[$col])) {
+            $order = '';
+        } elseif($draw == 1) {
+            $order = " order by date_joining ";// "order by ".$columns_valid[$col].' '.$dir;
+        }
+        else{
+        	$order = "order by ".$columns_valid[$col].' '.$dir;
+        }
+
+        $query = "select mfpname,mfpcode,employee_type,CASE WHEN is_temp_saved='0' THEN 'Not Submitted' ELSE 'Submitted' END as is_temp_saved,nic,phone,districtname(mfpdb.distcode) as districtname,tehsilname(mfpdb.tcode) as tehsilname,status from mfpdb where $wc $search $multiple_search $order LIMIT {$length} OFFSET {$start}  ";
+        //echo $query;exit;
+		$operator = $this->db->query($query);
+		//$supervisors = $this->db->get("supervisordb");//$this->books_model->get_books();
+		
+        $data = array();
+        $i=$start+1;
+        foreach($operator->result() as $r) 
+        {
+        	if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO') )
+			{
+	       		$data[] = array(
+	                "serial" => $i,
+	                "mfpname" => $r->mfpname,
+	                "nic" => $r->nic,
+	                "employee_type" => $r->employee_type,
+	                "mfpcode" => $r->mfpcode,
+	                "phone" => $r->phone,
+	               /* "cellphone" => $r->cellphone,*/
+				   "districtname" => $r->districtname,
+	                "tehsilname" => $r->tehsilname,
+	                "status" => $r->status,
+	                "is_temp_saved" => $r->is_temp_saved,
+	                
+	            );
+	     	}
+	     	else
+	     	{
+	     		$data[] = array(
+	                "serial" => $i,
+	                "mfpname" => $r->mfpname,
+	                "nic" => $r->nic,
+	                "employee_type" => $r->employee_type,
+	                "mfpcode" => $r->mfpcode,
+	                "phone" => $r->phone,
+	                /*"cellphone" => $r->cellphone,*/
+	                
+	                "districtname" => $r->districtname,
+	                "status" => $r->status,
+	                "is_temp_saved" => $r->is_temp_saved,
+	            );
+	     	}
+            
+            $i++;
+        }
+		$query = "SELECT COUNT(*) AS num FROM mfpdb WHERE $wc $search $multiple_search";
+		//echo $query;exit;
+	  	$total_mfpdb = $this->db->query($query)->row();
+
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $total_mfpdb->num,
+            "recordsFiltered" => $total_mfpdb->num,
+            "data" => $data
+        );
+        echo json_encode($output);
+        exit();
+	}
+
 
 	public function do_dataTables()
 	{
@@ -3122,6 +3488,18 @@ public function dso_dataTables()
 		}
 		echo json_encode($return);
 	}
+	public function getTransportColdroom(){ 
+		$id = $this->input->post('id');
+        $wc = "where ccm_sub_asset_type_id='$id'";
+		$query="select pk_id,ccm_make_id,makername(ccm_make_id) as make_name from epi_cc_models {$wc}";
+		//echo $query; exit;
+		$result = $this->db->query($query)->result_array();
+		$return='<option value="">--Select--</option>';
+		foreach($result as $values){
+			$return .='<option value="'.$values['ccm_make_id'].'">'.$values['make_name'].'</option>';
+		}
+		echo json_encode($return);
+	}
 	public function ccm_dataTables()
 	{
 		$wc = getWC();//helper function
@@ -3800,6 +4178,54 @@ public function dso_dataTables()
 		$query="Select facode, fac_name from facilities where getfstatus_ds('{$fweek}',facode)='F' and hf_type='e' and is_ds_fac='1' and distcode='{$this -> session -> District}' order by fac_name";
 		$data['resultFac'] = $this -> db -> query($query) -> result_array();
 		echo $this -> load -> view('investigation_forms/weeklyFunctionalFacilitiesRows',$data,TRUE);
+	}
+	public function getFacilityTechnicians(){
+		$facode = $this -> input -> post('facode');
+		$technicians = $this -> Ajax_calls_model -> getFacilityTechnicians($facode);
+		$data = '<option value="">--Select Technician--</option>';
+		if( ! empty($technicians)){
+			foreach($technicians as $key => $technician){
+				$data .= '<option value="'.$technician['techniciancode'].'">'.$technician['technicianname'].'</option>';
+			}
+		}
+		echo $data;
+	}
+	public function checkfatherNIC(){
+		$nic = $this->input->post('fathercnic');
+		$data=$this -> Ajax_calls_model -> checkfatherNIC($nic);
+		echo (empty($data))?0:json_encode($data);
+	}
+	public function checkchildmotherNIC(){
+		$nic = $this->input->post('mothercnic');
+		$data=$this -> Ajax_calls_model -> checkchildmotherNIC($nic);
+		echo (empty($data))?0:json_encode($data);
+	}
+	public function CheckChlidRegistrationNo(){
+		$child_registration_no = $this->input->post('child_registration_no');
+		$data=$this -> Ajax_calls_model -> CheckChlidRegistrationNo($child_registration_no);
+		echo (empty($data))?0:json_encode($data);
+	}
+	public function checkmotherNIC(){
+		$nic = $this->input->post('mother_cnic');
+		$data=$this -> Ajax_calls_model -> checkmotherNIC($nic);
+		echo (empty($data))?0:json_encode($data);
+	}
+	public function CheckmotherRegistrationNo(){
+		$mother_registration_no = $this->input->post('mother_registration_no');
+		$data=$this -> Ajax_calls_model -> CheckmotherRegistrationNo($mother_registration_no);
+		echo (empty($data))?0:json_encode($data);
+	}
+	public function child_list_filter(){
+		$tcode = $this-> input-> get('tcode');
+		$uncode = $this-> input-> get('uncode');
+		$village = $this-> input-> get('village');
+		$data = $this-> Ajax_calls_model-> child_list_filter($tcode,$uncode,$village);
+		echo $data;
+	}
+	public function get_Hr_sub_type_option() {
+		$hr_sub_type_id = $this->input->post('hr_sub_type_id');
+		$data = $this -> Ajax_calls_model -> get_Hr_sub_type_option($hr_sub_type_id);
+		echo json_encode($data);
 	}
 }
 ?>

@@ -46,7 +46,7 @@
 						  	<div class="form-group">
 								  <label class="col-xs-2 control-label unameUC col-md-offset-1" for = "menu_icon" >Menu Icon</label>
 							  	<div class="col-xs-3 unameUC">
-									<input name="menu_icon" id="menu_icon" placeholder="Menu Icon" class="form-control" value='<?php echo isset($menu)?$menu[0]["icon"]:""; ?>' />
+									<input name="menu_icon" id="menu_icon" placeholder="Menu Icon"  class="form-control " value='<?php echo isset($menu)?$menu[0]["icon"]:""; ?>'/>
 							  	</div> 
 							  	
 								  <label class="col-xs-2 control-label unameFLCF"for = "menu_temp" >Menu Template</label>
@@ -351,28 +351,29 @@ $(document).ready(function()
 				});
 			}
 		});
-		$('.cluster').removeClass('hide');		
-		$('#search').on("keyup change", function () {
-			$('#jstree_users').jstree(true).search($(this).val())
-		})
-
-		$('#clear').click(function (e) {
-			$('#search').val('').change().focus()
-		})
-
-		$('#jstree_users').on('changed.jstree', function (e, data) {
-			var objects = data.instance.get_selected(true)
-			var leaves = $.grep(objects, function (o) 
-			{ 
-				return data.instance.is_leaf(e)
+		$('.cluster').removeClass('hide');
+		
+			$('#search').on("keyup change", function () {
+				$('#jstree_users').jstree(true).search($(this).val())
 			})
-			var list = $('#output_users')
-			list.empty()
-			$.each(leaves, function (i, o) {
-				$('<li/>').text(o.text).appendTo(list)
-				cluster_user()			
+
+			$('#clear').click(function (e) {
+				$('#search').val('').change().focus()
 			})
-		});			
+
+			$('#jstree_users').on('changed.jstree', function (e, data) {
+				var objects = data.instance.get_selected(true)
+				var leaves = $.grep(objects, function (o) 
+				{ 
+					return data.instance.is_leaf(e)
+				})
+				var list = $('#output_users')
+				list.empty()
+				$.each(leaves, function (i, o) {
+					$('<li/>').text(o.text).appendTo(list)
+					cluster_user()			
+				})
+			});			
 	<?php
 		}
 	?>

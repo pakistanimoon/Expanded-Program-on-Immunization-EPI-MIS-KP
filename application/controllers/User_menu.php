@@ -73,15 +73,11 @@ class User_menu extends CI_Controller
       $levelArray = $_REQUEST['jsfields_parent'];
       $levelArray = explode(',', $levelArray);
       $levelArray = array_unique($levelArray);
-	   if ($_REQUEST['node_id'] == "")
-        $a = "#";
-      else 
-        $a = $_REQUEST['node_id'];
-	  
+
       $data['menu_item']  = $_REQUEST['menu_item'];
       $data['menu_url']   = $_REQUEST['menu_url'];
       $data['icon']       = $_REQUEST['menu_icon'];
-      $data['parent_id']  =	$a;
+      $data['parent_id']  = $_REQUEST['node_id'];
       $data['template']   = $_REQUEST['menu_temp'];
         
       $this->User_menu_model->save_menu($data);

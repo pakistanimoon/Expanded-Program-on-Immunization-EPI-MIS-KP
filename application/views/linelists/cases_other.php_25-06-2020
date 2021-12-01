@@ -6,13 +6,18 @@
 			<div class="panel-heading"> Line List of Suspected Cases</div>
 			<div class="panel-body">
 				<form class="form-horizontal">
-					<table class="table table-bordered table-striped table-hover mytable">
+					<table class="table table-bordered   table-striped table-hover  mytable">
 						<tr>
-							<td><label>Province/Region</label></td>
-							<!-- <td><?php echo $provName; ?></td> -->
+							<td><label>Province/Area</label></td>
 							<td><?php echo $this -> session -> provincename ?></td>
 							<td><label>District</label></td>
 							<td><?php echo $districtName; ?></td>
+							<td><label>Union Council</label></td>
+							<?php if($this-> uri-> segment(9) == "outbreak"){ ?>
+								<td><?php echo get_UC_Name($pa_uncode); ?></td>
+							<?php } else { ?>                           
+								<td><?php echo $ucName; ?></td>
+							<?php } ?>
 						</tr>
 						<tr>
 							<td><label># of Reporting Unit</label></td>
@@ -28,34 +33,43 @@
 							<td><label># of Reported Cases</label></td>
 							<td><?php if(isset($ReportingFLCF)){ echo $ReportingFLCF; } ?></td>  
 						</tr>
-						<tr>							
+						<tr>
+							<?php //if((isset($week_from) && $week_from < 1) && (isset($week_to) && $week_to < 1)) { ?>
+								<!-- <td><label>Year</label></td>
+								<td><?php echo $year; ?></td> -->
+							<!-- 	<td><label>Date From</label></td>
+								<td id="datefrom"><?php echo (isset($datefromReport))?$datefromReport:''; ?>
+								</td>
+								<td><label>Date To</label></td>
+								<td id="dateto"><?php echo (isset($datetoReport))?$datetoReport:''; ?>
+								</td> -->
 							<?php if ((isset($week_from) && $week_from < 1) && (isset($week_to) && $week_to >= 1)) { ?>
-								<td><label>Epi Week From</label></td>
+								<td><label>Epid Week From</label></td>
 								<td><?php echo (isset($week_from))?$year.'-01':''; ?>
 								</td>
-								<td><label>Epi Week To</label></td>
+								<td><label>Epid Week To</label></td>
 								<td><?php echo (isset($week_to))?$year.'-'.sprintf('%02d',$week_to):''; ?>
 								</td>
 							<?php } else if ((isset($week_from) && $week_from >= 1) && (isset($week_to) && $week_to < 1)) { ?>
-								<td><label>Epi Week From</label></td>
+								<td><label>Epid Week From</label></td>
 								<td><?php echo (isset($week_from))?$year.'-'.sprintf('%02d',$week_from):''; ?>
 								</td>
-								<td><label>Epi Week To</label></td>
+								<td><label>Epid Week To</label></td>
 								<td><?php echo (isset($week_to))?$year.'-'.date('W'):''; ?>
 								</td>
 							<?php } else if ((isset($week_from) && $week_from >= 1) && (isset($week_to) && $week_to >= 1)) { ?>
-								<td><label>Epi Week From</label></td>
+								<td><label>Epid Week From</label></td>
 								<td><?php echo (isset($week_from))?$year.'-'.sprintf('%02d',$week_from):''; ?>
 								</td>
-								<td><label>Epi Week To</label></td>
+								<td><label>Epid Week To</label></td>
 								<td><?php echo (isset($week_to))?$year.'-'.sprintf('%02d',$week_to):''; ?>
 								</td>
 							<?php } ?>
 						</tr>
 						<tr>
 						<?php if((isset($week_from) && $week_from < 1) && (isset($week_to) && $week_to < 1)) { ?>
-							<td><label>Year</label></td>
-							<td><?php echo $year; ?></td>
+								<td><label>Year</label></td>
+								<td><?php echo $year; ?></td>
 						<?php } ?>
 						<?php if(isset($week_from) && $week_from < 1 && $year == date('Y')) { ?>
 							<td><label>Date From</label></td>
@@ -85,7 +99,7 @@
 									<th rowspan="2">Action</th>
 								<?php }?>
 									<th rowspan="2">Sr #</th>
-									<th rowspan="2">Reporting EPI Week</th>
+									<th rowspan="2">Reporting Epid Week</th>
 									<th rowspan="2">Reporting Year</th>
 									<th rowspan="2">Reporting HF</th>
 									<th rowspan="2">Reporting District</th>
@@ -97,22 +111,22 @@
 									<th rowspan="2">Age in Months</th>
 									<th rowspan="2">Gender</th>
 									<?php
-									if(isset($data['case_type']) == 'Msl'){ 
-									//if($data['case_type'] == 'Msl'){ ?>
+									//if(isset($data['case_type']) == 'Msl'){ 
+									if(isset($data['case_type']) && $data['case_type'] == 'Msl'){ ?>
 									<th rowspan="2">Date of Rash Onset</th>
-									<?php } else if (isset($data['case_type']) == 'Diph' ){ ?>
+									<?php } else if (isset($data['case_type']) && $data['case_type'] == 'Diph' ){ ?>
 									<th rowspan="2">Date of Adherent membrance onset</th>
 									<?php }  else { ?>
 									<th rowspan="2">Date Onset</th>
-									<?php } ?>	
+									<?php } ?>
 									<th rowspan="2">Date of Notification</th>
 									<th rowspan="2">Date of Investigation</th>                              
 									<th rowspan="2"># of Vaccine doses received</th>
 									<th rowspan="2">Date of last vaccine dose</th>
-									<!-- <th rowspan="2">Date of Specimen Collection</th>
+									<th rowspan="2">Date of Specimen Collection</th>
 									<th rowspan="2">Type of Specimen</th>
 									<th rowspan="2">Date Specimen Sent to Lab</th> 
-									<th rowspan="2">Date Specimen Received in Lab</th> -->
+									<th rowspan="2">Date Specimen Received in Lab</th>
 									<th colspan="2">Condition of Specimen</th>
 									<th rowspan="2">Lab ID Number</th>
 									<th rowspan="2">Date Report Sent</th>
@@ -120,17 +134,9 @@
 									<th rowspan="2">Clinical Presentation of the case</th>
 									<th rowspan="2">Complications</th>
 									<th rowspan="2">Outcome</th>
-									<th rowspan="2">Date of Specimen Collection</th>
-									<th rowspan="2">Type of Specimen</th>
-									<th rowspan="2">Specimen Quantity Adequate</th>
-									<th rowspan="2">Date Specimen Sent to Lab</th> 
-									<th rowspan="2">Date Specimen Received in Lab</th>
-									<th rowspan="2">Lab result</th>
-									<!-- <th rowspan="2">EPI Linked (Msl/Rub/N0)</th> -->
-									<?php if(isset($data['case_type']) && $data['case_type'] == 'Msl') { ?>
-										<th rowspan="2">Final Classification</th>
-										<th rowspan="2">Linked EPID Number</th>
-									<?php } ?>
+									<th colspan="2">Lab result</th>
+									<th rowspan="2">EPI Linked (Msl/Rub/N0)</th>
+									<th rowspan="2">Final Classification</th>
 									<!-- <th rowspan="2">Action</th> -->
 								</tr>
 								<tr>
@@ -141,8 +147,8 @@
 									<th>Province/Area</th>
 									<th>Quantity Adequate</th>
 									<th>Cold Chain OK</th>
-									<!-- <th>Measles</th>
-									<th>Rubella</th> --> 
+									<th>Measles</th>
+									<th>Rubella</th> 
 									<!-- <th>Edit</th>
 									<th>View</th> -->                             
 								</tr>           
@@ -151,7 +157,9 @@
 							<?php 
 								$previousWeekNumber = 0;
 								$startpoint = isset($startpoint)?$startpoint:0;
-								//print_r($measles);exit();
+								if($this->input->post('export_excel')){
+									$startpoint=0;
+								}//print_r($measles);exit();
 								foreach($measles as $key => $row){						
 									if($row['patient_gender']=='1')       
 										$patient_gender= 'Male';           
@@ -195,10 +203,10 @@
 									<td><?php echo isset($row['pvh_date']) ? date('d-M-Y',strtotime($row['pvh_date'])) :'-'; ?></td>
 									<td><?php echo $row['doses_received']; ?></td> 
 									<td><?php echo isset($row['last_dose_date']) ? date('d-M-Y',strtotime($row['last_dose_date'])) : '-'; ?></td>  
-									<!-- <td><?php echo isset($row['date_collection']) ? date('d-M-Y',strtotime($row['date_collection'])) : '-';?></td> 
+									<td><?php echo isset($row['date_collection']) ? date('d-M-Y',strtotime($row['date_collection'])) : '-';?></td> 
 									<td><?php echo $row['type_specimen']; ?></td>
 									<td><?php echo isset($row['date_sent_lab']) ? date('d-M-Y',strtotime($row['date_sent_lab'])) : '';?></td>   
-									<td><?php echo isset($row['specimen_received_date']) ? date('d-M-Y',strtotime($row['specimen_received_date'])) : '-';?></td> --> 
+									<td><?php echo isset($row['specimen_received_date']) ? date('d-M-Y',strtotime($row['specimen_received_date'])) : '-';?></td> 
 									<td><?php echo (($row['quantity_adequate']==1)?"Yes":"No"); ?></td>
 									<td><?php echo (($row['cold_chain_ok']==1)?"Yes":"No"); ?></td>  
 									<td><?php echo $row['lab_id_number']; ?></td>
@@ -216,15 +224,46 @@
 										  	}
 									   ?>                            
 									</td>
-									<td><?php echo isset($row['date_collection']) ? date('d-M-Y',strtotime($row['date_collection'])) : '-';?></td> 
-									<td><?php echo $row['type_specimen']; ?></td>
-									<td><?php echo isset($row['date_sent_lab']) ? date('d-M-Y',strtotime($row['date_sent_lab'])) : '';?></td>   
-									<td><?php echo isset($row['specimen_received_date']) ? date('d-M-Y',strtotime($row['specimen_received_date'])) : '-';?></td>
-									<td><?php echo $row['specimen_result']; ?></td>
-									<?php if($row['case_type'] == 'Msl') { ?>
-										<td><?php echo $row['final_classification']; ?></td>
-										<td><?php echo $row['linked_epid_number']; ?></td>
-									<?php } ?>
+								<?php if($row['case_type'] != 'Msl') { ?>
+									<td>
+									   <?php 
+										  // 	if($row['specimen_result'] == 'Positive Measles') 
+												// {echo "Positive";}
+										  // 	elseif($row['specimen_result'] == 'Negative Measles')
+												// {echo "Negative";}
+										  // 	else
+												// echo "";
+									   ?>                               
+									</td>
+									<td>
+									   <?php 
+										  // 	if($row['specimen_result'] == 'Positive Rubella') 
+												// {echo "Positive";}
+										  // 	elseif($row['specimen_result'] == 'Negative Rubella')
+												// {echo "Negative";}
+										  // 	else
+												// echo "";
+									   ?>                            
+									</td>
+									<td><?php echo ""; ?></td>
+									<td><?php echo ""; ?></td>
+								<?php } else { ?>
+									<?php if($row['specimen_result'] == 'Positive Measles' && $row['specimen_result'] != 'Positive Rubella') { ?>
+										<td><?php echo "Positive"; ?></td>
+										<td><?php echo "Negative"; ?></td>
+									<?php } elseif ($row['specimen_result'] != 'Positive Measles' && $row['specimen_result'] == 'Positive Rubella') {?>
+										<td><?php echo "Negative"; ?></td>
+										<td><?php echo "Positive"; ?></td>
+									<?php } elseif ($row['specimen_result'] == NULL) { ?>
+										<td><?php echo ""; ?></td>
+										<td><?php echo ""; ?></td>
+									<?php } else {?>
+										<td><?php echo "Negative"; ?></td>
+										<td><?php echo "Negative"; ?></td>
+								<?php } ?>
+									<td><?php echo epiLinked(false, $row['patient_address_uncode'], $row['fweek'], $row['specimen_result']); ?></td>
+									<td><?php echo finalClassification(false, $row['id']); ?></td>
+								<?php } ?>
 								</tr>
 								<?php } ?> 
 							</tbody>
@@ -302,7 +341,7 @@
 			else{
 				url = "<?php echo base_url();?>Case_investigation/case_investigation_view/"+id+"/"+year;
 			}			       
-			var win = window.open(url,'_blank');
+			var win = window.open(url,'_self');
 			if(win){
 				//Browser has allowed it to be opened
 				win.focus();

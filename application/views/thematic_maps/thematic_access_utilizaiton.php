@@ -1,10 +1,8 @@
 <?php
-	$fmonthfrom = (isset($data['fmonthfrom']))?$data['fmonthfrom']:''; 
-	$fmonthto = (isset($data['fmonthto']))?$data['fmonthto']:'';
-	$month = (isset($data['month']))?$data['month']:'01'; 
-    $year = (isset($data['year']))?$data['year']:'';
-	$fmonth = $year.'-'.$month;
-	//print_r($data);exit;
+  $month = (isset($data['month']))?$data['month']:'';
+  $year = (isset($data['year']))?$data['year']:'';
+  $fmonth = $year.'-'.$month;
+  //print_r($data);exit;
     $dataId = 0;
     if(isset($data['id'])){
     	$dataId = $data['id'];
@@ -115,15 +113,14 @@
 		<a href="javascript:void(0)" class="closebtn" title="Filters" onclick="closeNavR()">×</a>
 		<div class="filter_formwrp">
 			<h2> Filters </h2>
-				<?php 
-					/*
-					*	This will load filter form based on 
-					*	name provided to filters array.
-					*/
-					$filterRow['month']= $month;
-					$filters['filter'] = 'thematicaccessutilization';
-					$this->load->view('thematic_maps/parts_view/filters',$filters); 
-				?>
+			<?php 
+				/*
+				*	This will load filter form based on 
+				*	name provided to filters array.
+				*/
+				$filterRow['month']= $month;
+				$filters['filter'] = 'thematicaccessutilization';
+				$this->load->view('thematic_maps/parts_view/filters',$filters); ?>
 		</div>
 	</div>
 	<div class="container-fluid">
@@ -135,8 +132,7 @@
 	if(!isset($_REQUEST['export_excel'])){
 		if(isset($edit)){
 			$this->load->view('thematic_template/script', $data['edit'] = $edit);
-		}
-		else{
+		}else{
 			$this->load->view('thematic_template/script');
 		}
 	}
@@ -167,9 +163,7 @@
 	function draw_uc(id){
 		var dataId = id;
 		var fmonth = '<?php echo $fmonth; ?>';
-		var fmonthfrom = '<?php echo (isset($fmonthfrom))?$fmonthfrom:'0'; ?>';
-		var fmonthto = '<?php echo (isset($fmonthto))?$fmonthto:'0'; ?>';
-		var url = '<?php echo base_url(); ?>/thematic_maps/ThematicAccessUtilization/UcWiseMapData/'+id+'/'+fmonthfrom+'/'+fmonthto;
+		var url = '<?php echo base_url(); ?>/thematic_maps/ThematicAccessUtilization/UcWiseMapData/'+id+'/'+fmonth;
 		/* $.ajax({
 			type: "POST",
 			data: {id:dataId,fmonth:fmonth,map_id:'livefeedleftmap1',bar_id:'bar_graph_2'},

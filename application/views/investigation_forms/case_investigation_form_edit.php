@@ -111,7 +111,39 @@
 									<input type="hidden" id="rb_distcode" name="rb_distcode" value="<?php $distcode = (isset($measles_Result))?$measles_Result->rb_distcode:$this -> session -> District;  echo $distcode; ?>">
 									<p><?php echo CrossProvince_DistrictName($this-> session-> District); ?></p>
 								</td>            
-							</tr>							
+							</tr>
+							<!-- <tr>
+								<td><p>Tehsil / City</p></td>
+								<td>
+									<select id="rb_tcode" name="rb_tcode" class="form-control">
+										<?php if(isset($measles_Result) && $measles_Result -> rb_tcode != ""){ ?>
+										<option value="<?php echo $measles_Result -> rb_tcode; ?>"><?php echo getTehsils_options(false,$measles_Result -> rb_tcode); ?></option>
+										<?php }else{ ?> 
+										<?php getTehsils_options(false); } ?>
+									</select>
+								</td>
+								<td><p>Union Council</p></td>
+								<td>
+									<select id="rb_uncode" name="rb_uncode" class="form-control">
+										<?php if(isset($measles_Result) && $measles_Result->rb_uncode != " "){ getUCs(false,$measles_Result->rb_uncode); }else{ ?>
+										<?php getUCs_options(false); } ?>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td><p>Name of Reporting Health Facility</p></td>
+								<td>
+									<?php if(isset($measles_Result)){ ?>
+									<select class="form-control" name="rb_facode" id="rb_facode">
+										<option value="<?php echo $measles_Result->rb_facode; ?>"><?php echo $facility; ?></option>
+									</select>
+									<?php }else{ ?>
+									<select class="form-control" required name="rb_facode" id="rb_facode"></select>
+									<?php } ?>
+								</td>
+								<td><p>Address of Health Facility</p></td>
+								<td><input class="form-control" name="rb_faddress" id="rb_faddress" value="<?php if(isset($measles_Result)){ echo $measles_Result->rb_faddress; } ?>" type="text"></td>
+							</tr> -->
 						</tbody>
 					</table>
 				<?php } ?>
@@ -288,11 +320,11 @@
 						</thead>
 						<tbody>
 						<?php if(isset($measles_Result) && $measles_Result-> procode != $_SESSION["Province"] && $measles_Result-> approval_status == 'Pending' && $measles_Result-> facode == '' ){ ?>	
-							<tr class="otherProvinceAddress">
+							<tr class="otherProvinceAddress">	
 								<td><p>Province</p></td>
 								<td>
 									<p><?php echo get_Province_Name($measles_Result->procode); ?></p>	
-									<input type="hidden" class="getProcode" name="procode" id="procode" value="<?php if(isset($measles_Result)) { echo $measles_Result-> procode; } ?>">	
+									<input type="hidden" name="procode" value="<?php if(isset($measles_Result)) { echo $measles_Result-> procode; } ?>">	
 								</td>
 								<td><p>District</p></td>
 								<td>															
@@ -316,7 +348,7 @@
 									<!-- <?php //} ?> -->
 								</td>
 							</tr>
-							<tr class="otherProvinceAddress">
+							<tr class="otherProvinceAddress">	
 								<td><p>Tehsil/Town</p></td>
 								<td>
 									<select name="patient_address_tcode" id="other_pro_tehsil" class="otherprocode form-control">
@@ -342,12 +374,12 @@
 									<!-- <?php //} ?> -->
 								</td>
 							</tr>
-						<?php } else if(isset($measles_Result) && $measles_Result->facode == '' ){ ?>
+						<?php } else if(isset($measles_Result) && $measles_Result->facode == '' ){ ?>	
 							<tr class="otherProvinceAddress">	
 								<td><p>Province</p></td>
 								<td>
 								<p><?php echo get_Province_Name($measles_Result->procode); ?></p>	
-									<input type="hidden" class="getProcode" name="procode" id="procode" value="<?php if(isset($measles_Result)) { echo $measles_Result-> procode; } ?>">								
+									<input type="hidden" name="procode" value="<?php if(isset($measles_Result)) { echo $measles_Result-> procode; } ?>">								
 									<!-- <select name="procode" id="other_procode" class="form-control" readonly>
 										<option value="">--Select--</option>
 										<option <?php if(isset($measles_Result)){ if($measles_Result->procode  == "1"){ echo 'selected="selected"';} } ?> value="1">Punjab</option>
@@ -415,7 +447,7 @@
 								<td><p>Province / Area</p></td>
 								<td>
 									<p><?php echo $this -> session -> provincename ?></p>
-									<input class="form-control getProcode" name="patient_address_procode" readonly="readonly" id="patient_address_procode" placeholder="Khyber Pakhtunkhwa" type="hidden" value="<?php echo $this -> session -> Province; ?>">
+									<input class="form-control" name="patient_address_procode"  readonly="readonly" id="patient_address_procode" placeholder="Khyber Pakhtunkhwa" type="hidden">
 								</td>
 								<td><p>District</p></td>
 								<td id="patientDistcodeTd">
@@ -472,6 +504,25 @@
 								<td>
 									<?php if(isset($measles_Result) && $measles_Result -> clinical_representation != "" && $measles_Result -> clinical_representation != ""){ echo $measles_Result -> symptoms;} ?>
 									<input type="hidden" class="form-control text-center" name="clinical_representation" id="case_representation" value="<?php if(isset($measles_Result)){ echo ($measles_Result->clinical_representation); } ?>">
+									
+									<!-- <?php
+										//$chklist=array();
+										//if(isset($measles_Result))
+										{
+											//$chklist= explode(',', $measles_Result ->clinical_representation); 
+											//echo $chklist;exit();
+										}
+									?> -->									
+								<!-- <select id="case_representation" name="clinical_representation[]" class="mselect symptoms form-control text-center" multiple="multiple">				
+								 	<?php //echo get_CaseRepresentation_Value($chklist); ?>
+								 	<?php  
+										//if(isset($measles_Result)){ 
+										  	//foreach($chklist as $row){              
+											//echo $row; 
+												?>
+											<option value="<?php //echo $row; ?>" <?php //echo (in_array($row, $chklist))?'selected="selected"':''; ?>><?php //echo ($row=='999')?'NA':(($row=='1000')?'Other':get_CaseRepresentation_Value($row)); ?></option>
+									<?php //}  } ?>							 
+								</select> -->
 								</td>
 								<td>
 									<p class="pt7">Other</p><!--<input type="checkbox" id="other" <?php //if(isset($measles_Result ->other_case_representation)) {echo 'checked="checked"';} ?> />-->
@@ -605,14 +656,14 @@
 								<td>
 									<select name="type_specimen" id="type_specimen" class="form-control" required="required">
 										<option value="">--Select--</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Blood"){ echo 'selected="selected"'; } } ?> value="Blood">Blood</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Oral Swab"){ echo 'selected="selected"'; } } ?> value="Oral Swab">Oral Swab</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Throat Swab"){ echo 'selected="selected"'; } } ?> value="Throat Swab">Throat Swab</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Serum"){ echo 'selected="selected"'; } } ?> value="Serum">Serum</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Urine"){ echo 'selected="selected"'; } } ?> value="Urine">Urine</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Oral Fluid"){ echo 'selected="selected"'; } } ?> value="Oral Fluid">Oral Fluid</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "Other"){ echo 'selected="selected"'; } } ?> value="Other">Other</option>
-										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen == "None"){ echo 'selected="selected"'; } } ?> value="None">Not Collected</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Blood"){ echo 'selected="selected"'; } } ?> value="Blood">Blood</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Oral Swab"){ echo 'selected="selected"'; } } ?> value="Oral Swab">Oral Swab</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Throat Swab"){ echo 'selected="selected"'; } } ?> value="Throat Swab">Throat Swab</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Serum"){ echo 'selected="selected"'; } } ?> value="Serum">Serum</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Urine"){ echo 'selected="selected"'; } } ?> value="Urine">Urine</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Oral Fluid"){ echo 'selected="selected"'; } } ?> value="Oral Fluid">Oral Fluid</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "Other"){ echo 'selected="selected"'; } } ?> value="Other">Other</option>
+										<option <?php if(isset($measles_Result)){ if($measles_Result->type_specimen  == "None"){ echo 'selected="selected"'; } } ?> value="None">Not Collected</option>
 									</select>
 								</td>
 								<td><p>Other Specimen Type</p></td>
@@ -620,11 +671,11 @@
 							</tr>
 							<tr>								
 								<td><p>Date of Specimen Collection</p></td>
-								<td><input class="dp form-control noSpecimen" name="date_collection" id="date_collection" readonly="readonly" value="<?php if(isset($measles_Result)){ if($measles_Result->date_collection!= '1969-12-31' && $measles_Result->date_collection != NULL){ echo date('d-m-Y',strtotime($measles_Result->date_collection)); }else{ echo ''; } } ?>" type="text"></td>
+								<td><input class="dp form-control" name="date_collection" id="date_collection" readonly="readonly" value="<?php if(isset($measles_Result)){ if($measles_Result->date_collection!= '1969-12-31' && $measles_Result->date_collection != NULL){ echo date('d-m-Y',strtotime($measles_Result->date_collection)); }else{ echo ''; } } ?>" type="text"></td>
 							</tr>
 							<tr>
 								<td><p>Date of Specimen Sent to Lab</p></td>
-								<td><input class="dp form-control noSpecimen" name="date_sent_lab" id="date_sent_lab" readonly="readonly" value="<?php if(isset($measles_Result) && $measles_Result->date_sent_lab != NULL){ if($measles_Result->date_sent_lab!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->date_sent_lab)); }else{ echo ''; } } ?>" type="text"></td>
+								<td><input class="dp form-control" name="date_sent_lab" id="date_sent_lab" readonly="readonly" value="<?php if(isset($measles_Result) && $measles_Result->date_sent_lab != NULL){ if($measles_Result->date_sent_lab!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->date_sent_lab)); }else{ echo ''; } } ?>" type="text"></td>
 								<td><p>Lab result to be sent to</p></td>
 								<td>District Health Officer
 									<select name="labresult_tobesentto_district" id="labresult_tobesentto_district" class="form-control hide" required="required">
@@ -659,7 +710,7 @@
 						</tbody>
      				</table>
      				
-      			<table class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass" id="hideLabPart">
+      			<table class="table table-bordered table-striped table-hover mytable2 mytable3 disabledclass">
 						<thead>
 							<tr>
 								<th colspan="4" style="text-align: center; padding-top: 10px; padding-bottom: 10px;">Part II: For use by receiving laboratory</th>
@@ -668,50 +719,51 @@
 						<tbody>
 							<tr>
 								<td><p>Date Specimen Received at lab</p></td>
-								<td><input class="dp form-control noSpecimen" name="specimen_received_date" id="specimen_received_date" value="<?php if(isset($measles_Result) && $measles_Result->specimen_received_date != NULL){ if($measles_Result->specimen_received_date!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->specimen_received_date)); }else{ echo ''; } } ?>" readonly="readonly" type="text"></td>
+								<td><input class="dp form-control" name="specimen_received_date" id="specimen_received_date" value="<?php if(isset($measles_Result) && $measles_Result->specimen_received_date != NULL){ if($measles_Result->specimen_received_date!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->specimen_received_date)); }else{ echo ''; } } ?>" readonly="readonly" type="text"></td>
 																
 							</tr>							
 							<tr>
 								<td><p style="display: inline-block;">Condition of Specimen</p><span style="float: right;">Quantity Adequate:</span></td>
-								<td style="padding-left: 50px;"><input class="noSpecimen" type="radio" id="qyes" name="quantity_adequate" value="1">Yes</td>
-				            <td><input class="noSpecimen" type="radio" name="quantity_adequate" id="qno" value="2">No</td>
+								<td style="padding-left: 50px;"><input type="radio" id="qyes" name="quantity_adequate" value="1">Yes</td>
+				            <td><input type="radio" name="quantity_adequate" id="qno" value="2">No</td>
 								<!-- <td style="padding-left: 50px;"><?php //echo (($measles_Result->quantity_adequate==1)?"Yes":"No"); ?></td> -->
 							</tr>
 							<tr>
 								<td><span style="float: right;">Cold Chain OK:</span></td>
-								<td style="padding-left: 50px;"><input type="radio" name="cold_chain_ok" id="ccyes" class="testpossible noSpecimen" value="1">Yes</td>
-				            <td><input type="radio" name="cold_chain_ok" id="ccno" class="testpossible noSpecimen" value="2">No</td>
+								<td style="padding-left: 50px;"><input type="radio" name="cold_chain_ok" id="ccyes" class="testpossible" value="1">Yes</td>
+				            <td><input type="radio" name="cold_chain_ok" id="ccno" class="testpossible" value="2">No</td>
 								<!-- <td style="padding-left: 50px;"><?php //echo (($measles_Result->cold_chain_ok==1)?"Yes":"No"); ?></td> -->
 							</tr>
 							<tr id="lb">
 				            <td><span style="float: right;">Leakage/Broken Container:</span></td>
-				            <td style="padding-left: 50px;"><input class="noSpecimen" type="radio" name="leakage_broken" id="leekyes" value="1">Yes</td>
-				            <td><input class="noSpecimen" type="radio" name="leakage_broken" id="leekno" value="2">No</td>
+				            <td style="padding-left: 50px;"><input type="radio" name="leakage_broken" id="leekyes" value="1">Yes</td>
+				            <td><input type="radio" name="leakage_broken" id="leekno" value="2">No</td>
 				         </tr>
 				         <tr id="itp">
 				            <td><span style="float: right;">Test Possible:</span></td>
-				            <td style="padding-left: 50px;"><input class="noSpecimen" type="radio" id="testyes" name="test_possible" value="1">Yes</td>
-				            <td><input class="noSpecimen" type="radio" id="testno" name="test_possible" value="2">No</td>
+				            <td style="padding-left: 50px;"><input type="radio" id="testyes" name="test_possible" value="1">Yes</td>
+				            <td><input type="radio" id="testno" name="test_possible" value="2">No</td>
 				         </tr>	
 							<tr>
 								<td><p>Specimen Received by: Name</p></td>
-								<td><input type="text" name="specimen_received_by" value="<?php if(isset($measles_Result)){ echo $measles_Result->specimen_received_by; } ?>" class="form-control testpossibleno noSpecimen" maxlength="30"></td>
+								<td><input type="text" name="specimen_received_by" value="<?php if(isset($measles_Result)){ echo $measles_Result->specimen_received_by; } ?>" class="form-control testpossibleno" maxlength="30"></td>
 								
 								<td><p>Designation</p></td>
-								<td><input type="text" name="received_by_designation" value="<?php if(isset($measles_Result)){ echo $measles_Result->received_by_designation; } ?>" class="form-control testpossibleno noSpecimen" maxlength="20"></td>
+								<td><input type="text" name="received_by_designation" value="<?php if(isset($measles_Result)){ echo $measles_Result->received_by_designation; } ?>" class="form-control testpossibleno" maxlength="20"></td>
+							
 							</tr>
 							<tr>
 								<td><p>Lab ID Number</p></td>
-								<td><input type="text" name="lab_id_number" value="<?php if(isset($measles_Result)){ echo $measles_Result->lab_id_number; } ?>" class="form-control testpossibleno noSpecimen" maxlength="25"></td>
+								<td><input type="text" name="lab_id_number" value="<?php if(isset($measles_Result)){ echo $measles_Result->lab_id_number; } ?>" class="form-control testpossibleno" maxlength="25"></td>
 								
 								<td><p>Date of Lab Test Done</p></td>
-								<td><input type="text" name="lab_testdone_date" class="form-control dp testpossibleno noSpecimen" value="<?php if(isset($measles_Result) && $measles_Result->lab_testdone_date != NULL){ if($measles_Result->lab_testdone_date!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->lab_testdone_date)); }else{ echo ''; } } ?>" readonly="readonly"></td>
+								<td><input type="text" name="lab_testdone_date" class="form-control dp testpossibleno" value="<?php if(isset($measles_Result) && $measles_Result->lab_testdone_date != NULL){ if($measles_Result->lab_testdone_date!= '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->lab_testdone_date)); }else{ echo ''; } } ?>" readonly="readonly"></td>
 								
 							</tr>
 							<tr>
 								<td><p>Type of Specimen</p></td>
 								<td>
-									<select colspan="3" name="type_of_test" class="form-control testpossibleno othertype noSpecimen" id="other">										
+									<select colspan="3" name="type_of_test" class="form-control testpossibleno othertype" id="other">										
 										<option value="">--Select--</option>
 										<option <?php if(isset($measles_Result)){ if($measles_Result->type_of_test  == "Blood"){ echo 'selected="selected"'; } } ?> value="Blood">Blood</option>
 										<option <?php if(isset($measles_Result)){ if($measles_Result->type_of_test  == "Serum"){ echo 'selected="selected"'; } } ?> value="Serum">Serum</option>
@@ -722,12 +774,12 @@
 								</td>
 								
 								<td><p>Other Specimen</p></td>
-								<td><input type="text" id="other_specimen" value="<?php if(isset($measles_Result)){ echo $measles_Result->other_specimen_lab; } ?>" class="form-control testpossibleno otherspecimen noSpecimen" name="other_specimen_lab" maxlength="30"></td> 
+								<td><input type="text" id="other_specimen" value="<?php if(isset($measles_Result)){ echo $measles_Result->other_specimen_lab; } ?>" class="form-control testpossibleno otherspecimen" name="other_specimen_lab" maxlength="30"></td> 
 							</tr>
 							<tr>
 								<td><p>Test Result</p></td>
 								<td id="mslmsl" class="">
-									<select colspan="3" name="specimen_result" class="form-control testpossibleno othertest measles noSpecimen" id="other">
+									<select colspan="3" name="specimen_result" class="form-control testpossibleno othertest measles" id="other">
 										<option value="">--Select--</option>
 										<?php
 										if($measles_Result->case_type == 'Msl') { ?>
@@ -744,23 +796,23 @@
 								</td>
 								
 								<td><p>Other Result</p></td>
-								<td><input type="text" id="other_result" class="form-control testpossibleno otherresult noSpecimen" value="<?php if(isset($measles_Result)){ echo $measles_Result->other_specimen_result; } ?>" name="other_specimen_result" maxlength="30"> </td>
+								<td><input type="text" id="other_result" class="form-control testpossibleno otherresult" value="<?php if(isset($measles_Result)){ echo $measles_Result->other_specimen_result; } ?>" name="other_specimen_result" maxlength="30"> </td>
 																								
 							</tr>
 							<tr>
 								<td><p>Comment</p></td>
-								<td><input type="text" class="form-control testpossibleno noSpecimen" value="<?php if(isset($measles_Result)){ echo $measles_Result->comments; } ?>" name="comments" maxlength="100"></td>
+								<td><input type="text" class="form-control testpossibleno" value="<?php if(isset($measles_Result)){ echo $measles_Result->comments; } ?>" name="comments" maxlength="100"></td>
 								
 								<td><p>Date of lab report sent/submitted</p></td>
-								<td><input class="form-control dp testpossibleno noSpecimen" name="lab_report_sent_date" value="<?php if(isset($measles_Result) && $measles_Result->lab_report_sent_date != NULL){ if($measles_Result->lab_report_sent_date != '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->lab_report_sent_date)); }else{ echo ''; } } ?>" readonly="readonly"></td>
+								<td><input class="form-control dp testpossibleno" name="lab_report_sent_date" value="<?php if(isset($measles_Result) && $measles_Result->lab_report_sent_date != NULL){ if($measles_Result->lab_report_sent_date != '1969-12-31'){ echo date('d-m-Y',strtotime($measles_Result->lab_report_sent_date)); }else{ echo ''; } } ?>" readonly="readonly"></td>
 																								
 							</tr>
 							<tr>
 								<td><p>Report Sent by: Name</p></td>
-								<td><input type="text" class="form-control noSpecimen" value="<?php if(isset($measles_Result)){ echo $measles_Result->report_sent_by; } ?>" name="report_sent_by" maxlength="30"></td>
+								<td><input type="text" class="form-control" value="<?php if(isset($measles_Result)){ echo $measles_Result->report_sent_by; } ?>" name="report_sent_by" maxlength="30"></td>
 								
 								<td><p>Designation</p></td>
-								<td><input type="text" name="sent_by_designation" value="<?php if(isset($measles_Result)){ echo $measles_Result->sent_by_designation; } ?>" class="form-control noSpecimen" maxlength="20"></td>
+								<td><input type="text" name=" sent_by_designation" value="<?php if(isset($measles_Result)){ echo $measles_Result->sent_by_designation; } ?>" class="form-control" maxlength="20"></td>
 								
 							</tr>
           			</tbody>
@@ -1435,7 +1487,19 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 			$('#plain').removeClass('hide');
 		}
 	});
-
+	var type_specimen  = $('#type_specimen').val();
+	if(type_specimen == 'Other'){
+		$('#other_specimen').removeClass('hide');
+	}else{
+		$('#other_specimen').addClass('hide');
+	}
+	$(document).on('change','#type_specimen',function(){
+		if($(this).val() == 'Other'){
+			$('#other_specimen').removeClass('hide');
+		}else{
+			$('#other_specimen').addClass('hide');
+		}
+	});
 	// if($('#cb_cross_notified').not(':checked').length){
 	// 	$('.crossNotify').removeClass('hide');
 	// 	$('.otherProvinceAddress').addClass('hide');
@@ -1464,7 +1528,7 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 			$('.complicationbox').addClass('hide');
 		}
 	});
-	<?php if(isset($measles_Result) && $measles_Result->th_procode == $_SESSION["Province"]){ ?>
+	<?php if(isset($measles_Result) && $measles_Result->th_procode == $_SESSION["Province"]){	?>
 		//var proCode = $('#other_procode').val();
 		//if(proCode == '3'){
 		th_distcode = '<?php echo $measles_Result->th_distcode; ?>';
@@ -1629,7 +1693,26 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 		$('#other_pro_tehsil').attr('required','required');
 		$('#other_pro_uc').attr('required','required');	
 	<?php } ?>
+	<?php //if(isset($measles_Result) && $measles_Result->procode != $_SESSION["Province"]) { ?>
+		//}else if(proCode != '3' && proCode != ''){
+		// patient_address_distcode = '<?php echo $measles_Result-> patient_address_distcode; ?>';
+		// patient_address_tcode = '<?php echo $measles_Result-> patient_address_tcode; ?>';
+		// patient_address_uncode = '<?php echo $measles_Result-> patient_address_uncode; ?>';
+		// labresult_tobesentto_district = '<?php echo $measles_Result-> labresult_tobesentto_district; ?>';
 
+		// $('.procodekp').addClass('hide');
+		// $('.otherprocode').removeClass('hide');
+		// $('.procodekp').val('');
+		// $('#other_pro_district').val(other_pro_district);
+		// $('#other_pro_tehsil').val(other_pro_tehsil);
+		// $('#other_pro_uc').val(other_pro_uc);
+		// //$('.otherprocode').val('');
+		// $('#patient_address').removeAttr('readonly','readonly');
+		// $('#labresult_tobesentto').addClass('hide');
+		// $('#labresult_tobesentto_district').removeClass('hide');	
+		// $('#labresult_tobesentto').removeAttr('required','required');
+		// $('#labresult_tobesentto_district').attr('required','required');		
+	<?php //} ?>
 	$(document).on('change','#other_procode',function(){
 		if($(this).val() == '<?php echo $_SESSION["Province"]; ?>'){
 			$('.procodekp').removeClass('hide');
@@ -1922,131 +2005,7 @@ function fromDate(start_date_id, end_date_id, $gt=false)
 	else{
 		$('.testpossibleno').removeAttr('disabled','disabled');
 	}
-
-	$(document).ready(function(){
-		var typeSpecimen = $('#type_specimen').val();
-		//alert(typeSpecimen);
-		if(typeSpecimen == 'Other'){
-			$('#other_specimen').removeClass('hide');
-			$('.noSpecimen').removeAttr('disabled','disabled');
-			//$('#hideLabPart').removeClass('hide');
-		}
-		else if(typeSpecimen == 'None'){
-			$('.noSpecimen').attr('disabled','disabled');
-			$('.noSpecimen').val('');
-			$('#labresult_tobesentto_district').attr('disabled','disabled');
-			$('#labresult_tobesentto').attr('disabled','disabled');
-			//$('#hideLabPart').addClass('hide');
-		}
-		else{			
-			$('#other_specimen').addClass('hide');
-			$('.noSpecimen').removeAttr('disabled','disabled');
-			//$('#hideLabPart').removeClass('hide');
-		}
-	});
-	$(document).on('change','#type_specimen',function(){
-		if($(this).val() == 'Other'){
-			$('#other_specimen').removeClass('hide');
-			$('.noSpecimen').removeAttr('disabled','disabled');			
-			//$('#hideLabPart').removeClass('hide');
-			var procode = $('.getProcode').val();
-			//alert(procode);
-			if(procode == '<?php echo $_SESSION["Province"]; ?>') {
-				$.ajax({
-					type: "POST",
-					data: "procode="+procode,
-					url: "<?php echo base_url(); ?>Ajax_cross_notified/getOtherProvinceDistricts",
-					success: function(result){
-						$('#labresult_tobesentto').attr('disabled','disabled');
-						$('#other_pro_district').html(result);
-						$('#labresult_tobesentto').html(result);
-						// $('#other_pro_district').trigger('change');
-						// $('#labresult_tobesentto_district').trigger('change');
-					}
-				});
-			}
-			else{
-				//alert("xyz");
-				$.ajax({
-					type: "POST",
-					data: "procode="+procode,
-					url: "<?php echo base_url(); ?>Ajax_cross_notified/getOtherProvinceDistricts",
-					success: function(result){
-						$('#labresult_tobesentto_district').attr('disabled','disabled');
-						$('#other_pro_district').html(result);
-						$('#labresult_tobesentto_district').html(result);
-						// $('#other_pro_district').trigger('change');
-						// $('#labresult_tobesentto_district').trigger('change');
-					}
-				});
-			}
-		}
-		else if($(this).val() == 'None'){
-			$('.noSpecimen').attr('disabled','disabled');
-			$('.noSpecimen').val('');
-			$('#labresult_tobesentto_district').attr('disabled','disabled');
-			$('#labresult_tobesentto').attr('disabled','disabled');
-			$('#labresult_tobesentto_district').html('');
-			$('#labresult_tobesentto').html('');
-			// $('.labresult_tobesentto_district').removeAttr('required','required');
-			// $('.labresult_tobesentto').removeAttr('required','required');			
-			//$('#hideLabPart').addClass('hide');
-		}
-		else{			
-			$('#other_specimen').addClass('hide');
-			$('.noSpecimen').removeAttr('disabled','disabled');
-			//$('#hideLabPart').removeClass('hide');
-			var procode = $('.getProcode').val();
-			//alert(procode);
-			if(procode == '<?php echo $_SESSION["Province"]; ?>') {
-				$.ajax({
-					type: "POST",
-					data: "procode="+procode,
-					url: "<?php echo base_url(); ?>Ajax_cross_notified/getOtherProvinceDistricts",
-					success: function(result){
-						$('#labresult_tobesentto').removeAttr('disabled','disabled');
-						$('#other_pro_district').html(result);
-						$('#labresult_tobesentto').html(result);
-						// $('#other_pro_district').trigger('change');
-						// $('#labresult_tobesentto_district').trigger('change');
-					}
-				});
-			}
-			else{
-				//alert("xyz");
-				$.ajax({
-					type: "POST",
-					data: "procode="+procode,
-					url: "<?php echo base_url(); ?>Ajax_cross_notified/getOtherProvinceDistricts",
-					success: function(result){
-						$('#labresult_tobesentto_district').removeAttr('disabled','disabled');
-						$('#other_pro_district').html(result);
-						$('#labresult_tobesentto_district').html(result);
-						// $('#other_pro_district').trigger('change');
-						// $('#labresult_tobesentto_district').trigger('change');
-					}
-				});
-			}
-		}			
-	});
-	<?php //if(isset($measles_Result) && $measles_Result-> type_specimen) { ?>
-		// typeSpecimen = '<?php echo $measles_Result->type_specimen; ?>'
-		// if(typeSpecimen == 'Other'){
-		// 	$('#other_specimen').removeClass('hide');
-		// 	$('.noSpecimen').removeAttr('disabled','disabled');
-		// 	//$('#hideLabPart').removeClass('hide');
-		// }
-		// else if(typeSpecimen == 'None'){
-		// 	$('.noSpecimen').attr('disabled','disabled');
-		// 	$('.noSpecimen').val('');
-		// 	//$('#hideLabPart').addClass('hide');
-		// }
-		// else{			
-		// 	$('#other_specimen').addClass('hide');
-		// 	$('.noSpecimen').removeAttr('disabled','disabled');
-		// 	//$('#hideLabPart').removeClass('hide');
-		// }
-	<?php //} ?>
+	
 	//-------- Javascript for Cross Notification to other Provinces -------//
    $(document).on('change','#other_procode', function(){
 		var procode = $('#other_procode').val();

@@ -177,6 +177,7 @@
 									<?php foreach($data as $key=>$val) {
 								?>
 								<tr>
+                                    								
 									<td>
 									<input type="hidden" name="recid[<?php echo $key+1; ?>]" value="<?php echo $val['recid']; ?>" class="form-control areaName">
 									<label class="srno-lbl" name="lb[1]" ><?php echo $i; ?></label></td>
@@ -391,7 +392,7 @@
 
 		$(document).on('keyup','.calculation',function(e){			
 			//Percentage Calculations............ columns g,h,i j //	
-			var g = Math.ceil((parseFloat($(this).closest('tr').find(".penta1").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);		
+			var g = Math.round((parseFloat($(this).closest('tr').find(".penta1").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);		
 			if( ! isNaN(g)){
 				//alert(g);
 			   $(this).closest('tr').find(".penta1_percent").val(g);
@@ -406,7 +407,7 @@
 				$(this).closest('tr').find(".penta1_percent").val(0);
 			}
 
-			var h = Math.ceil((parseFloat($(this).closest('tr').find(".penta3").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
+			var h = Math.round((parseFloat($(this).closest('tr').find(".penta3").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
 			if( ! isNaN(h)){
 				$(this).closest('tr').find(".penta3_percent").val(h);
 			}
@@ -414,7 +415,7 @@
 				$(this).closest('tr').find(".penta3_percent").val(0);
 			}
 
-			var i = Math.ceil((parseFloat($(this).closest('tr').find(".measles").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
+			var i = Math.round((parseFloat($(this).closest('tr').find(".measles").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
 			if( ! isNaN(i)){
 				$(this).closest('tr').find(".measles_percent").val(i);
 			}
@@ -422,7 +423,7 @@
 				$(this).closest('tr').find(".measles_percent").val(0);
 			}
 
-			var j = Math.ceil((parseFloat($(this).closest('tr').find(".tt2").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
+			var j = Math.round((parseFloat($(this).closest('tr').find(".tt2").val())/parseFloat($(this).closest('tr').find(".less_one_year").val()))*100);
 			if( ! isNaN(j)){
 				$(this).closest('tr').find(".tt2_percent").val(j);
 			}
@@ -433,11 +434,7 @@
 			//Subtractions.............. columns k,l //
 			var k = parseInt($(this).closest('tr').find(".less_one_year").val())-parseInt($(this).closest('tr').find(".penta3").val());
 			if( ! isNaN(k)){
-			 if(k < 0){
-					$(this).closest('tr').find(".penta3_not").val(0);
-				}else{
-					$(this).closest('tr').find(".penta3_not").val(k);
-				}
+				$(this).closest('tr').find(".penta3_not").val(k);
 			}
 			else{
 				$(this).closest('tr').find(".penta3_not").val(0);
@@ -445,19 +442,15 @@
 
 			var l = parseInt($(this).closest('tr').find(".less_one_year").val())-parseInt($(this).closest('tr').find(".measles").val());
 			if( ! isNaN(l)){
-			 if(l < 0){
-					$(this).closest('tr').find(".measles_not").val(0);
-				}else{
-					$(this).closest('tr').find(".measles_not").val(l);
-				}
+				$(this).closest('tr').find(".measles_not").val(l);
 			}
 			else{
 				$(this).closest('tr').find(".measles_not").val(0);
 			}
 
 			//Percentage and Subtractions.............. columns m,n //
-			var m = Math.ceil(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".penta3").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
-			if( ! isNaN(m) && m != '-Infinity' && m != 'Infinity'){
+			var m = Math.round(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".penta3").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
+			if( ! isNaN(m)){
 				$(this).closest('tr').find(".penta1penta3").val(m);
 				if(m < 10){
 			   	$(this).closest('tr').find(".utilization").val('Good');
@@ -467,12 +460,11 @@
 			   }
 			}
 			else{
-				$(this).closest('tr').find(".utilization").val('Good');														 
 				$(this).closest('tr').find(".penta1penta3").val(0);
 			}
 
-			var n = Math.ceil(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".measles").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
-			if( ! isNaN(n) && n != '-Infinity' && n != 'Infinity' ){
+			var n = Math.round(((parseFloat($(this).closest('tr').find(".penta1").val())-parseFloat($(this).closest('tr').find(".measles").val()))/(parseFloat($(this).closest('tr').find(".penta1").val())))*100);
+			if( ! isNaN(n)){
 				$(this).closest('tr').find(".penta1measles").val(n);
 			}
 			else{
@@ -619,41 +611,43 @@
 		});
 	});
 	$('.village').on('change' , function (){
-		var vcode = this.value;
-		var year = $('#year').val();
-		var selectedobj = $(this);
-		if(vcode =="") {
+	var vcode = this.value;
+	var year = $('#year').val();
+	var selectedobj = $(this);
+	if(vcode =="") {
 		 	$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=text]').val('');
 			$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=hidden]').val('');
 		}
-	    if(vcode != 0){
-			$.ajax({
-				type: "POST",
-				data: "vcode="+vcode+"&year="+year,
-				url: "<?php echo base_url(); ?>Ajax_calls/getTargetPopulation",
-				success: function(result){
-					var result1= JSON.parse(result);
-					if(result1 != null)
-					{
-						var population_less_year = result1.population_less_year;
-						var f3_total_population = result1.population;
-						var newborn = result1.newborn;
-						var survivinginfants = result1.survivinginfants;
-						var population1 =((newborn/100)*f3_total_population);
-						population1 =Math.ceil((survivinginfants/100)*population1);
-						$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=text]').val(population1);
-						$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=hidden]').val(f3_total_population);
-						/* $(selectedobj).closest("tr").find("td:nth-child(2)").find('select').css("background-color","#FFF");
-						//$(this).closest('tr').find(".village").css("background-color","#FFF");
-						if(population_less_year !=""){
-							$('.calculation').trigger('keyup');
-						} */
-					}else{
-						alert('Add Population');
-					}
-				}
-			});
-		}	
+     if(vcode != 0){
+	$.ajax({
+			type: "POST",
+			data: "vcode="+vcode+"&year="+year,
+			url: "<?php echo base_url(); ?>Ajax_calls/getTargetPopulation",
+			success: function(result){
+				var result1= JSON.parse(result);
+				if(result1 != null)
+				{
+					var population_less_year = result1.population_less_year;
+					var f3_total_population = result1.population;
+					var population1 =(0.0353*f3_total_population);
+					population1 =Math.ceil(0.942*population1);
+					$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=text]').val(population1);
+					$(selectedobj).closest("tr").find("td:nth-child(3)").find('input[type=hidden]').val(f3_total_population);
+					/* $(selectedobj).closest("tr").find("td:nth-child(2)").find('select').css("background-color","#FFF");
+					//$(this).closest('tr').find(".village").css("background-color","#FFF");
+					if(population_less_year !=""){
+						$('.calculation').trigger('keyup');
+					} */
+				}else{
+					alert('Add Population');
+				}	
+				
+			}
+			
+		}); 
+	
+	}
+	
 	}); 
 	$(document).on('change','#faicode', function(){
 		 var facode = this.value;
@@ -674,17 +668,17 @@
 		} 
 	});
 	$(document).on("keydown",".numberclass",function(e) {
-		if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 || // Allow: Ctrl+A, Command+A
-		(e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) || // Allow: home, end, left, right, down, up
-		(e.keyCode >= 35 && e.keyCode <= 40)) {// let it happen, don't do anything
-			return;
-		}
-		// Ensure that it is a number and stop the keypress
-		if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-			e.preventDefault();
-			$(this).val('0');
-			$(this).select();
-		}
-	});
+			if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 || // Allow: Ctrl+A, Command+A
+			(e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) || // Allow: home, end, left, right, down, up
+			(e.keyCode >= 35 && e.keyCode <= 40)) {// let it happen, don't do anything
+				return;
+			}
+			// Ensure that it is a number and stop the keypress
+			if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+				e.preventDefault();
+				$(this).val('0');
+				$(this).select();
+			}
+		});
 	
 </script>	

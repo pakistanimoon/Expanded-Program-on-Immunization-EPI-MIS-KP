@@ -8,7 +8,7 @@
             </li>
             <li class=""><div class="link"><a href="<?php echo base_url(); ?>thematic_maps/AccessToHealthServices" class="link">Access to Health Services</a> </div>
             </li>
-            <li class=""><div class="link"><a href="<?php echo base_url(); ?>thematic_maps/UtilizationOfServices" class="link">Utilization of Services</a> </div>
+            <li class=""><div class="link"><a href="<?php echo base_url(); ?>thematic_maps/UtilizationOfServices" class="link">Utilization Of Services</a> </div>
             </li>
 			<li class=""><div><a href="<?php echo base_url(); ?>thematic_maps/ThematicAccessUtilization" class="link">Access & Utilization</a></div>
             </li>
@@ -22,6 +22,8 @@
 			<li class=""><div class="link"><a href="<?php //echo base_url(); ?>thematic_maps/ThematicVPD" class="link">Thematic VPDs</a> </div>
             </li>-->
             <li class=""><div class="link"><a href="<?php echo base_url(); ?>thematic_maps/ThematicCountEPID" class="link">EPID Count</a> </div>
+            </li>
+            <li class=""><div class="link"><a href="<?php echo base_url(); ?>thematic_maps/ThematicCoronaCountEPID" class="link">CORONA EPID Count</a> </div>
             </li>
             <li class=""><div class="link"><a href="<?php echo base_url(); ?>thematic_maps/ThematicMorbidity" class="link">Disease with Morbidity/Mortality</a> </div>
             </li>

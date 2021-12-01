@@ -886,7 +886,7 @@ class Ajax_calls_model extends CI_Model {
 	}
 	public function getIncharge() {
 		$facode = $_REQUEST['facode'];
-		$query = "select technicianname as incharge,catch_area_name as designation from med_techniciandb where facode='$facode' And status='Active'  ";
+		$query = "select id,technicianname as incharge,catch_area_name as designation from med_techniciandb where facode='$facode' And status='Active'  ";
 		$result = $this -> db -> query($query);
 		$result = $result -> row_array();
 		return json_encode($result);
@@ -894,7 +894,7 @@ class Ajax_calls_model extends CI_Model {
 	public function getSupervisor () {
 		$supervisor_type = $_REQUEST['supervisor_type'];
 		$distcode = $this->session->District;
-		$query = "select supervisorcode as supervisorcode, supervisorname as supervisor  from supervisordb where  distcode='$distcode' And supervisor_type='$supervisor_type' AND status='Active' ";
+		$query = "select supervisorcode as supervisorcode, supervisorname as supervisor  from supervisordb where  distcode='$distcode' And supervisor_type='$supervisor_type' AND status in ('Active','post') ";
 		$result = $this -> db -> query($query);
 		$result = $result -> result_array();	
 	    $data = '<option value="">--Select--</option>';
@@ -1157,7 +1157,7 @@ class Ajax_calls_model extends CI_Model {
 		//$resultJson["paging"] = $this -> Common_model -> pagination($statement, $per_page, $page, $url = "?", implode(" AND ", $wc));
 		return json_encode($resultJson);
 	}
-	public function checkCodes($spcode,$cocode,$hrcode,$supervisornewcode, $supervisorcode, $techniciancode, $facodew, $distcodedriver, $distcodeas,$distcodeco,$distcodeccm,$distcodego,$distcodecco,$distcodecct,$facodecct,$chkdsocode,$dsocode,$chkcctcode,$cctcode,$chkccmcode,$ccmcode, $chkccgcode,$ccgcode, $chkccdcode,$ccdcode, $facodem,$deodcode,$skdcode) {
+	public function checkCodes($spcode,$cocode,$hrcode,$supervisornewcode, $supervisorcode, $techniciancode, $facodew, $distcodedriver, $distcodeas,$distcodeco,$distcodeccm,$distcodego,$distcodecco,$distcodecct,$facodecct,$chkdsocode,$dsocode,$chkcctcode,$cctcode,$chkccmcode,$ccmcode, $chkccgcode,$ccgcode, $chkccdcode,$ccdcode, $facodem,$deodcode,$skdcode,$mfpcode) {
 		$district = $this -> session -> District;
 		$distcode;
 			//startdistrictcode
@@ -1657,6 +1657,26 @@ if ($distcodeccm > 0) {
 				}
 			} else {
 				echo "001";
+			}
+		}
+			# code...
+			if ($mfpcode > 0) {
+			$query = "Select max(mfpcode) as mfpcode from mfpdb WHERE mfpcode like '$mfpcode%'  HAVING max(mfpcode) is not null ";
+			//echo $query; 
+			$result = $this -> db -> query($query);
+			//var_dump($result);  exit;
+			if ($result -> num_rows() > 0) {
+				$mfpDataNewData = $result -> row_array();
+				$newCode = $mfpDataNewData['mfpcode'] + 1;
+				//echo $newCode; exit;
+				$newCode = substr($newCode, -2);
+				if ($newCode != NULL) {
+					echo $newCode;
+				} else {
+					echo '01';
+				}
+			} else {
+				echo "01";
 			}
 			# code...
 		}
@@ -3244,6 +3264,88 @@ public function codb_filter($page,$status,$distcode){
 		}
 		
 		
+	public function mfpdb_filter_cnic($cnic){
+		$cnic= ltrim($cnic);
+		$nic=str_ireplace("%20"," ",$cnic); 
+		$procode = '3';
+		//$distcode = isset($_REQUEST['distcode']) ? $_REQUEST['distcode'] : $_SESSION['District'];
+		$wc = array();
+		$distcode=$this->session->district;
+		$utype= $_SESSION['utype'];
+		switch ($_SESSION['UserLevel']) {
+			case '1' :
+				# code...
+				break;
+			case '2' :
+				$UserLevel = 2;
+				if (($procode > 0) && ($distcode > 0)) {
+					$wc[] = "procode = '" . $procode . "'";
+					$wc[] = "distcode = '" . $distcode . "'";
+				} else if ($procode > 0) {
+					$wc[] = "procode = '" . $procode . "'";
+				}
+				break;
+			case '3' :
+				$UserLevel = 3;
+				$distcode = $_SESSION['District'];
+				if (($procode > 0) && ($distcode > 0)) {
+					$wc[] = "procode = '" . $procode . "'";
+					$wc[] = "distcode = '" . $distcode . "'";
+				}
+				break;
+			case '4' :
+				$UserLevel = 4;
+				$distcode = $_SESSION['District'];
+				$facode = $_SESSION['facode'];
+				if (($procode > 0) && ($distcode > 0) && ($facode > 0)) {
+					$wc[] = "procode = '" . $procode . "'";
+					$wc[] = "distcode = '" . $distcode . "'";
+					
+				}
+				break;
+		}
+		if($nic != '' || $nic != 0 ){
+		   $wc[] = "nic like '%$nic%' OR mfpname like '%$nic%' OR fathername like '%$nic%' OR mfpcode like '%$nic%' ";
+		}
+		//Code for Pagination Updated by Nouman
+		$page = (int)(!isset($page) ? 1 : $page);
+		if ($page <= 0)
+			$page = 1;
+		$per_page = 15;
+		// Set how many records do you want to display per page.
+		$startpoint = ($page * $per_page) - $per_page;
+		$statement = "mfpdb ";
+		// Change `records` according to your table name.
+		$query = "select *, districtname(distcode) as district from mfpdb " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . "  order by mfpdb.mfpcode";
+		$result = $this -> db -> query($query);
+		$result = $result -> result_array();
+		$i = $startpoint;
+		$resultJson = array();
+		$tbody = "";
+		foreach ($result as $row) {
+			$is_temp_saved = $row['is_temp_saved'] == '0' ? 'Submitted' : 'Not Submitted';
+			$i++;
+			$tbody .= '<tr class="DrilledDown">
+	        <td class="text-center" >' . $i . '</td>
+	        <td class="text-left" >' . $row["mfpname"] . '</td>
+	        <td class="text-center" >' . $row["nic"] . '</td>	        
+	        <td class="text-left" >' . $row["employee_type"] . '</td>
+	        <td class="text-left" >' . $row["district"] . '</td>
+	        <td class="text-center" >' . $row["status"] . '</td>
+			<td class="text-center" >' . $is_temp_saved . '</td>';
+	          if (($_SESSION['UserLevel']=='2') && ($utype=='Manager') ){
+	           $tbody .= ' <td class="text-center" >
+		            <a href="' . base_url() . 'Measles-Focal-Person/View/' . $row["mfpcode"] . '" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+		            <a href="' . base_url() . 'Measles-Focal-Person/Edit/' . $row["mfpcode"] . '" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+	        		</td>';
+	            } $tbody.= '</tr>';
+		}
+		$resultJson["tbody"] = $tbody;
+		// displaying paginaiton.
+		$resultJson["paging"] = $this -> Common_model -> pagination($statement, $per_page, $page, $url = "?", implode(" AND ", $wc));
+		return json_encode($resultJson);
+		}
+		
 	public function checkNICNumber($nic,$code){
 
 
@@ -3331,6 +3433,30 @@ public function codb_filter($page,$status,$distcode){
 			return $return;
 
 	}
+	public function checkMfpNIC($nic,$code){
+
+
+		if($code!=''){
+			$query = "SELECT nic FROM mfpdb WHERE nic='".$nic."' AND mfpcode!='".$code."'"; 
+		}else{
+			$query = "SELECT nic FROM mfpdb WHERE nic='".$nic."'"; 
+		}
+		$query= $this->db->query($query);
+		$result = $query->row_array();
+			if ($result==true)
+				 {
+					 $return = 'yes';
+				}
+				else
+				{
+					 $return = 'no';
+				}
+		 
+			return $return;
+
+	}
+	
+	
 	public function checkccoNIC($nic,$code){
 
 
@@ -6443,7 +6569,7 @@ public function codb_filter($page,$status,$distcode){
 			$lastsgment = 3;
 		} 
 		if($lastsgment=="HFCR-Advance-Report" || $lastsgment=="HFCR-Advance-Report#"){
-			$lastsgment = 2;
+			$lastsgment = 7;
 			} 
 			if($lastsgment=="HR-Advance-Report" || $lastsgment=="HR-Advance-Report#"){
 			$lastsgment = 1;
@@ -6494,7 +6620,7 @@ public function codb_filter($page,$status,$distcode){
 			$lastsgment = 3;
 		} 
 		if($lastsgment=="HFCR-Advance-Report" || $lastsgment=="HFCR-Advance-Report#"){
-			$lastsgment = 2;
+			$lastsgment = 7;
 			}  
 			if($lastsgment=="HR-Advance-Report" || $lastsgment=="HR-Advance-Report#"){
 			$lastsgment = 1;
@@ -6986,12 +7112,42 @@ public function codb_filter($page,$status,$distcode){
 								(select CASE WHEN round(zero_report_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) > 100 THEN 100 ELSE round(zero_report_submitted_rate('{$fweekk}',districts.distcode)::numeric,1) END) AS \"Completeness$ind\",
 								(select CASE WHEN round((100-zero_report_submitted_rate('{$fweekk}',districts.distcode))::numeric ,1) < 0 THEN 0 ELSE round((100-zero_report_submitted_rate('{$fweekk}',districts.distcode))::numeric ,1) END)  AS  \"Not Submitted$ind\",";
 		}
-		$monthlyPortion .= "(select CASE WHEN round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) > 100 THEN 100 ELSE round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) END from zero_report where report_submitted = '1' and submitted_date IS NOT NULL and fweek like '$year-%' and week::numeric > 0 and distcode = districts.distcode ) AS  \"Total Timeliness$ind\",
-							(select CASE WHEN round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) > 100 THEN 100 ELSE round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) END from zero_report where report_submitted = '1' and fweek like '$year-%' and week::numeric > 0 and distcode = districts.distcode ) AS  \"Total Completeness$ind\",
-							(select CASE WHEN 100-round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) < 0 THEN 0 ELSE 100-round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) END from zero_report where report_submitted = '1' and fweek like '$year-%' and week::numeric > 0 and distcode = districts.distcode ) AS  \"Total Not Submitted$ind\"";
+		//commulative total sub this if for yearly commulative total sub & tsub
+				$q = "select get_commulative_sub_ds(".$year.",".$weeks."::integer,'0') as cnt";
+				$tsub = $this->db->query($q)->row_array();
+				$tsub = $tsub['cnt'];
+				//commulative total tsub
+				$q = "select get_commulative_tsub_ds(".$year.",".$weeks."::integer,'0') as cnt";
+				$ttsub = $this->db->query($q)->row_array();
+				$ttsub = $ttsub['cnt'];
+				//this is for district wise total commulative sub & tsub 
+				$monthlyPortion .= "(select  round((select get_commulative_tsub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1) ) AS \"Total Timeliness$ind\",
+									(select round((select get_commulative_sub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1)  ) AS  \"Total Completeness$ind\",
+									(select 100 - round((select get_commulative_sub_ds(".$year.",".$weeks."::integer,districts.distcode) as cnt)::numeric/NULLIF(inntable.due01::numeric,0)::numeric*100,1) ) AS  \"Total Not Submitted$ind\"";
 		$query = "select $monthlyPortion from districts join (select distcode,get_commulative_fstatus_ds({$year},{$weeks},d1.distcode) as due01 from districts d1) as inntable ON inntable.distcode=districts.distcode where districts.distcode = '".$distcode."' ORDER BY districts.district";
 		$result = $this -> db -> query($query);
 		return $data['allData'] = $result -> row_array();
+	}
+		public function moonzerorepcomp_data($year,$distcode){
+		$monthlyPortion = "";
+		$outerPortion = "";
+		$allouterPortion = "";
+		$weeks = lastWeek($year,true);
+		for ($ind = 1; $ind <= $weeks; $ind++) {
+			$ind = sprintf("%02d", $ind);
+			$fweekk = $year."-".$ind;
+			$monthlyPortion .= "(select zeroreport_tsub('{$fweekk}',districts.distcode)) AS  \"tsubwk$ind\",
+								(select zeroreport_sub('{$fweekk}',districts.distcode)) AS \"subwk$ind\",
+								(select zeroreport_due('{$fweekk}',districts.distcode)) AS \"duewk$ind\",";
+		}
+/* 		$monthlyPortion .= "(select CASE WHEN round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) > 100 THEN 100 ELSE round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) END from zero_report where report_submitted = '1' and submitted_date IS NOT NULL and fweek like '$year-%' and week::numeric > 0 and distcode = districts.distcode ) AS  \"Total Timeliness$ind\",
+							(select CASE WHEN round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) > 100 THEN 100 ELSE round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) END from zero_report where report_submitted = '1' and fweek like '$year-%' and week::numeric > 0 and distcode = districts.distcode ) AS  \"Total Completeness$ind\",
+							(select CASE WHEN 100-round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) < 0 THEN 0 ELSE 100-round((count(facode)::float//(inntable.due01::numeric))::numeric*100,1) END from zero_report where report_submitted = '1' and fweek like '$year-%' and week::numeric > 0 and distcode = districts.distcode ) AS  \"Total Not Submitted$ind\""; */
+						$monthlyPortion=rtrim($monthlyPortion,',');		
+		$query = "select $monthlyPortion from districts join (select distcode,get_commulative_fstatus_ds({$year},{$weeks},d1.distcode) as due01 from districts d1) as inntable ON inntable.distcode=districts.distcode where districts.distcode = '".$distcode."' ORDER BY districts.district";
+		$result = $this -> db -> query($query);
+		return $data['allData'] = $result -> row_array();
+		
 	}
 	public function getVillages($uncode) {
 		$query = "SELECT village,vcode from villages where uncode = '$uncode' order by village ASC ";
@@ -7025,6 +7181,113 @@ public function codb_filter($page,$status,$distcode){
 		$result = $this -> db -> query($query);
 		$result= $result -> row();
 		return json_encode($result);
+	}
+	public function getFacilityTechnicians($facode){
+		/* $this -> db -> select('techniciancode,technicianname');
+		$this -> db -> where(array('facode'=>$facode,'status'=>'Active'));
+		return $this -> db -> get('techniciandb') -> result_array(); */
+        $query = "SELECT new as techniciancode,name as technicianname from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_facode = '$facode' and  post_status='Active' and post_hr_sub_type_id='01'";
+		$result = $this-> db-> query($query);
+		return $result-> result_array();
+	}
+	public function checkfatherNIC($nic){
+		$query = "SELECT fathercnic from cerv_child_registration where fathercnic='".$nic."'";
+		$query= $this->db->query($query);
+		$result = $query->row_array();              
+		return $result;
+
+	}
+	public function checkchildmotherNIC($nic){
+		$query = "SELECT mothercnic from cerv_child_registration where mothercnic='".$nic."'";
+		$query= $this->db->query($query);
+		$result = $query->row_array();
+		return $result;
+
+	}
+	public function CheckChlidRegistrationNo($child_registration_no){
+		$query = "SELECT recno,child_registration_no from cerv_child_registration where child_registration_no='".$child_registration_no."'";
+		$query= $this->db->query($query);
+		$result = $query->row_array();
+		return $result;
+	}
+	public function checkmotherNIC($nic){
+		$query = "SELECT mother_cnic from cerv_mother_registration where mother_cnic='".$nic."'";
+		$query= $this->db->query($query);
+		$result = $query->row_array();
+		return $result;
+	}
+	public function CheckmotherRegistrationNo($child_registration_no){
+		$query = "SELECT mother_registration_no from cerv_mother_registration where mother_registration_no='".$child_registration_no."'";
+		$query= $this->db->query($query);
+		$result = $query->row_array();
+		return $result;
+	}
+	public function child_list_filter($tcode,$uncode,$village) {
+		$procode = isset($_REQUEST['procode']) ? $_REQUEST['procode'] : $_SESSION['Province'];
+		if($this -> session -> District){
+			$distcode = $this -> session -> District;
+			$wc = getWC_Array($_SESSION["Province"],$distcode);
+		}else{
+			$wc = getWC_Array($_SESSION["Province"]);
+		}
+		$page = (int)(!isset($_GET["page"]) ? 1 : $_GET["page"]);
+		if ($page <= 0)
+			$page = 1;
+		$per_page = 15;
+		// Set how many records do you want to display per page.
+		$startpoint = ($page * $per_page) - $per_page;
+		$statement = "situation_analysis_db";
+		if($tcode != ''){
+			$wc[] = " tcode = '$tcode' ";
+		}
+		if($uncode != ''){
+			$wc[] = " uncode = '$uncode' ";
+		}
+		if($village > 0){
+			$wc[] = " villagemohallah = '$village' ";
+		}
+
+		$query="SELECT recno,cardno,nameofchild,dateofbirth,fathername,tehsilname(tcode) as tehsil, unname(uncode) as unioncouncil,villagemohallah from cerv_child_registration " . (empty($wc) ? '' : ' where ' . implode(" AND ", $wc)) . "  order by year DESC, villagemohallah ASC LIMIT {$per_page} OFFSET {$startpoint}";
+		$result = $this -> db -> query($query);		
+		$result = $result -> result_array();
+		$i = $startpoint;
+		$resultJson = array();
+		$tbody = "";
+		foreach ($result as $row) {
+			$i++;	
+		
+			$tbody .= '<tr>
+							<td class="text-center">' . $i . '</td>	
+							<td class="text-left">' . $row['cardno'] . '</td>			
+							<td class="text-center">' . $row['nameofchild'] . '</td>
+							<td class="text-center">' . $row['dateofbirth'] . '</td>
+							<td class="text-center">' . $row['fathername'] . '</td>
+							<td class="text-center">' . $row['tehsil'] . '</td>
+							<td class="text-left">' . $row['unioncouncil'] . '</td>
+							<td class="text-left">' . get_Village_Name($row['villagemohallah']) . '</td>
+							<td class="text-center">
+								<a href="' . base_url() . 'Reports/ChildRegistrationEdit/'. $row['recno'] .' " data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+							</td>
+						</tr>';
+		}
+		$resultJson["tbody"] = $tbody;
+		$wc = implode(" AND ", $wc);
+		$wc = getWC();
+		$resultJson["paging"] = $this -> Common_model -> pagination($statement,$per_page,$page,$url = "?",$wc);
+		return json_encode($resultJson);
+	}
+	public function get_Hr_sub_type_option($hr_sub_type_id) {
+		//$supervisor_type = $_REQUEST['supervisor_type'];
+		$distcode = $this->session->District;
+		//$query = "select code as supervisorcode, name as supervisor  from hr_db where  distcode='$distcode' And hr_sub_type_id='$hr_sub_type_id'";
+		$query = "SELECT new as supervisorcode,name as supervisor from (SELECT DISTINCT ON (code) code,code as new, * FROM hr_db_history ORDER BY code DESC, id DESC ) subquery where post_status='Active' and  post_distcode='$distcode' And post_hr_sub_type_id='$hr_sub_type_id' ";
+		$result = $this -> db -> query($query);
+		$result = $result -> result_array();	
+	    $data = '<option value="">--Select--</option>';
+		foreach ($result as $sup_data) {
+			$data .= '<option value="' . $sup_data['supervisorcode'] . '">' . $sup_data['supervisor'] . '</option>';
+		}
+		return $data;
 	}
 }
 ?>

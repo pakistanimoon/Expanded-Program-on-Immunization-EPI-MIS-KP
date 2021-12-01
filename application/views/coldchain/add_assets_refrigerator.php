@@ -79,7 +79,7 @@ a.btn{
 			<div class="col-md-5 text-right" >
 			 <a href="<?php echo base_url(); ?>Coldchain/refrigerator_add" data-toggle="tooltip" title=" Add Asset">
 				<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add Asset</button>
-			 </a>
+			</a>
 			</div>
 			<?php }?>
 		</div> 
@@ -133,7 +133,7 @@ a.btn{
 			<div class="col-md-5 text-right" >
 			<a href="<?php echo base_url(); ?>Coldchain/refrigerator_add" data-toggle="tooltip" title=" Add Asset">
 				<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add Asset</button>
-			 </a> 
+			</a>
 			</div>
 			<?php } 
 			?>
@@ -418,14 +418,14 @@ $(document).on('click','#addNew',function(){
 				link = '<?php echo base_url(); ?>Coldchain/'+full.formeditlink+'/'+full.id;
 					editlink='<a href="'+link+'" class="btn view-btn"><i class="fa fa-pencil" aria-hidden="true" data-toggle="tooltip" title="Edit"></i></a>';
 			
-				/* if(full.used_by_stock > 0){
+				if(full.used_by_stock > 0){
 					
 					if(level==2  && full.warehouse_type_id!=warehousename)
 						editlink="";
 					link = '<?php echo base_url(); ?>Coldchain/'+full.formlink+'/'+full.id;
 					button = '<td><a href="'+link+'" class="btn view-btn"><i class="fa fa-eye" aria-hidden="true" data-toggle="tooltip" title="View"></i></a>'+editlink+'</td>';
 					//button = '<td><i data-toggle="tooltip" title="In Use"></i></td>';
-				}else{ */
+				}else{
 					
 					if(level==2  && full.warehouse_type_id!=warehousename)
 						editlink="";
@@ -442,7 +442,7 @@ $(document).on('click','#addNew',function(){
 					}
 					button = '<a href="'+link+'" class="btn view-btn"><i class="fa fa-eye" aria-hidden="true" data-toggle="tooltip" title="View"></i></a>'+editlink+' <a onclick="getDetail('+full.id+','+full.storetype+')"  id="addtransferbtn" class="btn view-btn" data-toggle="modal" data-target="#AddBatchModal">'+actionName+'</a>';
 				    //button = '<a onclick="getDetail('+full.id+','+full.storetype+')"  id="addtransferbtn" class="btn view-btn" data-toggle="modal" data-target="#AddBatchModal">'+actionName+'</a>';
-				//}
+				}
 				return button;
             } 
           } 

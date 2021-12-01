@@ -8,7 +8,7 @@
 					<li role="presentation" class="tabs-lis <?php echo (isset($activeClass) && $activeClass=='consumption')?'active':'';?>"><a data-toggle="tab" class="q-tab" data-id="1" href="#consumption">Consumption</a></li>
 					<li role="presentation" class="tabs-lis <?php echo (isset($activeClass) && $activeClass=='dropout')?'active':'';?>"><a data-toggle="tab" class="q-tab" data-id="2" href="#dropout">Dropout</a></li>
 					<li role="presentation" class="tabs-lis"><a data-toggle="tab" class="q-tab" data-id="3" href="#surveillance">Surveillance</a></li>
-					<li role="presentation" class="tabs-lis"><a data-toggle="tab" class="q-tab" data-id="5" href="#covid">COVID-19</a></li>
+					<li role="presentation" class="tabs-lis"><a data-toggle="tab" class="q-tab" data-id="5" href="#covid">COVID-19</a></li>	 
 					<li role="presentation" style="display:none" class="tabs-lis"><a data-toggle="tab" class="q-tab" data-id="4" href="#attendence">Attendence</a></li><!-- Currently hide. when complete show it-->
 				</ul>
 			</div>

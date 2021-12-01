@@ -1,4 +1,3 @@
-
 <?php
 class DailyRegisterChildReport extends CI_Controller {
 	//================ Constructor function Starts Here ==================//
@@ -8,8 +7,6 @@ class DailyRegisterChildReport extends CI_Controller {
 		$this -> load -> helper('cross_notify_functions_helper');
 		authentication();
 		$this -> load -> model('Daily_register_model'); 
-  
-  
 	}
 	//====================== Constructor Function Ends Here ==========================//
 	//--------------------------------------------------------------------------------//
@@ -17,10 +14,9 @@ class DailyRegisterChildReport extends CI_Controller {
 	function reportFilters(){
 			$this -> load -> library('reportfilters');
 			$reportPeriod = array('specific_month');
-			$functionName = $this -> uri -> segment (2);   
+			$functionName = $this -> uri -> segment (2);
 			if($functionName == "DataEntry"){
-				$reportPeriod = array('specific_date_test');
-				
+				$reportPeriod = array('specific_date');
 				$reportPath = base_url()."childs/DailyRegisterChildReport/dataentry_report";										 
 				$reportTitle = "Data Entry Report";
 				$customDropDown = array(
@@ -42,7 +38,7 @@ class DailyRegisterChildReport extends CI_Controller {
 				$data['pageTitle']='EPI-MIS Daily Report Filters';
 				$this -> load -> view('template/epi_template',$data);
 			}else{
-				//print_r($functionName);exit; 
+				//print_r($functionName);exit;
 				$reportPath = base_url()."childs/DailyRegisterChildReport/monthly_report";
 				$reportTitle = "Daily Register Report";
 				$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
@@ -57,10 +53,8 @@ class DailyRegisterChildReport extends CI_Controller {
 			}
 	}
 	public function monthly_report(){
-					
 		$data= $this-> getPostedData();
 		if(isset($data['reportType']) && $data['reportType'] == '0'){
-				//echo '2';exit;
 			$data= $this-> getPostedData();
 			$data['data'] = $this -> Daily_register_model -> monthly_report($data);
 			$data['fileToLoad'] 	= 'childs/Monthly_register_view';
@@ -68,7 +62,6 @@ class DailyRegisterChildReport extends CI_Controller {
 			$this->load->view('template/reports_template',$data);
 		}
 		elseif(isset($data['reportType']) && $data['reportType'] == 'flcf'){
-			//echo '3';exit;
 			$data= $this-> getPostedData();
 			$data['data'] = $this -> Daily_register_model -> monthly_report_facility_wise($data);
 			$data['fileToLoad'] 	= 'childs/Monthly_register_view_facility_wise';
@@ -102,33 +95,28 @@ class DailyRegisterChildReport extends CI_Controller {
 			$this->load->view('template/reports_template',$data);
 		}
 		else{
-			
-			//echo '1';exit;
-			$data= $this-> getPostedData();		  
+			$data= $this-> getPostedData();
 			$data['data'] = $this -> Daily_register_model -> daily_report($data);
 			$data['fileToLoad'] 	= 'childs/daily_registe_vaccination_childr_view';
 			$data['pageTitle']	='EPI-MIS | Daily Vaccination Register Report';
 			$this->load->view('template/reports_template',$data);
-														
 		}
 	}
-	public function dataentry_report(){                       
+	public function dataentry_report(){
 		$data= $this-> getPostedData();
-		//print_r($data);exit;
 		$data['data'] = $this -> Daily_register_model -> dataentry_report($data);
 		$data['fileToLoad'] 	= 'childs/daily_dataentry_view';
 		$data['pageTitle']	='EPI-MIS | Daily Vaccination Register Report';
 		$this->load->view('template/reports_template',$data);
-		//print_r($data);exit;                                    
+		//print_r($data);exit;
 	}
 	public function getPostedData(){ 
 			$data=array();$dataPosted=array();
 			//$dataPosted = $_POST;
 			If($_POST != null){
-			$dataPosted = $_POST;															  
+			$dataPosted = $_POST;
 			}else{
-				$dataPosted = $_GET;                        
-														 
+				$dataPosted = $_GET;
 			}
 			$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y","d-M-y","mm-yyyy","yyyy-mm");
 			foreach($dataPosted as $key => $value)
@@ -150,4 +138,4 @@ class DailyRegisterChildReport extends CI_Controller {
 			return $data;
 	}	
 }
- ?>
+?>

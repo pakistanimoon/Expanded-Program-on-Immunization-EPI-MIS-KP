@@ -130,7 +130,7 @@ top:6px;
 </script>
 <script type="text/javascript">
  $(document).ready(function() { 
-    <?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($_SESSION['utype']=='DEO')){?>
+    <?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
 	    var columns = [
 			{ data: "serial" ,
 			  orderable: false,
@@ -308,7 +308,7 @@ top:6px;
 			table.search( this.value ).draw();
 		});
 		$("#search_box").css( { "margin-bottom" : "20px"} );
-		<?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($_SESSION['utype']=='DEO')){?>
+		<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
 			$('#trbody').remove();
 			$('#trbody1').remove();
 			var markup = '<tr role="row" id="trbody" class="info"><th class="text-center Heading" >S#</th><th class="text-center Heading" >Name</th><th class="text-center Heading" >Level</th><th class="text-center Heading">Type</th><th class="text-center Heading">HF</th><th class="text-center Heading">UC</th><th class="text-center Heading">Tehsil</th><th class="text-center Heading">Phone</th><th class="text-center Heading">CNIC</th><th class="text-center Heading">Status Date</th><th class="text-center Heading">Update Status</th><th class="text-center Heading" style="width: 80px;"><a href="<?php echo base_url(); ?>Hr_management/hr_add" data-toggle="tooltip" title="Add New HR"><button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button></a></th></tr>';
@@ -324,7 +324,7 @@ top:6px;
 			table.columns().search('').draw();
 			if(status=='Active' || status=='Died' || status=='On Leave' || status=='Resigned' || status=='Retired' || status=='Terminated' || status=='Contract Expired' || status=='Shifted'){
 
-				<?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($_SESSION['utype']=='DEO')){?>
+				<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
 					$('#trbody').remove();
 					$('#trbody1').remove();
 					//var markup = '<tr role="row" id="trbody" class="info"><th class="text-center Heading" >S#</th><th class="text-center Heading" >Name</th><th class="text-center Heading" >Level</th><th class="text-center Heading">Type</th><th class="text-center Heading" rowspan="1">HF</th><th class="text-center Heading">UC</th><th class="text-center Heading">Tehsil</th><th class="text-center Heading">Phone</th><th class="text-center Heading">CNIC</th><th class="text-center Heading">Status</th><th class="text-center Heading">Status Updat</th><th class="text-center Heading" style="width: 80px;"><button id="add_button" class="submit custom-add-btn btn-sm" onclick="location.href=<?php echo base_url(); ?>Hr_management/hr_add" ><i class="fa fa-plus"></i> Add </button></th></tr>';
@@ -371,7 +371,7 @@ top:6px;
 				table.columns(15).visible(true);
 				table.columns(18).visible(true);
 			}else{
-				<?php if ((($_SESSION['UserLevel']=='3') || ($_SESSION['UserLevel']=='4')) && ($_SESSION['utype']=='DEO')){?>
+				<?php if (($_SESSION['UserLevel']=='3') && ($_SESSION['utype']=='DEO')){?>
 					$('#trbody').remove();
 					$('#trbody1').remove();
 					var markup = '<tr role="row" id="trbody" class="info"><th class="text-center Heading" colspan="1" rowspan="2">S#</th><th class="text-center Heading" colspan="1" rowspan="2" >Name</th><th class="text-center Heading" rowspan="1" colspan="2" >Level</th><th class="text-center Heading" rowspan="1" colspan="2">Type</th><th class="text-center Heading" rowspan="1" colspan="2" >HF</th><th class="text-center Heading" rowspan="1" colspan="2" >UC</th><th class="text-center Heading" rowspan="1" colspan="2" >Tehsil</th><th class="text-center Heading" rowspan="1" colspan="2" >Status</th><th class="text-center Heading" colspan="1" rowspan="2">Update Status</th><th class="text-center Heading" colspan="1"  rowspan="2" style="width: 80px;"><a href="<?php echo base_url(); ?>Hr_management/hr_add" data-toggle="tooltip" title="Add New HR"><button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button></a></th></tr><tr role="row" id="trbody1" class="info"><th>From</th><th >To</th><th >From</th><th>To</th><th>From</th><th>To</th><th>From</th><th>To</th><th>From</th><th>To</th><th>From</th><th>To</th></tr>';
@@ -424,10 +424,6 @@ top:6px;
 		$("#level option[value='2']").remove();
 	<?php } ?>	 
 	
-	<?php if (($_SESSION['UserLevel']=='4')){?>		
-		$("#level option[value='2']").remove();
-		$("#level option[value='4']").remove();
-	<?php } ?>	
 	$(document).on('change','#level', function(e){
 		$("#new_distcode").val('');
 		$("#new_tehcode").val('');
@@ -497,4 +493,39 @@ top:6px;
 			});
 		}
 	} */
+	/* $('#new_distcode').on('change' , function(){
+	 var dists=this.value;
+		$.ajax({
+			type: "POST",
+			data: "distcode="+dists,
+			url: "<?php echo base_url(); ?>Ajax_calls/getTehsils",
+					success: function(result){
+						$('#new_tehcode').html(result);
+					}
+		});
+	});
+	$('#new_tehcode').on('change' , function (){
+	  var tehcode = this.value;
+	  var uncode = "";
+	  $.ajax({
+		type: "POST",
+		data: "tcode="+tehcode,
+		url: "<?php echo base_url(); ?>Ajax_calls/getUnC/tcode",
+		success: function(result){
+		  $('#new_uncode').html(result);
+		}
+	  });
+	});
+	$('#new_uncode').on('change' , function (){
+	  var uncode = this.value;
+	  var facode = "";
+	  $.ajax({
+		type: "POST",
+		data: "uncode="+uncode,
+		url: "<?php echo base_url(); ?>Ajax_calls/getFacilities",
+		success: function(result){
+		  $('#new_facode').html(result);
+		}
+	  });
+	}); */
 	</script>

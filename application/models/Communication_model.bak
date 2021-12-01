@@ -1,0 +1,94 @@
+<?php
+class Communication_model extends CI_Model
+{
+	public function getConsumption($fmonth,$distcode,$productId){
+		$this -> load -> helper('dashboard_functions_helper');
+		$this -> db -> select("
+			facode as hf_code,{$productId} as item_code,cr_r{$productId}_f1 as opening,cr_r{$productId}_f2 as received,cr_r{$productId}_f2 as issue,
+			cr_r{$productId}_f6 as closing,fmonth as data_entry_month,date_submitted as last_update");
+		$this -> db -> where(
+			array(
+				'distcode' => $distcode,
+				'fmonth' => $fmonth
+			)
+		);
+		$consumptionResult = $this -> db -> get('form_b_cr') -> result_array();
+		foreach($consumptionResult as $key => $value){
+			$facode = $value['hf_code'];
+			$this -> db -> select('vacc_dose_id');
+			$this -> db -> where('cr_product_id',$productId);
+			/* Get all doses for a product that are mapped in products_doses_details table */
+			$allDoses = $this -> db -> get('products_doses_details') -> result_array();
+			if($allDoses){
+				$consumptionResult[$key]['issue'] = array();
+				$doseno = 1;
+				foreach($allDoses as $adkey => $advalue){
+					$vaccineId = $advalue['vacc_dose_id'];
+					/* if product id is for TT then its column name are different so we have a different function for TT */
+					if($productId == 8){
+						$consumptionResult[$key]['issue'][] = ttVaccinationInNumbers("fmonth = '{$fmonth}'",NULL,$facode,$vaccineId,NULL,$distcode,NULL,'arr');
+						$consumptionResult[$key]['issue'][$adkey]['dose_no'] = $doseno;
+					}else{
+						$consumptionResult[$key]['issue'][$adkey] = vaccinationInNumbers("fmonth = '{$fmonth}'",NULL,$facode,$vaccineId,NULL,$distcode,NULL,'arr');
+						$consumptionResult[$key]['issue'][$adkey]['dose_no'] = ($productId == 3)?$doseno-1:$doseno;
+					}
+					$doseno++;
+				}
+			}
+		}
+		return $consumptionResult;
+	}
+	public function getAllProducts(){
+		$this -> db -> select('*');
+		return $this -> db -> get('products_details') -> result_array();
+	}
+	public function getIssuance($date,$productId,$productName,$idToSearch){
+		return $this -> db -> query("
+								SELECT 
+									main.id as transactionid,main.form_date as transactionDate,'KPK EPI STORE' as issuedby,
+									3 as issuedbyid,districtname(main.distcode) as issuedto,main.distcode as issuedtoid,
+									vacc.batch_no as batchnumber,vacc.manufacturer,vacc.expiry_date as expirydate,
+									'null' as productiondate,{$productId} as itemid,'{$productName}' as itemname,vacc.iq_vvmstage as vvmstage,
+									vacc.issue_quantity_vial_no as issuedqty 
+								FROM 
+									form_a1_vaccine_main main,form_a1_vaccine_columns vacc 
+								WHERE 
+									main.id=vacc.main_id 
+									AND main.form_date='{$date}' 
+									AND vacc.vaccine_id={$idToSearch} 
+								ORDER BY main.distcode;
+		") -> result_array();
+	}
+	public function getReceiving($date,$productId,$productName,$idToSearch){
+		return $this -> db -> query("
+								SELECT 
+									main.id as transactionid,main.form_date as transactionDate,'KPK EPI STORE' as issuedby,
+									3 as issuedbyid,districtname(main.distcode) as receivedby,main.distcode as receivedbyid,
+									vacc.batch_no as batchnumber,vacc.manufacturer,vacc.expiry_date as expirydate,
+									'null' as productiondate,{$productId} as itemid,'{$productName}' as itemname,vacc.rq_vvmstage as vvmstage,
+									vacc.receive_quantity_vial_no as receivedqty 
+								FROM 
+									form_a1_vaccine_main main,form_a1_vaccine_columns vacc 
+								WHERE 
+									main.id=vacc.main_id 
+									AND main.form_date='{$date}' 
+									AND vacc.vaccine_id={$idToSearch} 
+									AND main.status='Received'
+								ORDER BY main.distcode;
+		") -> result_array();
+	}
+	public function getUcsPopulations(){
+		$this -> db -> select('uncode as UC_CODE,unname(uncode) as UC_NAME,population as UC_POPULATION');
+		$this -> db -> where('year',date('Y'));
+		$this -> db -> order_by('uncode','ASC');
+		return $this -> db -> get('unioncouncil_population') -> result_array();
+	}
+	public function getEpiCentersPopulations($distcode){
+		$this -> db -> select('facode as EPI_CENTER_CODE,facilityname(facode) as EPI_CENTER_NAME,population as EPI_CENTER_POPULATION');
+		$this -> db -> where(array('distcode'=>$distcode));
+		$this -> db -> where('year',date('Y'));
+		$this -> db -> order_by('facode','ASC');
+		return $this -> db -> get('facilities_population') -> result_array();
+	}
+}
+?>

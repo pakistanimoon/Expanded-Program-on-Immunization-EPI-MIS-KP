@@ -1,0 +1,99 @@
+<div class="container">
+	<div class="row row-tiles">
+		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 animated fadeInDown">
+			<div class="panel panel-default">
+				<td><label>Year</label>
+					<select id="dashyear" name="year" class="form-control">
+						<?php echo getAllYearsOptions(); ?>
+					</select>
+				</td>
+			</div>
+		</div>
+	</div>
+	</br>
+	<div id='indicator'>
+		<?php echo $this -> load -> view('dashboard/indicatorcards', $data, TRUE); ?>
+	</div>
+	<div class="row animated fadeInUp">
+		<div class="col-xs-12">
+			<div class="panel panel-default">
+				<div class="panel-body" style="padding:0px;">
+					<div class="row">
+						<div class="col-sm-12">
+							<table class="table table-striped table-bordered districtable" style="margin-bottom: 0px;">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>District</th>
+										<th>EPI Centers</th>
+										<th>Supervisors</th>
+										<th>EPI Technicians</th>
+										<th>HF Incharges</th>
+										<th>DSO's</th>
+										<th>Computer Operator</th>
+										<th>Drivers</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php 
+									$i=1;$totFacilities=0;$totSupervisors=0;$totTechnicians=0;$totMedTechnicians=0;$totDsos=0;$totCos=0;$totDrivers=0;
+									foreach($tableInfo as $row){ ?>
+									<tr>
+										<td><?php echo $i; ?></td>
+										<td><?php echo $row['district']; ?></td>
+										<td><span class="badge blue"><?php echo $row['tot_facilities']; ?></span></td>
+										<td><span class="badge green"><?php echo $row['tot_supervisors']; ?></span></td>
+										<td><span class="badge megenta"><?php echo $row['tot_technicians']; ?></span></td>
+										<td><span class="badge dark"><?php echo $row['tot_medtechnicians']; ?></span></td>
+										<td><span class="badge red2"><?php echo $row['tot_dsos']; ?></span></td>
+										<td><span class="badge purple"><?php echo $row['tot_cos']; ?></span></td>
+										<td><span class="badge yellow"><?php echo $row['tot_drivers']; ?></span></td>
+										<?php
+										$totFacilities 		+= $row['tot_facilities'];
+										$totSupervisors 	+= $row['tot_supervisors'];
+										$totTechnicians 	+= $row['tot_technicians'];
+										$totMedTechnicians 	+= $row['tot_medtechnicians'];
+										$totDsos 			+= $row['tot_dsos'];
+										$totCos 			+= $row['tot_cos'];
+										$totDrivers 		+= $row['tot_drivers'];
+										?>
+									</tr>
+									<?php $i++; } ?>
+									<tr style="background: #0003;">
+										<td colspan="2" style="text-align: right;font-weight: bold;">Total</td>
+										<td><span class="badge blue"><?php echo $totFacilities; ?></span></td>
+										<td><span class="badge green"><?php echo $totSupervisors; ?></span></td>
+										<td><span class="badge megenta"><?php echo $totTechnicians; ?></span></td>
+										<td><span class="badge dark"><?php echo $totMedTechnicians; ?></span></td>
+										<td><span class="badge red2"><?php echo $totDsos; ?></span></td>
+										<td><span class="badge purple"><?php echo $totCos; ?></span></td>
+										<td><span class="badge yellow"><?php echo $totDrivers; ?></span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div><!--end of body container-->
+<script type="text/javascript">
+$(document).on('change','#dashyear',function(){
+	$('#showForms').html('');
+	var year=$(this).val();
+	var data = {year:year,ajax:true};
+	if(year!=0){
+		$.ajax({
+			type: "POST",
+			data:data,
+			async:true,
+			dataType : 'json',
+			url: "<?php echo base_url(); ?>dashboard/Main_page/index",
+			success: function(result){
+				$('#indicator').html(result.cards);
+			}
+		});
+	}
+});
+</script>

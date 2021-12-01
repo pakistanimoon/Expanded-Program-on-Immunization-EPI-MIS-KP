@@ -1,0 +1,264 @@
+<?php
+/*
+	@ Author: 				Raja Imran Qamer
+	@ Email:  				rajaimranqamer@gmail.com
+	@ Class: 				Receiver
+	@ Description:  		This class will be used to receive incoming API calls, verify them, and return needed information depending upon provided parameters.
+	@						It will be used for receiving agent for federal epimis System
+*/
+class Receiver extends CI_Controller 
+{
+	
+	public function __construct() 
+	{
+		parent::__construct();
+		//verify incoming call here
+		$this->verifyRequest();
+		$this -> load -> model('API/Receiver_model','rcvr_mdl');
+		$this -> load -> model('Common_model','common');
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_equipments_count
+		@ Description:  		This function will return counts of all coldchain equipments available, according to parameters
+	*/
+	public function get_cc_equipments_count(){
+		$status = ($this -> input -> post('status'))?$this -> input -> post('status'):'Active';
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_cc_equipments_count($status);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_capacity
+		@ Description:  		This function will return capacity in litres of all coldchain equipments available, according to parameters
+	*/
+	public function get_cc_capacity(){
+		$type = ($this -> input -> post('type'))?$this -> input -> post('type'):'coldroom';
+		$typeId = $this -> getCCTypeId($type);
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_cc_capacity($typeId);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_assetType_counts
+		@ Description:  		This function will return type wise Available Assets count, according to parameters
+	*/
+	public function get_cc_assetType_counts(){
+		$type = ($this -> input -> post('type'))?$this -> input -> post('type'):'coldroom';
+		$typeId = $this -> getCCTypeId($type);
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_cc_assetType_counts($typeId);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_levelWise_counts
+		@ Description:  		This function will return Level wise Available Assets count, according to parameters
+	*/
+	public function get_cc_levelWise_counts(){
+		$type = ($this -> input -> post('type'))?$this -> input -> post('type'):'coldroom';
+		$typeId = $this -> getCCTypeId($type);
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_cc_levelWise_counts($typeId);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_wsWise_counts
+		@ Description:  		This function will return Level wise Available Assets count, according to parameters
+	*/
+	public function get_cc_wsWise_counts(){
+		$type = ($this -> input -> post('type'))?$this -> input -> post('type'):'coldroom';
+		$typeId = $this -> getCCTypeId($type);
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_cc_wsWise_counts($typeId);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_ysWise_counts
+		@ Description:  		This function will return Level wise Available Assets count, according to parameters
+	*/
+	public function get_cc_ysWise_counts(){
+		$type = ($this -> input -> post('type'))?$this -> input -> post('type'):'coldroom';
+		$typeId = $this -> getCCTypeId($type);
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_cc_ysWise_counts($typeId);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_cc_hfFunAsset_counts
+		@ Description:  		This function will return hf rate havinf at least one item of given category exist, according to parameters
+	*/
+	public function get_cc_hfFunAsset_counts(){
+		$type = ($this -> input -> post('type'))?$this -> input -> post('type'):'refrigerator';
+		$typeId = $this -> getCCTypeId($type);
+		$data["error"] = false;
+		$data["result"] = 5;//$this->rcvr_mdl->get_cc_hfFunAsset_counts($typeId);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_str_stock_in_hand
+		@ Description:  		This function will return Level wise Available Assets count, according to parameters
+	*/
+	public function get_str_stock_in_hand(){
+        //$storecode = ($this -> input -> post('storecode'))?$this -> input -> post('storecode'):'3';
+        $whtype = ($this -> input -> post('level'))?$this -> input -> post('level'):'2';
+        $itemCategory = $this->getItemCategoryId(($this -> input -> post('typeofitems'))?$this -> input -> post('typeofitems'):'1');
+
+       //$whcode = $storecode;
+		
+		$enddate = date("Y-m-d H:i:s");
+		if($whtype==6){
+			$items = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,get_stackholder_activity_name(activity_type_id) as activity,get_pro_level_all_fac_closing_bal(cr_table_row_numb) as stock",array("item_category_id"=>$itemCategory,"cr_table_row_numb !="=>NULL),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
+		}else{
+			$items = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,get_stackholder_activity_name(activity_type_id) as activity,get_curr_stock_quantity('".$enddate."','".$whtype."',pk_id) as stock",array("item_category_id"=>$itemCategory,"cr_table_row_numb !="=>NULL),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
+		}	
+		//
+		$data["error"] = false;
+		$data["result"] = $items;//$this->rcvr_mdl->get_str_stock_in_hand();
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_str_stock_out_data
+		@ Description:  		This function will return Level wise Stock out facilities count, according to parameters
+	*/
+	public function get_str_stock_out_data(){
+        $whtype = ($this -> input -> post('level'))?$this -> input -> post('level'):'2';
+        $itemCategory = $this->getItemCategoryId(($this -> input -> post('typeofitems'))?$this -> input -> post('typeofitems'):'1');
+		$reportingmonth = date('Y-m', strtotime('-1 month', time()));
+		//$items = $this->common->fetchall("epi_item_pack_sizes",NULL,"pk_id as id,item_name as name,activity_type_id as activityid,(SELECT count(*) FROM form_b_cr where fmonth = '".$reportingmonth."') as submitted,get_pro_level_all_fac_stock_out(cr_table_row_numb,'".$reportingmonth."') as stockout",array("item_category_id"=>$itemCategory,"cr_table_row_numb !="=>NULL),NULL,array("by"=>"activity_type_id || 'moon' || pk_id","type"=>"asc"));
+		$items = $this->rcvr_mdl->get_str_stock_out_data($reportingmonth,$itemCategory);
+		$data["error"] = false;
+		$data["result"] = $items;
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				get_vacc_stock_out_data
+		@ Description:  		This function will return province wise Stock out facilities count for one vaccine, according to parameters
+	*/
+	public function get_vacc_stock_out_data(){
+        $selecteditem	= ($this -> input -> post('itemid'))?$this -> input -> post('itemid'):'2';//default 2 for BCG
+        $reportingmonth = ($this -> input -> post('fmonth'))?$this -> input -> post('fmonth'):date('Y-m', strtotime("first day of previous months", time()));//default 2 for BCG
+		$items = $this->rcvr_mdl->get_vacc_stock_out_data($reportingmonth,$selecteditem);
+		//$items = $this->rcvr_mdl->get_str_stock_out_data_new($reportingmonth,$selecteditem);
+		$data["error"] = false;
+		$data["result"] = $items;
+		echo json_encode($data);exit;
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				verifyRequest
+		@ Description:  		This function will be used as validator of incoming requests, just update it for validation purposes.
+	*/
+	public function verifyRequest(){
+		$clientcode = $this -> input -> post('hackerinfo');
+		$code = $this -> input -> post('code');
+		$servercode = md5('fedEp1m1$'.date("Y-m-d").'to'.$code.'regEp1m1$');
+		if($servercode == $clientcode)
+		{
+			//do nothing, call is verified
+		}else{
+			$data["error"] = "UnAuthorised Access, Please check your authentication call.";
+			//send response to client.
+			echo json_encode($data);exit;
+		}
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				getCCTypeId
+		@ Description:  		This function will be used to return id of cold chin asset type, currently supporting only two.
+	*/
+	public function getCCTypeId($type){
+		switch($type){
+			case "refrigrator":
+				return "1";
+				break;
+			case "coldroom":
+				return "21";
+				break;
+			case "voltageregulator":
+				return "23";
+				break;
+			case "generator":
+				return "24";
+				break;
+			case "transport":
+				return "25";
+				break;
+			case "vaccinecarrier":
+				return "26";
+				break;
+			case "icepack":
+				return "27";
+				break;
+			case "coldbox":
+				return "33";
+				break;
+			default:
+				return "1";
+				break;
+		}
+	}
+	/*
+		@ Author: 				Raja Imran Qamer
+		@ Email:  				rajaimranqamer@gmail.com
+		@ Class: 				getCCTypeId
+		@ Description:  		This function will be used to return id of cold chin asset type, currently supporting only two.
+	*/
+	public function getItemCategoryId($type){
+		switch($type){
+			case "vaccines":
+				return "1";
+				break;
+			case "diluents":
+				return "3";
+				break;
+			case "nonvaccines":
+				return "2";
+				break;
+			default:
+				return "1";
+				break;
+		}
+	}
+	/*
+		@ Author: 				zoahib
+		@ Class: 				getCCTypeId
+		@ Description:  		This function will be used to return Active Technician count and province population
+	*/
+	public function get_technicians_data(){
+		$year = ($this -> input -> post('year'))?$this -> input -> post('year'):'2018';
+		$data["error"] = false;
+		$data["result"] = $this->rcvr_mdl->get_technicians_data($year);
+		//send response to client.
+		echo json_encode($data);exit;
+	}
+}
+?>

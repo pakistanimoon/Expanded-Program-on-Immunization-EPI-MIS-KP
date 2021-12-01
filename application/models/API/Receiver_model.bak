@@ -1,0 +1,338 @@
+<?php
+class Receiver_model extends CI_Model {
+	//================ Constructor Function Starts ==================//
+	public function __construct() {
+		parent::__construct();
+		//$this -> load -> model('Common_model');
+	}
+	//============================ Constructor Function Ends ============================//
+	
+	/* public function coldchainlist($start,$length,$order,$dir,$multiple_search,$id=null)
+	{
+		$wc = getWC();
+		$data=array(); 
+		$_currentdate  = date('Y-m-d');
+		//print_r($id);exit;
+		$assetsid= array('1','21','24','25','33');
+		$status = 'ccm.status';
+		$join ='';
+		if($id != null && in_array($id,$assetsid))
+		{
+			$status ='history.status';
+			$join = 'LEFT JOIN epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id ';
+		}
+		$procode = $this->session->Province;
+		$query ="SELECT asset_id as id, 
+				get_store_name(ccm.warehouse_type_id,CAST(storecode AS VARCHAR(9))) as storename,
+				get_stored_quantity_litters(asset_id,'{$_currentdate}',cast(ccm.warehouse_type_id as varchar(15)),cast(storecode as varchar(15))) as used_by_stock,
+				ccm.warehouse_type_id,ccm.procode,ccm.distcode,districtname(ccm.distcode) as district, 
+				ccm.tcode, ccm.facode, tehsilname(ccm.tcode),facilityname(ccm.facode), 
+				makername(md.ccm_make_id) as make_name,md.model_name, ccm.quantity,
+				md.net_capacity_4, {$status} as status, ccm.created_date::date,  
+				md.gross_capacity_20 as capacity,ccm.short_name
+				FROM 
+				epi_cc_coldchain_main ccm 
+				JOIN epi_cc_models md ON md.pk_id = ccm.ccm_model_id
+				{$join}
+				JOIN epi_cc_asset_types assetTypes ON assetTypes.pk_id = ccm.ccm_sub_asset_type_id 
+				WHERE ccm.procode = '{$procode}' {$multiple_search} and asset_status ='Active' {$order} LIMIT {$length} OFFSET {$start} ";
+		//echo $query; exit;
+		$result = $this -> db -> query($query);
+		$data['data'] = $result -> result_array();
+		return $data;
+	}
+	public function coldchaintotal($multiple_search,$id=null)
+	{
+		$wc = getWC();
+		$data=array();
+		$assetsid= array('1','21','24','25','33');
+		$join ='';
+		if($id != null && in_array($id,$assetsid))
+		{
+			$join = 'LEFT JOIN epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id ';
+		}
+		$procode = $this->session->Province;
+		$query ="select count(*) as num FROM 
+			epi_cc_coldchain_main ccm 
+			JOIN epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+			$join
+			JOIN epi_cc_asset_types assetTypes ON assetTypes.pk_id = ccm.ccm_sub_asset_type_id
+			WHERE ccm.procode = '{$procode}' {$multiple_search} and asset_status ='Active'";
+		//echo $query; exit;
+		$query = $this->db->query($query);
+		$result = $query->row();
+		if(isset($result)) return $result->num;
+		return 0;
+	}*/
+	public function get_cc_equipments_count($status=NULL)
+	{
+		$statuswhr = '';
+		if($status)
+			$statuswhr = " and asset_status = '".$status."'";
+		$query ="select 
+			assets.asset_type_name,
+			(
+				select count(ccm.*) from epi_cc_coldchain_main ccm 
+				LEFT JOIN epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+				LEFT JOIN epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+				where ccm.ccm_sub_asset_type_id = ANY (assets.ids) $statuswhr
+			) as available 
+		FROM 
+			(
+				select 
+					epi_cc_asset_types.asset_type_name,
+					(
+						select array_agg(inn.pk_id) as ids from epi_cc_asset_types inn where (inn.pk_id =  epi_cc_asset_types.pk_id OR inn.parent_id =  epi_cc_asset_types.pk_id)
+					) as ids
+				FROM epi_cc_asset_types
+				where parent_id = 0
+			) as assets";
+		$query = $this->db->query($query);
+		return $query->result_array();
+	}
+	public function get_cc_capacity($typeId=NULL)
+	{
+		$query ="
+			select 
+				sum(get_capacity_litters($typeId,ccm.asset_id,ccm.ccm_model_id)) as capacity 
+			from 
+				epi_cc_coldchain_main ccm 
+			LEFT JOIN 
+				epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+			LEFT JOIN 
+				epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+			where 
+				ccm.ccm_sub_asset_type_id IN (
+					select inn.pk_id as ids from epi_cc_asset_types inn where inn.parent_id = $typeId
+				) 
+				and asset_status = 'Active'";
+		$query = $this->db->query($query);
+		return $query->result_array();
+	}
+	public function get_cc_assetType_counts($typeId=NULL)
+	{
+		$query ="select 
+			assets.asset_type_name,
+			(
+				select count(ccm.*) from epi_cc_coldchain_main ccm 
+				LEFT JOIN epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+				LEFT JOIN epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+				where ccm.ccm_sub_asset_type_id = assets.assetid and asset_status = 'Active'
+			) as available 
+		FROM 
+			(
+				select 
+					epi_cc_asset_types.pk_id as assetid,
+					epi_cc_asset_types.asset_type_name
+				FROM epi_cc_asset_types
+				where parent_id = $typeId
+			) as assets";
+		$query = $this->db->query($query);
+		return $query->result_array();
+	}
+	public function get_cc_levelWise_counts($typeId=NULL)
+	{
+		$query ="
+			select 
+				(case when ccm.warehouse_type_id=0 then 'UnAllocated' else warehousetypename(ccm.warehouse_type_id)||' Stores'  end) as level,
+				count(ccm.*) as available
+			from 
+				epi_cc_coldchain_main ccm 
+			LEFT JOIN 
+				epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+			LEFT JOIN 
+				epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+			where 
+				ccm.ccm_sub_asset_type_id IN (
+					select inn.pk_id as ids from epi_cc_asset_types inn where inn.parent_id = $typeId OR (inn.pk_id = $typeId and parent_id = 0)
+				) 
+				and asset_status = 'Active'
+			group by 
+				ccm.warehouse_type_id";
+		$query = $this->db->query($query);
+		return $query->result_array();
+	}
+	public function get_cc_wsWise_counts($typeId=NULL)
+	{
+		$query ="
+			select 
+				ccm.status as workingstatus,
+				count(ccm.*) as available
+			from 
+				epi_cc_coldchain_main ccm 
+			LEFT JOIN 
+				epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+			LEFT JOIN 
+				epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+			where 
+				ccm.ccm_sub_asset_type_id IN (
+					select inn.pk_id as ids from epi_cc_asset_types inn where inn.parent_id = $typeId OR (inn.pk_id = $typeId and parent_id = 0)
+				) 
+				and asset_status = 'Active'
+			group by 
+				ccm.status";
+		$query = $this->db->query($query);
+		return $query->result_array();
+	}
+	public function get_cc_ysWise_counts($typeId=NULL)
+	{
+		$query ="
+			select 
+				coalesce(to_char(ccm.working_since,'YYYY'),'NULL') as yearsupply,
+				count(ccm.*) as available
+			from 
+				epi_cc_coldchain_main ccm 
+			LEFT JOIN 
+				epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+			LEFT JOIN 
+				epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+			where 
+				ccm.ccm_sub_asset_type_id IN (
+					select inn.pk_id as ids from epi_cc_asset_types inn where inn.parent_id = $typeId OR (inn.pk_id = $typeId and parent_id = 0)
+				) 
+				and asset_status = 'Active'
+			group by 
+				to_char(ccm.working_since,'YYYY')
+			order by 
+				to_char(ccm.working_since,'YYYY')";
+		$query = $this->db->query($query);
+		return $query->result_array();
+	}
+	public function get_cc_hfFunAsset_counts($typeId=NULL)
+	{
+		$query ="
+			select 
+				count(Distinct ccm.facode) as available
+			from 
+				epi_cc_coldchain_main ccm 
+			LEFT JOIN 
+				epi_cc_models md ON md.pk_id = ccm.ccm_model_id 
+			LEFT JOIN 
+				epi_cc_asset_status_history history ON history.pk_id = ccm.ccm_status_history_id
+			where 
+				ccm.warehouse_type_id = 6 and
+				ccm.facode is NOT NULL and
+				ccm.ccm_sub_asset_type_id IN (
+					select inn.pk_id as ids from epi_cc_asset_types inn where inn.parent_id = $typeId OR (inn.pk_id = $typeId and parent_id = 0)
+				) 
+				and asset_status = 'Active'
+			";
+		$query = $this->db->query($query);
+		return $query->row()->available;
+	}
+
+	//for drilldown at provicial level 
+	public function get_str_stock_out_data($fmonth,$itemCategory)
+	{
+		$parts = explode("-",$fmonth);
+		if(isset($parts[0]) && isset($parts[1])){
+			$year = $parts[0];
+			$monthnum = 'duem'.ltrim($parts[1], '0');
+			$distcode=$this->session->District;
+			if($distcode){
+				$due="(SELECT sum($monthnum) FROM consumptioncompliance where year = '".$year."' and distcode='$distcode') as due";
+				$submitted="(SELECT count(*) FROM epi_consumption_master where fmonth ='$fmonth' and distcode='$distcode') as submitted";
+				$stockout="get_pro_level_all_fac_stock_out_new(aggtable.abc,'$fmonth','distcode','$distcode') as stockout";
+			}
+			else
+			{
+				$due="(SELECT sum($monthnum) FROM consumptioncompliance where year = '".$year."') as due";
+				$submitted="(SELECT count(*) FROM epi_consumption_master where fmonth ='$fmonth') as submitted";
+				$stockout="get_pro_level_all_fac_stock_out_new(aggtable.abc,'$fmonth') as stockout";
+			}
+			$query ="
+			select 
+			pk_id as id,
+			description as name,
+			$due,
+			$submitted,
+			aggtable.abc as cr_table_row_numb,
+			$stockout 
+			from epi_items 
+			join (
+				select item_id,array_agg('epi_consumption_detail.item_id='||pk_id) abc
+				from epi_item_pack_sizes 
+				where cr_table_row_numb is not NULL 
+				group by item_id 
+			) aggtable
+			on aggtable.item_id = epi_items.pk_id
+			where item_category_id = $itemCategory and abc is not null
+			order by pk_id asc";
+			$query = $this->db->query($query);
+			return $query->result_array();
+			//print_r($this->db->last_query());exit;
+		}
+		return array();
+	}	
+
+	public function get_technicians_data($year)
+	{
+		$query = "select tot_technician,(SELECT round(((sum(duem1+duem2+duem3+duem4+duem5+duem6+duem7+duem8+duem9+duem10+duem11+duem12))//12)::numeric,0) FROM consumptioncompliance ccp where year = '{$year}') as centers,pop,round(((pop::numeric)//tot_technician::numeric)::numeric,0) as technicianratio 
+					from (
+						select count(techniciancode) as tot_technician,
+						(select sum(population) from districts_population where year='{$year}') as pop 
+						from techniciandb where status='Active'
+					) as tbl";
+		$query = $this->db->query($query);
+		return $query->row();
+	}
+	
+	public function get_vacc_stock_out_data($fmonth,$itemId)
+	{
+		$parts = explode("-",$fmonth);
+		if(isset($parts[0]) && isset($parts[1])){
+			$year = $parts[0];
+			$duemonthnum = 'duem'.ltrim($parts[1], '0');
+			$submonthnum = 'subm'.ltrim($parts[1], '0');
+			$queryduesub ="SELECT sum($duemonthnum) as due,sum($submonthnum) as sub FROM consumptioncompliance where year = '".$year."' group by year";
+			$queryobj = $this->db->query($queryduesub);
+			$result = $queryobj->row();
+			$query ="
+			select 
+			$itemId as id,
+			item_name as name,
+			'".$result->due."' as due,
+			'".$result->sub."' as submitted,			
+			(
+				select count(*) from(
+					select main_id as balance from epi_consumption_detail join epi_consumption_master on epi_consumption_master.pk_id = epi_consumption_detail.main_id where item_id = $itemId and fmonth = '$fmonth' group by fmonth,main_id having sum(closing_doses) < 1
+				) as innerq
+			) as stockout 
+			from epi_item_pack_sizes 
+			where cr_table_row_numb is not NULL and pk_id = $itemId";
+			$query = $this->db->query($query);
+			return $query->result_array();
+			//(SELECT count(*) FROM epi_consumption_master where fmonth = '".$fmonth."') as submitted,
+		}
+		return array();
+	}
+	
+	/* public function get_vacc_stock_out_data($fmonth,$itemId)
+	{
+		$parts = explode("-",$fmonth);
+		if(isset($parts[0]) && isset($parts[1])){
+			$year = $parts[0];
+			$monthnum = 'duem'.ltrim($parts[1], '0');
+			$query ="
+			select 
+			pk_id as id,
+			item_name as name,
+			(SELECT sum($monthnum) FROM consumptioncompliance where year = '".$year."') as due,
+			(SELECT count(*) FROM form_b_cr where fmonth = '".$fmonth."') as submitted,
+			get_pro_level_all_fac_stock_out(aggtable.ids,'$fmonth') as stockout 
+			from 
+			(
+				select pk_id,item_name,array_agg('cr_r' || cr_table_row_numb || '_f6<1') ids 
+				from epi_item_pack_sizes 
+				where cr_table_row_numb is not NULL and pk_id = $itemId
+				group by pk_id 
+			) aggtable
+			where aggtable.ids is not null
+			order by pk_id asc";
+			$query = $this->db->query($query);
+			return $query->result_array();
+		}
+		return array();
+	} */
+}
+?>

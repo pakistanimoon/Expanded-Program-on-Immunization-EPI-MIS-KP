@@ -1,0 +1,78 @@
+/*
+    Styling for Left Div
+*/
+#leftdiv{
+
+    .border-bottom{
+         border-bottom: 1px solid #d6d6d6;
+        padding: 5px;
+        margin: 2px 0;
+        max-height: 65px;
+    }
+    .custom-sidebar{
+        background: #f1f1f1;
+        margin-top: 5px;
+        border: 1px solid #e4e4e4;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        box-shadow: 3px 4px 5px 2px #efefef;
+    }
+    h1{
+        font-weight: bolder;
+        position: relative;
+        top: -10px;
+    }
+    h6{
+        text-transform: uppercase;
+        position: relative;
+        top: -14px;
+        margin-bottom: 0px;
+        color: #484646;
+        font-weight: 400;
+        font-size: 12px;
+    }
+    img{
+        max-height: 50px;
+    }
+    .progress{
+            display: flex;
+            height: .5rem;
+            overflow: hidden;
+            font-size: .75rem;
+            background-color: #e9ecef;
+            border-radius: .25rem;
+            position: relative;
+            top: -13px;
+        }
+    .logo-side{
+            position: absolute;
+            display: inline-block;
+            right: 3px;
+            top: 3px;
+            width: 28px;
+        	-webkit-animation: rotation 2s infinite linear;
+        }
+        .datatable-box{
+            height: 300px;
+            overflow: scroll;
+            table{
+                td{
+                    padding: 3px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    letter-spacing: 1px;
+                }
+                th{
+                    padding: 3px !important;
+                    font-size: 13px;
+                    font-weight: 600;
+                    letter-spacing: 1px;
+                    background: #5493d6;
+                    color: #fff;
+                }
+            }
+            table.dataTable thead .sorting:before, table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:before, table.dataTable thead .sorting_desc_disabled:after{
+                top: 1px;
+            }
+        }
+    }

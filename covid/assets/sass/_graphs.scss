@@ -1,0 +1,36 @@
+/*
+    Styling for Body Graphs
+*/
+#contain_body{
+    margin-top: 20px;
+    .table-number{
+        height: 300px;
+        td{
+            font-weight: 600;
+            letter-spacing: 2px;
+            padding: 5px 10px;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+        .bg-color{
+         background: $blue;
+         color: #fff;
+        }
+        .number{
+            background: #fff;
+            color: $blue;
+        }
+    }
+    #container-week{
+        border: 1px solid #dcd9d9;
+        height: 300px;
+    }
+    .pie-charts{
+         border: 1px solid #dcd9d9;
+        height: 290px;
+    }
+    text{
+        font-size: 9px;
+    }
+}
+

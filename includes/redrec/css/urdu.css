@@ -1,0 +1,94 @@
+.urdu{
+	font-family: 'Noto Nastaliq Urdu Draft', serif;
+	font-size:9px;
+	font-weight:300;
+}
+.plan_table thead tr th{
+	text-align:center;
+	vertical-align:middle;
+	font-size:12px;
+}
+.plan_table thead tr th .urdu{
+	font-size:9px;
+}
+.plan_table input[type="text"]{
+	border-color: transparent;
+}
+.plan_table tbody tr td{
+	padding:0px;
+	text-align:center;
+	font-size:13px;
+	vertical-align:middle;
+}
+#pop1{
+	top: inherit;
+	left: 0px !important;
+	/*background: #4B4B4B;*/
+	position: relative !important;
+}
+.simplePopup {
+	display:none;
+	position:relative;
+	border: 1px solid #FFF;
+	background:#fff;
+	z-index:3;    
+	padding-left: 12px;
+	padding-top: 12px;
+	padding-right: 12px;
+	padding-bottom: 0px;
+	width:100%  !important;    
+}
+.simplePopup>.header{
+	text-align: center;
+	background: #0E6EAB;
+	color: white;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	margin: -12px;
+	margin-bottom: 8px;
+}
+.simplePopup>.header>span{
+	font-size: 13px;
+	font-weight: bold;
+}
+.simplePopupClose {
+	float: right;
+	cursor: pointer;
+	margin-left: 10px;	 
+	color: white;
+	font-size: 30px;	 
+	float: right;
+	margin-top: -9px;
+}
+.simplePopupBackground {
+	display:none;
+	background:#000;
+	position:fixed;
+	height:100%;
+	width:100%;
+	top:0;
+	left:0;
+	z-index:1;
+}
+.form-control
+{
+	padding:6px 1px;
+	color:#000000;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th
+{
+	padding:0px;
+	font-weight: 300;
+}
+.plan_table thead tr th
+{
+	border:1px solid #d4d0d0;
+}
+.plan_table thead tr
+{
+	border:1px solid black
+}
+.form-inline .form-control
+{
+	width: 100%;
+}

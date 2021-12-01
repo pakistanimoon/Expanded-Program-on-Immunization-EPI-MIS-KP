@@ -1,0 +1,103 @@
+<?php
+class Advance_Reports extends CI_Controller {
+	//================ Constructor function Starts Here ==================//
+	public function __construct() {
+		parent::__construct();
+		$this -> load -> model('Advance_reports_model');
+		$this -> load -> helper('epi_functions_helper');
+		authentication();
+	}
+	//====================== Constructor Function Ends Here ==========================//
+	//--------------------------------------------------------------------------------//
+	//======= Function to Create Filters for Sepecific Reports Starts Here ===========//
+	function reportFilters(){		
+	    dataEntryValidator(0);
+		$this -> load -> library('reportfilters');
+		$reportPeriod = array('month-from-to-previous');
+		$functionName = $this -> uri -> segment (3);
+		$moduleID = ($functionName == "HFMVRF-Advance-Report")?"3":(($functionName == "HFCR-Advance-Report")?"2":(($functionName == "HFMVRF-Advance-Report2")?"4":""));
+		$reportPath = base_url()."Advance-Report/".$functionName;
+		$reportTitle = $this->reportTitle($functionName);
+		$options = array(0=>'TypeWise','uc'=>'Uc Wise','fac'=>'Facility Wise');
+		$customDropdown = array($options);
+		$dataHtml = $this->reportfilters->filtersHeader($reportPath,$reportTitle);
+		$dataHtml .= $this->reportfilters->createReportFilters(true,true,true,true,$reportPeriod,false,NULL,NULL,$moduleID,'NO',NULL,$customDropdown);
+		$dataHtml .= $this->reportfilters->filtersFooter("Yes");
+		//print_r($moduleID);
+		//print_r($dataHtml);exit;
+		$data['listing_filters'] = $dataHtml;
+		
+		if($reportTitle == "Health Facility Monthly Advance Report"){
+		$this -> db -> select('*');
+		$this -> db -> where('module_id', '3');
+		$this -> db -> order_by('description');
+		$data['allSections'] = $this -> db -> get('epi_sections') -> result_array();
+		}
+		if($reportTitle == "HF Consumption and Requisition Advance Report"){
+		$this -> db -> select('*');
+		$this -> db -> where('module_id', '2');
+		$this -> db -> order_by('description');
+		$data['allSections'] = $this -> db -> get('epi_sections') -> result_array();
+		} 
+		$data['data']=$data;
+		$data['edit'] = "Yes";
+		$data['fileToLoad'] = 'advance_reports/reports_filters';
+		$data['pageTitle']='EPI-MIS Advance Report Filters';
+		$this -> load -> view('template/epi_template',$data);
+	}
+	function reportTitle($functionName){
+		$title = "";
+		switch($functionName){
+			case "HFMVRF-Advance-Report":
+				$title = "Health Facility Monthly Advance Report";
+				break;
+			case "HFCR-Advance-Report":
+				$title = "HF Consumption and Requisition Advance Report";
+				break;
+		}
+		return $title;
+	}
+	function HFMVRF_Advance_Report(){		if (($_SESSION['utype']=='Manager')){					$location = base_url();           		echo '<script language="javascript" type="text/javascript"> alert("You don`t have access on this page");	window.location="'.$location.'"</script>';			    }
+		//echo "danish";exit;
+		$dataHFMVRF['pageTitle']='Advance Report';
+		$data = $this -> getPostedData();
+		$dataHFMVRF['data'] = $this -> Advance_reports_model -> HFMVRF_Advance_Report($data,$dataHFMVRF['pageTitle']);
+		//print_r($dataHFMVRF['data']);exit;
+		$dataHFMVRF['fileToLoad'] = 'advance_reports/advance_report_view';
+		$dataHFMVRF['pageTitle']='EPI-MIS | Advance report';
+		$this->load->view('template/reports_template',$dataHFMVRF);
+	}
+	function HFCR_Advance_Report(){        
+	    dataEntryValidator(0);		
+		$dataHFCR['pageTitle']='Advance Report';
+		$data = $this -> getPostedData();
+		//print_r($data);exit;
+		$dataHFCR['data'] = $this -> Advance_reports_model -> HFCR_Advance_Report($data,$dataHFCR['pageTitle']);
+		
+		$dataHFCR['fileToLoad'] = 'advance_reports/advance_report_view';
+		$dataHFCR['pageTitle']='EPI-MIS | Advance report';
+		$this->load->view('template/reports_template',$dataHFCR);
+	}
+	function getPostedData(){
+		$data=array();$dataPosted=array();
+		$dataPosted = $_POST;
+		$formats = array("d/m/Y","d-m-Y","Y-m-d","m-d-Y","d-M-y");
+		foreach($dataPosted as $key => $value)
+		{
+			$data[$key] = (($value=='')?NULL:$value);
+			foreach ($formats as $format)
+			{
+				$date = DateTime::createFromFormat($format, $data[$key]);
+				if ($date == false || !(date_format($date,$format) == $data[$key]) ) 
+				{}
+				else
+				{
+					$data[$key] = date("Y-m-d",strtotime($data[$key]));
+				}
+			}
+			if($data[$key] == NULL || $data[$key]=="0")
+				unset($data[$key]);
+		}
+		return $data;
+	}
+}

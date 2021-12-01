@@ -1,0 +1,255 @@
+<?php
+class Redrec_compliances_model extends CI_Model {
+	//================ Constructor function Starts Here ==================//
+	public function __construct() {
+		parent::__construct();
+		$this -> load -> helper('epi_reports_helper');
+	}
+	//====================== Constructor Function Ends Here ==========================//
+	//--------------------------------------------------------------------------------//
+    function RedRec_HF_quarter_complainces ($data){
+		$procode=$this->session->Province;
+		$year=$data['year'];
+		if(isset($data['distcode']) > 0){
+			$wc = " distcode = '".$data['distcode']."' ";
+		}else{
+			$wc = " procode = '".$procode."' ";
+		}
+		$month = date('m');
+		$Allquarter="";
+		  if($month >=1 && $month <=3){
+		   $quarter='1';
+		}elseif($month >=4 && $month <=6 ){
+		   $quarter='2';
+		}elseif($month >=7 && $month <=9 ){
+		   $quarter='3';
+		}elseif($month >=10 && $month <=12 ){
+		   $quarter='4';
+		} 
+		//$quarter='2';
+		for ($qurt = 1; $qurt <= $quarter; $qurt++) {
+			$Allquarter .= "(select count(techniciancode) from hf_quarterplan_db where techniciandb.distcode=hf_quarterplan_db.distcode and quarter=$qurt and year='$year') as submit$qurt,";
+			
+		}
+		$Allquarter = rtrim($Allquarter,",");
+	    $query="Select districtname(distcode) as district,distcode, count(techniciancode) as due,$Allquarter 
+			    from techniciandb  where $wc group by distcode order by districtname(distcode) ASC";
+		$result = $this->db->query($query);
+		$result = $result->result();
+		return $result;
+	}
+	function RedRec_HF_quarter_tech_compliance ($distcode,$year){
+		$procode=$this->session->Province;
+		$month = date('m');
+		$Allquarter="";
+		$Allshedule="";
+		$Allheld="";
+		$Totalsite="";
+		  if($month >=1 && $month <=3){
+		   $quarter='1';
+		}elseif($month >=4 && $month <=6 ){
+		   $quarter='2';
+		}elseif($month >=7 && $month <=9 ){
+		   $quarter='3';
+		}elseif($month >=10 && $month <=12 ){
+		   $quarter='4';
+		} 
+		//$quarter='2';
+		for ($qurt = 1; $qurt <= $quarter; $qurt++) {
+			$Allquarter .= "(select quarter from hf_quarterplan_db where quarter=$qurt and year=$year and techniciandb.techniciancode=hf_quarterplan_db.techniciancode) as Q$qurt,";
+			$Allshedule .= "(select (count(area_dateschedule_m1)+count(area_dateschedule_m2)+count(area_dateschedule_m3)) from hf_quarterplan_dates_db where quarter=$qurt and year=$year and techniciandb.techniciancode=hf_quarterplan_dates_db.techniciancode) as schedule$qurt ,";
+			$Allheld .= "(select (count(area_dateheld_m1)+count(area_dateheld_m2)+count(area_dateheld_m3)) from hf_quarterplan_dates_db where quarter=$qurt and year=$year and techniciandb.techniciancode=hf_quarterplan_dates_db.techniciancode) as held$qurt ,";
+			$Totalsite .= "(select count(session_type)*3 from hf_quarterplan_dates_db where quarter=$qurt and year=$year and techniciandb.techniciancode=hf_quarterplan_dates_db.techniciancode) as totalsite$qurt,";
+		}
+		$Allquarter = rtrim($Allquarter,",");
+		$Allshedule = rtrim($Allshedule,",");
+		$Allheld = rtrim($Allheld,",");
+		$Totalsite = rtrim($Totalsite,",");
+		$query="select  distinct(techniciancode) as techniciancode ,technicianname(techniciancode) as technicianname,$Allquarter,$Allshedule,$Allheld,$Totalsite  from techniciandb where distcode='$distcode'";
+		$result = $this->db->query($query);
+		$result = $result->result();
+		return $result;
+		
+	}	function RedRec_HF_tech_compilation_compliance ($techniciancode,$quarter){
+		$query="select unname(uncode) as ucname ,technicianname(techniciancode) as technicianname, coalesce(case when session_type='Fixed' then facilityname(sitename_s) else sitename_s end,' ') || '$$' || session_type || '$$' ||  
+						COALESCE(area_dateheld_m1,'1970-01-01') || '$$' || COALESCE(area_dateheld_m2,'1970-01-01') || '$$' || COALESCE(area_dateheld_m3, '1970-01-01')  || '$$' ||
+						COALESCE(area_dateschedule_m1,'1970-01-01') || '$$' || COALESCE(area_dateschedule_m2,'1970-01-01') || '$$' || COALESCE(area_dateschedule_m3, '1970-01-01')  as sitename,* 
+						from hf_quarterplan_dates_db where techniciancode='$techniciancode' and quarter ='$quarter' order by tcode,uncode,techniciancode";
+		$result = $this-> db-> query($query);	
+		$data['data'] = $result-> result_array(); 
+		return $data;
+	}
+	
+	function RedRec_HF_microplan_complainces ($data){
+		$procode=$this->session->Province;
+		$year=$data['year'];
+		if(isset($data['distcode']) > 0){
+			$wc = " distcode = '".$data['distcode']."' ";
+		}else{
+			$wc = " procode = '".$procode."' ";
+		}
+	     $query="Select districtname(distcode) as district,distcode, count(techniciancode) as due,
+		       (select count(distinct techniciancode) from situation_analysis_db where techniciandb.distcode=situation_analysis_db.distcode  and year='$year') as submit 
+			    from techniciandb  where $wc group by distcode order by districtname(distcode) ASC";
+		$result = $this->db->query($query);
+		$result = $result->result();
+		return $result;
+	}
+	function RedRec_HF_microplan_tech_compliance ($distcode,$year){
+		$procode=$this->session->Province;
+	    $query="select distinct(techniciancode) as techniciancode ,technicianname(techniciancode) as technicianname,
+					(select distinct(techniciancode)  from situation_analysis_db where year='$year' and techniciandb.techniciancode=situation_analysis_db.techniciancode) as submit from techniciandb where distcode='$distcode'"; 
+		$result = $this->db->query($query);
+		$result = $result->result();
+		
+		return $result;
+		
+	}
+	public function situation_analysis_view($techniciancode,$year){	
+		$query = "SELECT *, tehsilname(tcode) as tehsil, unname(uncode) as uc_name, facilityname(facode) as facility from situation_analysis_db where techniciancode='$techniciancode' and year='$year'";
+		$result = $this->db->query($query);	
+		$data['data'] =	$result->result_array();
+		return $data['data'];	
+	}
+	function RedRec_HF_supervisoryplan_complainces ($data){
+		$procode=$this->session->Province;
+		$year=$data['year'];
+		if(isset($data['distcode']) > 0){
+			$wc = " distcode = '".$data['distcode']."' ";
+		}else{
+			$wc = " procode = '".$procode."' ";
+		}
+		$curuntmonth = date('m');
+		$Allmonth="";
+		$Totalplan="";
+		for($month=1; $month<=$curuntmonth; $month++){
+			if($month < 10){
+				$month='0'.$month;
+			}
+			$Allmonth.="(select count (distinct supervisorcode) from supervisory_plan where fmonth='$year-$month' and districts.distcode=supervisory_plan.distcode ) as plan$month,";
+			//(select count(conduct_date) from supervisory_plan where fmonth='$year-$month' and districts.distcode=supervisory_plan.distcode ) as conduct$month,
+		}
+		$Totalplan="(select count(distinct supervisorcode) from supervisory_plan where fmonth like '$year-%' and districts.distcode=supervisory_plan.distcode ) as totalsupervisorsplan";
+		$Totaldue="(select count(supervisorcode)*$curuntmonth from supervisordb where districts.distcode=supervisordb.distcode and  status='Active' ) as totalsupervisorsdue ";
+		$Allmonth = rtrim($Allmonth,",");
+	    $query="select distcode,districtname(distcode) as district,(select count(supervisorcode) from supervisordb where districts.distcode=supervisordb.distcode and  status='Active' ) as totalsupervisor,$Allmonth,$Totaldue,$Totalplan
+			    from districts where $wc group by distcode order by districtname(distcode) ASC";
+		$result = $this->db->query($query);
+		$result = $result->result();
+		return $result;
+	}
+	function RedRec_HF_supervisoryplan_tech_compliance ($distcode,$year){
+		$curuntmonth = date('m');
+		$Allmonth="";
+		for($month=1; $month<=$curuntmonth; $month++){
+			if($month < 10){
+				$month='0'.$month;
+			}
+			$Allmonth.="(select distinct(fmonth) from supervisory_plan where fmonth='$year-$month' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as plan$month,";
+		}
+		$Allmonth = rtrim($Allmonth,",");
+		$query="select distinct (supervisorcode) as supervisorname ,supervisor_type,$Allmonth from supervisordb supervisordb where distcode='$distcode' and status='Active' ";
+		$result = $this->db->query($query);
+		$result = $result->result(); 
+		return $result;
+		
+	}
+	function RedRec_HF_supervisoryvisit_complainces ($data){
+		$procode=$this->session->Province;
+		$year=$data['year'];
+		if(isset($data['distcode']) > 0){
+			$wc = " distcode = '".$data['distcode']."' ";
+		}else{
+			$wc = " procode = '".$procode."' ";
+		}
+		$curuntmonth = date('m');
+		$Allmonthplan="";
+		$Allmonthconduct="";
+		$Allmonthpersent="";
+		$Totalplanh   ="";   
+		$Totalconducth="";
+		$Totalpersenth="";
+		for($month=1; $month<=$curuntmonth; $month++){
+			if($month < 10){
+				$month='0'.$month;
+			}
+			$Allmonthplan.="   (select count(planned_date) from supervisory_plan where fmonth='$year-$month' and districts.distcode=supervisory_plan.distcode ) as plan$month,";
+			$Allmonthconduct.="(select count(conduct_date) from supervisory_plan where fmonth='$year-$month' and districts.distcode=supervisory_plan.distcode ) as conduct$month,";
+			$Allmonthpersent.="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth='$year-$month' and districts.distcode=supervisory_plan.distcode ) as persent$month,";
+			//////////for last horizontal total ////////////
+			$Totalplanh.="(select count(planned_date) from supervisory_plan where fmonth='$year-$month' and $wc ) as totalsupervisorsplanh$month,";
+			$Totalconducth.="(select count(conduct_date) from supervisory_plan where fmonth='$year-$month' and $wc ) as totalsupervisorsconducth$month,";
+			$Totalpersenth.="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth='$year-$month' and $wc ) as totalsupervisorspersenth$month,";
+			///////////enf horizontal//////////
+		}
+			$Totalplan="(select count(planned_date) from supervisory_plan where fmonth like '$year-%' and districts.distcode=supervisory_plan.distcode ) as totalsupervisorsplan";
+			$Totalconduct="(select count(conduct_date) from supervisory_plan where fmonth like '$year-%' and districts.distcode=supervisory_plan.distcode ) as totalsupervisorsconduct";
+			$Totalpersent="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth like '$year-%' and districts.distcode=supervisory_plan.distcode ) as totalsupervisorspersent";
+			//////////for last horizontal  Alltotal ////////////
+			$Totalplanl="(select count(planned_date) from supervisory_plan where fmonth like '$year-%' and $wc ) as totalsupervisorsplanl";
+			$Totalconductl="(select count(conduct_date) from supervisory_plan where fmonth like '$year-%' and $wc ) as totalsupervisorsconductl";
+			$Totalpersentl="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth like '$year-%' and $wc ) as totalsupervisorspersentl";
+			//////////end horizontal Alltotal ////////////
+			$Allmonthplan = rtrim($Allmonthplan,",");
+			$Allmonthconduct = rtrim($Allmonthconduct,",");
+			$Allmonthpersent = rtrim($Allmonthpersent,",");
+			$Totalplanh    = rtrim($Totalplanh,",");
+			$Totalconducth = rtrim($Totalconducth,",");
+			$Totalpersenth = rtrim($Totalpersenth,",");
+			$query="select distcode,districtname(distcode) as district,(select count(supervisorcode) from supervisordb where districts.distcode=supervisordb.distcode and  status='Active' ) as totalsupervisor,(select count(supervisorcode) from supervisordb where $wc and  status='Active' ) as totalprosupervisor,$Allmonthplan,$Allmonthconduct,$Allmonthpersent,$Totalplan,$Totalconduct,$Totalpersent,$Totalplanh,$Totalconducth,$Totalpersenth,$Totalplanl,$Totalconductl,$Totalpersentl
+					from districts where $wc group by distcode order by districtname(distcode) ASC";
+			$result = $this->db->query($query);
+			$result = $result->result();
+		return $result;
+	}
+	function RedRec_HF_supervisoryvisit_tech_compliance ($distcode,$year){
+		$distcode;
+		$year;
+		
+		$curuntmonth = date('m');
+		$Allmonthplan="";
+		$Allmonthconduct="";
+		$Allmonthpersent="";
+		$Totalplanh   ="";   
+		$Totalconducth="";
+		$Totalpersenth="";
+		for($month=1; $month<=$curuntmonth; $month++){
+			if($month < 10){
+				$month='0'.$month;
+			}
+			$Allmonthplan.="   (select count(planned_date) from supervisory_plan where fmonth='$year-$month' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as plan$month,";
+			$Allmonthconduct.="(select count(conduct_date) from supervisory_plan where fmonth='$year-$month' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as conduct$month,";
+			$Allmonthpersent.="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth='$year-$month' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as persent$month,";
+			//////////for last horizontal total ////////////
+			$Totalplanh.="(select count(planned_date) from supervisory_plan where fmonth='$year-$month' and distcode='$distcode' ) as totalsupervisorsplanh$month,";
+			$Totalconducth.="(select count(conduct_date) from supervisory_plan where fmonth='$year-$month' and distcode='$distcode' ) as totalsupervisorsconducth$month,";
+			$Totalpersenth.="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth='$year-$month' and distcode='$distcode' ) as totalsupervisorspersenth$month,";
+			///////////enf horizontal//////////
+		}
+			$Totalplan="(select count(planned_date) from supervisory_plan where fmonth like '$year-%' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as totalsupervisorsplan";
+			$Totalconduct="(select count(conduct_date) from supervisory_plan where fmonth like '$year-%' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as totalsupervisorsconduct";
+			$Totalpersent="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth like '$year-%' and supervisory_plan.supervisorcode=supervisordb.supervisorcode ) as totalsupervisorspersent";
+			//////////for last horizontal  Alltotal ////////////
+			$Totalplanl="(select count(planned_date) from supervisory_plan where fmonth like '$year-%' and distcode='$distcode' ) as totalsupervisorsplanl";
+			$Totalconductl="(select count(conduct_date) from supervisory_plan where fmonth like '$year-%' and distcode='$distcode' ) as totalsupervisorsconductl";
+			$Totalpersentl="(select  round((count(conduct_date)::float//count(planned_date))::numeric*100,0) as p from supervisory_plan where fmonth like '$year-%' and distcode='$distcode' ) as totalsupervisorspersentl";
+			//////////end horizontal Alltotal ////////////
+			$Allmonthplan = rtrim($Allmonthplan,",");
+			$Allmonthconduct = rtrim($Allmonthconduct,",");
+			$Allmonthpersent = rtrim($Allmonthpersent,",");
+			$Totalplanh    = rtrim($Totalplanh,",");
+			$Totalconducth = rtrim($Totalconducth,",");
+			$Totalpersenth = rtrim($Totalpersenth,",");
+			 $query="select distinct (supervisorcode) as supervisorname ,supervisor_type, $Allmonthplan,$Allmonthconduct,$Allmonthpersent,$Totalplan,$Totalconduct,$Totalpersent,$Totalplanh,$Totalconducth,$Totalpersenth,$Totalplanl,$Totalconductl,$Totalpersentl
+					from supervisordb where distcode='$distcode' and status='Active' ";
+			$result = $this->db->query($query);
+			$result = $result->result();
+		return $result;
+	}
+	function RedRec_HF_supervisoryvisit_view($supervisorcode,$fmonth){
+		$query = "select * from supervisory_plan where supervisorcode='$supervisorcode' and fmonth='$fmonth'";
+		$result = $this->db->query($query);	
+		$data['data'] =	$result->result_array();
+		return $data['data'];
+	}
+}

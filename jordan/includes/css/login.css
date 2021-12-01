@@ -1,0 +1,88 @@
+input::-webkit-input-placeholder {
+color: #99cc99 !important ;
+font-family: exo-medium;
+font-weight: bold;
+}
+input:-moz-placeholder { /* Firefox 18- */
+color: #99cc99 !important ; 
+font-family: exo-medium;
+font-weight: bold;
+}
+input::-moz-placeholder {  /* Firefox 19+ */
+color: #99cc99 !important ;
+font-family: exo-medium; 
+font-weight: bold;
+}
+input:-ms-input-placeholder {  
+color: #99cc99 !important ;
+font-family: exo-medium;
+font-weight: bold;  
+}
+
+@font-face {
+    font-family: 'exo-bold';
+    src: url('../fonts/Exo-Bold.otf');
+    /*font-weight: normal;
+    font-style: normal;*/
+}
+@font-face {
+    font-family: 'exo-medium';
+    src: url('../fonts/Exo-Medium.otf');
+}
+@font-face { 
+    font-family: 'exo-extrabold';
+    src: url('../fonts/Exo-ExtraBold.otf');
+}
+@font-face { 
+    font-family: 'exo-light';
+    src: url('../fonts/Exo-Light.otf');
+}
+.btnlogin{
+  width: 100%;
+  border-radius:0px;
+  background-color: #168D00;
+  color:white;
+  font-weight: bold;
+  font-family: 'Exo-Bold';
+  font-size: 20px;
+
+}
+.btnlogin:hover{
+  background-color: #168D00;
+  color: white;
+}
+ 
+html {
+  position: relative;
+  min-height: 100%;
+}
+ 
+.footer {
+    position: absolute;
+    bottom: 0;
+  width: 100%;
+  margin-top:70px;
+}
+
+img.bg {
+  /* Set rules to fill background */
+  /*min-height: 100%;
+  min-width: 1024px;*/
+  
+  /* Set up proportionate scaling */
+  width: 100%;
+  height: auto;
+  
+  /* Set up positioning */
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+@media screen and (max-width: 1024px) { /* Specific to this particular image */
+  img.bg {
+    min-height: 100%
+  }
+   
+}
+ 

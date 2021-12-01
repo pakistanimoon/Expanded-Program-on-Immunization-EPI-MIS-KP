@@ -1,0 +1,82 @@
+.card{
+  padding-top: 20px;
+  color: white;
+}
+.card>i{
+  padding-top: 4px;
+}
+.figures{
+  float: right;
+ /* padding-right: 20px;*/
+}
+.title{
+  font-size: 40px;
+  margin-top: -11px;
+  text-align: right;
+}
+.sub-title{
+  font-size: 13px;
+  margin-top: -10px;
+}
+.blue{
+  background: #3C8DBC;
+}
+.blue:hover{
+  background: #32769E;
+}
+.green{
+  background: #057140;
+}
+.green:hover{
+  background: #045C34;
+}
+.megenta{
+  background: #008B8B;
+}
+.megenta:hover{
+  background: #007575;
+}
+.green2{
+  background: #18A78A;
+}
+.green2:hover{
+  background: #138971;
+}
+.green3{
+  background: #1F691F;
+}
+.green3:hover{
+  background: #195619;
+}
+.blue2{
+  background: #336699;
+}
+.blue2:hover{
+  background: #1F5183;
+}
+.red{
+  background: #BD5050;
+}
+.red:hover{
+  background: #A24343;
+}
+.dark{
+  background: #353d47;
+}
+.dark:hover{
+  background: #252a30;
+}
+.districtable {
+    border: 1px solid #252A30 !important;
+    font-family: ariel;
+}
+.districtable>thead>tr>th{
+  border: 1px solid RGBA(37, 42, 48, 0.43);
+}
+.districtable>tbody>tr>th{
+  border: 1px solid RGBA(37, 42, 48, 0.43);
+}
+.districtable>tbody>tr>td{
+  border: 1px solid RGBA(37, 42, 48, 0.43);
+}
+

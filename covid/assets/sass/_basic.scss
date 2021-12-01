@@ -1,0 +1,74 @@
+/*
+    For Basic Styling
+*/
+
+*{
+    padding: 0;
+    margin: 0;
+}
+a:hover{
+    text-decoration: none;
+}
+
+// font family 
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Raleway&display=swap');
+
+body{
+    font-family: 'Raleway', sans-serif;
+    background: #fbfbfb;
+}
+
+h1,h2,h3,h4,h5,h6,a{
+    font-family: 'Lato', sans-serif;
+}
+
+ul{
+    list-style-type: none;
+}
+
+// Basic Colors
+
+$basic-color: #212529;
+$s-color: #b22222;
+$blue: #0973ce;
+$text-blue: #0a54c9;
+$text-orange: #fcc22f;
+$text-red: #b20b43;
+$text-green: #1d7c6a;
+
+
+// Text Color
+.text-green{
+    color: $text-green;
+}
+.text-red{
+    color: $text-red;
+}
+.b-bg-1{
+    &.progress-bar{
+    background: $text-red !important;
+    }
+    }
+.text-orange{
+    color: $text-orange;
+}
+.text-blue{
+    color: $text-blue;
+}
+// Highcharts Credits
+.highcharts-credits{
+    display: none !important;
+}
+.highcharts-a11y-proxy-button{
+    font-size: 10px;
+}
+
+//Rotation Animation
+@-webkit-keyframes rotation {
+		from {
+				-webkit-transform: rotate(0deg);
+		}
+		to {
+				-webkit-transform: rotate(359deg);
+		}
+}

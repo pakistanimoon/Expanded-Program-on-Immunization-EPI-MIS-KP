@@ -1,0 +1,336 @@
+
+.cst-tbl-1 label{
+	top: 7px;
+	font-weight: 700;
+}
+.cst-tbl-1 .form-control{
+	border-radius: 3px;
+}
+.cst-tbl-2 table thead th{
+	background:#057140;
+	color: #ffffff;
+	text-align: center;
+	padding: 3px;
+}
+.cst-tbl-2 td span{
+    border: 1px solid #e2e2e2;
+    padding: 3px 5px;
+    border-radius: 3px;
+    background: #0000000a;
+}
+section.custom-interface table {
+	
+}
+section.custom-interface table thead tr:nth-child(1){
+	background: #d0e0d9;
+	color:#000000;
+}
+section.custom-interface table thead tr:nth-child(2){
+	background: #d0e0d99e;
+	color:#000000;
+}
+section.custom-interface table thead tr th{
+	padding:8px;
+}
+section.custom-interface .btn-primary-cst{
+background: #f9f9f9;
+    color: #232323;
+    border: 1px solid #cedad5;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+	padding:5px 30px;
+}
+.right{
+	float:right !Important;
+}
+button.close{
+	border-left: 1px solid #737e79;
+    padding-left: 7px;
+}
+.modal-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.modal-header .close {
+    margin-top: 0px;
+}
+section.custom-interface .form-control{
+	border-radius: 2px;
+    box-shadow: 0px 0px 1px 1px #f1f1f1;
+}
+
+/* Radio Button  */
+section.custom-interface input[type="radio"] {
+  display: none;
+}
+input[type="radio"]:not(:disabled) ~ label {
+  cursor: pointer;
+}
+input[type="radio"]:disabled ~ label {
+  color: #bcc2bf;
+  border-color: #bcc2bf;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+section.custom-interface label {
+  height: 100%;
+  display: block;
+  background: white;
+  border: 2px solid #d0e0d9;
+  border-radius: 5px;
+  /* padding: 1rem; */
+  /* margin-bottom: 1rem; */
+  text-align: center;
+  box-shadow:inset 0px 3px 10px -2px rgba(161, 170, 166, 0.5);
+  position: relative;
+}
+
+input[type="radio"]:checked + label {
+    background: #f1f1f1;
+    color: #444343;
+    /* box-shadow: 0px 0px 20px #909a96; */
+}
+input[type="radio"]:checked + label::after {
+  color: #3d3f43;
+  font-family: FontAwesome;
+  border: 2px solid #f1f1f1;
+  content: "\f00c";
+  font-size: 16px;
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 35px;
+  width: 35px;
+  line-height: 35px;
+  text-align: center;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.25);
+}
+
+input[type="radio"]#control_05:checked + label {
+  background: red;
+  border-color: red;
+}
+
+p {
+  font-weight: 900;
+}
+
+@media only screen and (max-width: 700px) {
+  section {
+    flex-direction: column;
+  }
+}
+
+div.div-radio{
+	/* width:50%; */
+	text-align:center;
+	padding:10px 0px;
+	position:relative;
+	display:inline-block;
+	margin: 0% 5%;
+	margin-top:5px;
+}
+div.div-radio h5{
+	position:relative;
+	padding:0px 51px;
+	font-size:16px;
+}
+section.custom-interface .modal-dialog{
+	margin: 15% auto;
+}
+.width-10{
+	width:10%;
+}
+.width-20{
+	width:20%;
+}
+.width-30{
+	width:30%;
+}
+.width-40{
+	width:40%;
+}
+.width-50{
+	width:50%;
+}
+.width-60{
+	width:60%;
+}
+.width-70{
+	width:70%;
+}
+.width-80{
+	width:80%;
+}
+.width-90{
+	width:90%;
+}
+.width-100{
+	width:100%;
+}
+.border-radius-1{
+	border-radius:1px !important;
+}
+.border-radius-2{
+	border-radius:2px !important;
+}
+.border-radius-3{
+	border-radius:3px !important;
+}
+.border-radius-4{
+	border-radius:4px !important;
+}
+.border-radius-5{
+	border-radius:5px !important;
+}
+.border-radius-10{
+	border-radius:10px !important;
+}
+
+
+.block-widget label{
+	width:120px;
+}
+.block-widget .div-radio{
+	margin:0px;
+	margin-top:-10px;
+}
+.top-10{
+	margin:5% auto !important;
+}
+.create-div1{
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: inset 0px 0px 8px 1px #cecece;
+	border:1px solid transparent;
+}
+.create-div1 h4{
+	font-weight:600;
+	display:inline-block;
+}
+.create-div1 a{
+	float:right;
+	padding: 7px 3px;
+    font-size: 16px;
+    color: #d5d5d5;
+}
+.ibtnDel-col{
+	float:right;
+	position:relative;
+	top:3px;
+	background:transparent;
+}
+.ibtnDel{
+	background:transparent;
+	border:none;
+}
+.widget-h5{
+	padding:0px 10px !important;
+}
+div.div-radio h3,h4,h5,h6{
+	margin-top:10px;
+	margin-bottom:5px;
+}
+#addrow,.ibtnDel{
+	cursor:pointer;
+}
+.ibtnDel{
+	position:relative;
+	top:6px;
+	color:gray;
+}
+section.custom-interface .modal-header{
+	background:transparent;
+}
+section.custom-interface table thead th, section.custom-interface table tbody td{
+	text-align:left;
+}
+section.custom-interface table thead th{
+	font-weight:600;
+}
+section.custom-interface table tbody td{
+	padding:0px 8px;
+}
+.div-show{
+	position:absolute;
+	top: 55px;
+	z-index: 18;
+	border: 1px solid #cfcfcf;
+	padding: 10px;
+	background: #fff;
+	border-radius: 3px;
+	box-shadow: 3px 3px 2px #eaeaea;
+}
+.filter-info-div{
+	position: absolute;
+	top: 32px;
+	z-index: 18;
+	left: 16px;
+	color: #8c8c8c;
+	font-size: 13px;
+	font-weight: 600;
+}
+/*
+	Additional Css
+*/
+.cst-form-check-inline{
+	display: inline-flex;
+}
+.cst-form-check-inline > .form-check-label{
+	background:none;
+	border:none;
+	box-shadow:none;
+	display:inline-block;
+	margin-left:7px;
+	position:relative;
+	top:4px;
+}
+.cst-form-check-inline input[type="radio"]{
+	display:block !important;
+	margin-left:20px;
+}
+.cst-form-check-inline input[type="radio"]:check{
+	background:none !important;
+}
+.afterNone:after{
+	content:none !important;
+}
+table.update-hide span i{
+	padding:10px;
+	cursor:pointer;
+	font-weight:800;
+}
+table.update-hide span.bg{
+		background: #e2ece780;
+		padding: 3px;
+		border-radius: 3px;
+		border: 1px solid #d8d4d4;
+		box-shadow:1px 1px 1px 1px transparent;
+		transition:0.3s all;
+		
+}
+table.update-hide span.bg:hover{
+			box-shadow: 0px 0px 4px 1px #c3c3c3;
+}
+table.update-hide span i.fa-recycle{
+	color:#057140;
+}
+table.update-hide span i.fa-eye-slash{
+	color:#3c8dbc;
+}
+table.update-hide span i.fa-save{
+	color:green;
+}
+table.update-hide span i.fa-close{
+	color:red;
+}
+.text-center{
+	text-align:center !important;
+}
+table.update-hide span i.fa-eye{
+	color:#057140;
+}

@@ -1,0 +1,33 @@
+/*
+    This all styling of Second Sections
+*/
+
+#second_section{
+    .pie-innersize-div{
+        .detail{
+            font-size: 12px;
+            position: absolute;
+        }
+    }
+    .border_panel{
+        border: 1px solid #e2e2e2;
+    }
+    .tabs_row{
+        height: 300px;
+        .flex-column{
+            margin-top: 20px;
+        }
+    }
+    .nav-pills .nav-link{
+        background: #d6d6d6;
+        border-radius: 0px;
+        margin-top: 5px;
+        position: relative;
+        font-size: 12px;
+        color: $basic-color;
+    }
+    .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff;
+    background-color: #007bff !important;
+}
+}

@@ -1,0 +1,126 @@
+/**/
+#header img{
+    height:70px;
+}
+#header h4{
+    line-height: 21px;
+    font-size: 24px;
+    margin-top: 18px;
+    font-family: sans-serif;
+    font-weight: 600;
+    color: #333333;
+}
+#header button{
+    color: #fff;
+    position: relative;
+    top: 25px;
+    transition: all 0.3s;
+    font-weight: 600;
+    font-size: 13px;
+	border-radius: 5px;
+}
+#header a:hover{
+    color: #07796f;
+    text-decoration: none;
+}
+#banner .banner{
+  background: #0a5fe3;
+    padding: 10px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+    border-radius: 2px;
+    margin-top: 3px;
+    box-shadow: 2px 3px 3px 0px #d0cdcd;
+}
+#content .heading{
+    background: #e8eaed;
+    color: #655a5a;
+    padding: 6px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 600;
+    border-radius: 2px;
+}
+.inside img{
+    height:80px;
+    padding:10px;
+}
+.inside{
+        background: #f2f2f2;
+    border: 1px solid #e4e4e4;
+    border-radius: 2px;
+    box-shadow: 1px 1px 3px -1px #60769859;
+    
+}
+span.title{
+    font-weight: 600;
+    color: #464d50;
+    display: inline-block;
+    line-height: 18px
+}
+.margin-auto{
+    margin: auto;
+}
+.inside{
+    cursor: pointer;
+}
+#copyright{
+    background: #e8eaed;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px;
+    color: #5a5c6b;
+	bottom: 0px;
+    position: absolute;
+    width: 100%;
+}
+.dropdown-menu{
+	padding: 10px;
+	width: 230px;
+}
+.dropdown-menu .form-control{
+	line-height: 10px;
+    margin-top: 10px;
+    padding: 5px 10px;
+}
+.dropdown-menu .form-control:focus{
+	box-shadow: none;
+}
+.dropdown-menu .login-btn{
+	margin: 3px;
+    border-radius: 5px;
+    box-shadow: none;
+    border: none;
+    padding: 3px 15px;
+    width: 65%;
+    background: #0a5fe3;
+    color: #fff;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+	cursor: pointer;
+}
+.dropdown-menu .login-btn:hover{
+	background: #fff;
+	color: #0a5fe3;
+	border-color: #0a5fe3;	
+}
+.dropdown-english{
+	left: auto !important;
+	right: 0 !important;
+}
+.cst-error{
+	font-size: 11px;
+	position: relative;
+	top: -4px;
+	color: #8e0606;
+}
+.dropdown-menu p{
+	line-height: 16px;
+	margin-bottom: 5px;
+	color: #8e0606;
+}
+/*
+	For Arabic Version
+*/

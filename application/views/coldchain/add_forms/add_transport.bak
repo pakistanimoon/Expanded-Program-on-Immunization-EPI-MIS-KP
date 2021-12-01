@@ -1,0 +1,162 @@
+	<div class="panel panel-primary cst-label">
+	  <div class="panel-heading">New/Add Transport Asset</div>
+		<div class="panel-body">
+			<form method="post" action="<?php echo base_url() ?>Coldchain/transportSave" onsubmit="return checkRequired();" enctype="multipart/form-data">
+				<div class="row add_refrigerator inside-page">
+					<div class="col-md-12">
+						<?php echo ((isset($commonSections))?$commonSections:""); ?>
+						<input type="hidden" id="asset_type_id" name="asset_type_id" value="<?php echo $asset_type_id; ?>" class="form-control" />
+						<input type="hidden" name="increment" value="<?php echo $varMax; ?>" class="form-control" />
+						<div class="row" style="margin-bottom:10px">
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="Transport Type">Transport Type <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<select class="form-control" id="ccm_sub_asset_type_id" name="ccm_sub_asset_type_id">
+										<option value="">--Select--</option>
+										<?php
+											foreach($assets_sub_types as $values){ ?>
+												<option value="<?php echo $values['pk_id'] ?>"><?php echo $values['asset_type_name'] ?></option>
+										<?php } ?>
+									</select>							
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="Registration">Registration No. <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<input type="text" id="registration_no" name="registration_no" class="form-control">						
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+									<label for="Make">Make<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+										<select class="form-control" name="make_name" id="make_name" required>
+												<option value="">--select--</option>
+											<?php  foreach($makedata as $values){ ?>
+												<option value="<?php echo $values['pk_id']; ?>"><?php echo $values['make_name']; ?></option>
+											<?php }
+											?>
+										</select>						
+									</div>
+								</div>
+						</div>
+					</div><!--- row --->
+						<div class="row" style="margin-bottom:10px">
+							<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="Model">Model<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+										<select class="form-control" name="modelID" id="model_name" required>
+										<option>Select Make First</option>
+										</select>						
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+									<label for="year">Manufacture Year <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<input type="text" id="manufacturer_year" name="manufacturer_year" class="dpcct form-control">						
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+									<label for="Fuel Type">Fuel Type<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<select  class="form-control" name="fuel_type_id">
+										<?php echo getPowerSource(NULL,FALSE,25); ?>
+									</select>						
+									</div>
+								</div>
+						</div>
+							
+							<div class="col-md-4">
+								<div class="form-group" style="display:none" id="visibility">
+									<label for="Capacity">Capacity<span style="color:red;">*</span></label>
+									<input type="text" class="form-control" id="used_for_epi" name="used_for_epi">
+								</div>
+							</div>
+						</div><!--- row --->
+						<div class="row" style="margin-bottom:10px">
+							<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+									<label for="Comments">Comments<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+										<input type="text" class="form-control" id="comments" name="comments">
+									</div>
+								</div>
+							</div>
+						</div><!--- row --->
+						<div class="row">
+							<div class="col-md-12">
+								<button type="submit" class="btn-sv"> <i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+							</div>
+						</div><!--- row --->
+					</div><!-- col-md-12 -->
+				</div><!--- row --->
+				
+			</form>		
+		</div>
+	</div>
+<script type="text/javascript">
+$(document).on('change','#ccm_sub_asset_type_id',function(){
+	var id=$(this).val();
+	if(id==30){
+		$("#visibility").show();
+		$('#used_for_epi').attr('required',true);
+	}else{
+		$("#visibility").hide();
+		$('#used_for_epi').attr('required',false);
+	}
+});
+$(document).on('change','#status_w',function(){
+	var id=$(this).val();
+	if(id==3){
+		$("#res_hid").show();
+		$('#reasons').attr('required',true);
+	}else{
+		$("#res_hid").hide();
+		$('#reasons').attr('required',false);
+	}
+});
+$(document).on('change','#make_name', function(){
+	var id = $(this).val();
+	if(id !='') {
+	  $.ajax({
+			type: "POST",
+			data: "id="+id,
+			url: "<?php echo base_url(); ?>Ajax_calls/getModelsColdroom",
+			success: function(result){
+				var result= JSON.parse(result);
+				$('#model_name').html(result);
+			}
+		});
+	}else{
+		 $("#model_name").html('<option value="">Select First Make</option>');
+	}
+							
+});
+$(document).on('click','#makemodel',function(){
+	var url="<?php echo base_url() ?>Coldchain-MakeModel";
+	window.open(url,'name');
+});
+</script>

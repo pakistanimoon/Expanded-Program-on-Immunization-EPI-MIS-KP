@@ -1,0 +1,204 @@
+<?php
+class DB_configuration_quries extends CI_Controller {
+	
+	public function __construct() {
+		parent::__construct(); 
+	}
+	
+	public function compliance_count(){
+		$tablename = $this -> input -> get('tablename');
+		$dateColumn = ($tablename == 'form_b_cr')?'date_submitted':'submitted_date';
+		$compliancetable = $this -> input -> get('compliancetable');
+		$this -> db -> select('distcode');
+		$this -> db -> from('districts');
+		$this -> db -> order_by('distcode','asc');
+		$resultDistricts = $this -> db -> get() -> result();
+		// All districts loop
+		foreach($resultDistricts as $key => $district){
+			$distcode = $district -> distcode;
+			// Years loop
+			foreach(array('2018') as $yearkey => $year){
+				// Months loop
+				for($i=1;$i<=12;$i++){
+					$month = sprintf('%02d',$i);
+					$fmonth = $year . '-' . $month;
+					// Total submitted reports
+					$this -> db -> select('count(facode) as sub');
+					$this -> db -> where(array('fmonth' => $fmonth,'distcode' => $distcode,"getfstatus_vacc('{$fmonth}',facode)" => 'F'));
+					$submittedReports = $this -> db -> get($tablename) -> row();
+					$submittedReports = $submittedReports -> sub;
+					// Check if record already exist in compliance table for year and district
+					$rowexist = $this -> db -> query("select exists(select * from {$compliancetable} where year='{$year}' and distcode='{$distcode}') as rowexist") -> row();
+					// Total functional due reports
+					$dueReports = $this -> db -> query("select get_monthly_fstatus_vacc('{$fmonth}','{$distcode}') as due") -> row();
+					$dueReports = ($dueReports -> due > 0)?$dueReports -> due:0;
+					// Total timely submitted reports
+					$timelySubmitted = $this -> db -> query("select count(CASE WHEN getfstatus_vacc('{$fmonth}',facode) = 'F' THEN 1 ELSE 0) as tsub from {$tablename} where fmonth = '{$fmonth}' and distcode = '{$distcode}' and extract(day from {$dateColumn}) <= 5 and extract(Month from {$dateColumn} - interval '1 month')::integer=substring(fmonth from 6 for 2)::integer ") -> row();
+					$timelySubmitted = $timelySubmitted -> tsub;
+					// if row exists then update else insert record
+					if($rowexist -> rowexist == 't'){
+						$this -> db -> query("UPDATE {$compliancetable} set duem{$i} = {$dueReports}, subm{$i} = {$submittedReports}, tsubm{$i} = {$timelySubmitted} where year = '{$year}' and distcode = '{$distcode}' ");
+					}else{
+						$this -> db -> query("INSERT INTO {$compliancetable} (year, duem{$i}, subm{$i}, tsubm{$i}, distcode) VALUES ('{$year}', {$dueReports}, {$submittedReports}, {$timelySubmitted}, '{$distcode}') ");
+					}
+					echo $this -> db -> last_query();
+					echo '<hr>';
+				}
+			}
+		}
+	}
+	
+	public function sendAllDistrictsAggregatedData(){
+		$tableName = $this -> uri -> segment(3);
+		$this -> db -> select('distcode');
+		$this -> db -> from('districts');
+		$this -> db -> order_by('distcode','asc');
+		$resultDistricts = $this -> db -> get() -> result();
+		// All districts loop
+		foreach($resultDistricts as $key => $district){
+			$distcode = $district -> distcode;
+			// Years loop
+			foreach(array('2018') as $yearkey => $year){
+				// Months loop
+				for($i=1;$i<=12;$i++){
+					$month = sprintf('%02d',$i);
+					$fmonth = $year . '-' . $month;
+					syncDataWithFederalEPIMIS($tableName,$fmonth,'monthly',$distcode);
+				}
+			}
+		}
+		echo 'done';
+	}
+
+	public function zero_compliance_count(){
+		$tablename = $this -> input -> get('tablename');
+		$dateColumn = 'submitted_date';
+		$compliancetable = $this -> input -> get('compliancetable');
+		$yearr = $this -> input -> get('year');
+		$this -> db -> select('distcode');
+		$this -> db -> from('districts');
+		$this -> db -> order_by('distcode','asc');
+		$resultDistricts = $this -> db -> get() -> result();
+		// All districts loop
+		foreach($resultDistricts as $key => $district){
+			$distcode = $district -> distcode;
+			// Years loop
+			$query = "SELECT fweek from epi_weeks where year='{$yearr}' order by fweek";
+			$result = $this-> db-> query($query);
+			$data['epi_fweeks'] = $result-> result_array();
+
+			foreach($data['epi_fweeks'] as $fweekkey => $fweek){
+				$parts = explode("-", $fweek['fweek']);
+				$year = $parts[0];
+				$wk = $parts[1];
+				$week = sprintf('%02d',$wk);
+				$fweek = $year . '-' . $week;
+				//echo $fweek;
+				// Total submitted reports
+				$this -> db -> select("count(CASE WHEN getfstatus_ds('{$fweek}',facode) = 'F' THEN 1 ELSE  0 END) as sub");
+				$this -> db -> where(array('fweek' => $fweek,'distcode' => $distcode));
+				$submittedReports = $this -> db -> get($tablename) -> row();
+				$submittedReports = $submittedReports -> sub;
+				// Check if record already exist in compliance table for year and district
+				$rowexist = $this -> db -> query("select exists(select * from {$compliancetable} where year='{$year}' and distcode='{$distcode}') as rowexist") -> row();
+				// Total functional due reports
+				$dueReports = $this -> db -> query("select get_weekly_fstatus_ds('{$year}','{$week}','{$distcode}') as due") -> row();
+				$dueReports = ($dueReports -> due > 0)?$dueReports -> due:0;
+				// Total timely submitted reports
+				$timelySubmitted = $this -> db -> query("select count(CASE WHEN getfstatus_ds('{$fweek}',facode) = 'F' THEN 1 ELSE  0 END) as tsub from {$tablename} where fweek = '{$fweek}' and distcode = '{$distcode}' and submitted_date IS NOT NULL AND report_submitted=1") -> row();
+				$timelySubmitted = $timelySubmitted -> tsub;
+				// if row exists then update else insert record
+				if($rowexist -> rowexist == 't'){
+					$this -> db -> query("UPDATE {$compliancetable} set duewk{$wk} = {$dueReports}, subwk{$wk} = {$submittedReports}, tsubwk{$wk} = {$timelySubmitted} where year = '{$year}' and distcode = '{$distcode}' ");
+				}else{
+					$this -> db -> query("INSERT INTO {$compliancetable} (year, duewk{$wk}, subwk{$wk}, tsubwk{$wk}, distcode) VALUES ('{$year}', {$dueReports}, {$submittedReports}, {$timelySubmitted}, '{$distcode}') ");
+				}
+			}
+		}
+	}
+
+	public function sendZeroReportAllDistrictsAggregatedData(){
+		$tableName = $this -> uri -> segment(3);
+		$year = $this -> uri -> segment(4);
+		$this -> db -> select('distcode');
+		$this -> db -> from('districts');
+		$this -> db -> order_by('distcode','asc');
+		$resultDistricts = $this -> db -> get() -> result();
+		// All districts loop
+		foreach($resultDistricts as $key => $district){
+			$distcode = $district -> distcode;
+			// Years loop
+			$query = "SELECT fweek from epi_weeks where year='{$year}' order by fweek";
+			$result = $this-> db-> query($query);
+			$data['epi_fweeks'] = $result-> result_array();
+
+			foreach($data['epi_fweeks'] as $fweekkey => $fweek){
+				syncDataWithFederalEPIMIS($tableName,$fweek['fweek'],'weekly',$distcode);
+			}
+		}
+		echo 'done';
+	}
+	
+	public function countWeeklyCaseTypeEPIDCount(){
+		$year = $this -> uri -> segment(3);
+		$this -> db -> select('distinct(case_type) case_type');
+		$this -> db -> from('case_investigation_db');
+		$caseTypes = $this -> db -> get() -> result();
+		$this -> db -> select('distcode');
+		$this -> db -> from('districts');
+		$this -> db -> order_by('distcode','asc');
+		$resultDistricts = $this -> db -> get() -> result();
+		$i = 0;
+		// All districts loop
+		foreach($caseTypes as $casekey => $case){
+			foreach($resultDistricts as $key => $district){
+				$distcode = $district -> distcode;
+				// Years loop
+				$query = "SELECT fweek from epi_weeks where year='{$year}' order by fweek";
+				$result = $this-> db-> query($query);
+				$data['epi_fweeks'] = $result-> result_array();
+
+				foreach($data['epi_fweeks'] as $fweekkey => $fweek){
+					$parts = explode("-", $fweek['fweek']);
+					$year = $parts[0];
+					$wk = $parts[1];
+					$week = sprintf('%02d',$wk);
+					$fweek = $year . '-' . $week;
+					// Total submitted reports
+					$this -> db -> select("count(CASE WHEN patient_gender='0' THEN 1 END) as fcaseepidcount, count(CASE WHEN patient_gender='1' THEN 1 END) as mcaseepidcount");
+					$this -> db -> where(array('fweek' => $fweek,'distcode' => $distcode,'case_type' => $case -> case_type));
+					$epidcount = $this -> db -> get('case_investigation_db') -> row();
+					$caseArray[$key]['mwk'.$week] = $epidcount -> mcaseepidcount;
+					$caseArray[$key]['fwk'.$week] = $epidcount -> fcaseepidcount;
+				}
+				$caseArray[$key]['distcode'] = $distcode;
+				$caseArray[$key]['procode'] = 3;
+				$caseArray[$key]['year'] = $year;
+				$caseArray[$key]['case_type'] = $case -> case_type;
+			}
+			//print_r($caseArray);exit;
+			$this -> db -> insert_batch('epidcount_db',$caseArray);
+			$caseArray = array();
+		}
+	}
+	
+	public function sendAllDistrictsEpidCountAggregatedData(){
+		$year = $this -> uri -> segment(3);
+		$this -> db -> select('distinct(case_type) case_type');
+		$this -> db -> from('epidcount_db');
+		$caseTypes = $this -> db -> get() -> result();
+		$this -> db -> select('distcode');
+		$this -> db -> from('districts');
+		$this -> db -> order_by('distcode','asc');
+		$resultDistricts = $this -> db -> get() -> result();
+		$i = 0;
+		// All districts loop
+		foreach($caseTypes as $casekey => $case){
+			foreach($resultDistricts as $key => $district){
+				$distcode = $district -> distcode;
+				syncEpidCountDataWithFederalEPIMIS($year,$case -> case_type,$distcode);
+			}
+		}
+	}
+}
+?>

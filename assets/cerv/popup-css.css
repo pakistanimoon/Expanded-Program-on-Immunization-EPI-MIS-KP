@@ -1,0 +1,142 @@
+.gm-style-iw-d{
+	width:550px;
+}
+
+.m-0{
+	margin:0px !important;
+}
+/* Map POP-UP Styling */
+/* Map POP-UP Styling */
+.table-custom-popup th, .table-custom-popup td{
+	vertical-align: middle;
+}
+.table-custom-popup thead th{
+	padding:0px;
+}
+.col-lg-12{
+	padding:0px;
+}
+.table-custom-popup thead tr th{
+	width:auto;
+	font-size:10px;
+	font-weight: 500;
+	color: #f1eeee;
+	padding:2px 5px;
+}
+.table-custom-popup thead{
+	background-color: #808586;
+}
+.table-custom-popup tbody tr td{
+	padding:0px;
+	width: auto;
+	font-size:10px;
+	font-weight: 500;
+	color: #969393;
+	vertical-align: middle;
+}
+.table-custom-popup a{
+	text-decoration: none;
+	cursor: pointer;
+}
+.heading-cst-col::after{
+	content:'';
+	border-bottom: 40px solid #057140;
+	border-right: 20px solid transparent;
+	height: 0;
+	width: 315px;
+	position: absolute;
+	left: 0px;
+	z-index:1;
+	box-shadow: 0px 3px 2px -2px gray;
+	}
+.heading-cst{
+	margin-top: 0px;
+	font-weight: 600;
+	color: #fff;
+	z-index: 9;
+	position: relative;
+	margin-bottom: 0px;
+	top: 32px;
+	left: 10px;
+	font-size: 22px;
+}
+#get-vaccination,#get-defaulters, #get-attendence, .cst-tech-btn{
+	background: transparent;
+	color: #057140;
+	border: 1px dotted;
+	border-radius: 50px;
+	width: 100px;
+	transition: all 0.3s;
+}
+#get-vaccination:hover,#get-defaulters:hover, #get-attendence:hover, .cst-tech-btn:hover{
+	background: #057140;
+	color: #fff;
+	border-color: transparent;
+}
+.text-rotate{
+	transform: rotate(-90deg);
+}
+.cst-heading-row{
+	margin-top: -15px;
+	margin-bottom: 24px;
+}
+.cst-search-row{
+	position: relative; 
+	top: -15px; 
+	z-index:999;
+}
+.tbl-consolidated-uc-cerv thead tr th.text-bold, .tbl-consolidated-uc-cerv tbody tr td.text-bold{
+	font-weight: 600;
+}
+.text-wrap-cerv{
+	white-space: nowrap;
+}
+.mothly-wise-cerv-heading::after{
+	width: 355px;
+}
+.monthly-wise-attendence::after{
+	width:370px;
+}
+.rotate-nowrap{
+}
+.table-tech-reporting thead{
+	background: #057140;
+	color:#fff;
+}
+.table-tech-reporting thead th{
+	font-weight: 600 !Important;
+	cursor: pointer;
+}
+.cst-red-box, .cst-yellow-box, .cst-gray-box, .cst-green-box{
+	width:20px;
+	margin: auto;
+	border-radius: 3px;
+	cursor: pointer;
+}
+.cst-red-box{
+	background: #e61111;
+}
+.cst-green-box{
+	background: #21b121;
+}
+.cst-gray-box{
+	background: #bbbbbb;
+	}
+.cst-yellow-box{
+	background: #ffca00;
+}
+.text-gray-dark{
+	color:gray;
+}
+.p-0{
+	padding:0px !important;
+}
+.mb-1{
+	margin-bottom:5px;
+}
+.row-attendence-border{
+	border: 1px solid #ebe9e9;
+	margin: 5px -15px;
+	padding: 3px 0px;
+	border-radius: 2px;
+}

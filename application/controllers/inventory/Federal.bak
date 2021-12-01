@@ -1,0 +1,228 @@
+<?php
+class Federal extends CI_Controller {
+	
+	public function __construct() {
+		parent::__construct();
+		$this -> load -> helper('epi_functions_helper');
+		authentication();
+		$this -> load -> model ('Common_model','common');
+	}
+	public function fetch_fed_issuance(){
+		$moondatatosave = array();
+		for($i=0;$i<2;$i++){
+			if($i===0){
+				$year = date('Y', strtotime(date('Y-m')." -1 month"));
+				$month = date('m', strtotime(date('Y-m')." -1 month"));
+			}else{
+				$year = date('Y');
+				$month = date('m');
+			}
+			$url = 'http://v.lmis.gov.pk/api/epi-mis/issuance?year='.$year.'&month='.$month;
+			$curlobjmoon = curl_init();
+			curl_setopt($curlobjmoon, CURLOPT_HEADER, 0);
+			curl_setopt($curlobjmoon, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curlobjmoon, CURLOPT_URL, $url);
+			$data = curl_exec($curlobjmoon);
+			curl_close($curlobjmoon);
+			$outputData = json_decode($data, true);
+			$todaydate = date("Y-m-d");		
+			foreach($outputData as $onearr){
+				$transactionNumber = $onearr["transactionNumber"].'-fed';
+				/*$transactionNumber = $onearr["transactionNumber"];
+				//check if transaction number exist or not.
+				$totalrec = $this->common->get_info("epi_stock_master_fed_fetch",NULL,NULL,"fetch_date,transaction_number",array("fed_transaction_number"=>$transactionNumber));
+				if($totalrec){
+					if($totalrec->fetch_date==$todaydate){
+						//batch of same transaction number whose master already exist
+						$transactionNumber = $totalrec->transaction_number;
+					}else{
+						continue;
+					}
+				}*/
+				$totalrec = $this->common->count_record("epi_stock_master",array("transaction_number"=>$transactionNumber));
+				if($totalrec){
+					continue;
+				}else{
+					$moondatatosave[] = $onearr;
+				}
+			}
+		}
+		if($moondatatosave === array()){
+			echo 'No New Voucher To Fetch.';
+		}else{
+			$newfetchedvouchers = array();
+			foreach($moondatatosave as $onearr){
+				$transactionNumber = $onearr["transactionNumber"].'-fed';
+				$newid = false;
+				$toskiparr = array("25","26","27","31","35","38","42","51");
+				$toreparr = array("28"=>"23","40"=>"4","43"=>"2","49"=>"3","50"=>"1","54"=>"48","55"=>"50");
+				if(in_array($onearr["itemID"],$toskiparr)){continue;}
+				if(in_array($onearr["itemID"],array_keys($toreparr))){$newid = $toreparr[$onearr["itemID"]];}
+				//check if transaction number exist or not.
+				$username = 'imran';
+				$whrarr = array("transaction_number"=>$transactionNumber,"created_by"=>$username,"transaction_type_id"=>2);
+				$countdrafts = $this->common->count_record("epi_stock_master",$whrarr);		
+				$this->db->trans_start();
+				if($countdrafts){
+					//draft already exist, update counter and add items in batch
+					$resultrow = $this->common->get_info("epi_stock_master",NULL,NULL,"pk_id as id,transaction_counter,stakeholder_activity_id",$whrarr,array("by"=>"pk_id","type"=>"desc"));
+					$recordnumber = ($resultrow->transaction_counter+1);
+					$datatoupdate = array(
+						"transaction_counter" => $recordnumber
+					);
+					$this->common->update_record("epi_stock_master",$datatoupdate,$whrarr);
+					$recid = $resultrow->id;
+					$purposeid = $resultrow->stakeholder_activity_id;
+				}else{
+					//this record is new fetch and insert into master table and generate transaction number	
+					$recordnumber = 1;//later it will be updated
+					$purposeid = $this->get_fed_purpose_id($onearr["Purpose"]);
+					$datatosave = array(
+						"transaction_date" => $onearr["transactionDateTime"],
+						"transaction_number" => $transactionNumber,//later it will be changed according to our protocol for dynamic behaviour
+						"transaction_counter" => $recordnumber,
+						"transaction_reference" => '',
+						"draft" => 0,
+						"comments" => "",
+						"transaction_type_id" => 2, // Issue
+						"from_warehouse_type_id" => 1, //Federal
+						"from_warehouse_code" => 1, //Federal
+						"to_warehouse_type_id" => 2, //Provincial
+						"to_warehouse_code" => $_SESSION["Province"], //For Province KP
+						"stakeholder_activity_id" => $purposeid,
+						"created_by" => 'imran',
+						"created_date" => date("Y-m-d H:i:s")
+					);
+					$recid = $this->common->insert_record("epi_stock_master",$datatosave,'stock_master_id_seq');
+					$newfetchedvouchers[] = $transactionNumber;
+				}
+				$manufacturer = $this->get_manufacturer_id($onearr["manufacturer"]);
+				$stckholder_item_id = ($newid)?$newid:$this->get_stackholder_item_id($purposeid,$onearr["itemName"]);
+				$vvm_type_id = $this->get_vvm_type_id($onearr["vvmTypeName"]);
+				$vvm_stage_id = $this->get_vvm_stage_id($onearr["vvmStage"]);
+				$item_unit_id = $this->get_item_unit_id($onearr["itemUnitName"]);
+				$datatosavebatch = array(
+					"number" => $onearr["batchNumber"],
+					"batch_master_id" => $recid,
+					"expiry_date" => $onearr["expiryDate"],
+					"quantity" => $onearr["issuedQty"],
+					"unit_price" => $onearr["unitPrice"],
+					"production_date" => $onearr["productionDate"],
+					"last_update" => date("Y-m-d H:i:s"),
+					"stakeholder_id" => $manufacturer,
+					"item_pack_size_id" => $stckholder_item_id,//here
+					"status" => 'Stacked',
+					"vvm_type_id" => $vvm_type_id,
+					"warehouse_type_id" => 2, //Provincial
+					"code" => $_SESSION["Province"], //For Province KP
+					"created_by" => 'imran',
+					"created_date" => date("Y-m-d H:i:s")
+				);
+				$batchid = $this->common->insert_record("epi_stock_batch",$datatosavebatch);
+				$datatosavedetail = array(
+					"quantity" => $onearr["issuedQty"],
+					"vvm_stage" => $vvm_stage_id,
+					"is_received" => 0,
+					"stock_master_id" => $recid,
+					"stock_batch_id" => $batchid,
+					"item_unit_id" => $item_unit_id,
+					"created_by" => $username,
+					"created_date" => date("Y-m-d H:i:s")
+				);
+				$detailid = $this->common->insert_record("epi_stock_detail",$datatosavedetail);
+				$masterpk = $recid;
+				$this->save_all_history($masterpk,$countdrafts);
+				$this->db->trans_complete();
+			}
+			echo 'New Vouchers fetched Successfully ('.(implode(",",$newfetchedvouchers)).')';
+		}
+	}	
+	public function get_fed_purpose_id($purposename){
+		$purposeid = 1;
+		switch($purposename){
+			case "Routine":
+				$purposeid = 1;
+				break;
+			case "Campaign":
+				$purposeid = 2;
+				break;
+			case "IHR":
+				$purposeid = 3;
+				break;
+			case "PTP":
+				$purposeid = 4;
+				break;
+			case "Case Response/Mopup":
+				$purposeid = 5;
+				break;
+			case "All":
+				$purposeid = 6;
+				break;
+		}
+		return $purposeid;
+	}
+	public function get_manufacturer_id($stakeholdername){
+		$stckholderdata = $this->common->get_info("epi_stakeholders",NULL,NULL,"pk_id as id",array("stakeholder_name"=>$stakeholdername));
+		return (isset($stckholderdata->id))?$stckholderdata->id:NULL;
+	}
+	public function get_stackholder_item_id($activity_id,$itemname){
+		$stckholderdata = $this->common->get_info("epi_item_pack_sizes",NULL,NULL,"pk_id as id",array("item_name"=>$itemname,"activity_type_id"=>$activity_id));
+		return (isset($stckholderdata->id))?$stckholderdata->id:NULL;
+	}
+	public function get_vvm_type_id($vvmtype){
+		$vvmdata = $this->common->get_info("epi_vvm_types",NULL,NULL,"pk_id as id",array("vvm_type_name"=>$vvmtype));
+		return (isset($vvmdata->id))?$vvmdata->id:NULL;
+	}
+	public function get_vvm_stage_id($vvmstage){
+		$vvmdata = $this->common->get_info("vvm_stages",NULL,NULL,"value as id",array("name"=>$vvmstage));
+		return (isset($vvmdata->id))?$vvmdata->id:NULL;
+	}
+	public function get_item_unit_id($itemunit){
+		$itemdata = $this->common->get_info("epi_item_units",NULL,NULL,"pk_id as id",array("item_unit_name"=>$itemunit));
+		return (isset($itemdata->id))?$itemdata->id:0;
+	}
+	/*
+	@ Author:        Raja Imran Qamer
+	@ Email:         rajaimranqamer@gmail.com
+	@ Function:      save_all_history
+	@ Description:   This function inserts history data into all 3 tables depending upon master id in parameter.
+	*/
+	public function save_all_history($masterid,$countdrafts){
+		$rowdata = $this->common->get_info("epi_stock_master",NULL,NULL,"*",array("pk_id"=>$masterid));
+		//create history for master,batch nd detail
+		//into master history tables
+		$masterhistory =(array) $rowdata;
+		unset($masterhistory["pk_id"]);
+		$masterhistory["master_id"] = $masterid;
+		if($countdrafts){}else{
+			$this->common->insert_record("epi_stock_master_history",$masterhistory);
+		}
+		//into batch history tables
+		$batchdata = $this->common->fetchall("epi_stock_batch",NULL,"*",array("batch_master_id"=>$masterid));
+		foreach($batchdata as $onebatch){
+			$onebatch["batch_id"] = $onebatch["pk_id"];unset($onebatch["pk_id"]);
+			$this->common->insert_record("epi_stock_batch_history",$onebatch);
+		}		
+		//into detail history tables
+		$detaildata = $this->common->fetchall("epi_stock_detail",NULL,"*",array("stock_master_id"=>$masterid));
+		foreach($detaildata as $onedetail){
+			$onedetail["detail_id"] = $onedetail["pk_id"];unset($onedetail["pk_id"]);
+			$this->common->insert_record("epi_stock_detail_history",$onedetail);
+		}
+		//end
+	}
+	/*
+	@ Author:        Raja Imran Qamer
+	@ Email:         rajaimranqamer@gmail.com
+	@ Function:      save_all_history
+	@ Description:   This function will fetch history of already fetched voucher from federal.
+	*/
+	public function fetch_fed_voucher_history(){
+		$data["data"]["fetchedrec"] = $this->common->fetchall("epi_stock_master",NULL,NULL,"transaction_number like 'I%-fed'",NULL,array("by"=>"transaction_number","type"=>"DESC"),NULL,NULL,15);
+		//print_r($rowdata);exit;
+		$data['fileToLoad'] = 'inventory_management/stock_received_from_fed';
+		$data['pageTitle'] = 'EPI-MIS | Stock Fetched (Federal)';
+		$this->load->view('template/epi_template',$data);
+	}
+}
+?>

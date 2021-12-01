@@ -1,0 +1,523 @@
+<?php //echo json_encode($data['category']);?>
+<div class="flypanels-main">
+<div class="flypanels-topbar"> <a class="flypanels-button-left icon-menu" data-panel="treemenu" href="#"><i class="fa fa-bars"></i></a> <h2 class="topbar-heading">Expanded Program on Immunization Thematic Maps Dashboard</h2> </div>
+<div class="header_profilewraper">
+	<div class="profile_dropdown">
+		<div class="dropdown">
+			<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-user" aria-hidden="true"></i> <?php echo $this -> session -> User_Name; ?> </button>
+			<ul class="dropdown-menu">
+				<li><a href="<?php echo base_url();?>Logout"> <i class="fa fa-key" aria-hidden="true"></i> Sign out </a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="flypanels-content">
+	<div class="container-fluid">
+		<div class="content_mainwraper">
+		<!-- Current province Login Name here -->
+			<div class="main_heading">Province Wise Inventory Stock Information</div>
+		</div>
+		<div class="content_mainwraper panel" style="padding:10px;border-radius:4px;">
+				<div class="row" style="margin-bottom:20px">
+					<div class="col-md-8">
+						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
+							<span>Available Stock (Vaccine)</span>
+							<div class="pull-right">
+								<a href="#"  style="color:#000000;" title="Stacked Area View"><span ><i class="icon fa fa-area-chart"></i></span>
+								</a><!-- for multuple chart types option... willl need work.-->
+							</div>
+						</div>
+						<!--For Vaccines:Item Category :1--->
+						<div id="chart-container1"></div>
+						</div>
+					<div class="col-md-4">
+						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
+							<span>Available Stock (Diluent)</span>
+							<div class="pull-right">
+								<!-- for multuple chart types option-->
+							</div>
+						</div>
+						<!--For Dilluent:Item Category :3--->
+						<div id="chart-container3"></div>
+					</div>
+					
+				</div>
+					<div class="row" id="drillchart" style="margin-bottom:20px;display:none" >
+					<div class="col-md-12">
+						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
+							<span>Available Stock (Vaccine) </span>
+							<div class="pull-right">
+								<!-- for multuple chart types option-->
+							</div>
+						</div>
+						<!--For Drill down chart -->
+						<div id="chart-container4"></div>
+						</div>
+					</div>
+					<div class="row" style="">
+					<div class="col-md-12">
+						<div class="section-title" style="padding: 0px 6px; line-height:30px;">
+							<span>Available Stock (Non Vaccine Items)</span>
+							<div class="pull-right">
+								<!-- for multuple chart types option-->
+							</div>
+						</div>
+						<!--For Non Vaccines:Item Category :2-->
+						<div id="chart-container2"></div>
+						</div>
+					</div>
+		</div>
+
+
+ <!--filter bar-->
+	<?php  if(!isset($_REQUEST['export_excel'])){
+		if(isset($edit)){
+			$this->load->view('thematic_template/script', $data['edit'] = $edit);
+		}else{
+			$this->load->view('thematic_template/script');
+		}
+	} ?>
+<script type="text/javascript">
+ 
+ dataSource = {
+		"chart": {
+							"caption": "Total Avialable Stock in Warehouses",
+							"subCaption":"<?php echo $this->session->loginfrom;?>" ,
+							"yaxisname": "Vials/Pcs",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"labelDisplay": "rotate",
+							"slantLabels": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "0",
+							"valueFontColor": "#000000",
+							"labelFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"categories": [{
+								"category": <?php echo json_encode($data['category']);?>
+							  }],
+							  "dataset": [{
+								  "seriesname": "Provincial",
+								  "data":<?php echo json_encode($data['provincial']);?>
+								},
+								{
+								  "seriesname": "District",
+								  "data": <?php echo json_encode($data['district']);?>
+								},
+								{
+								  "seriesname": "Tehsil",
+								  "data": <?php echo json_encode($data['tehsil']);?>
+								}
+								,
+								{
+								  "seriesname": "Facility",
+								  "data": <?php echo json_encode($data['facility']);?>
+								}
+							  ]		
+	};
+
+FusionCharts.ready(function() {
+   var myChart = new FusionCharts({
+      type: "stackedcolumn2d",
+      renderAt: "chart-container1",
+	  width: '100%',
+		height: '350',
+      dataFormat: "json",
+      dataSource
+   }).render();
+});
+//Function to show facility stock district wise/tehsil wise etc.
+function getDistrictWiseFacility(itemid,name,type,columntype,itemseqid)
+{
+	$('#drillchart').show();
+	$.ajax({
+		type: "POST", //columntype :district wise,tehsil wise etc
+		data : {itemid:itemid,itemseqid:itemseqid,itemname:name,type:type},
+		dataType: "JSON",
+		url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_facilities",
+		success: function(result)
+		{
+			FusionCharts.ready(function() {
+				var salesChart = new FusionCharts({
+					type:'column2d',
+					renderAt: "chart-container4",
+					width: '100%',
+					height: '350',
+					dataFormat: 'json',
+					dataSource: {
+						"chart": {
+							"caption": "Facility Level Stock "+columntype+" Wise  Available Stock of "+name+"",
+							//"subCaption": statusName,
+							"plottooltext": "Total Available Equipments at $label are <b>$dataValue</b>",
+							"yaxisname": "Numbers",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"slantlabels": "1",
+							"labelDisplay": "rotate",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "0",
+							"valueFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"data": result
+					}
+				})
+				.render();
+			});
+		}
+	});
+}
+//Function to show chart district wise detail 
+function getDistrictWise(itemid,name,type)
+{
+	//console.log($(this));
+	$('#drillchart').show();
+	$.ajax({
+		type: "POST",
+		data : {itemid:itemid,type:type},
+		dataType: "JSON",
+		url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_districts",
+		success: function(result)
+		{
+			FusionCharts.ready(function() {
+				var salesChart = new FusionCharts({
+					type:'column2d',
+					renderAt: "chart-container4",
+					width: '100%',
+					height: '350',
+					dataFormat: 'json',
+					dataSource: {
+						"chart": {
+							"caption": "Dsitricts Wise Total Available Stock of "+name+"",
+							//"subCaption": statusName,
+							"plottooltext": "Total Available Equipments at $label are <b>$dataValue</b>",
+							"yaxisname": "Numbers",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"slantlabels": "1",
+							"labelDisplay": "rotate",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "0",
+							"valueFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"data": result
+					}
+				})
+				.render();
+			});
+		}
+	});
+}
+//function to get facility stock tehsil wise 
+function getTehsilWiseFacility(itemid,itemseqid,columntype,type,name,distcode)
+{
+	$.ajax({
+		type: "POST", //columntype :district wise,tehsil wise etc
+		data : {itemid:itemid,itemseqid:itemseqid,distcode:distcode,name:name,itemCategory:type},
+		dataType: "JSON",
+		url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_Tehsil_facilities",
+		success: function(result)
+		{
+			FusionCharts.ready(function() {
+				var salesChart = new FusionCharts({
+					type:'column2d',
+					renderAt: "chart-container"+type,
+					width: '100%',
+					height: '350',
+					dataFormat: 'json',
+					dataSource: {
+						"chart": {
+							"caption": "Facility Level Stock "+columntype+" Wise  Available Stock of "+name+"",
+							//"subCaption": statusName,
+							"plottooltext": "Total Available Equipments at $label are <b>$dataValue</b>",
+							"yaxisname": "Numbers",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"slantlabels": "1",
+							"labelDisplay": "rotate",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "1",
+							"valueFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"data": result
+					}
+				})
+				.render();
+			});
+		}
+	});
+}
+//get Facility Wise stock in hand data
+function getFacilityWiseStock(itemid,itemseqid,columntype,name,tcode,type)
+{
+	$.ajax({
+		type: "POST", //columntype :district wise,tehsil wise etc
+		data : {itemid:itemid,itemseqid:itemseqid,tcode:tcode,name:name},
+		dataType: "JSON",
+		url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand_facilities_wise",
+		success: function(result)
+		{
+			FusionCharts.ready(function() {
+				var salesChart = new FusionCharts({
+					type:'column2d',
+					renderAt: "chart-container"+type,
+					width: '100%',
+					height: '350',
+					dataFormat: 'json',
+					dataSource: {
+						"chart": {
+							"caption": "Facility  Wise  Available Stock of "+name+"",
+							//"subCaption": statusName,
+							"plottooltext": "Total Available Equipments at $label are <b>$dataValue</b>",
+							"yaxisname": "Numbers",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"slantlabels": "1",
+							"labelDisplay": "rotate",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "0",
+							"valueFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"data": result
+					}
+				})
+				.render();
+			});
+		}
+	});
+}
+
+$( window ).load(function() {
+
+		loadChart(chartType="stackedcolumn2d");
+});
+function loadChart(chartType){		
+		/*** For Dilluent Items ****/
+		$.ajax({
+		type: "POST",
+		data : {'itemCategory':'3','result':'false'},
+		dataType: "JSON",
+		url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand",
+		success: function(result)
+		{
+			//alert(result);
+			console.log(result['data']['category']);
+			FusionCharts.ready(function() {
+				var salesChart = new FusionCharts({
+					type:chartType,
+					renderAt: "chart-container3",
+					width: '100%',
+					height: '350',
+					dataFormat: 'json',
+					dataSource: {
+						"chart": {
+							"caption": "Total Avialable Stock in Warehouses",
+							"subCaption":"<?php echo $this->session->loginfrom;?>" ,
+							"yaxisname": "Vials/Pcs",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"labelDisplay": "rotate",
+							"slantLabels": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "0",
+							"valueFontColor": "#000000",
+							"labelFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"categories": [{
+								"category": result['data']['category']
+							  }],
+							  "dataset": [{
+								  "seriesname": "Provincial",
+								  "data":result['data']['provincial']
+								},
+								{
+								  "seriesname": "District",
+								  "data": result['data']['district']
+								},
+								{
+								  "seriesname": "Tehsil",
+								  "data": result['data']['tehsil']
+								}
+								,
+								{
+								  "seriesname": "Facility",
+								  "data": result['data']['facility']
+								}
+							  ]		
+					}
+				})
+				.render();
+			});
+		}
+	});
+			/*** For Non Vaccine ***/
+		$.ajax({
+		type: "POST",
+		data : {'itemCategory':'2','result':'false'},
+		dataType: "JSON",
+		url: "<?php echo base_url() ?>API/Provincial/get_stock_in_hand",
+		success: function(result)
+		{
+			//alert(result);
+			console.log(result['data']['category']);
+			FusionCharts.ready(function() {
+				var salesChart = new FusionCharts({
+					type:chartType,
+					renderAt: "chart-container2",
+					width: '100%',
+					height: '350',
+					dataFormat: 'json',
+					dataSource: {
+						"chart": {
+							"caption": "Total Avialable Stock in Warehouses",
+							"subCaption":"<?php echo $this->session->loginfrom;?>" ,
+							"yaxisname": "Vials/Pcs",
+							"linethickness": "2",
+							"formatnumberscale": "1",
+							"baseFont": "lato-regular",
+							"divLineAlpha": "40",
+							"anchoralpha": "0",
+							"animation": "1",
+							"labelDisplay": "rotate",
+							"slantLabels": "1",
+							"legendborderalpha": "20",
+							"drawCrossLine": "1",
+							"crossLineColor": "#0d0d0d",
+							"crossLineAlpha": "100",
+							"tooltipGrayOutColor": "#80bfff",
+							"theme": "zune",
+							"showValues" : "0",
+							"valueFontColor": "#000000",
+							"labelFontColor": "#000000",
+							"valueBgColor": "#FFFFFF",
+							"valueBgAlpha": "50",
+							"thousandSeparatorPosition": "3,3,3",
+							"useDataPlotColorForLabels": "1",                    
+							"exportenabled": "1",
+							"showBorder": "1"
+						},
+						"categories": [{
+								"category": result['data']['category']
+							  }],
+							  "dataset": [{
+								  "seriesname": "Provincial",
+								  "data":result['data']['provincial']
+								},
+								{
+								  "seriesname": "District",
+								  "data": result['data']['district']
+								},
+								{
+								  "seriesname": "Tehsil",
+								  "data": result['data']['tehsil']
+								}
+								,
+								{
+								  "seriesname": "Facility",
+								  "data": result['data']['facility']
+								}
+							  ]		
+					}
+				})
+				.render();
+			});
+		}
+	});
+}	
+function getchartType()
+{
+	loadChart
+}
+</script>	
+		
+	</div>
+</div>		

@@ -1,0 +1,194 @@
+<?php 
+$nonccloctypeshtml = isset($nonccloctypes)?get_options_html($nonccloctypes,true):false;
+$ccloctypeshtml = isset($ccloctypes)?get_options_html($ccloctypes,true):false;
+$adjsttypeshtml = isset($adjsttypes)?get_options_html($adjsttypes,true):false;
+?>
+<section class="content">
+	<div class="container bodycontainer">
+		<div class="row">
+			<div class="panel panel-primary">
+				<div class="panel-heading"> Stock Receive (Store)</div>
+				<div class="panel-body">
+					<?php echo form_open(base_url().'StockReceivefromStore',array("class"=>"form-horizontal")); ?>
+						<table class="table table-condensed tbl-im" style="width: 40%;">
+							<tbody>
+								<tr>
+									<td>
+										<label style="padding:5px;"> Issue No.</label>
+									</td>
+									<td>
+										<input class="form-control" name="stock_issue_num" id="stock_issue_num" required="required" type="text" value="<?php echo isset($issue_num)?$issue_num:NULL; ?>">
+									</td>
+									<td>
+										<button style="background:#008d4c;" type="submit" class="btn btn-primary btn-md" role="button"><i class="fa fa-search "></i> Search  </button>
+									</td>
+								</tr>
+								<?php if(isset($msg)){
+									echo '<tr><td colspan="3" style="color:red">'.$msg.'</td></tr>';
+								}?>
+								<?php if($this -> session -> flashdata('message')){
+									echo '<tr><td colspan="3" style="color:green">'.$this -> session -> flashdata('message').'</td></tr>';
+								}?>
+							</tbody>
+						</table>
+					<?php echo form_close(); ?>
+					<?php if(validation_errors()){  ?>
+						<div class="alert alert-warning alert-dismissible alert-xs" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<strong>Message! </strong><?php echo validation_errors(); ?>
+						</div> <?php 
+					} ?>
+					<?php echo form_open(base_url().'StockReceivefromStoreSave',array("class"=>"form-horizontal")); ?>
+						<?php if(isset($draftdata)){ ?>
+							<table class="table table-bordered tbl-listing text-center">
+								<thead>
+									<tr>
+										<th rowspan="2">S.No</th>
+										<th rowspan="2">Product</th>
+										<th rowspan="2">Purpose</th>
+										<th rowspan="2">Batch No.</th>
+										<th colspan="2">Quantity</th>	
+										<th rowspan="2">Manufacturer</th>
+										<th rowspan="2">Expiry Date</th>										
+										<th rowspan="2">VVM Stage</th>
+										<th rowspan="2">Store in</th>
+										<th colspan="3">Adjusted Quantity</th>									
+										<th rowspan="2"><input type="checkbox" class="allchkbox"/></th>
+									</tr>
+									<tr>									
+										<th>Doses</th>
+										<th>Vials/Pieces</th>
+										<th>Reason</th>
+										<th>Doses</th>
+										<th>Vials/Pieces</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php 
+									$checksum = array();
+									foreach($draftdata["batch"] as $key=>$onebatch){
+										//$vials = $onebatch["quantity"];
+										$vials = $draftdata["detail"][$key]["quantity"];
+										//$doses =($onebatch["quantity"]*$onebatch["number_of_doses"]);
+										$doses =($vials*$onebatch["number_of_doses"]);
+										?>
+										<tr data-doses="<?php echo $onebatch["number_of_doses"]; ?>" data-cat="<?php echo $onebatch["item_category_id"]; ?>">
+											<td><?php echo ($key+1); ?></td>
+											<td><?php echo get_product_name(true,$onebatch["item_pack_size_id"]); ?></td>
+											<td><?php echo $onebatch["purpose"]; ?></td>
+											<td><?php echo $onebatch["number"]; ?></td>
+											<td><?php echo $doses; ?></td>
+											<td><?php echo $vials; ?></td>
+											<td>	<?php echo get_manufacturer_name(false,$onebatch['stakeholder_id']); ?></td>
+											<td>	<?php echo $onebatch['expiry_date']; ?></td>
+											
+											<td>
+												<?php if($draftdata["detail"][$key]["vvm_stage"]!=""){ ?>
+													<select class="form-control" name="vvm_stage[<?php echo $key; ?>]">
+														<?php get_prod_vvmStage_options($onebatch["item_pack_size_id"],true,$draftdata["detail"][$key]["vvm_stage"]); ?>
+													</select>
+												<?php }else{
+													echo '';
+												}?>
+											</td>
+											<td>
+												<select class="form-control" name="location[]"><option value="">Select</option><?php echo ($onebatch["item_category_id"]==="1")?$ccloctypeshtml:$nonccloctypeshtml; ?></select>
+												<input type="hidden" name="location_type[]" value="<?php echo ($onebatch["item_category_id"]==="1")?"ccm_id":"non_ccm_id"; ?>" >
+											</td>
+											<td><select class="form-control" name="reason[]"><option value="">Select</option><?php echo $adjsttypeshtml; ?></select></td>
+											<td><input class="form-control numberclass" type="text" name="doses[]"></td>
+											<td><input class="form-control numberclass" type="text" name="vials[]"></td>
+											<td>
+												<input class="form-control rowchkbox" type="checkbox" value="<?php echo $key; ?>" name="addit[]">
+												<input class="form-control" type="hidden" value="<?php echo $onebatch["pk_id"]; ?>" name="batchid[]">
+											</td>
+										</tr><?php
+									}?>
+									<tr>
+										<td>
+											<label>Remarks</label>
+										</td>
+										<td colspan="2">
+											<input class="form-control" name="receive_remarks" id="receive_remarks" required="required" type="text">
+										</td>
+										<td colspan="2">
+											<label>Receive Reference </label>
+										</td>
+										<td colspan="2">
+											<input class="form-control" name="receive_ref" id="receive_ref" required="required" type="text">
+										</td>
+										<td>
+											<label>Received Date</label>
+										</td>
+										<td colspan="2">
+											<input class="form-control dpissue" name="receive_date" id="receive_date" type="text" value="<?php echo $draftdata["master"]->transaction_date; ?>" readonly="readonly">
+										</td>
+										<td>
+											<button style="background:#008d4c;" type="button" class="btn btn-primary btn-md" id="receivesavebtn" role="button">Save</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<input type="hidden" name="searchedissuenum" value="<?php echo isset($issue_num)?$issue_num:NULL; ?>" > 
+						<?php } ?>
+					<?php echo form_close(); ?>
+				</div> <!--end of panel body-->
+			</div> <!--end of panel panel-primary-->
+		</div><!--end of row-->
+	</div><!--end of body container-->
+</section><!-- /.content -->
+<script type="text/javascript">
+	$(document).ready(function(){
+		var issuedate=$('.dpissue').val();
+		var sdate=new Date(issuedate);
+		$('.dpissue').datetimepicker({
+			format : 'yyyy-mm-dd hh:ii:ss',
+			startView : 3,
+			startDate:sdate,
+			viewDate: new Date(),
+			endDate : new Date(),
+			todayHighlight : true,
+			todayBtn : true
+		});
+		$(".allchkbox").click(function(){
+			$('.rowchkbox').not(this).prop('checked', this.checked);
+		});
+		$("#receivesavebtn").click(function(){
+			var submitit = true;var totchecked = 0;
+			$('.rowchkbox:checked').each(function(){
+				var locval = $(this).closest("tr").find("select[name^=location]").val();
+				if(locval>0){
+					var dosesval = $(this).closest("tr").find("input[name^=doses]").val();
+					var vialsval = $(this).closest("tr").find("input[name^=vials]").val();
+					if((dosesval != "") || (vialsval != "")){
+						var rsnval = $(this).closest("tr").find("select[name^=reason]").val();
+						if(rsnval>0){}else{
+							alert("Reason Must be selected.");submitit = false;
+						}
+					}
+				}else{
+					alert("Store in Location Must be selected.");submitit = false;
+				}
+				totchecked++;
+			});
+			if(totchecked>0 && submitit===true){
+				//submit form
+				$(this).closest('form').submit();
+			}
+		});
+		$("input[name^=doses]").keyup(function(){
+			var entereddoses = $(this).val();
+			var dosesinvials = $(this).closest("tr").data("doses");
+			var vials =  (parseInt(entereddoses,10)/parseInt(dosesinvials,10));
+			var vials =  (vials>0)?vials:0;
+			$(this).closest("tr").find("input[name^=vials]").val(vials);
+		});
+		$("input[name^=vials]").keyup(function(){
+			var enteredvials = $(this).val();
+			var dosesinvials = $(this).closest("tr").data("doses");
+			var doses =  (parseInt(enteredvials,10) * parseInt(dosesinvials,10));
+			var doses =  (doses>0)?doses:0;
+			$(this).closest("tr").find("input[name^=doses]").val(doses);
+		});
+	});
+</script>

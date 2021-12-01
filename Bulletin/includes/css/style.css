@@ -1,0 +1,176 @@
+body
+{
+	font-family: 'Lato', sans-serif !important;
+	font-size: 16px;
+}
+.main-wrapper
+{
+	width:80%;
+	margin:0 auto;
+}
+#header
+{
+	border-bottom:2px solid #ddd;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.main-heading
+{
+	text-align:right;
+	font-family: 'Bitter', serif
+}
+.main-heading h2
+{
+	font-weight:700;
+	margin-bottom:-2px;
+}
+.header-row
+{
+	margin-bottom:10px;
+}
+.main-heading p
+{
+	font-size: 18px;
+    font-family: 'Bitter', serif;
+    color: #666;
+    padding-top: 10px;
+}
+.highlights
+{
+	background: #f5f5f5;
+    font-size: 16px;
+    padding: 12px 15px;
+    font-family: 'Bitter', serif;
+    border-bottom: 1px solid #ddd;
+}
+
+
+.col-highlights
+{
+	border:1px solid #ddd;
+	padding:0px;
+	margin-left:15px;
+}
+.col-highlights .row
+{
+	padding:10px;
+	margin:0;
+	font-size:15px;
+	
+}
+.col-highlights .row .col-md-1
+{
+	text-align:right;
+}
+.col-highlights .row .col-md-11
+{
+	border-bottom:1px solid #ddd;
+	padding-bottom:10px;
+}
+.col-highlights i
+{
+	color:#053805;
+	font-size:20px;
+}
+
+
+#main-section .col-md-3
+{
+	float:right;
+	margin-right:15px;
+	border:1px solid #ddd;
+	margin-bottom:10px;
+	text-align:center;
+	border-radius:2px;
+}
+.aside-h4
+{
+	background:#f5f5f5;
+    padding: 13px 7px;
+    font-size: 16px;
+    font-weight: 500;
+}
+.aside
+{
+	background:#fdfdfd;
+}
+.aside .row
+{
+	margin-top:18px;
+}
+.aside .col-md-10
+{
+	text-align:left;
+	font-size:14px;
+}
+#fig h2
+{
+	background: #006939;
+    padding: 16px;
+    font-size: 20px;
+    text-align: center;
+    color: white;
+    border-radius: 3px;
+}
+#fig table thead tr th
+{
+	background:darkgreen;
+	color:white;
+	text-align:center;
+}
+#fig table tbody tr td
+{
+	vertical-align:middle;
+	text-align:center;
+	
+}
+.table-fig thead tr th
+{
+	font-size:11px;
+	vertical-align:middle;
+}
+.table-fig tbody tr td
+{
+	font-size:10px;
+	padding:3px 0px ;
+}
+.table-fig tfoot tr td
+{
+	text-align:center;
+	background:darkgreen;
+	color:white;
+	font-size:11px;
+}
+#fig  h3
+{
+	background: #f7f7f7;
+    padding: 13px;
+    margin-top: 0px;
+    font-size: 16px;
+    border-radius: 2px;
+	
+}
+img 
+{
+	    box-shadow: 0px 0px 4px 1px grey;
+}
+
+.last 
+{
+	font-weight:600;
+}
+.contact
+{
+	margin-left: 30px;
+    background: #80808008;
+    width: 65%;
+    margin-top: 10px;
+    font-size: 12px;
+    border: 1px solid #d3d3d378;
+}
+.contact span
+{
+	font-size:13px;
+	font-weight:600;
+	color:darkgreen;
+}

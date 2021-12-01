@@ -1,0 +1,202 @@
+<?php
+class Advance_reports_model extends CI_Model {
+	//================ Constructor function Starts Here ==================//
+	public function __construct() {
+		parent::__construct();
+		$this -> load -> helper('epi_reports_helper.php');
+	}
+	//====================== Constructor Function Ends Here ==========================//
+	//--------------------------------------------------------------------------------//
+	//======= Function to Create Filters for Sepecific Reports Starts Here ===========//
+	function HFMVRF_Advance_Report($data,$title){
+		//print_r($data);exit;
+		$wc = $data;
+		if($this -> input -> post('export_excel')){
+		unset($wc['_ga']);
+		unset($wc['_gid']);
+		unset($wc['ci_session']);
+		unset($wc['export_excel']);
+		}
+		//print_r($wc);exit;
+		/*if($this -> input -> post('export_excel'))
+		{
+			//echo "danish";exit;
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=Consolidated_Facility_Wise_Vaccination_of_Childern_and_Women.xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
+		}*/
+		$reportId = $data['report_id'];
+		$this -> db -> select('report_title');
+		$this -> db -> where(array('report_id'=>$reportId,'module_id'=>'3'));
+		$repTitleName = $this -> db -> get('adv_reports') -> row();
+		$repTitleName   =  $repTitleName -> report_title;
+	    
+		$this -> db -> select('adv_report_fields.*,epifieldstitle.description');
+		$this -> db -> where(array('report_id'=>$reportId,'epifieldstitle.module_id'=>'3'));
+		$this -> db -> join('epifieldstitle', 'adv_report_fields.field_id = epifieldstitle.fid');
+		$allRptFields = $this -> db -> get ('adv_report_fields') -> result_array();
+		//echo $this->db->last_query();exit;
+		     $fields = '';$fieldssum = '';
+		foreach($allRptFields as $oneField)
+		{
+			$fields .= 'sum('.$oneField['field_id'].') as "'.$oneField['description'].'",';
+		}
+		$fields = rtrim($fields,',');
+		
+		$groupBy = '';
+		// Change Fmonth syntax from 02-2015 to 2015-02
+		$fmonthFrom = $data['monthfrom'];
+		$fmonthFrom = explode('-',$fmonthFrom);
+		$month = $fmonthFrom[0];
+		$year = $fmonthFrom[1];
+		$fmonthFrom = $year.'-'.$month;
+		$fmonthTo = $data['monthto'];
+		$fmonthTo = explode('-',$fmonthTo);
+		$month = $fmonthTo[0];
+		$year = $fmonthTo[1];
+		$fmonthTo = $year.'-'.$month;
+		// remove fmonthFrom and fmonthTo from wc and add new ones
+		unset($wc['monthfrom']);unset($wc['monthto']);unset($wc['report_id']);
+		$wc['fmonth <='] = $fmonthTo;
+		$wc['fmonth >='] = $fmonthFrom;
+		//if(!$this->session->District)
+		unset($wc['typewise']);
+	//print_r($wc);exit;
+		$report_table = "fac_mvrf_db";
+		
+		//print_r($data['typewise']);exit;
+		if(isset($data['distcode'])){
+			/*if(isset($data['distcode']) && $data['distcode']<0)
+			{
+				echo "dist";exit;
+				$this -> db -> select('distcode as "Distcode", districtname(distcode) as "District Name", '.$fields);
+				$this -> db -> group_by('distcode');
+			}*/
+			if ($data['typewise']=='fac')
+			{
+				//echo "fac";exit;
+				$this -> db -> select('facode as "Facode", facilityname(facode) as "Facility Name", '.$fields);
+				$this -> db -> group_by('facode');
+			}
+			else
+			{
+				//echo "uc";exit;
+				$this -> db -> select('uncode as "Uncode", unname(uncode) as "UnionCouncil Name", '.$fields);
+				$this -> db -> group_by('uncode');
+				$this -> db ->order_by('unname(uncode)');
+			}
+		}
+		else
+		{
+				//echo "dist";exit;
+				$this -> db -> select('distcode as "Distcode", districtname(distcode) as "District Name", '.$fields);
+				$this -> db -> group_by('distcode');
+		}
+	/*	elseif()
+		{
+			$this -> db -> select('uncode as "Uncode", unname(uncode) as "UnionCouncil Name", '.$fields);
+			$this -> db -> group_by('uncode');
+			$this -> db ->order_by(unname(uncode));
+		}*/
+		//echo $this->db->last_query();exit;
+		//print_r($wc);exit;
+		$this -> db -> where($wc);
+		//unset($wc['distcode']);
+		//unset($wc['uncode']);
+		$allData = $this -> db -> get ($report_table) -> result_array();
+		if($this -> input -> post('export_excel'))
+		{
+			//echo "danish";exit;
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=Advance Report for EPI Vaccination.xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
+		}
+		$data['htmlData'] = getListingReportTable($allData,'');
+		$data['TopInfo'] = reportsTopInfo($title, $data);
+		$data['exportIcons']= exportIcons($_REQUEST);
+		return $data;
+	} 
+	
+	function HFCR_Advance_Report($data,$title){
+		/* print_r(
+		$this->db->limit('50')->get('form_b_cr')->result_array());exit; */
+		$wc = $data;
+		
+		if($this -> input -> post('export_excel'))
+		{
+			//if request is from excel
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=".str_replace(" ","_",$subTitle)."_".($data['year'])?$data['year']:""."-".($data['month'])?$data['month']:"".".xls");
+			header("Pragma: no-cache");
+			header("Expires: 0");
+			//Excel Ending here
+		}
+		$reportId = $data['report_id'];
+		$this -> db -> select('report_title');
+		$this -> db -> where(array('report_id'=>$reportId,'module_id'=>'2'));
+		$repTitleName = $this -> db -> get('adv_reports') -> row();
+		$repTitleName   =  $repTitleName -> report_title;
+		
+		$this -> db -> select('adv_report_fields.*,epifieldstitle.description');
+		$this -> db -> where(array('report_id'=>$reportId,'epifieldstitle.module_id'=>'2'));
+		$this -> db -> join('epifieldstitle', 'adv_report_fields.field_id = epifieldstitle.fid');
+		$allRptFields = $this -> db -> get ('adv_report_fields') -> result_array();
+		$fields = '';$fieldssum = '';
+		$f7="f7";
+		$f8="f8";
+		$f9="f9";
+		foreach($allRptFields as $oneField)
+		{
+			if(strpos($oneField['field_id'],$f7)|| strpos($oneField['field_id'],$f8) || strpos($oneField['field_id'],$f9)){
+				
+				//
+			}
+			else
+			{
+				$fields .= 'sum('.$oneField['field_id'].') as "'.$oneField['description'].'",';
+			}
+		}
+		$fields = rtrim($fields,',');
+		
+		$groupBy = '';
+		// Change Fmonth syntax from 02-2015 to 2015-02
+		$fmonthFrom = $data['monthfrom'];
+		$fmonthFrom = explode('-',$fmonthFrom);
+		$month = $fmonthFrom[0];
+		$year = $fmonthFrom[1];
+		$fmonthFrom = $year.'-'.$month;
+		$fmonthTo = $data['monthto'];
+		$fmonthTo = explode('-',$fmonthTo);
+		$month = $fmonthTo[0];
+		$year = $fmonthTo[1];
+		$fmonthTo = $year.'-'.$month;
+		// remove fmonthFrom and fmonthTo from wc and add new ones
+		unset($wc['monthfrom']);unset($wc['monthto']);unset($wc['report_id']);
+		$wc['fmonth <='] = $fmonthTo;
+		$wc['fmonth >='] = $fmonthFrom;
+		unset($wc['typewise']);
+		$report_table = "form_b_cr"; 
+		if(array_key_exists("distcode", $data) && $data['distcode'] > 0)
+		{
+			$this -> db -> select('facode as "Facode", facilityname(facode) as "Facility Name", '.$fields);
+			$this -> db -> group_by('facode');
+		}
+		else{
+			$this -> db -> select('distcode as "Distcode", districtname(distcode) as "District Name", '.$fields);
+			$this -> db -> group_by('distcode');
+		}
+		
+		$this -> db -> where($wc);
+		$allData = $this -> db -> get ($report_table) -> result_array();
+		$data['htmlData'] = getListingReportTable($allData,'');
+		$data['TopInfo'] = reportsTopInfo($title, $data);
+		$data['exportIcons']= exportIcons($_REQUEST);
+		return $data;
+	} 
+}

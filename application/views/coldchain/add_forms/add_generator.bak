@@ -1,0 +1,186 @@
+<div class="panel panel-primary cst-label">
+  <div class="panel-heading">Add Generator</div>
+	<div class="panel-body">
+			<form method="post" action="<?php echo base_url() ?>/Coldchain/generatorsSave" onsubmit="return checkRequired();" enctype="multipart/form-data">
+				<div class="add_refrigerator inside-page">
+					<?php echo ((isset($commonSections))?$commonSections:""); ?>
+						<input type="hidden" id="asset_type_id" name="asset_type_id" value="<?php echo $asset_type_id; ?>" class="form-control" />
+						<input type="hidden" name="increment" value="<?php echo $varMax; ?>" class="form-control" />
+						<div class="row" style="margin-bottom:10px">
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="Make">Make <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<select class="form-control" name="make_name" id="make_name" required >
+											<option value="">--select--</option>
+										<?php  foreach($makedata as $values){ ?>
+											<option value="<?php echo $values['pk_id']; ?>"><?php echo $values['make_name']; ?></option>
+										<?php }
+										?>
+									</select>							
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="Model">Model <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<select class="form-control" name="ccm_model_id" id="model_name" required >
+										<option>Select Make First</option>
+									</select>
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="AssetSubType">Serial Number<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<input type="text" name="serial_no" class="form-control" required />
+									</div>
+								</div>
+						</div>
+				</div>
+				<!--- row --->	
+				<div class="row" style="margin-bottom:10px">
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="PowerRating">Power Rating  <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<input type="text" id="power_rating" name="power_rating" class="form-control" required>
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="PowerSource">Power Source<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+									<select  class="form-control" name="power_source" required>
+										<?php echo getPowerSource(NULL,FALSE,24); ?>
+									</select>						
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="AssetSubType">Year of Supply<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+										<input type="text" id="working_since" name="working_since" class="dpcct form-control" required>
+									</div>
+								</div>
+						</div>
+				</div>
+				<!--- row --->	
+				<!--- row --->	
+				<div class="row" style="margin-bottom:10px">
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="UseFor">Use For<span style="color:red;">*</span> </label>
+									</div>
+									<div class="col-md-8">
+									<select class="form-control" name="use_for" required>
+									<?php echo getUseFor(); ?>
+									</select>
+									</div>
+								</div>
+						</div>
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+										<label for="CFC">No. of Phases<span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+										<div class="row">
+												<div class="col-md-2">
+													<label class="radio-inline">
+														<input type="radio" checked="checked" value="1" name="no_of_phases">One
+													</label>
+												</div>
+												<div class="col-md-2">
+													<label class="radio-inline">
+														<input type="radio" value="3" name="no_of_phases">Three 
+													</label>
+												</div>						
+										</div>
+									</div>
+							</div>
+						</div>	
+						<div class="col-md-4">
+								<div class="row">
+									<div class="col-md-4">
+									<label for="ASM">Automatic Start Mechanism <span style="color:red;">*</span></label>
+									</div>
+									<div class="col-md-8">
+										<div class="row">
+												<div class="col-md-2">
+													<label class="radio-inline">
+														<input type="radio" value="1" name="automatic_start">Yes
+													</label>
+												</div>
+												<div class="col-md-2">
+													<label class="radio-inline">
+														<input type="radio" value="0" checked="checked" name="automatic_start">No 
+													</label>
+												</div>					
+										</div>
+									</div>
+							</div>
+						</div>
+				</div>
+				<!--- row --->	
+					<div class="row">
+							<div class="col-md-12">
+								<button type="submit" class="btn-sv"> <i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+							</div>
+						</div><!--- row --->
+					</div><!-- col-md-12 -->
+				</div><!--- row --->
+				
+			</form>
+		</div>
+	</div>
+<script type="text/javascript">
+$(document).on('change','#status_w',function(){
+	var id=$(this).val();
+	if(id==3){
+		$("#res_hid").show();
+		$('#reasons').attr('required',true);
+	}else{
+		$("#res_hid").hide();
+		$('#reasons').attr('required',false);
+	}
+});
+$(document).on('change','#make_name', function(){
+	var id = $(this).val();
+	if(id !='') {
+	  $.ajax({
+			type: "POST",
+			data: "id="+id,
+			url: "<?php echo base_url(); ?>Ajax_calls/getModelsColdroom",
+			success: function(result){
+				var result= JSON.parse(result);
+				$('#model_name').html(result);
+			}
+		});
+	}else{
+		 $("#model_name").html('<option value="">Select First Make</option>');
+	}
+							
+});
+$(document).on('click','#makemodel',function(){
+	var url="<?php echo base_url() ?>Coldchain-MakeModel";
+	window.open(url,'name');
+});
+</script>

@@ -1,0 +1,225 @@
+/*                 
+				Author:  'Toqeer Haider'
+				Version: 'V.1.1.0'
+*/
+
+
+
+.color-red{ color:red;}
+.btn-12{position:relative; top:24px; background:#008d4c; color:white;}
+.btn-12:hover{color:lightgray;}
+.fa-plus{font-size:10px;}
+
+.new-1{padding:10px 0px 20px 28px; }
+@media only screen and (max-width: 990px) {
+    .new-1 {
+		width:90%;
+		margin:0 auto;
+    }
+	
+}
+.heading-line{width:90%; margin:0 auto; border:2px solid #008d4c; padding:0px;}
+.heading-1{background:#008d4c; align:left; padding:10px; margin:0px;color:white; font-size:19px;}
+.top-margin{ margin-top:20px;}
+.dataTables_length select{ padding:4px; color:darkgray; width:100px !Important; margin-left:10px;  }
+.dataTables_length label{ width:175px !important; }
+
+.dataTables_filter input{border:1px solid lightgray; }
+.dataTables_filter input[type="search"]{ color:darkgray; padding:6px; }
+table.dataTable{ border:none; width:95%;}
+table.dataTable.no-footer{ border-bottom:none;}
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate{ }
+.angle-down{ position:relative; color:darkgray; left:40%; top:13px;}
+.th-hide{ display:none;}
+table.dataTable thead th, table.dataTable thead td{ border-bottom:none;}
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover{ background-color:#008d4c; border-color:#008d4c}
+.pagination>li>a:hover{color:#0E633B !important}
+.excel-copy{ height:40px; width:34%;  position:relative; left:31%; top:10px;    border-left: 10px Solid #3c8dbc;
+    
+    border-bottom: 1px solid #3c8dbc;
+    border-top: 1px solid #3c8dbc;
+    border-right: 1px solid #3c8dbc;}
+.fa-file-excel-o{font-size:20px; color:green; position:relative; left:1%; top:3px; font-weight:bold;}
+.fa-files-o{font-size:20px; color:#1acab9; position:relative; left:1%; top:3px; font-weight:bold;}
+.print{ float:right; position:relative; bottom:38px; right:1%; border-radius:0px; background:#3c8dbc;}
+@media only screen and (max-width: 1170px) {
+    .excel-copy{  width:100%; left:0px;}
+    .dataTables_wrapper{top:45px;}
+	}
+
+
+.input1 input[type="text"]
+{   
+    width: 232px;
+    padding: 10px;
+    border-radius: 3px;
+    box-shadow: none;
+    border: none;
+    border: 1px solid #dcdbdb;
+    height: 33px;}
+.new-1 select{ border-radius:1px}
+.input2 input[type="text"]{
+	width: 232px;
+    padding: 10px;
+    border-radius: 3px;
+    box-shadow: none;
+    border: none;
+    border: 1px solid #dcdbdb;
+    height: 33px;
+	background:#f9f9f9;
+}
+.new-2{left:10px;}
+.new-2 select{ border-radius:1px; width:90%;}
+.new-2 input[type="text"]{ width:90%; border-radius:1px;}
+
+
+@media only screen and (max-width: 800px) {
+    
+    /* Force table to not be like tables anymore */
+	#no-more-tables table, 
+	#no-more-tables thead, 
+	#no-more-tables tbody, 
+	#no-more-tables th, 
+	#no-more-tables td, 
+	#no-more-tables tr { 
+		display: block; 
+	}
+ 
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#no-more-tables thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+	#no-more-tables tr { border: 1px solid #ccc; }
+ 
+	#no-more-tables td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50%; 
+		white-space: normal;
+		text-align:left;
+	}
+ 
+	#no-more-tables td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:left;
+		font-weight: bold;
+	}
+ 
+	/*
+	Label the data
+	*/
+	#no-more-tables td:before { content: attr(data-title); }
+}
+.add-new-1{ position:relative; left:45%; border-radius:1px; top:10px;}
+#demo-1{ border:1px solid lightgray; margin:12px 10px 28px 10px;}
+.bps{
+	    padding: 21px;
+    position: relative;
+    top: 4px;
+    font-weight: bold;
+}
+.coll-1{border:1px solid lightgray;    margin-left: 14px;
+    height: 34px;}
+.coll-2{border:1px solid lightgray; 
+    height: 34px; }
+	.input-bps input[type="text"]{ 
+	border:1px solid lightgray;
+    padding: 3px;
+    position: relative;
+    width:100%;
+	top:2px;
+	font-weight:bold;
+}
+.coll-3{ width:30%; height:34px;}
+.save-1{ border:1px solid lightgray;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+    top: 2px;
+    padding: 2px;
+    float: right;
+	margin-left:5px;}
+.cf input[type="text"]{
+	    padding: 4px;
+    
+    border: 1px solid lightgray;
+	width:100px;
+}
+.cf select{
+	border-radius:1px;
+}
+
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate{
+	position:relative;
+	top:-25px;
+}
+/* new Table **/
+
+.h3-rv{ background:#008d4c; color:white; text-align:center; margin:0; padding:10px;}
+.bg-gray{ background:lightgray;     width: 99.7%;
+    margin: 0 auto;
+    margin-top: 12px;
+    border-radius: 2px; text-align:center;}
+.rv-group{ padding:5px 0px;  font-size:12px; }
+.form-v {border-radius: 2px;background: rgb(248, 247, 249);width:52% !important;}
+.form-v1 {border-radius: 2px;width:58% !important;}
+.th-th{     width: 97.3%;
+    margin: 22px auto; }
+.th-th thead tr th{ text-align:center;background:#008d4c; color:white; font-size: 11px;padding: 5px; width:100px;}
+.second-heading-tr td{ text-align:center; color:gray; font-weight:bold;  padding: 3 px;font-size: 12px; min-width:70px;}
+.tr_entry td{ text-align:center; color:black;  font-size:10px; font-weight:bold; }
+.tr_entry select{padding:7px 0px;; border:none;border:1px solid lightgray; min-width:69px; }
+.input_entry { padding:7px;  width:100%; border:1px solid lightgray;}
+.readonly1{ background:#f9f9f9; width:106%; text-align:center;}
+input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+	
+}
+table thead tr th{width:50px;}
+.date1{ width:79px; padding:6px 0px; border:1px solid lightgray}
+.add_button{ font-size:11px;}
+.footer-by{ width:60%; border:1px solid lightgray; border-radius:1px; padding:5px;}
+.bold-text{ font-weight:bold; font-size:12px}
+.row_by{
+	    margin-left: 2px;border-bottom: 1px solid #f1eded;padding-bottom: 18px;
+}
+.green-btn{    margin-top: 13px; background: #008d4c; border: 1px solid lightgray; color: white; font-size: 14px; padding:6px;}
+.box:hover {
+  background-color:white !important;
+  color:#008d4c;
+ 
+}
+.btn-primary.focus, .btn-primary:focus{background:#008d4c}
+
+.box1{
+  background: white;
+  color:#008d4c;
+  border: 1px solid #008d4c;
+
+  -webkit-transition: background-color 0.6s ease-out;
+  -moz-transition: background-color 0.6s ease-out;
+  -o-transition: background-color 0.6s ease-out;
+  transition: background-color 0.6s ease-out;
+}
+
+.box1:hover {
+  background-color:#008d4c;
+  color:white;
+ 
+}
+.red-color{color: red; font-size: 21px; font-weight: bold; position: absolute; margin-top: -5px;}
+.modal-header{ background: #008d4c; color:white;}
+.adj{ border:1px solid lightgray;     padding: 10px; margin-top: 6px; margin-left:-10px;}

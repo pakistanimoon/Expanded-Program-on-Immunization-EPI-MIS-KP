@@ -1,0 +1,115 @@
+<?php
+class Communication extends CI_Controller 
+{
+	
+	public function __construct() 
+	{
+		parent::__construct();
+		$this -> load -> model('Communication_model','communication');
+	}
+	
+	public function consumption()
+	{
+		$month = sprintf("%02d", $this -> input -> get('month'));
+		$year = $this -> input -> get('year');
+		$distcode = $this -> input -> get('district_code');
+		$vlmisToken = $this -> input -> get('token');
+		if($month AND $year AND $distcode AND $vlmisToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'Request need all required parameters!'));exit;
+		}
+		$epiToken = sha1(md5("epivlmis#,0%$#communication".date("Y-m-d")));
+		if($vlmisToken == $epiToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'This is not a valid request!'));exit;
+		}
+		$fmonth = $year."-".$month;
+		$result = array();
+		$products = $this -> communication -> getAllProducts();
+		foreach($products as $product){
+			$result[] = $this -> communication -> getConsumption($fmonth,$distcode,$product['id'],$product['item_pack_size_id']);
+		}
+		//echo $this->db->last_query();exit;
+		if($result){
+			echo json_encode(array('success'=>true,'message'=>'Successful Response!','data'=>$result));exit;
+		}else{
+			echo json_encode(array('success'=>true,'message'=>'No data found','data'=>$result));exit;
+		}
+	}
+	public function getIssuance()
+	{
+		$date = $this -> input -> get('date');
+		$level = $this -> input -> get('level');
+		$vlmisToken = $this -> input -> get('token');
+		if($date AND $level AND $vlmisToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'Request need all required parameters!'));exit;
+		}
+		$epiToken = sha1(md5("epivlmis#,0%$#communication".date("Y-m-d")));
+		if($vlmisToken == $epiToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'This is not a valid request!'));exit;
+		}
+		$result = array();
+		$products = $this -> communication -> getAllProducts();
+		foreach($products as $product){
+			$output = $this -> communication -> getIssuance($date,$product['id'],$product['name'],$product['id_to_search'],$product['item_pack_size_id']);
+			if($output){
+				$result[] = $output;
+			}
+		}
+		if($result){
+			echo json_encode(array('success'=>true,'message'=>'Successful Response!','data'=>$result));exit;
+		}else{
+			echo json_encode(array('success'=>true,'message'=>'No data found','data'=>$result));exit;
+		}
+	}
+	public function getReceiving()
+	{
+		$date = $this -> input -> get('date');
+		$level = $this -> input -> get('level');
+		$vlmisToken = $this -> input -> get('token');
+		if($date AND $level AND $vlmisToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'Request need all required parameters!'));exit;
+		}
+		$epiToken = sha1(md5("epivlmis#,0%$#communication".date("Y-m-d")));
+		if($vlmisToken == $epiToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'This is not a valid request!'));exit;
+		}
+		$result = array();
+		$products = $this -> communication -> getAllProducts();
+		foreach($products as $product){
+			$output = $this -> communication -> getReceiving($date,$product['id'],$product['name'],$product['id_to_search'],$product['item_pack_size_id']);
+			if($output){
+				$result[] = $output;
+			}
+		}
+		if($result){
+			echo json_encode(array('success'=>true,'message'=>'Successful Response!','data'=>$result));exit;
+		}else{
+			echo json_encode(array('success'=>true,'message'=>'No data found','data'=>$result));exit;
+		}
+	}
+	public function getUCsPopulations(){
+		$vlmisToken = $this -> input -> get('token');
+		if($vlmisToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'Request need all required parameters!'));exit;
+		}
+		$epiToken = sha1(md5("epivlmis#,0%$#communication".date("Y-m-d")));
+		if($vlmisToken == $epiToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'This is not a valid request!'));exit;
+		}
+		$result = $this -> communication -> getUcsPopulations();
+		echo json_encode(array('success' => true,'message'=>'Successful Response','data'=>$result));exit;
+	}
+	public function getEpiCentersPopulations(){
+		$vlmisToken = $this -> input -> get('token');
+		$distcode = $this -> input -> get('district_code');
+		if($vlmisToken && $distcode){}else{
+			echo json_encode(array('success'=>false,'message'=>'Request need all required parameters!'));exit;
+		}
+		$epiToken = sha1(md5("epivlmis#,0%$#communication".date("Y-m-d")));
+		if($vlmisToken == $epiToken){}else{
+			echo json_encode(array('success'=>false,'message'=>'This is not a valid request!'));exit;
+		}
+		$result = $this -> communication -> getEpiCentersPopulations($distcode);
+		echo json_encode(array('success' => true,'message'=>'Successful Response','data'=>$result));exit;
+	}
+}
+?>

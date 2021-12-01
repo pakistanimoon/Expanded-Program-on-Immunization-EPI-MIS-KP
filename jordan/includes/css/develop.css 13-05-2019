@@ -1,0 +1,260 @@
+/*start of state overview-t10*/
+.state-overview-t10 .card {
+  background-color: #FFF;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; }
+
+.state-overview-t10 .card .card-header {
+  background: white;
+  padding: 2px 0px; }
+
+.state-overview-t10 .card .card-header p {
+  margin-bottom: 0px; }
+
+.state-overview-t10 .card .card-header > .title {
+  padding-top: 5px;
+  font-family: 'Roboto Condensed';
+  font-size: 22px;
+  margin-left: 36px; }
+
+.state-overview-t10 .card .red {
+  color: #B71C1C; }
+
+.state-overview-t10 .card .blue {
+  color: #0D47A1; }
+
+.state-overview-t10 .card .brown {
+  color: #3E2723; }
+
+.state-overview-t10 .card .green {
+  color: #5BA160; }
+
+.state-overview-t10 .card .grey {
+  color: #263238; }
+
+.state-overview-t10 .card .indigo {
+  color: #1A237E; }
+
+.state-overview-t10 .card .orange {
+  color: #E65100; }
+
+.state-overview-t10 .card .yellow {
+  color: #DB8401; }
+
+.state-overview-t10 .card .teal {
+  color: #004D40; }
+
+.state-overview-t10 .card .card-header > .icon {
+  display: inline-block;
+  float: left;
+  padding-left: 5px;
+  font-size: 26px;
+  margin-top: 2px; }
+
+.state-overview-t10 .card > .card-body {
+  color: white;
+  padding-top: 10px;
+  font-family: 'Roboto Condensed';
+  font-size: 14px; 
+  min-height: 96px;
+}
+
+.state-overview-t10 .card .red-m {
+  background: #D32F2F; }
+
+.state-overview-t10 .card .blue-m {
+  background: #1976D2; }
+
+.state-overview-t10 .card .brown-m {
+  background: #5D4037; }
+
+.state-overview-t10 .card .green-m {
+  background: #5BA160; }
+
+.state-overview-t10 .card .grey-m {
+  background: #455A64; }
+
+.state-overview-t10 .card .indigo-m {
+  background: #303F9F; }
+
+.state-overview-t10 .card .orange-m {
+  background: #EF6C00; }
+
+.state-overview-t10 .card .yellow-m {
+  background: #F90; }
+
+.state-overview-t10 .card .teal-m {
+  background: #00796B; }
+
+.state-overview-t10 .card > .card-body > ul > li {
+  border-bottom: solid 1px rgba(255, 255, 255, 0.26);
+  margin-right: 40px;
+  /*! padding: 5px 0px; */ 
+  list-style: none;
+  margin-left: 40px;
+  /*! height: 20px; */
+}
+
+.state-overview-t10 .card > .card-body > ul > li > span {
+  float: right; }
+
+.state-overview-t10 .card .card-footer {
+  font-family: 'Roboto Condensed';
+  font-size: 14px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  color: white; }
+
+.state-overview-t10 .card .red-d {
+  background: #B71C1C; }
+
+.state-overview-t10 .card .blue-d {
+  background: #0D47A1; }
+
+.state-overview-t10 .card .brown-d {
+  background: #3E2723; }
+
+.state-overview-t10 .card .green-d {
+  background: #39653C; }
+
+.state-overview-t10 .card .grey-d {
+  background: #263238; }
+
+.state-overview-t10 .card .indigo-d {
+  background: #1A237E; }
+
+.state-overview-t10 .card .orange-d {
+  background: #E65100; }
+
+.state-overview-t10 .card .yellow-d {
+  background: #DB8401; }
+
+.state-overview-t10 .card .teal-d {
+  background: #004D40; }
+
+.state-overview-t10 .card .card-footer p {
+  margin-bottom: 0px;
+  margin-left: 40px; }
+
+.state-overview-t10 .card .card-footer span {
+  float: right;
+  padding-right: 40px; }
+
+/*end of state overview-t10*/
+
+
+@media only screen and (max-width: 992px) {
+.flypanels-topbar{
+height:auto;
+}
+a.flypanels-button-left{
+text-align:left;
+display:block;
+width:100%;
+
+}
+h2.topbar-heading{
+text-align: center;
+margin-bottom: 10px;
+display:inline-block;
+width:100%;
+}
+span.tooglebtnfilter{
+top:130px;
+}
+.content_mainwraper {
+margin-top: 55px;
+}
+.carview_wraper ul li{
+padding-right:15px;
+padding-left:15px;
+}
+.map_sectionwraper .col-md-7{
+padding:0px 15px;
+}
+
+}
+/* .fusioncharts-container{ */
+/* overflow:scroll; */
+/* } */
+@media only screen and (max-width: 747px) {
+.content_mainwraper .main_heading{
+line-height:100%;
+}
+.content_mainwraper{
+margin-top:80px;
+}
+
+.tbl-states thead{
+  font-size:10px;
+  padding:0px;
+ 
+}
+.tbl-states  thead tr td{
+ vertical-align: middle;
+}
+.tbl-states tbody tr td{
+  padding:0px;font-size:10px;
+}
+.tbl-states tbody tr td label{
+  margin-bottom:0px;
+}
+
+}
+
+@media only screen and (max-width: 412px){
+
+.content_mainwraper{
+margin-top:110px;
+} 
+}
+
+
+@media only screen and (max-width: 412px){
+
+.content_mainwraper{
+margin-top:110px;
+} 
+}
+@media only screen and (max-width: 991px){
+.filterRow > table{
+float:none !important;
+}
+.filterRow > .border-div .table-location-bins thead tr, tbody tr, tbody tr td, thead tr th
+{
+border:none;
+}
+[id*="chartobject"] {
+width:100% !important;
+display: flex;
+}
+}
+@media only screen and (max-width: 400px){
+.imgcardview_2 > img {
+display:none;
+}
+}
+
+@media only screen and (max-width:380px){
+.section-title span{
+  font-size:13px;
+ 
+}
+}
+@media only screen and (max-width: 992px){
+	.filterRow{
+		display:none;
+			}
+			.panel-heading{
+			display:none;
+		}
+		.fed-username{
+			display:none;
+		}
+		.signout-ul{
+			margin-left:-127px;
+			
+		}
+} 

@@ -1,0 +1,266 @@
+<br>
+<?php echo $listing_filters; 
+$currentYear = date('Y');
+
+?>
+<script type="text/javascript" src="<?php echo base_url(); ?>/includes/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript">
+	//stock_movement_reports
+	$('#unioncouncil').css('display','none');
+	$('#union_council-label').css('display','none');
+	//yearly_status report,inventory_status,expiry_rate,vaccine_distribution; 
+	$('#uc').css('display','none');
+	$('#uc-label').css('display','none');
+	//set last index of year to selected
+	$("#year option:last").attr("selected", "selected");
+	//please discuss before uncommenting below lines.
+	/* $(document).ready(function(){
+
+		$("#year").trigger("change");
+	}); */
+	function get_store_locations(to_warehouse_type_id,fieldname/* ,warehouse_procode */){
+		//warehouse_procode = warehouse_procode || 0;
+		/* if(to_warehouse_type_id==6){
+			var fieldname = 'uccode';
+		}else{ */
+		//	var fieldname = 'warehouse_store';//'code';
+		//}
+		$("select[name="+fieldname+"]").html('');//$('#'+fieldname).trigger("change");
+		$.ajax({
+			type: "POST",
+			datatype: "JSON",
+			async:false, 
+			data: {to_warehouse_type_id: to_warehouse_type_id,warehouse_procode:<?php echo $this->session->Province; ?>},
+			url: "<?php echo base_url("getstoreloc"); ?>",
+			success: function(result){
+				result = JSON.parse(result);				
+				/* if(to_warehouse_type_id==4)
+					$("select[name="+fieldname+"]").append('<option value="all">All</option>'); */
+				$("select[name="+fieldname+"]").append(result.optionshtml);
+			}
+		});
+	}
+	function get_fac_store_locations(warehouse_uccode,fieldname)
+	{		
+		$.ajax({
+			type: "POST",
+			data:{warehouse_uccode:warehouse_uccode},
+			datatype: "JSON",
+			url: "<?php echo base_url("getfacstoreloc"); ?>",
+			success: function(result){
+				result = JSON.parse(result);
+				$("select[name="+fieldname+"]").html(result.optionshtml);
+				
+			}
+		});
+	}	
+	$('#unioncouncil').on('change', function (e, data) {
+		var warehouseuc=$('#unioncouncil').val();
+		get_fac_store_locations(warehouseuc,'to_warehouse_store');
+	});
+	$('#uc').on('change', function (e, data) {
+		var warehouseuc=$('#uc').val();
+		get_fac_store_locations(warehouseuc,'warehouse_store');
+	});
+	$(document).on('change','#warehousestore',function(){
+		var towarehouselevel = $('#towarehouselevel').val();
+		get_store_locations(towarehouselevel,'union_council');
+		$('#unioncouncil').trigger("change");
+	});
+	$(document).on('change','#warehouselevel',function(){
+		var warehouselevel = $(this).val();	
+		if(warehouselevel==1)
+		{
+			$('#unioncouncil').css('display','none');
+			$('#union_council-label').css('display','none'); 
+			$('#uc-label').css('display','none');
+			$('#uc').css('display','none');
+			get_store_locations(warehouselevel,'warehouse_store');
+			//$('#towarehouselevel').empty();
+			$('#towarehouselevel').val('2');
+			var towarehouselevel = $('#towarehouselevel').val();
+			get_store_locations(towarehouselevel,'to_warehouse_store');
+		}else if(warehouselevel==2){
+			$('#unioncouncil').css('display','none');
+			$('#union_council-label').css('display','none'); 
+			$('#uc-label').css('display','none');
+			$('#uc').css('display','none');
+			$('#towarehouselevel').val('4');
+			var towarehouselevel = $('#towarehouselevel').val();
+			get_store_locations(warehouselevel,'warehouse_store');
+			get_store_locations(towarehouselevel,'to_warehouse_store');
+		}else if(warehouselevel==4){
+			get_store_locations(warehouselevel,'warehouse_store');
+			$('#towarehouselevel').append('<option value="6">Union Council</option>');
+			$('#towarehouselevel').val('6');
+			var towarehouselevel = $('#towarehouselevel').val();
+			var level=<?php echo $this -> session -> UserLevel; ?>;
+			$('#union_council-label').css('display','');
+			$('#unioncouncil').css('display','');
+			$('#uc-label').css('display','none');
+			$('#uc').css('display','none');
+			get_store_locations(towarehouselevel,'union_council');
+			$('#unioncouncil').trigger("change",[{fieldname:'to_warehouse_store'}]);
+		}else{
+			$('#uc-label').css('display','');
+			$('#uc').css('display','');
+			get_store_locations(warehouselevel,'uc');
+			$('#uc').trigger("change",[{fieldname:'warehouse_store'}]);
+		}
+	});
+	$('#warehouselevel').trigger("change");
+	$(document).on('change','#towarehouselevel',function(){
+		var warehouselevel = $(this).val();	
+		if(warehouselevel==1){
+			$('#unioncouncil').css('display','none');
+			$('#union_council-label').css('display','none'); 
+			get_store_locations(warehouselevel,'to_warehouse_store');
+		}else if(warehouselevel==2){
+			$('#unioncouncil').css('display','none');
+			$('#union_council-label').css('display','none'); 
+			get_store_locations(warehouselevel,'to_warehouse_store');
+		}else if(warehouselevel==4){
+			get_store_locations(warehouselevel,'to_warehouse_store');
+			$('#union_council-label').css('display','none');
+			$('#unioncouncil').css('display','none')
+			$("#towarehouselevel option[value='6']").remove();
+		}
+	});
+	$(document).ready(function(){
+		if((isExists('monthto') && isExists('monthfrom'))){
+			//$('#pre-btn').prop('disabled', true);
+			$(document).on('change','.dp-my',function(){
+				if(($('#monthto').val() !="" && $('#monthfrom').val() !="")){
+					$('#pre-btn').prop('disabled', false);
+				}else{
+					$('#pre-btn').prop('disabled', true);
+				}
+			});
+		}
+		if(isExists('report_type')){
+			$('#pre-btn').prop('disabled', true);
+			$(document).on('change','#report_type',function(){
+				if($('#report_type').val() !=0){
+					$('#pre-btn').prop('disabled', false);
+				}else{
+					$('#pre-btn').prop('disabled', true);
+				}
+			});
+		}
+		/* if($('input[name=report_type]:checked').val() == "yearly"){
+			$('#month').val('');
+			$('#month').removeAttr('required','required');
+		}
+		else if($('input[name=report_type]:checked').val() == "monthly"){
+			$('#month').attr('required','required');
+		}else{} */
+		/* var dist = $("#distcode").val();
+		if(dist>0)
+			$('#typeWise').show();
+		else
+			$('#typeWise').hide();
+		if($('#year option:last').val() == new Date().getFullYear()){
+			$('#year option:last').prop('selected', true);
+		}else{
+			$('#year option:first').prop('selected', true);
+		} */
+		/* var year = $('#year').val();
+		$.ajax({
+			type: 'POST',
+			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
+			data:'year='+year,
+			success: function(response){
+				$('#week').html(response);
+			}
+		}); */
+	});
+	/* if(isNameExists('invnRepType') && ($("input[name=invnRepType]:checked").val() =="storewise")){
+		$('#pre-btn').prop('disabled', true);
+		$(document).on('change','#month',function(){
+			var selectedval = $("#month:checked").val();
+			if((selectedval !=="")){
+				$('#pre-btn').prop('disabled', false);
+			}else{
+				$('#pre-btn').prop('disabled', true);
+			}
+		});
+	} */
+	$(document).on('change','input[name=invnRepType]',function(){
+		var selectedval = $("input[name=invnRepType]:checked").val();
+		if( selectedval == "monthwise"){
+			$('#monthfrom').closest(".form-group").hide();
+			$('#monthto').closest(".form-group").hide();
+			$('#monthto').val('');
+			$('#monthfrom').val('');
+			$('#year').closest(".form-group").show();
+			$('#year').val((new Date).getFullYear() );
+			$('#monthfrom').removeAttr("required");
+			$('#monthto').removeAttr("required");
+		}else if( selectedval == "storewise"){
+			$('#monthfrom').closest(".form-group").show();
+			$('#monthto').closest(".form-group").show();
+			$('#monthfrom').attr("required","required");
+			$('#monthto').attr("required","required");
+			$('#year').closest(".form-group").hide();
+			$('#year').val('');
+			/* $('#warehouselevel').val('2');
+			$('#warehouselevel').trigger("change"); */
+		}
+	});
+	$('input[name=invnRepType]').trigger("change");
+	/* $("#distcode").click(function(){
+		var distcode = $("#distcode").val();
+		if(distcode>0)
+			$('#typeWise').show();
+		else
+			$('#typeWise').hide();
+	});
+	$(document).on('change','#year',function(){
+		var year = $(this).val();
+		$.ajax({
+			type: 'POST',
+			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
+			data:'year='+year,
+			success: function(response){
+				$('#week').html(response);
+			}
+		});
+	}); */	
+	function isExists(elemId){
+		if($('#'+elemId).length > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	function isNameExists(elemName){
+		if($('input[name='+elemName+']').length > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	$(".dp-my").datepicker({
+		autoclose: true,
+		format: "yyyy-mm",
+		viewMode: "months", 
+		minViewMode: "months",
+		orientation: "top"
+	});
+	$(".dpcurr").datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd"
+	});
+	$("#monthfrom").datepicker({
+	}).on('changeDate', function (selected) {
+		var minDate = new Date(selected.date.valueOf());
+		$('#monthto').datepicker('setStartDate', minDate);
+	});
+	$("#datefrom").datepicker({}).on('changeDate', function (selected) {
+		if($("#datefrom").val()>$('#dateto').val()){
+			$('#dateto').val('');
+		}
+		var minDate = new Date(selected.date.valueOf());
+		$('#dateto').datepicker('setStartDate', minDate);
+	});
+</script>

@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans|PT+Sans&display=swap');
+h1,h2,h3,h4,h5,h6{
+//    font-family: 'PT Sans', sans-serif;
+    font-family: 'Noto Sans', sans-serif;
+}
+label{
+  font-family: 'PT Sans', sans-serif;
+}
+$pcolor : #696f71;
+// background colors
+.bg-1{
+    background: radial-gradient(#14a4b3, #218b96);
+}
+.bg-2{
+    background: radial-gradient(#8e5a4a, #3c2822);
+}
+.bg-3{
+    background: radial-gradient(#597b4b, #2f5a1d);
+}
+.bg-4{
+    background: radial-gradient(#8c4b8a, #483447);
+}
+.bg-5{
+    background: radial-gradient(#413769, #271e4c)
+}
+.bg-6{
+    background: radial-gradient(#924e4e, #5a1f1f);
+}
+.bg-7{
+    background: radial-gradient(#8a9819, #5b631d);
+}
+.bg-8{
+    background: radial-gradient(#5d7d52, #2f4628)
+}
+.bg-9{
+    background: radial-gradient(#ff006b, #980b46);
+}
+.bg-10{
+    background: radial-gradient(#58686d, #264650);
+}
+.bg-11{
+    background: radial-gradient(#5db383, #2f7950);
+}
+.bg-12{
+    background: radial-gradient(#af1111, #8a0f0f);
+}
+.bg-13{
+    background: radial-gradient(#925414, #442607);
+}
+.bg-14{
+    background: radial-gradient(#455f86, #153e7b);
+}

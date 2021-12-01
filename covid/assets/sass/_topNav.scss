@@ -1,0 +1,135 @@
+/*
+    Styling for Top Nav
+*/
+nav{
+    h3{
+        position: relative;
+        top: 3px;
+    }
+    background: #fff;
+    border-bottom: 1px solid #efefef;
+    ul.top-center-ul{
+        margin: 0;
+        margin-top: 7px;
+        position: relative;
+        padding: 3px;
+        color: $basic-color;
+        li{
+            display: inline-block;
+            padding: 0 14px;    
+            border-radius: 2px;
+            text-align: center;
+            background: transparent;
+            color: $basic-color;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 9;
+            &:hover{
+                background: $basic-color;
+                color: #fff;
+            }
+            &.active{
+                background: $basic-color;
+                color: #fff;
+            }
+            i{
+                position: relative;
+                z-index: -1;
+            }
+        }
+    }
+    #menu_bar{
+        margin-top: 7px;
+        position: relative;
+        display: inherit;
+        font-size: 20px;
+        cursor: pointer;
+        color: $basic-color;
+        transition: all 0.3s;
+        &:hover{
+            color: $s-color;
+        }
+    }
+    .custom-form-control{
+        border-radius: 30px;
+        margin: 5px;
+        float: right;
+        transition: all 0.3s;
+        width: 50%;
+        &:focus{
+            box-shadow: none;
+        
+            transition: all 0.3s;
+                width: 100%;
+        }
+    }
+    .li-box-tl{
+            margin-top: 22px;    
+            background: $basic-color;
+            border-radius: 2px;
+            color: #fff;
+            padding: 10px 20px;
+            position: absolute;
+            width: 180px;
+            left: 8px;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s;
+                &:after{
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 0;
+                    border-left: 10px solid transparent;
+                    border-right: 10px solid transparent;
+                    border-bottom: 15px solid $basic-color;
+                    top: -15px;
+                    left: 0px;
+                }
+        ul{
+            text-align: left;
+            li{
+                padding: 10px 3px;
+                font-size: 13px;
+                display: block;
+                text-align: left;
+                letter-spacing: 1px;
+                border-bottom: 1px solid #ffffff6b;
+                color: #fff;
+                &:hover{
+                    background: transparent;
+                    color: #fff;
+                }
+            }
+        }
+    }
+    li.active{
+        .li-box-tl{
+            transition: all 0.3s;
+          display: block;
+            opacity: 1;
+        }
+    }
+    .user-ul{
+        position: relative;
+        top: 6px;
+        font-size: 20px;
+        margin-bottom: 0px;
+        li{
+            display: inline-block;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+        .text-user{
+            font-size: 10px;
+            position: relative;
+            top: -2px;
+            letter-spacing: 1px;
+        }
+        .dropdown-menu{
+            left: auto;
+            right: 0;
+        }
+    }
+}

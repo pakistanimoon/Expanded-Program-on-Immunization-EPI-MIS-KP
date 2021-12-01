@@ -1,0 +1,140 @@
+.row-tiles .panel{
+  margin-bottom: 10px !important;
+}
+.card{
+  padding-top: 20px;
+  color: white;
+}
+.card>i{
+  margin-top: -2px;
+}
+.figures{
+  float: right;
+  margin-top: -8px;
+}
+.title{
+  font-size: 26px;
+  text-align: right;
+}
+.sub-title{
+  font-size: 13px;
+  margin-top: -6px;
+}
+.blue{
+  background: #3C8DBC;
+}
+.blue:hover{
+  background: #32769E;
+}
+.green{
+  background: #057140;
+}
+.green:hover{
+  background: #045C34;
+}
+.megenta{
+  background: #008B8B;
+}
+.megenta:hover{
+  background: #007575;
+}
+.green2{
+  background: #18A78A;
+}
+.green2:hover{
+  background: #138971;
+}
+.green3{
+  background: #1F691F;
+}
+.green3:hover{
+  background: #195619;
+}
+.blue2{
+  background: #336699;
+}
+.blue2:hover{
+  background: #1F5183;
+}
+.blue3{
+  background: #2c9db6;
+}
+.blue3:hover{
+  background: #258ba2;
+}
+.red{
+  background: #BD5050;
+}
+.red:hover{
+  background: #A24343;
+}
+.red2{
+  background: #723131;
+}
+.red2:hover{
+  background: #652424;
+}
+.dark{
+  background: #353d47;
+}
+.dark:hover{
+  background: #252a30;
+}
+.purple{
+  background: #7d5092
+}
+.purple:hover{
+  background: #673180
+}
+.grey{
+  background: #485957;
+}
+.grey:hover{
+  background: #3A4241;
+}
+.yellow{
+  background: #808720;
+}
+.yellow:hover{
+  background: #6D7419;
+}
+.districtable {
+    border: 1px solid #252A30 !important;
+    font-family: ariel;
+}
+.districtable>thead>tr>th{
+  border: 1px solid RGBA(37, 42, 48, 0.43);
+}
+.districtable>tbody>tr>th{
+  border: 1px solid RGBA(37, 42, 48, 0.43);
+}
+.districtable>tbody>tr>td{
+  border: 1px solid RGBA(37, 42, 48, 0.43);
+}
+.pfilters{
+  margin-left:14px !important; 
+  margin-right: 14px !important;
+  margin-bottom: 0px !important;
+}
+.pfilters >.card{
+  padding-top: 3px;
+  padding-bottom: 0px;
+  background: #3F5666;
+}
+.pfilters >.card input{
+  display: inline-block;
+  float: left;
+}
+.pfilters >.card label{
+  display: inline-block;
+  float: left;
+  padding-left: 3px;
+}
+.pfilters >.card>.form-group label{
+  padding: 7px;
+}
+.pfilters >.card>button{
+  border-radius: 0px;
+  margin-top: -5px;
+  margin-left: 15px;
+}

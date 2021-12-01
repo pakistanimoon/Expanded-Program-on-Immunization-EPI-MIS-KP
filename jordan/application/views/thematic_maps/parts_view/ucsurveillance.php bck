@@ -1,0 +1,398 @@
+<div class="container-fluid">
+	<div style="padding-top:10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="section-title">
+					<span>Weekly Distribution of Suspected Measles Cases</span><strong style="font-size:11px;"><?php echo $distYear ?></strong>
+				</div>
+				<div id="uc-surveillance-graph1">Your desire result will render here....</div>
+			</div>
+		</div>
+	</div>
+	<div style="padding-top:10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="section-title">
+					<span>Weekly Distribution of AFP Cases</span><strong style="font-size:11px;"><?php echo $distYear ?></strong>
+				</div>
+				<div id="surveillance-graph3">Your desire result will render here....</div>
+			</div>
+		</div>
+	</div>
+	<div style="padding-top:10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="section-title">
+					<span>Weekly Distribution of NNT Cases</span><strong style="font-size:11px;"><?php echo $distYear ?></strong>
+				</div>
+				<div id="surveillance-graph4">Your desire result will render here....</div>
+			</div>
+		</div>
+	</div>
+	<div style="padding-top:10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="section-title">
+					<span>Weekly Distribution of Diphtheria Cases</span><strong style="font-size:11px;"><?php echo $distYear ?></strong>
+				</div>
+				<div id="surveillance-graph5">Your desire result will render here....</div>
+			</div>
+		</div>
+	</div>
+	<div style="padding-top:10px">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="section-title">
+					<span>Weekly Completeness and Timeliness of Surveillance Zero Reports</span>
+				</div>
+				<div id="uc-surveillance-graph2">Your desire result will render here....</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+	FusionCharts.ready(function() {
+		var salesChart = new FusionCharts({
+			type: 'msline',
+			renderAt: 'uc-surveillance-graph2',
+			width: '1200',
+			height: '450',
+			dataFormat: 'json',
+			dataSource: {
+				"chart": {
+					"caption": "Weekly Completeness and Timeliness of Surveillance Zero Report Trend",
+					"yaxisname": "Percentage",
+					"xAxisname": "Year-Week",
+					"linethickness": "2",
+					"numberPostfix": "%",
+					"showValues" : "1",
+					"rotateValues" : "1",
+					"formatnumberscale": "1",
+					"baseFont": "lato-regular",
+					//"labeldisplay": "ROTATE",
+					"slantlabels": "0",
+					"divLineAlpha": "40",
+					"anchoralpha": "0",
+					"animation": "1",
+					"legendborderalpha": "20",
+					"drawCrossLine": "1",
+					"crossLineColor": "#0d0d0d",
+					"crossLineAlpha": "100",
+					"tooltipGrayOutColor": "#80bfff",
+					"theme": "zune",
+					"valueFontColor": "#000000",
+					"valueBgColor": "#FFFFFF",
+					"valueBgAlpha": "50",
+					"thousandSeparatorPosition": "3,3,3",
+					"paletteColors": "#008ee4,#9b59b6,#6baa01,#e44a00",
+					"useDataPlotColorForLabels": "1",                    
+					"exportenabled": "1",
+					"exportatclient": "1",
+					"exporthandler": "http://export.api3.fusioncharts.com",
+					"html5exporthandler": "http://export.api3.fusioncharts.com" 
+				},
+			"categories": [{
+				"category": [
+					<?php foreach($weeklyZeroReportsTrend as $key => $value){ ?>
+					{
+						"label": "<?php echo $value['fweek']; ?>",
+						"showverticalline": "1"
+					}, 
+					<?php } ?>
+				]
+			}],
+			"dataset": [{
+			  "seriesname": "Zero Report Submitted Rate",
+			  "data": [
+				<?php foreach($weeklyZeroReportsTrend as $key => $value){ ?>
+					{
+						"value": "<?php echo ($value['zero_report_submitted_rate'] != NULL AND $value['zero_report_submitted_rate'] >= 0)?round($value['zero_report_submitted_rate'],2):0; ?>"
+					}, 
+				<?php } ?>
+			  ]
+			}]
+			}
+		})
+		.render();
+	});
+	FusionCharts.ready(function() {
+		<?php if(!empty($weeklyOutBreakMeasles)){ ?>
+		var salesChart = new FusionCharts({
+			type: 'bubble',
+			renderAt: 'uc-surveillance-graph1',
+			width: '1200',
+			height: '450',
+			dataFormat: 'json',
+			dataSource: {
+					"chart": {
+						"caption": "Weekly Distribution of Suspected Measles Cases",
+						"rotateValues" : "1",
+						"plotfillhovercolor": "#6baa01",
+						"showplotborder": "0",
+						"xaxisname": "Year-Week",
+						"labelDisplay": "rotate",
+						"yaxisname": "Number Of Cases",
+						"xAxisMinValue": "0",
+						"xAxisMaxValue": "1",
+						"yAxisMinValue": "0",
+						"yAxisMaxValue": "<?php $MaxMsl=''; $MaxMsl = max(array_column($weeklyOutBreakMeasles, 'DiseasesCount')); if($MaxMsl <=10){ echo $MaxMsl=$MaxMsl+2;}else{ echo $MaxMsl=$MaxMsl+40;} ?>",
+						"numdivlines": "10",
+						"showvalues": "1",
+						"xAxisLabelMode": "MIXED",
+						"showtrendlinelabels": "0",
+						//"bubbleHoverAlpha": "20",
+						"plottooltext": "$name : Measles Cases",
+						"exportenabled": "1",
+						"exportatclient": "1",
+						"exporthandler": "http://export.api3.fusioncharts.com",
+						"html5exporthandler": "http://export.api3.fusioncharts.com",
+						"theme": "fint"					},
+					"categories": [{
+								"category": [
+									<?php foreach($weeklyOutBreakMeasles as $key => $value){
+											if($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] > 0){
+									?>
+									{
+										
+										"label": "<?php echo $value['fweek']; ?>",
+										"x": "<?php echo $value['week']; ?>",
+										"showverticalline": "1"
+									}, 
+									<?php } } ?>
+								]
+							}],
+					"dataset": [{
+							  "color": "#00aee4",
+							  "data": [
+								<?php foreach($weeklyOutBreakMeasles as $key => $value){?>
+									{
+										"x": "<?php echo ($value['week'] != NULL & $value['week'] > 0)?$value['week']:''; ?>",
+										"y": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"z": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] > 0)?$value['DiseasesCount']:''; ?>",
+										"name": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"link": "JavaScript:drilldownfun('Measles_other','<?php echo $value['code']; ?>','<?php echo $value['year']; ?>','<?php echo $value['week']; ?>')"
+									}, 
+								<?php } ?>
+							  ]
+							}]
+					}
+		}).render();
+		<?php }else{ ?>
+			$('#uc-surveillance-graph1').text('SORRY! Not a Single Case Reported.');
+		<?php } ?>
+	});
+	<?php if(!empty($weeklyOutBreakAFP)){ ?>
+	FusionCharts.ready(function() {
+		var salesChart = new FusionCharts({
+			type: 'bubble',
+			renderAt: 'surveillance-graph3',
+			width: '1200',
+			height: '450',
+			dataFormat: 'json',
+			dataSource: {
+					"chart": {
+						"caption": "Weekly Distribution of AFP Cases",
+						"rotateValues" : "1",
+						"plotfillhovercolor": "#6baa01",
+						"showplotborder": "0",
+						"xaxisname": "Year-Week",
+						"labelDisplay": "rotate",
+						"yaxisname": "Number Of Cases",
+						"xAxisMinValue": "0",
+						"xAxisMaxValue": "10",
+						"yAxisMinValue": "0",
+						"yAxisMaxValue": "<?php $MaxAFP=''; $MaxAFP = max(array_column($weeklyOutBreakAFP, 'DiseasesCount')); if($MaxAFP <=10){ echo $MaxAFP=$MaxAFP+2;}else{ echo $MaxAFP=$MaxAFP+40;} ?>",
+						"numdivlines": "5",
+						"showvalues": "1",
+						"xAxisLabelMode": "MIXED",
+						"showtrendlinelabels": "0",
+						//"bubbleHoverAlpha": "20",
+						"plottooltext": "$name : AFP Cases",
+						"exportenabled": "1",
+						"exportatclient": "1",
+						"exporthandler": "http://export.api3.fusioncharts.com",
+						"html5exporthandler": "http://export.api3.fusioncharts.com",
+						"theme": "fint"					},
+					"categories": [{
+								"category": [
+									<?php foreach($weeklyOutBreakAFP as $key => $value){ 
+									?>
+									{
+										
+										"label": "<?php echo $value['fweek']; ?>",
+										"x": "<?php echo $value['week']; ?>",
+										"showverticalline": "1"
+									}, 
+									<?php } ?>
+								]
+							}],
+					"dataset": [{
+							  "color": "#00aee4",
+							  "data": [
+								<?php foreach($weeklyOutBreakAFP as $key => $value){  ?>
+									{
+										"x": "<?php echo ($value['week'] != NULL & $value['week'] > 0)?$value['week']:''; ?>",
+										"y": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"z": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] > 0)?$value['DiseasesCount']:''; ?>",
+										"name": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"link": "JavaScript:drilldownfun('AFP','<?php echo $value['code']; ?>','<?php echo $value['year']; ?>','<?php echo $value['week']; ?>')"
+									}, 
+								<?php } ?>
+							  ]
+							}]
+					}
+		})
+		.render();
+	});
+	<?php }else{ ?>
+			$('#surveillance-graph3').text('SORRY! Not a Single Case Reported.');
+		<?php } ?>
+	<?php if(!empty($weeklyOutBreakNNT)){ ?>
+	FusionCharts.ready(function() {
+		var salesChart = new FusionCharts({
+			type: 'bubble',
+			renderAt: 'surveillance-graph4',
+			width: '1200',
+			height: '450',
+			dataFormat: 'json',
+			dataSource: {
+					"chart": {
+						"caption": "Weekly Distribution of NNT Cases",
+						"rotateValues" : "1",
+						"plotfillhovercolor": "#6baa01",
+						"showplotborder": "0",
+						"xaxisname": "Year-Week",
+						"labelDisplay": "rotate",
+						"yaxisname": "Number Of Cases",
+						"xAxisMinValue": "0",
+						"xAxisMaxValue": "10",
+						"yAxisMinValue": "0",
+						"yAxisMaxValue": "<?php if(!empty($weeklyOutBreakNNT)){ $MaxNT=''; $MaxNT = max(array_column($weeklyOutBreakNNT, 'DiseasesCount')); if($MaxNT <=10){ echo $MaxNT=$MaxNT+2;}else{ echo $MaxNT=$MaxNT+40;} }else{ echo "10";} ?>",
+						"numdivlines": "3",
+						"showvalues": "1",
+						"xAxisLabelMode": "MIXED",
+						"showtrendlinelabels": "0",
+						//"bubbleHoverAlpha": "20",
+						"plottooltext": "$name : NNT Cases",
+						"exportenabled": "1",
+						"exportatclient": "1",
+						"exporthandler": "http://export.api3.fusioncharts.com",
+						"html5exporthandler": "http://export.api3.fusioncharts.com",
+						"theme": "fint"					},
+					"categories": [{
+								"category": [
+									<?php foreach($weeklyOutBreakNNT as $key => $value){ 
+									?>
+									{
+										
+										"label": "<?php echo $value['fweek']; ?>",
+										"x": "<?php echo $value['week']; ?>",
+										"showverticalline": "1"
+									}, 
+									<?php } ?>
+								]
+							}],
+					"dataset": [{
+							  "color": "#00aee4",
+							  "data": [
+								<?php foreach($weeklyOutBreakNNT as $key => $value){  ?>
+									{
+										"x": "<?php echo ($value['week'] != NULL & $value['week'] > 0)?$value['week']:''; ?>",
+										"y": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"z": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] > 0)?$value['DiseasesCount']:''; ?>",
+										"name": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"link": "JavaScript:drilldownfun('NT','<?php echo $value['code']; ?>','<?php echo $value['year']; ?>','<?php echo $value['week']; ?>')"
+									}, 
+								<?php } ?>
+							  ]
+							}]
+					}
+		})
+		.render();
+	});
+	<?php }else{ ?>
+			$('#surveillance-graph4').text('SORRY! Not a Single Case Reported.');
+		<?php } ?>
+	<?php if(!empty($weeklyOutBreakDiphtheria)){ ?>
+	FusionCharts.ready(function() {
+		var salesChart = new FusionCharts({
+			type: 'bubble',
+			renderAt: 'surveillance-graph5',
+			width: '1200',
+			height: '450',
+			dataFormat: 'json',
+			dataSource: {
+					"chart": {
+						"caption": "Weekly Distribution of Diphtheria Cases",
+						"rotateValues" : "1",
+						"plotfillhovercolor": "#6baa01",
+						"showplotborder": "0",
+						"xaxisname": "Year-Week",
+						"labelDisplay": "rotate",
+						"yaxisname": "Number Of Cases",
+						"xAxisMinValue": "0",
+						"xAxisMaxValue": "10",
+						"yAxisMinValue": "0",
+						"yAxisMaxValue": "<?php if(!empty($weeklyOutBreakDiphtheria)){ $MaxNT=''; $MaxNT = max(array_column($weeklyOutBreakDiphtheria, 'DiseasesCount')); if($MaxNT <=10){ echo $MaxNT=$MaxNT+2;}else{ echo $MaxNT=$MaxNT+40;} }else{ echo "10";} ?>",
+						"numdivlines": "3",
+						"showvalues": "1",
+						"xAxisLabelMode": "MIXED",
+						"showtrendlinelabels": "0",
+						//"bubbleHoverAlpha": "20",
+						"plottooltext": "$name : Diphtheria Cases",
+						"exportenabled": "1",
+						"exportatclient": "1",
+						"exporthandler": "http://export.api3.fusioncharts.com",
+						"html5exporthandler": "http://export.api3.fusioncharts.com",
+						"theme": "fint"					},
+					"categories": [{
+								"category": [
+									<?php foreach($weeklyOutBreakDiphtheria as $key => $value){ 
+									?>
+									{
+										
+										"label": "<?php echo $value['fweek']; ?>",
+										"x": "<?php echo $value['week']; ?>",
+										"showverticalline": "1"
+									}, 
+									<?php } ?>
+								]
+							}],
+					"dataset": [{
+							  "color": "#00aee4",
+							  "data": [
+								<?php foreach($weeklyOutBreakDiphtheria as $key => $value){  ?>
+									{
+										"x": "<?php echo ($value['week'] != NULL & $value['week'] > 0)?$value['week']:''; ?>",
+										"y": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"z": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] > 0)?$value['DiseasesCount']:''; ?>",
+										"name": "<?php echo ($value['DiseasesCount'] != NULL AND $value['DiseasesCount'] >= 0)?$value['DiseasesCount']:0; ?>",
+										"link": "JavaScript:drilldownfun('diphtheria','<?php echo $value['code']; ?>','<?php echo $value['year']; ?>','<?php echo $value['week']; ?>')"
+									}, 
+								<?php } ?>
+							  ]
+							}]
+					}
+		})
+		.render();
+	});
+	<?php }else{ ?>
+			$('#surveillance-graph4').text('SORRY! Not a Single Case Reported.');
+		<?php } ?>
+});
+function drilldownfun(typeCase,codeParam,yearParam,weekParam){
+	var NameCode="";
+	if(codeParam.length==3){
+		NameCode='distcode';
+	}
+	if(codeParam.length==9){
+		NameCode='uncode';
+	}
+	var code='<input type="hidden" name="'+NameCode+'" value="' + codeParam + '">';
+	var year='<input type="hidden" name="year" value="' + yearParam + '">';
+	var week='<input type="hidden" name="week" value="' + weekParam + '">';
+	var caseType='<input type="hidden" name="case_type" value="'+typeCase+'">';
+	$('<form id="tempform" action="<?php echo base_url();?>Linelists/Surveillance" method="POST" target="_blank">'+code+year+week+caseType+'</form>').appendTo($(document.body)).submit();
+}
+</script>

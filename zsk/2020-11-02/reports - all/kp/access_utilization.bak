@@ -1,0 +1,146 @@
+<div class="container bodycontainer">
+	<?php
+		echo $data['TopInfo'];
+		
+	 ?>
+	 <!--table for mention colour mening-->
+				<table data-filter="#filter" data-filter-text-only="true" style="margin-bottom: 5px;" class="table  table-hover table-striped footable table-vcenter tbl-listing footable-loaded">
+					<thead>
+						<tr style="background: white;color: black;">
+							<th style="background:lightgreen ;" class="">Category 1</th>
+							<th style="width: 20%;" class="">Penta1 > 80% Covrage and < 10% Dropout</th>
+							<th style="background: #33ACFF;" class="">Category 2</th>
+							<th style="width: 20%;" class="">Penta1 > 80% Covrage and > 10% Dropout</th>
+							<th style="background:  #EBD38F; " class="">Category 3</th>
+							<th style="width: 20%;" class="">Penta1 < 80% Covrage and < 10% Dropout</th>
+							
+								
+															
+						</tr>
+						<tr style="background: white;color: black;">
+						<th style="background: lightcoral ;" class="">Category 4</th>	
+						<th style="width: 20%;" class="">Penta1 < 80% Covrage and > 10% Dropout</th>
+						<!--<th style="background: gainsboro;" class="">Periority</th>	
+						<th style="width: 20%;" class="">1st Periority with more Category 4 </th>-->
+						</tr>
+					</thead>
+				</table>	
+				<!--table for mention colour mening-->	
+	<div id="parent" style="overflow:auto">
+		<table id="fixTable"  class="table table-bordered table-hover table-striped">
+			<thead>
+				<tr>
+				    <?php if(isset($type_wise) AND $type_wise == 'Uniouncouncil'){?>
+					<th>Uniouncouncil</th>
+					<?php }else{ ?>
+					<th>Districts</th>
+					<th>Total UC`s</th>
+					<?php } ?>
+					<th>Periority</th>
+					<th>Category 1</th>
+					<th>Category 2</th>
+					<th>Category 3</th>
+					<th>Category 4</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">  
+				<?php
+				$count =1;
+				
+				unset($data['TopInfo']);
+				unset($data['exportIcons']);
+				$total = array();
+				if(!empty($data)){
+					$prioroty=1;
+				 	foreach($data as $val)
+					{
+						if(isset($type_wise) AND $type_wise=='Uniouncouncil'){
+						echo "<tr class='DrillDownRow'><td class='text-center'>";
+					    echo get_UC_Name($val->uncode);
+						echo "<input type='hidden'  value='". $val->uncode ."' class='.code' id='code'>";
+						echo "</td><td class='text-center'>";
+						echo $prioroty;
+						echo "</td><td class='text-center'>";
+						if($val->cat1 > 0){
+								echo'<p class="text-center" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							}else{
+								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
+							}
+						echo "</td><td class='text-center'>";
+							if($val->cat2 > 0){
+								echo'<p class="text-center" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							}else{
+								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
+							}
+						echo "</td><td class='text-center'>";
+							if($val->cat3 > 0){
+								echo'<p class="text-center" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							}else{
+								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
+							}
+						echo "</td><td class='text-center'>";
+							if($val->cat4 > 0){
+								echo'<p class="text-center" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							}else{
+								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
+							}
+							
+						
+						echo "</td></tr>";
+						}
+						else{
+						echo "<tr class='DrillDownRow'><td class='text-center'>";
+					    echo get_District_Name($val->distcode);
+						echo "<input type='hidden'  value='". $val->distcode ."' id='code'>";
+						echo "</td><td class='text-center'>";
+						echo $val->totaluc;
+						echo "</td><td class='text-center'>";
+						echo $prioroty;
+						echo "</td><td class='text-center'>";
+						echo $val->cat1;
+						echo "</td><td class='text-center'>";
+						echo $val->cat2;
+						echo "</td><td class='text-center'>";
+						echo $val->cat3;
+						echo "</td><td class='text-center'>";
+						echo $val->cat4;
+						echo "</td></tr>";
+						}
+						$prioroty++;
+						$count++;
+						
+					}
+				}else{
+					echo "<div><td colspan='6'>SORRY! Record Not Exist</td></tr>";
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div><!--End of page content or body-->
+<!--start of footer-->
+<br>
+<br>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>includes/js/tableHeadFixer.js"></script>
+<script src="<?php echo base_url(); ?>includes/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.DrillDownRow').css('cursor','pointer');
+	});
+  	$('.DrillDownRow').on('click', function(){
+		var code = $(this).find("td:nth-child(1)").find('input[type=hidden]').val();
+		var monthfrom = "<?php echo $monthfrom ?>";
+		var monthto = "<?php echo $monthto?>";
+		var type_wise = 'Uniouncouncil';
+		if(code.toString().length == 3){
+			url = "<?php echo base_url();?>reports/access_utilization/"+code+"/"+monthfrom+"/"+monthto+"/"+type_wise;
+			var win = window.open(url);
+			if(win){
+				win.focus();
+			}else{
+				alert('Please allow popups for this site');
+			}
+		}		
+	});
+</script>

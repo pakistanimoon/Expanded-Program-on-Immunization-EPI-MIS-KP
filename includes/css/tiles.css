@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+.tbl-states{
+  margin-bottom: 0px;
+  font-family: "roboto";
+}
+.tbl-states thead{
+  background: #09b769;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+}
+.tbl-states thead tr td{
+  padding: 3px 5px;
+}
+.tbl-states tbody tr td{
+  padding: 1px 3px;
+}
+.nav-arrows:hover{
+ opacity: 0.5;
+ cursor: pointer;
+}
+.tbl-figures{
+  margin-bottom: 0px;
+}
+.s-bn{
+  border: none !important;
+}
+.s-bt0{
+  border-top: none !important;
+}
+.s-bl0{
+  border-left: none !important;
+}
+.s-br0{
+  border-right: none !important;
+}
+.s-bb0{
+  border-bottom: none !important;
+}
+.span-digit{
+  font-size: 28px;
+  font-weight: 600;
+  padding-right: 5%;
+}
+.span-digit1{
+  font-size: 14px;
+  font-weight: 300;
+  padding-right: 5%;
+}
+.td-middle{
+  vertical-align: middle !important;
+}
+.tbl-figures-right{
+  margin-bottom: 0px;
+  border-bottom: none;
+}
+.sub-hea{
+  font-size: 16px;
+  color: #09b769;
+  text-align: left;
+  text-decoration: underline;
+}
+.tbl-states .svg-pie{
+  top: 2px;
+}
+.spn-text{
+  display:block;
+  clear: both;
+  text-align: center;
+  margin-top: 15px;
+}
+.stng-text{
+	text-align:center;
+	display: inherit;
+	margin-top: -37px;
+	font-size: 12px;
+}
+.stng-text1{
+	/*! text-align:center; */
+	text-align: center;
+	/*! display: inherit; */
+	font-size: 12px;
+	position: relative;
+	top: -14px;
+	left: -31px;
+	font-size: 10px;
+}
+.spn-text1{
+  display:block;
+  clear: both;
+  text-align: center;
+  font-size:11px;
+  margin-top: -7px;
+}
+/* text color*/
+.c-red {
+  color: #B71C1C; }
+
+.c-blue {
+  color: #0D47A1; }
+
+.c-brown {
+  color: #3E2723; }
+
+.c-green {
+  color: #1B5E20; }
+
+.c-grey {
+  color: #263238; }
+
+.c-indigo {
+  color: #1A4D7E; }
+
+.c-orange {
+  color: #008B8B; }
+
+.c-yellow {
+  color: #DB8401; }
+
+.c-teal {
+  color: #004D40; }
+.span-pie-chart{
+  /*! display: flex; */
+}
+
+@media (max-width: 800px) {
+  .tbl-states {
+    width: 100%;
+    display: block;
+    overflow-y: auto; 
+  }
+  .tbl-states .svg-pie{
+    left: 0%;
+  } 
+}
+.main-pie-div {
+  min-height: 78px;
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.24);
+  margin-bottom: 1px;
+  padding: 3px; }
+.main-pie-div .title {
+  padding-top: 15px;
+  padding-left: 75px; }
+.svg-pie {
+  float: left;
+  margin: 10px; }
+.svg-pie {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 50%; }
+
+.svg-pie svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg); }
+
+.svg-pie .percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 2rem;
+  opacity: 0;
+  transform: translate(-50%, -50%); }
+
+.rendered.svg-pie {
+  background: none; }
+
+.rendered.svg-pie .percentage {
+  opacity: 1; }
+  
+/* pie filling colors*/
+.pie-green {
+  box-shadow: none;
+  background: #cbcbcb; }
+.pie-green circle:nth-child(1) {
+  fill: #cbcbcb; }
+.pie-green circle:nth-child(2) {
+  fill: #cbcbcb;
+  stroke: #5BA160; }
+.pie-green .percentage {
+  color: white;
+  text-shadow: 1px 1px 2px rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: 600; }
+
+.pie-teal {
+  box-shadow: none;
+  background: #cbcbcb; }
+.pie-teal circle:nth-child(1) {
+  fill: #cbcbcb; }
+.pie-teal circle:nth-child(2) {
+  fill: #cbcbcb;
+  stroke: #004D40; }
+.pie-teal .percentage {
+  color: white;
+  text-shadow: 1px 1px 2px rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: 600; }
+
+  .pie-red {
+  box-shadow: none;
+  background: #cbcbcb; }
+.pie-red circle:nth-child(1) {
+  fill: #cbcbcb; }
+.pie-red circle:nth-child(2) {
+  fill: #cbcbcb;
+  stroke: #B94C4C; }
+.pie-red .percentage {
+  color: white;
+  text-shadow: 1px 1px 2px rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: 600; }
+
+ .pie-teal2 { 
+  box-shadow: none;
+  background: #cbcbcb; }
+.pie-teal2 circle:nth-child(1) {
+  fill: #cbcbcb; }
+.pie-teal2 circle:nth-child(2) {
+  fill: #cbcbcb;
+  stroke: #5FA1A1; }
+.pie-teal2 .percentage {
+  color: white;
+  text-shadow: 1px 1px 2px rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: 600; }
+
+ .pie-grey {
+  box-shadow: none;
+  background: #cbcbcb; }
+.pie-grey circle:nth-child(1) {
+  fill: #cbcbcb; }
+.pie-grey circle:nth-child(2) {
+  fill: #cbcbcb;
+  stroke: #4f6671; }
+.pie-grey .percentage {
+  color: white;
+  text-shadow: 1px 1px 2px rgb(0, 0, 0);
+  font-size: 18px;
+  font-weight: 600; }
+.section-title {
+    background: #09B769;
+    color: white;
+    font-size: 16px;
+    padding: 6px;
+    text-align: left;
+}

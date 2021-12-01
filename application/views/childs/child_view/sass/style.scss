@@ -1,0 +1,130 @@
+@font-face{
+    font-family:'UrduFont';
+    src:url("../font/Jameel.ttf")
+}
+urdu{
+  font-family: 'UrduFont';
+  direction: rtl;
+    font-weight: 600;
+}
+
+.table td{
+    padding:3px;
+    vertical-align: middle;
+}
+section#header{
+    img{
+        height:100px;
+        width:100px;
+        border-radius: 50%;
+    }
+}
+table td.epi-logo{
+    img{
+    height:95px !important;
+        width:95px !important;
+        border-radius: 0px !Important;
+    }
+}
+table td.barcode-img{
+    img{
+        height:95px !important;
+        width:95px !important;
+        border-radius: 4px !important;
+    }
+}
+.verticle-middle{
+    vertical-align: middle !Important;
+}
+.light-bg{
+    background:#f7f6f6;
+}
+label{
+    margin-bottom: 0px !important;
+    font-weight: 700;
+}
+table.info td, table.vaccination td, table.vaccination th{
+       padding: 0px 8px !important;
+        font-size:13px;
+}
+h6 {
+    line-height: 13px;
+    font-weight: 700;
+ span{
+    font-size:11px;
+    font-weight: 600;
+}   
+}
+i.fa-square{
+    color:#d0d0d0;
+    padding-left:20px;
+}
+table.vaccination{
+    thead{
+        tr{
+            background:#E99090;
+            color:#fff;
+            text-align: center;
+            th{
+                padding:3px !important;
+            }
+        }
+    }
+    tbody{
+        tr.verticle{
+            td{
+                line-height: 12px;
+                vertical-align: middle;
+                font-weight: 700;
+                color: #fff;
+                background: #7382E1;
+                text-align: center;
+                font-size: 12px;
+                padding: 2px !important;
+            }
+           
+        }
+         td.bg{
+            background:#ACCDFF;
+            font-weight: 500;
+            font-size:12px;
+            }
+        td.vaccination-td{
+            max-width: 160px;
+            i{
+               
+            }
+            span{
+                white-space: nowrap;
+            }
+        }
+    }
+}
+table.vaccination td{
+    padding: 0px !Important;
+    i.fa-square{
+        padding-left:0px;
+    }
+}
+button.btn-success{
+    border-radius: 50px;
+    width:150px;
+    font-weight: 600;
+    margin-bottom:10px;
+}
+.display-block{
+    display: block !important;
+}
+.custom-table-bordered td{
+    border:1px solid #7b7b7b;
+}
+.top-img{
+    text-align: center;
+    img{
+        border-radius: 0px !Important;
+        margin-bottom:-15px;
+    }
+}
+.top-border-none{
+    border-top:none !important;
+}

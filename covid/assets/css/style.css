@@ -1,0 +1,308 @@
+/*
+Template : COVID - 19
+Author   : Toqeer Haider
+Company  : Pace Technologies (PVT) LTD.
+Email    : info@pace-tech.com
+Website  : pace-tech.com
+*/
+/*
+=======================================================================
+                       Styling Content
+    
+        1 - Basics  of Template
+        2 - Header Styling
+        3 - Top Nav Styling
+        4 - Body Graphs and Content Styling
+        5 - Styling for Left Div
+        6 - Second Section Styling
+
+=======================================================================
+*/
+/*
+    For Basic Styling
+*/
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Raleway&display=swap");
+* {
+  padding: 0;
+  margin: 0; }
+
+a:hover {
+  text-decoration: none; }
+
+body {
+  font-family: 'Raleway', sans-serif;
+  background: #fbfbfb; }
+
+h1, h2, h3, h4, h5, h6, a {
+  font-family: 'Lato', sans-serif; }
+
+ul {
+  list-style-type: none; }
+
+.text-green {
+  color: #1d7c6a; }
+
+.text-red {
+  color: #b20b43; }
+
+.b-bg-1.progress-bar {
+  background: #b20b43 !important; }
+
+.text-orange {
+  color: #fcc22f; }
+
+.text-blue {
+  color: #0a54c9; }
+
+.highcharts-credits {
+  display: none !important; }
+
+.highcharts-a11y-proxy-button {
+  font-size: 10px; }
+
+@-webkit-keyframes rotation {
+  from {
+    -webkit-transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(359deg); } }
+/*
+        This file contains all styling of Header
+*/
+header {
+  background: #b22222; }
+  header .corona-logo {
+    max-height: 50px;
+    margin: 5px; }
+  header h3 {
+    position: relative;
+    top: 12px;
+    text-align: center;
+    color: #fff; }
+
+/*
+    Styling for Top Nav
+*/
+nav {
+  background: #fff;
+  border-bottom: 1px solid #efefef; }
+  nav h3 {
+    position: relative;
+    top: 3px; }
+  nav ul.top-center-ul {
+    margin: 0;
+    margin-top: 7px;
+    position: relative;
+    padding: 3px;
+    color: #212529; }
+    nav ul.top-center-ul li {
+      display: inline-block;
+      padding: 0 14px;
+      border-radius: 2px;
+      text-align: center;
+      background: transparent;
+      color: #212529;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 9; }
+      nav ul.top-center-ul li:hover {
+        background: #212529;
+        color: #fff; }
+      nav ul.top-center-ul li.active {
+        background: #212529;
+        color: #fff; }
+      nav ul.top-center-ul li i {
+        position: relative;
+        z-index: -1; }
+  nav #menu_bar {
+    margin-top: 7px;
+    position: relative;
+    display: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    color: #212529;
+    transition: all 0.3s; }
+    nav #menu_bar:hover {
+      color: #b22222; }
+  nav .custom-form-control {
+    border-radius: 30px;
+    margin: 5px;
+    float: right;
+    transition: all 0.3s;
+    width: 50%; }
+    nav .custom-form-control:focus {
+      box-shadow: none;
+      transition: all 0.3s;
+      width: 100%; }
+  nav .li-box-tl {
+    margin-top: 22px;
+    background: #212529;
+    border-radius: 2px;
+    color: #fff;
+    padding: 10px 20px;
+    position: absolute;
+    width: 180px;
+    left: 8px;
+    display: none;
+    opacity: 0;
+    transition: all 0.3s; }
+    nav .li-box-tl:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 15px solid #212529;
+      top: -15px;
+      left: 0px; }
+    nav .li-box-tl ul {
+      text-align: left; }
+      nav .li-box-tl ul li {
+        padding: 10px 3px;
+        font-size: 13px;
+        display: block;
+        text-align: left;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #ffffff6b;
+        color: #fff; }
+        nav .li-box-tl ul li:hover {
+          background: transparent;
+          color: #fff; }
+  nav li.active .li-box-tl {
+    transition: all 0.3s;
+    display: block;
+    opacity: 1; }
+  nav .user-ul {
+    position: relative;
+    top: 6px;
+    font-size: 20px;
+    margin-bottom: 0px; }
+    nav .user-ul li {
+      display: inline-block;
+      margin-left: 20px;
+      cursor: pointer; }
+    nav .user-ul .text-user {
+      font-size: 10px;
+      position: relative;
+      top: -2px;
+      letter-spacing: 1px; }
+    nav .user-ul .dropdown-menu {
+      left: auto;
+      right: 0; }
+
+/*
+    Styling for Body Graphs
+*/
+#contain_body {
+  margin-top: 20px; }
+  #contain_body .table-number {
+    height: 300px; }
+    #contain_body .table-number td {
+      font-weight: 600;
+      letter-spacing: 2px;
+      padding: 5px 10px;
+      font-size: 12px;
+      vertical-align: middle; }
+    #contain_body .table-number .bg-color {
+      background: #0973ce;
+      color: #fff; }
+    #contain_body .table-number .number {
+      background: #fff;
+      color: #0973ce; }
+  #contain_body #container-week {
+    border: 1px solid #dcd9d9;
+    height: 300px; }
+  #contain_body .pie-charts {
+    border: 1px solid #dcd9d9;
+    height: 290px; }
+  #contain_body text {
+    font-size: 9px; }
+
+/*
+    Styling for Left Div
+*/
+#leftdiv .border-bottom {
+  border-bottom: 1px solid #d6d6d6;
+  padding: 5px;
+  margin: 2px 0;
+  max-height: 65px; }
+#leftdiv .custom-sidebar {
+  background: #f1f1f1;
+  margin-top: 5px;
+  border: 1px solid #e4e4e4;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 3px 4px 5px 2px #efefef; }
+#leftdiv h1 {
+  font-weight: bolder;
+  position: relative;
+  top: -10px; }
+#leftdiv h6 {
+  text-transform: uppercase;
+  position: relative;
+  top: -14px;
+  margin-bottom: 0px;
+  color: #484646;
+  font-weight: 400;
+  font-size: 12px; }
+#leftdiv img {
+  max-height: 50px; }
+#leftdiv .progress {
+  display: flex;
+  height: .5rem;
+  overflow: hidden;
+  font-size: .75rem;
+  background-color: #e9ecef;
+  border-radius: .25rem;
+  position: relative;
+  top: -13px; }
+#leftdiv .logo-side {
+  position: absolute;
+  display: inline-block;
+  right: 3px;
+  top: 3px;
+  width: 28px;
+  -webkit-animation: rotation 2s infinite linear; }
+#leftdiv .datatable-box {
+  height: 470px;
+  overflow: scroll; }
+  #leftdiv .datatable-box table td {
+    padding: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px; }
+  #leftdiv .datatable-box table th {
+    padding: 3px !important;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: #5493d6;
+    color: #fff; }
+  #leftdiv .datatable-box table.dataTable thead .sorting:before, #leftdiv .datatable-box table.dataTable thead .sorting:after, #leftdiv .datatable-box table.dataTable thead .sorting_asc:before, #leftdiv .datatable-box table.dataTable thead .sorting_asc:after, #leftdiv .datatable-box table.dataTable thead .sorting_desc:before, #leftdiv .datatable-box table.dataTable thead .sorting_desc:after, #leftdiv .datatable-box table.dataTable thead .sorting_asc_disabled:before, #leftdiv .datatable-box table.dataTable thead .sorting_asc_disabled:after, #leftdiv .datatable-box table.dataTable thead .sorting_desc_disabled:before, #leftdiv .datatable-box table.dataTable thead .sorting_desc_disabled:after {
+    top: 1px; }
+
+/*
+    This all styling of Second Sections
+*/
+#second_section .pie-innersize-div .detail {
+  font-size: 12px;
+  position: absolute; }
+#second_section .border_panel {
+  border: 1px solid #e2e2e2; }
+#second_section .tabs_row {
+  height: 300px; }
+  #second_section .tabs_row .flex-column {
+    margin-top: 20px; }
+#second_section .nav-pills .nav-link {
+  background: #d6d6d6;
+  border-radius: 0px;
+  margin-top: 5px;
+  position: relative;
+  font-size: 12px;
+  color: #212529; }
+#second_section .nav-pills .nav-link.active, #second_section .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #007bff !important; }
+
+/*# sourceMappingURL=style.css.map */

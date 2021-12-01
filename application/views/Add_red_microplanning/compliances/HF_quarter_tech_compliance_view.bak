@@ -1,0 +1,87 @@
+<div class="container bodycontainer">
+	<?php
+		echo $data['TopInfo'];
+		
+	 ?>
+	<div id="parent" style="overflow:auto">
+		<table id="fixTable"  class="table table-bordered table-hover table-striped">
+			<thead>
+				<tr>
+				    
+					<th>Tecnician Code</th>
+					<th>Tecnician Name</th>
+					<?php
+						    $month = date('m');
+						 	if($month >=1 && $month <=3){
+								$quarter='1';
+							}elseif($month >=4 && $month <=6 ){
+								$quarter='2';
+							}elseif($month >=7 && $month <=9 ){
+								$quarter='3';
+							}elseif($month >=10 && $month <=12 ){
+								$quarter='4';
+							}
+							for ($qurt = 1; $qurt <= $quarter; $qurt++) {
+								echo '<th>Quarter '.$qurt.' </th>';
+							}
+					?>
+					
+				</tr>
+			</thead>
+			<tbody id="tbody">  
+				<?php
+				$count = 1;
+				unset($data['TopInfo']);
+				unset($data['exportIcons']);
+				$total = array();
+				if(!empty($data)){
+				 	foreach($data as $val)
+					{
+						echo "<tr class='DrillDownRow'><td class='text-center'>";
+					    echo $val->techniciancode;
+						echo "</td><td class='text-center'>";
+						echo $val->technicianname;
+						
+						
+						for ($qurt = 1; $qurt <= $quarter; $qurt++){
+							echo "</td><td class='text-center'>";
+							if($val->{'q'.$qurt} > 0){
+								echo'<p class="text-center" style="color:green;font-weight: bold;font-size: 16px;">&#10004;</p>';
+							}else{
+								echo'<p class="text-center" style="color:red;font-weight: bold;font-size: 16px;"><i class="fa fa-times"></i></p>';
+							}
+						}
+						echo "</td></tr>";
+						$count++;
+					}
+				}else{
+					echo "<div><td colspan='6'>SORRY! Record Not Exist</td></tr>";
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+</div><!--End of page content or body-->
+<!--start of footer-->
+<br>
+<br>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="<?php echo base_url(); ?>includes/js/tableHeadFixer.js"></script>
+<script src="<?php echo base_url(); ?>includes/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.DrillDownRow').css('cursor','pointer');
+	});
+  	$('.DrillDownRow').on('click', function(){
+		var code = $(this).find("td:nth-child(1)").text();
+		if(code.toString().length == 3){
+			url = "<?php echo base_url();?>red_rec_microplan/RedRec_compliances/RedRec_HF_quarter_tech_compliance?distcode="+code;
+			var win = window.open(url,'_self');
+			if(win){
+				win.focus();
+			}else{
+				alert('Please allow popups for this site');
+			}
+		}		
+	});
+</script>

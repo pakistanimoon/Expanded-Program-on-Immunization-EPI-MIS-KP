@@ -1,0 +1,229 @@
+<?php
+class Cross_notified_cases extends CI_Controller {
+	//================ Constructor Function Starts ==================//
+	public function __construct() {
+		parent::__construct();
+		$this -> load -> helper('epi_functions_helper'); 
+		authentication();
+		$this -> load -> model ('Case_investigation_model');
+		$this -> load -> model ('Common_model');
+		$this -> load -> library('breadcrumbs');
+		//$this->load->library('form_validation');
+	}
+	////////////////////////// FIRST Function ///////////////////////////////////////////////
+	
+	//------------------------------------ Case Investigation -----------------------------------------//
+	//-------------------------------------------------------------------------------------------------//
+	
+	public function Cross_notified_cases_list(){
+		$distcode = $_SESSION['District'];
+		$page = (int)(!($this -> input -> get('page')) ? 1 : $this -> input -> get('page'));
+		if ($page <= 0){ 
+			$page = 1;
+		}
+		//$per_page = 15 ; // Set how many records do you want to display per page.
+		//$startpoint = ($page * $per_page) - $per_page;		
+		//$statement = " case_investigation_db "; // Change `records` according to your table name.
+		// if($this -> session -> District)
+		// 	$wc=" procode = '".$_SESSION["Province"]."' and case_type!='Msl' and (distcode = '".$this -> session -> District."' OR cross_notified_from_distcode = '".$this -> session -> District."')";
+		// else
+		// 	$wc=" procode = '".$_SESSION["Province"]."' and case_type!='Msl'";
+			//$wc=" ";
+		//$data = $this -> Case_investigation_model -> case_investigation_list($per_page,$startpoint);
+		//$data['pagination'] = $this -> Common_model -> pagination($statement,$per_page,$page,$url='?',$wc);
+		//print_r($data['pagination']);exit();
+		//echo
+		$mslCasesQuery = "SELECT fweek, count(*) AS msl_cases FROM case_investigation_db WHERE case_type = 'Msl' AND approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY fweek ORDER BY fweek ASC";
+		//exit();
+		$result = $this-> db -> query($mslCasesQuery);
+		$msquery = $result -> result_array();
+		$data['mslCases'] = $msquery;
+
+		$mainCasesQuery = "SELECT fweek, count(*) AS other_cases FROM case_investigation_db WHERE case_type != 'Msl' AND approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY fweek ORDER BY fweek ASC";
+		//exit();
+		$result = $this-> db -> query($mainCasesQuery);
+		$mcquery = $result -> result_array();
+		$data['mainCases'] = $mcquery;
+
+		//echo 
+		$afpCasesQuery = "SELECT distcode,year,fweek, count(*) AS afp_cases FROM afp_case_investigation WHERE approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY distcode,year,fweek ORDER BY fweek ASC";
+		//exit();
+		$result = $this-> db -> query($afpCasesQuery);
+		$afpquery = $result -> result_array();
+		$data['afpCases'] = $afpquery;
+
+		//echo 
+		$nntCasesQuery = "SELECT distcode,year,fweek, count(*) AS nnt_cases FROM nnt_investigation_form WHERE approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY distcode,year,fweek ORDER BY fweek ASC";
+		//exit();
+		$result = $this-> db -> query($nntCasesQuery);
+		$nntquery = $result -> result_array();
+		$data['nntCases'] = $nntquery;
+
+		$mergedDataQuery = "SELECT a.distcode,a.fweek,a.cases,a.case_type,b.afp_cases, c.nnt_cases FROM 
+								(SELECT case_type,distcode,fweek,count(*) AS cases FROM case_investigation_db WHERE approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY distcode,fweek,case_type) AS a LEFT OUTER JOIN 
+								(SELECT distcode,fweek,count(*) AS afp_cases FROM afp_case_investigation WHERE approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY distcode,fweek) AS b on a.distcode = b.distcode LEFT OUTER JOIN
+								(SELECT distcode,fweek,count(*) AS nnt_cases FROM nnt_investigation_form WHERE approval_status='Pending' AND distcode = '$distcode' AND (cross_notified_from_distcode != '$distcode' OR rb_distcode != '$distcode') GROUP BY distcode,fweek) AS c on a.distcode = c.distcode ORDER BY a.fweek";
+		//print_r($data['nntCases']);exit();
+		$result = $this-> db -> query($mergedDataQuery);
+		$mergedData = $result -> result_array();
+		//$data['mergedQuery'] = $mergedData;
+		$data['mergedQuery'] = array_merge($data['mslCases'],$data['mainCases'],$data['afpCases'],$data['nntCases']);
+		//print_r($data['mergedQuery']);exit();
+		//print_r(array_merge($data['mainCases'],$data['afpCases']));exit();
+		//$data['startpoint'] = $startpoint;
+		$data['UserLevel'] = $this -> session -> UserLevel;
+		$data['edit']="Yes";
+		if($data != 0){
+			$data['data']=$data;
+			$data['fileToLoad'] = 'cross_notified_cases_list';
+			$data['pageTitle']='Pending Cross Notified Cases | EPI-MIS';
+			$this->load->view('template/epi_template',$data);
+		}
+		else{
+			$data['message'] ="You must have rights to access this page.";
+			$this -> load -> view ('message',$data);
+		}
+	}
+
+	public function case_investigation(){
+		$data['data']=$this -> Case_investigation_model -> case_investigation(); 
+		$distcode = $this -> session -> District;
+		$query = "SELECT epid_code from districts where distcode='$distcode'";
+		$result = $this -> db -> query($query);
+		$result = $result -> row_array();
+		$data['distCode'] = $result['epid_code'];
+		$dcode=$result['epid_code'];
+		$year = date('Y');
+		$data['years'] = getAllYearsOptionsIncludingCurrent(true);
+		$data['fileToLoad'] = 'investigation_forms/case_investigation_form';
+		$data['pageTitle']='Case Investigation Form | EPI-MIS';
+		$this->load->view('template/epi_template',$data);	
+	}
+	
+	public function caseInvestigation_Approve(){
+		dataEntryValidator(0);
+		if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
+			$distcode = $this -> session -> District;
+			$query = "SELECT epid_code from districts where distcode='$distcode'";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$data['dcode'] = $result['epid_code'];
+			$data['case_epi_no'] = $this -> input -> post('case_epi_no');
+			$data['facode'] = $this -> input -> post('facode');
+			$data['case_number'] = $this -> input -> post('case_number');
+			$data['approval_status'] = "Approved";
+			$updated_id = $this -> Common_model -> update_record('case_investigation_db',$data,array('id' => $this->input->post('id')));
+			$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
+			redirect('Case_investigation/case_investigation_list');
+		}else{
+			$this -> session -> set_flashdata('message','You must select Health Facility!');
+			redirect($this->session->flashdata('redirectToCurrent'));
+		}
+	}	
+	
+	public function case_investigation_edit(){
+		dataEntryValidator(0);
+		//$facode = $this -> uri -> segment(3);
+		$distcode = $this -> session -> District;
+		$query = "SELECT epid_code from districts where distcode='$distcode'";
+		$result = $this -> db -> query($query);
+		$result = $result -> row_array();
+		$data['distCode'] = $result['epid_code'];
+		$dcode=$result['epid_code'];
+		//$year = date('Y');
+		$id = $this -> uri -> segment(3);
+		$year = $this -> uri -> segment(4);
+		$data['measles_Result'] = $this -> Common_model -> get_info('case_investigation_db', '', '','*', array('id' => $id));
+		$clinicalrep = $data['measles_Result']->clinical_representation;
+		$clinicalrep = str_replace(',', "','", $clinicalrep);
+		$viewData = "SELECT array_to_string(array_agg(case_type_definition), ', ') as symptoms from case_clinical_representation where id in ('".$clinicalrep."')";
+		$result = $this -> db -> query($viewData);
+		$result = $result -> row_array();
+		$data['measles_Result']->symptoms = $result["symptoms"];
+
+		if($data['measles_Result']->case_reported == 0){
+			$case_type = $data['measles_Result']->case_type;
+			$query = "SELECT max(case_number) as case_number from case_investigation_db where year='$year' AND dcode='$dcode' AND case_type='$case_type'";
+			$result = $this -> db -> query($query);        
+			$result = $result -> row_array();
+			$data['measleNumber'] = str_split(sprintf('%04u', ($result['case_number'] + 1)));
+		}
+		else{
+			$data['measleNumber'] = str_split(sprintf('%04u', ($data['measles_Result']->case_number)));	
+		}
+		//$data['measles_Result'] = $this -> Common_model -> get_info('case_investigation_db', '', '','*', array('id' => $id, 'facode' => $facode));
+		$data['unioncouncil']=get_UC_Name($data['measles_Result']->uncode);
+		$data['facility']=get_Facility_Name($data['measles_Result']->facode);
+		$data['tehsil']=get_Tehsil_Name($data['measles_Result']->tcode);
+		$data['rbfacility']=get_Facility_Name($data['measles_Result']->rb_facode);
+		
+		//$data['rbuncode']=get_UC_Name($data['measles_Result']->rb_uncode);
+		$data['edit']="Yes";
+		if($data != 0){			
+			$data1['data']=$data;
+			//print_r($data1['data']);exit();
+			$data1['fileToLoad'] = 'investigation_forms/case_investigation_form_edit';
+			$data1['pageTitle']='Case Investigation Form | EPI-MIS';
+			$this->load->view('template/epi_template',$data1);
+			//template_loader('investigation_forms/measles_case_investigation_form', $data, array($this->_module));
+		}
+		else{
+			$data['message'] ="You must have rights to access this page.";
+			$this -> load -> view ('message',$data);
+		}
+	}		
+	
+	public function case_investigation_view(){
+		$id = $this -> uri -> segment(3);
+		$year = $this -> uri -> segment(4);
+		$data['a'] = $this -> Common_model -> get_info('case_investigation_db', '', '','*', array('id' => $id));
+		$clinicalrep = $data['a']->clinical_representation;
+		$clinicalrep = str_replace(',', "','", $clinicalrep);
+		$viewData = "SELECT array_to_string(array_agg(case_type_definition), ', ') as symptoms from case_clinical_representation where id in ('".$clinicalrep."')";
+		$result = $this -> db -> query($viewData);
+		$result = $result -> row_array();
+		$data['a']->symptoms = $result["symptoms"];
+		//print_r($data);exit;
+		// $viewData = $result;
+		// $query = "SELECT clinical_representation from case_investigation_db where id='$id'";
+		// $result = $this -> db -> query($query);        
+		// $result = $result -> row_array();
+		// $data['clinical_representation'] = $result['clinical_representation'];
+		$data['edit']="Yes";
+		if($data != 0){
+			$data1['data']=$data;
+			//print_r($data1['data']);exit();
+			$data1['fileToLoad'] = 'investigation_forms/case_investigation_form_view';
+			$data1['pageTitle']='Case Investigation Form | EPI-MIS';
+			$this->load->view('template/epi_template',$data1);
+		}
+		else{
+			$data['message'] ="You must have rights to access this page.";
+			$this -> load -> view ('message',$data);
+		}
+	}
+	
+	///////////////////////////////////AFP Approve/////////////////////////////////////////////////////////////////////////
+	public function afp_Approve(){
+		dataEntryValidator(0);
+		if($this -> input -> post('facode')>0 && $this -> input -> post('case_epi_no')){
+			$distcode = $this -> session -> District;
+			$query = "select epid_code from districts where distcode='$distcode'";
+			$result = $this -> db -> query($query);
+			$result = $result -> row_array();
+			$data['dcode'] = $result['epid_code'];
+			$data['case_epi_no'] = $this -> input -> post('case_epi_no');
+			$data['facode'] = $this -> input -> post('facode');
+			$data['afp_number'] = $this -> input -> post('afp_number');
+			$data['approval_status'] = "Approved";
+			$updated_id = $this -> Common_model -> update_record('afp_case_investigation',$data,array('id' => $this->input->post('id')));
+			$this -> session -> set_flashdata('message','You have successfully approved cross notified case!');
+			redirect('AFP-CIF/List');
+		}else{
+			$this -> session -> set_flashdata('message','You must select Health Facility!');
+			redirect($this->session->flashdata('redirectToCurrent'));
+		}
+	}
+	
+}
+?>

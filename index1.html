@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-AU">
+ <head>
+   <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+   <meta name="author" content="haran" />
+   <meta name="generator" content="haran" />
+   <title>epimis1.pacetec.net</title>
+   <style type="text/css">
+   
+             /*******************************************************
+             * TITLE: Prosimii Screen Stylesheet                    * 
+             * URI  : prosimii/prosimii-screen.css                  *
+             * MODIF: 2004-Apr-28 21:43 +0800                       *
+             * URL: http://www.oswd.org/userinfo.phtml?user=haran   *
+             *******************************************************/
+            
+            
+            /* ##### Common Styles ##### */
+            
+            body {
+              font-family: verdana, helvetica, arial, sans-serif;
+              font-size: 73%;  /* Enables font size scaling in MSIE */
+              margin: 0;
+              padding: 0;
+            }
+            
+            html > body {
+              font-size: 9pt;
+            }
+            
+            acronym, .titleTip {
+              border-bottom: 1px dotted rgb(61,92,122);
+              cursor: help;
+              margin: 0;
+              padding: 0 0 0.4px 0;
+            }
+            
+            a {
+              color: rgb(61,92,122);
+              background-color: transparent;
+              text-decoration: underline;
+              margin: 0;
+              padding: 0 1px 2px 1px;
+            }
+            
+            a:hover {
+              color: rgb(117,144,174);
+              text-decoration: none;
+            }
+            
+            ol {
+              margin: 1em 0 1.5em 0;
+              padding: 0;
+            }
+            
+            ul {
+              list-style-type: square;
+              margin: 1em 0 1.5em 0;
+              padding: 0;
+            }
+            
+            dl {
+              margin: 1em 0 0.5em 0;
+              padding: 0;
+            }
+            
+            ul li {
+              line-height: 1.5em;
+              margin: 1.25ex 0 0 1.5em;
+              padding: 0;
+            }
+            
+            ol li {
+              line-height: 1.5em;
+              margin: 1.25ex 0 0 2em;
+              padding: 0;
+            }
+            
+            dt {
+              font-weight: bold;
+              margin: 0;
+              padding: 0 0 1ex 0;
+            }
+            
+            dd {
+              line-height: 1.75em;
+              margin: 0 0 1.5em 1.5em;
+              padding: 0;
+            }
+            
+            .doNotDisplay {
+              display: none !important;
+            }
+            
+            
+            .smallCaps {
+              font-size: 117%;
+              font-variant: small-caps;
+            }
+            
+            
+            /* ##### Header ##### */
+            
+            .superHeader {
+              color: rgb(130,128,154);
+              background-color: rgb(33,50,66);
+              text-align: right;
+              margin: 0;
+              padding: 0.5ex 10px;
+            }
+            
+            .superHeader span {
+              color: rgb(195,196,210);
+              background-color: transparent;
+              font-weight: bold;
+              text-transform: uppercase;
+            }
+            
+            .superHeader a {
+              color: rgb(195,196,210);
+              background-color: transparent;
+              text-decoration: none;
+              margin: 0;
+              padding: 0 0.25ex 0 0;
+            }
+            
+            .superHeader a:hover {
+              color: rgb(193,102,90);
+              background-color: transparent;
+              text-decoration: none;
+            }
+            
+            .midHeader {
+              color: white;
+              background-color: rgb(61,92,122);
+              margin: 0;
+              padding: 0.26ex 10px;
+            }
+            
+            .headerTitle {
+              font-size: 300%;
+              margin: 0;
+              padding: 0;
+            }
+            
+            .headerSubTitle {
+              font-size: 151%;
+              font-weight: normal;
+              font-style: italic;
+              margin: 0 0 1ex 0;
+              padding: 0;
+            }
+            
+            .headerLinks {
+              text-align: right;
+              margin: 0;
+              padding: 0 0 2ex 0;
+              position: absolute;
+              right: 1.5em;
+              top: 3.5em;
+            }
+            
+            .headerLinks a {
+              color: white;
+              background-color: transparent;
+              text-decoration: none;
+              margin: 0;
+              padding: 0 0 0.5ex 0;
+              display: block;
+            }
+            
+            .headerLinks a:hover {
+              color: rgb(195,196,210);
+              background-color: transparent;
+              text-decoration: underline;
+            }
+            
+            .subHeader {
+              color: white;
+              background-color: rgb(117,144,174);
+              margin: 0;
+              padding: 0.5ex 10px;
+            }
+            
+            .subHeader a, .subHeader .highlight {
+              color: white;
+              background-color: transparent;
+              font-size: 110%;
+              font-weight: bold;
+              text-decoration: none;
+              margin: 0;
+              padding: 0 0.25ex 0 0;
+            }
+            
+            .subHeader a:hover, .subHeader .highlight {
+              color: rgb(255,204,0);
+              background-color: transparent;
+              text-decoration: none;
+            }
+            
+            
+            /* ##### Main Copy ##### */
+            
+            #main-copy {
+              margin: 0;
+              padding: 0.5em 10px;
+              clear: left;
+            }
+            
+            #main-copy h1 {
+              color: rgb(117,144,174);
+              background-color: transparent;
+              font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+              font-size: 200%;
+              margin: 0;
+              padding: 0;
+            }
+            
+            #main-copy h2 {
+              color: rgb(61,92,122);
+              background-color: transparent;
+              font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+              font-weight: normal;
+              font-size: 151%;
+              margin: 0;
+              padding: 1ex 0 0 0;
+            }
+            
+            #main-copy p {
+              line-height: 1.75em;
+              margin: 1em 0 1.5em 0;
+              padding: 0;
+            }
+            
+            .newsHeading {
+              color: rgb(61,92,122);
+              background-color: transparent;
+              font-family: "trebuchet ms", verdana, helvetica, arial, sans-serif;
+              font-size: 145%;
+              text-decoration: none;
+              margin: 0;
+              padding: 1ex 0 0 0;
+              display: block;
+            }
+            
+            .newsHeading:hover {
+              color: rgb(117,144,174);
+              background-color: transparent;
+              text-decoration: underline;
+            }
+            
+            .newsDate {
+              font-style: italic;
+              margin: 0 !important;
+              padding: 0;
+            }
+            
+            .newsSummary {
+              margin: 1.5ex 0 2.5ex 0.75ex !important;
+              padding: 0;
+            }
+            
+            .more {
+              text-align: right;
+              margin: 0;
+              padding: 0.5em 0;
+            }
+            
+            .more a {
+              color: rgb(61,92,122);
+              background-color: transparent;
+              font-size: 92%;
+              text-decoration: underline;
+              margin: 0;
+              padding: 0.25ex 0.75ex;
+            }
+            
+            .more a:hover {
+              color: rgb(117,144,174);
+              text-decoration: none;
+            }
+            
+            .rowOfBoxes {
+              clear: both;
+            }
+            
+            .quarter, .oneThird, .half, .twoThirds, .fullWidth {
+              margin: 1em 0;
+              float: left;
+              border-left: 1px solid rgb(204,204,204);
+            }
+            
+            .quarter {
+              width: 21%;
+              padding: 0 1.9%;
+            }
+            
+            .oneThird {
+              width: 28%;
+              padding: 0 1.9%;
+            }
+            
+            .half {
+              text-align: justify;
+              width: 46%;
+              padding: 0 1.9%;
+            }
+            
+            .twoThirds {
+              text-align: justify;
+              width: 63%;
+              padding: 0 1.9%;
+            }
+            
+            .fullWidth {
+              text-align: justify;
+              width: 96%;
+              padding: 0 1.2em;
+              border-left: none;
+            }
+            
+            .filler {  /* use with an empty <p> element to add padding to the end of a text box */
+              border: 1px solid white;
+            }
+             
+            .noBorderOnLeft {
+              border-left: none;
+            }
+            
+            .dividingBorderAbove {
+              border-top: 1px solid rgb(204,204,204);
+            }
+            
+            /* More elegant alternatives to .noBorderOnLeft & .dividingBorderAbove
+             * that don't require the creation of new classes - but which are not
+             * supported by MSIE - are the following:
+             *
+             * .rowOfBoxes > div:first-child {
+             *   border-left: none;
+             * }
+             *
+             * .rowOfBoxes + .rowOfBoxes {
+             *   border-top: 1px solid rgb(204,204,204);
+             * }
+             */
+            
+            
+            /* ##### Footer ##### */
+            
+            #footer {
+              color: rgb(51,51,102);
+              background-color: rgb(239,239,239);
+              font-size: 87%;
+              text-align: center;
+              line-height: 1.25em;
+              margin: 2em 0 0 0;
+              padding: 1ex 10px;
+              clear: left;
+            }
+            
+            #footer a {
+              color: rgb(0,68,204);
+              background-color: transparent;
+              text-decoration: underline;
+            }
+            
+            #footer a:hover {
+              text-decoration: none;
+            }
+   </style>
+ </head>
+
+ <body>
+   <!-- For non-visual user agents: -->
+     <div id="top"><a href="#main-copy" class="doNotDisplay doNotPrint">Skip to main content.</a></div>
+
+   <!-- ##### Header ##### -->
+
+   <div id="header">
+     <div class="superHeader">
+       <span>Generated by:</span>
+       <a href="http://www.lunarpages.com" title="The host of this design">vps.pacetec.net</a>
+     </div>
+
+     <div class="midHeader">
+       <h1 class="headerTitle" lang="la">epimis1.pacetec.net</h1>
+       <div class="headerSubTitle" title="Placeholder page">Placeholder page</div>
+
+       <br class="doNotDisplay doNotPrint" />
+
+       <div class="headerLinks">&nbsp;</div>
+     </div>
+
+     <div class="subHeader">
+       <span class="doNotDisplay">Navigation:</span>
+       <a href="#">Home</a>       
+     </div>
+   </div>
+
+   <!-- ##### Main Copy ##### -->
+
+   <div id="main-copy">
+     <div class="rowOfBoxes">
+       <div class="twoThirds noBorderOnLeft">
+         <h1>Welcome!</h1>
+         <p>One of our customers has purchased this domain, but they have not uploaded a web page yet. Please check back soon for this site.</p>
+         
+         <p>If you are the administrator of this machine The initial installation of web server package was successful.</p>
+         
+     </div>
+        <div class="oneThird">
+          <h1>Help</h1>
+    
+          <p class="filler">If you are not sure why you are seeing this page please click the back button of your browser to go back to the page you came from.</p>
+        </div>
+     
+   </div>
+
+   <!-- ##### Footer ##### -->
+ </body>
+</html>
+

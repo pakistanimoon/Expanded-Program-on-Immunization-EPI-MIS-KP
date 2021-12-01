@@ -1,0 +1,130 @@
+<script type="text/javascript">
+function scrolltodiv(paramClass){
+	$('html,body').animate({
+		scrollTop: ($("."+paramClass).offset().top)-70},
+        'slow');
+}
+$(function () {
+    var rankingDataSeries = <?php echo $serieses_ranking; ?>;
+    var rankingCategories = <?php echo $serieses_ranking_cat; ?>;
+    var titleText = '<?php echo $heading["barName"]; ?>';
+	var subtitle = '<?php if(isset($heading["subtittle"])){ echo $heading["subtittle"];}?>';
+    var id = '<?php echo $id; ?>';
+	///add by zohaib
+	var run = '<?php echo $heading["run"]; ?>';
+	var fmonth = '<?php echo $fmonth; ?>';
+    Highcharts.chart(id, {
+        chart: {
+            type: 'bar',
+			height:'200%'
+        },
+        title: {
+            text: titleText,
+			style : { "fontSize": "14px" }
+        },
+		subtitle: {
+			text: subtitle
+		},
+		legend: {
+			enabled: false
+		},
+        /* subtitle: {
+            text: ''
+        }, */
+        xAxis: {
+            categories: rankingCategories[0],
+            labels: {
+                step: 1,
+                reserveSpace : true,
+				style: { 
+				"color":"#000",
+				"fontSize":"10px"
+				}
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                //text: 'Kyber Pakhtunkhaw',
+                align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true,
+                    allowOverlap: false,
+                    color: "black",
+                    crop: false,	
+                    overflow: "justify"
+                }
+            },
+			series: {
+				cursor: 'pointer',
+				events: {
+					/* click: function (event) {
+						alert(
+							this.name + ' clicked\n' +
+							'Alt: ' + event.altKey + '\n' +
+							'Control: ' + event.ctrlKey + '\n' +
+							'Meta: ' + event.metaKey + '\n' +
+							'Shift: ' + event.shiftKey
+						);
+					} */
+					click: function (e) {
+                        	getDistrictWiseData(e, fmonth);
+						}
+				}
+			}
+        },
+        /* legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'bottom',
+            x: 10,
+            y: -40,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+            shadow: true
+        }, */
+        credits: {
+            enabled: true,
+			href: 'http://pacetec.net/',
+			text: 'Pace Technologies'
+        },
+        series: rankingDataSeries,
+		exporting: {
+            buttons: {
+                contextButton: {
+					menuItems: [{
+						textKey: 'downloadPNG',
+						onclick: function () {
+							this.exportChart({
+								type : 'image/png'
+							});
+						}
+					}, {
+						textKey: 'downloadJPEG',
+						onclick: function () {
+							this.exportChart({
+								type: 'image/jpeg'
+							});
+						}
+					},{
+						textKey: 'downloadPDF',
+						onclick: function () {
+							this.exportChart({
+								type : 'application/pdf'
+							});
+						}
+					}]
+                }
+            }
+        }
+    });
+});
+</script>

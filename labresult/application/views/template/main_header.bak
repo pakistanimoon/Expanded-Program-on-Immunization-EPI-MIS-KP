@@ -1,0 +1,42 @@
+<section id="header">
+      <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+        <img src="<?php echo base_url(); ?>includes/image/logo/epi.png" class="img-responsive" alt="EPI Logo">
+        <img src="<?php echo base_url(); ?>includes/image/logo/logo6.png" class="img-responsive" alt="KPK Logo">
+      </div>
+      <div class="col-md-6">
+        <h2>EPI Surveillance Lab Results</h2>
+      </div>
+      <div class="col-md-3">
+        <label>Login as <?php echo $this-> session -> userdata('username'); ?></label>
+        <span>
+          <a href="<?php echo base_url(); ?>Login/logout"><i class="fa fa-sign-out" aria-hidden="true" style="color:red;">
+            
+          </i></a> 
+        </span>
+      </div>
+      </div>
+    </div>
+    </section>
+  </div>
+  <section id="nav">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12" style="background: #3c8dbc;">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12" >
+                 <?php if ( $this-> session -> userdata('utype')=='LRDEO'); { ?>
+                <ul>
+                   <a href="<?php echo base_url(); ?>Measles_Case/search_by_epid"><li>Search by <span class="font-weight-bold">EPID</span> Number</li></a><li style="position:relative; top:6px;">|</li>
+                  <a href="<?php echo base_url(); ?>Measles_Case/add_data"><li>List All Cases</li></a></li>
+                </ul>
+                <?php }?>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

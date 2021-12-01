@@ -1,0 +1,802 @@
+<?php
+if(!function_exists('getSingleRegionUrl')){
+	function getSingleRegionUrl($procode){
+		switch($procode){
+			case  "1":
+				return "http://federal.epimis.pk/";
+				break;
+			case  "2":
+				return "http://federal.epimis.pk/";
+				break;
+			case  "3":
+				return "http://epimis.cres.pk/";
+				//return "http://epimis1.pacetec.net/";
+				break;
+			case  "4":
+				return "http://balochistan.epimis.pk/";
+				break;
+			case  "5":
+				return "http://ajk.epimis.pk/";
+				break;
+			case  "6":
+				return "http://gb.epimis.pk/";
+				break;
+			case  "7":
+				return "http://islamabad.epimis.pk/";
+				break;
+			case  "8":
+				return "http://fata.epimis.pk/";
+				break;
+			default:
+				return NULL;
+				break;
+		}
+	}
+}
+if(!function_exists('getAdministrativeNames')){
+	function getAdministrativeNames($url=NULL,$filepath=NULL,$procode=NULL,$distcode=NULL,$tcode=NULL,$uncode=NULL,$facode=NULL)
+	{		
+		$data = array('procode' => $procode,'distcode' => $distcode,'tcode' => $tcode,'uncode' => $uncode,'facode' => $facode);
+		//$data = $Array;
+		//post data mechanism
+		$fields_string = "";
+		foreach($data as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+		$fields_string = rtrim($fields_string, '&');
+		//$filepath = 'API/Receiver/get_cc_assetType_counts';
+		//url to post
+		if($url===NULL)
+			$url = "http://epimis.cres.pk/";
+		$url .= $filepath;
+		//curl options
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);		
+		curl_setopt($ch, CURLOPT_POST, count($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+		$saveData = curl_exec($ch);
+		//print_r($saveData);exit();
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);				
+		curl_close($ch);
+		//workout for data in response
+		//$userData = json_decode($saveData, true);
+		if(isset($saveData)){
+			return $saveData;
+		}else{
+			return array();
+		}
+	}
+}
+// if(!function_exists('getProvinces_options')){
+// 	function getProvinces_options($isreturn=false, $procode=NULL, $allProvinces=NULL){
+// 		$CI = & get_instance();		
+// 		$output = '';
+// 		$output .= '<option value="">-- Select Province --</option>';
+// 		$query="SELECT province, procode from provinces order by procode asc";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $onepro) { 
+// 			$selected = '';
+// 			$output .= '<option value="'.$onepro["procode"].'" '.$selected.' >'.$onepro["province"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+
+// if(!function_exists('get_Province_Name')){
+// 	function get_Province_Name($procode){
+// 		$CI = & get_instance();
+// 		$query 		= "SELECT province from provinces where procode = '$procode' " ;
+// 		$resultPro = $CI -> db -> query($query);
+// 		return $resultPro -> row()->province;	
+// 	}
+// }
+// if(!function_exists('get_Province_ShortName')){
+// 	function get_Province_ShortName($procode){
+// 		$CI = & get_instance();
+// 		$query 		= "SELECT shortname from provinces where procode = '$procode' " ;
+// 		$resultPro = $CI -> db -> query($query);
+// 		return $resultPro -> row()->shortname;	
+// 	}
+// }
+// if(!function_exists('get_CaseType_Name')){
+// 	function get_CaseType_Name($caseCode){
+// 		$CI = & get_instance();
+// 		$query 		= "SELECT type_case_name from surveillance_cases_types where short_name = '$caseCode' " ;
+// 		$resultCase = $CI -> db -> query($query);
+// 		return $resultCase -> row()->type_case_name;	
+// 	}
+// }
+// if(!function_exists('get_District_Name')){
+// 	function get_District_Name($distcode){
+// 		$CI = & get_instance();				
+// 		$query 		= "Select district from districts where distcode = '$distcode' " ;
+// 		$resultDist = $CI -> db -> query($query);	
+// 		if($resultDist -> num_rows() >0)
+// 		{
+// 			return $resultDist -> row()->district;	
+// 		}
+// 		return "";	
+// 	}
+// }
+// if(!function_exists('get_Tehsil_Name')){
+// 	function get_Tehsil_Name($tcode){
+// 		$CI = & get_instance();
+// 		$query 		= "Select tehsil from tehsil where tcode = '$tcode'";
+// 		$resultTeh = $CI -> db -> query($query) -> row_array();
+// 		return $resultTeh['tehsil'];
+// 	}
+// }
+
+// if(!function_exists('get_UC_Name')){
+// 	function get_UC_Name($uncode){
+// 		$CI = & get_instance();
+// 		$query 		= "Select un_name from unioncouncil where uncode = '$uncode'";
+// 		$resultUC = $CI -> db -> query($query);
+// 		if($resultUC -> num_rows() >0)
+// 		{
+// 			return $resultUC -> row()->un_name;	
+// 		}
+// 		return "";	
+// 	}
+// }
+// if(!function_exists('get_Facility_Name')){
+// 	function get_Facility_Name($facode){
+// 		$CI = & get_instance();
+// 		$query 		= "Select fac_name from facilities where facode = '$facode'";
+// 		$result = $CI -> db -> query($query);
+// 		if($result -> num_rows() >0)
+// 		{
+// 			return $result -> row()->fac_name;
+// 		}
+// 		return "";	
+// 	}
+// }
+if(!function_exists('CrossProvince_DistrictName')){
+    function CrossProvince_DistrictName($distcode,$isreturn=false)
+    {   
+    	//echo $distcode;exit();
+        $CI = & get_instance();
+		$procode = substr($distcode,0,1);
+        if($distcode == $CI -> session -> District){
+        	//echo "abc";exit();	
+	        $_query  = "SELECT district from districts where distcode = '$distcode'";
+	        $results=$CI->db->query($_query);
+	        $rows=$results->row_array();        
+	        return $rows['district'];
+	    }
+        else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/DistNames';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode);
+			//echo "safe";exit();
+			if($isreturn)
+			{
+				return $dataMeasles;
+			}
+			else{
+				echo $dataMeasles;
+			}
+		}
+    }
+}
+if(!function_exists('getCrossProvince_DistrictsOptions')){
+	function getCrossProvince_DistrictsOptions($isreturn=false,$distcode=NULL,$allDistricts=NULL){
+		$CI = & get_instance();
+		if($allDistricts=="Yes"){
+			$wc = "province = '".$_SESSION["Province"]."'";
+		}else if($allDistricts=="No"){
+			$wc = "distcode = '$distcode'";
+		}
+		else{
+			$wc = getWC();
+		}
+		//echo "moon";
+		$procode = substr($distcode, 0,1);
+		if($distcode == $CI -> session -> District){
+			$wc = str_replace("procode","province",$wc);
+			//print_r($wc);
+			$output = '';
+			$query="SELECT district,distcode from districts where $wc order by district asc";
+			$result = $CI -> db ->query($query);
+			$result1 = $result->result_array();
+			foreach ($result1 as $onedist) { 
+				$selected = '';
+				if(($distcode > 0)&&($distcode == $onedist["distcode"]))
+				{
+					$selected = 'selected="selected"';
+				}
+				$output .= '<option value="'.$onedist["distcode"].'" '.$selected.' >'.$onedist["district"].'</option>';
+			}
+			//echo ' second ';
+			//print_r($result1);
+			if($isreturn)
+				return $output;
+			echo $output;
+		}
+		else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/DistOptions';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode);
+			//echo "safe";exit();
+			echo $dataMeasles;
+		}
+	}
+}
+if(!function_exists('CrossProvince_TehsilName')){
+	function CrossProvince_TehsilName($tcode,$isreturn=false){
+		$CI = & get_instance();
+		$procode = substr($tcode,0,1);
+		$distcode = substr($tcode,0,3);
+		if($distcode == $CI -> session -> District){
+			$query 		= "SELECT tehsil from tehsil where tcode = '$tcode'";
+			$resultTeh = $CI -> db -> query($query) -> row_array();
+			return $resultTeh['tehsil'];
+		}
+		else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/TehsilNames';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode, $tcode);
+			//echo "safe";exit();
+			if($isreturn)
+			{
+				return $dataMeasles;
+			}
+			else{
+				echo $dataMeasles;
+			}
+		}
+	}
+}
+if(!function_exists('getCrossProvince_TehsilOptions')){
+	function getCrossProvince_TehsilOptions($isreturn=false,$tcode=NULL,$distcode=NULL){
+		//echo $tcode; exit();
+		$CI = & get_instance();
+		if($distcode){
+			$wc = "distcode = '$distcode'";
+		}else{
+			$wc = getWC();
+		}
+		$procode = substr($tcode,0,1);
+		$distcode = substr($tcode,0,3);
+		if($distcode == $CI -> session -> District){		
+			$output = '<option value="0" >-- Select Tehsil--</option>';
+			$query="SELECT tehsil,tcode from tehsil where distcode='$distcode' order by tcode";
+			$result = $CI -> db ->query($query);
+			$result1 = $result->result_array();
+			foreach ($result1 as $oneteh) { 
+				$selected = '';
+				if(($tcode > 0)&&($tcode == $oneteh["tcode"]))
+				{
+					$selected = 'selected="selected"';
+				}
+				$output .= '<option value="'.$oneteh["tcode"].'" '.$selected.' >'.$oneteh["tehsil"].'</option>';
+			}
+			if($isreturn)
+				return $output;
+			echo $output;
+		}
+		else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/TehsilOptions';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode, $tcode);
+			//echo "safe";exit();
+			echo $dataMeasles;
+		}
+	}
+}
+
+if(!function_exists('CrossProvince_UCName')){
+	function CrossProvince_UCName($uncode,$isreturn=false){
+		$CI = & get_instance();
+		$procode = substr($uncode,0,1);
+		$distcode = substr($uncode,0,3);
+		$tcode = substr($uncode,0,6);
+		if($distcode == $CI -> session -> District){
+			$query 		= "SELECT un_name from unioncouncil where uncode = '$uncode'";
+			$resultUCs = $CI -> db -> query($query) -> row_array();
+			return $resultUCs['un_name'];
+		}
+		else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/UCNames';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode, $tcode, $uncode);
+			//echo "safe";exit();
+			if($isreturn)
+			{
+				return $dataMeasles;
+			}
+			else{
+				echo $dataMeasles;
+			}
+		}
+	}
+}
+if(!function_exists('getCrossProvince_UCsOptions')){
+	function getCrossProvince_UCsOptions($isreturn=false,$uncode=NULL){
+		$CI = & get_instance();
+		$wc = getWC();
+		$procode = substr($uncode,0,1);
+		$distcode = substr($uncode,0,3);
+		$tcode = substr($uncode,0,6);
+		if($distcode == $CI -> session -> District){
+			$output = '<option value="" >-- Select Unioncouncil--</option>';
+			$query="SELECT un_name,uncode from unioncouncil where tcode='$tcode' order by uncode";
+			$result = $CI -> db ->query($query);
+			$result1 = $result->result_array();
+			foreach ($result1 as $oneteh) { 
+				$selected = '';
+				if(($uncode > 0)&&($uncode == $oneteh["uncode"]))
+				{
+					$selected = 'selected="selected"';
+				}
+				$output .= '<option value="'.$oneteh["uncode"].'" '.$selected.' >'.$oneteh["un_name"].'</option>';
+			}
+			if($isreturn)
+				return $output;
+			echo $output;
+		}
+		else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/UCsOptions';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode, $tcode, $uncode);
+			//echo "safe";exit();
+			echo $dataMeasles;
+		}
+	}
+}
+if(!function_exists('CrossProvince_FacilityName')){
+	function CrossProvince_FacilityName($facode,$isreturn=false){
+		$CI = & get_instance();
+		$procode = substr($facode,0,1);
+		$distcode = substr($facode,0,3);
+		if($distcode == $CI -> session -> District){
+			$query 		= "SELECT fac_name from facilities where facode = '$facode'";
+			$resultFacs = $CI -> db -> query($query) -> row_array();
+			return $resultFacs['fac_name'];
+		}
+		else{
+        	//echo "xyz";exit();
+			$filepath = 'Measles_investigation/FacilityNames';
+			$url =  getSingleRegionUrl($procode);
+			$dataMeasles =  getAdministrativeNames($url, $filepath, $procode, $distcode, '', '', $facode);
+			//echo "safe";exit();
+			if($isreturn)
+			{
+				return $dataMeasles;
+			}
+			else{
+				echo $dataMeasles;
+			}			
+		}	
+	}
+}
+if(!function_exists('OtherProDistrictName')){
+    function OtherProDistrictName($distcode="")
+    {  
+        $CI=& get_instance();
+        //echo 'i m here';exit();
+        $_query  = "select district from otherprovincedistricts where distcode = '$distcode'";
+        $results=$CI->db->query($_query);
+        $rows=$results->row_array();
+        
+        return $rows['district'];
+    }
+}
+// if(!function_exists('getUCs_options')){
+// 	function getUCs_options($isreturn=false,$uncode=NULL){
+// 		$CI = & get_instance();
+// 		$wc = getWC();
+// 		$output = '<option value="" >-- Select Unioncouncil--</option>';
+// 		$query="Select un_name,uncode from unioncouncil where $wc order by uncode";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $oneteh) { 
+// 			$selected = '';
+// 			if(($uncode > 0)&&($uncode == $oneteh["uncode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$oneteh["uncode"].'" '.$selected.' >'.$oneteh["un_name"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+// if(!function_exists('getDistricts')){
+// 	function getDistricts($isreturn=false,$distcode=NULL){
+// 		$CI = & get_instance();
+// 		$wc = getWC();
+// 		$wc = str_replace("procode","province",$wc);
+// 		$output = "";
+// 		//$District = $CI -> session -> District;
+// 		$query="Select district,distcode from districts where $wc order by district";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $onedist) { 
+// 			$selected = '';
+// 			if(($distcode > 0)&&($distcode == $onedist["distcode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$onedist["distcode"].'" '.$selected.' >'.$onedist["district"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+// if(!function_exists('getTehsils')){
+// 	function getTehsils($isreturn=false,$tcode=NULL){
+// 		$CI = & get_instance();
+// 		$wc = getWC();
+// 		$output = "";
+// 		$query="Select tehsil,tcode from tehsil where $wc order by tcode";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $oneteh ) {
+// 			if(validation_errors() != false){
+// 				$errorshow = set_select('tcode',$oneteh["tcode"]);
+// 				$output .='<option value="'.$oneteh["tcode"].'"'.$errorshow.'>'.$oneteh["tehsil"].'</option>';
+// 			} 
+// 			else { 
+// 			$selected = '';
+// 			if(($tcode > 0)&&($tcode == $oneteh["tcode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$oneteh["tcode"].'" '.$selected.' >'.$oneteh["tehsil"].'</option>';
+// 		}
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+
+// if(!function_exists('getUCs')){
+// 	function getUCs($isreturn=false,$uncode=NULL,$tcode=NULL){
+// 		$CI = & get_instance();
+// 		if($tcode){
+// 			$wc = "tcode = '$tcode'";
+// 		}else{
+// 			$wc = getWC();
+// 		}
+// 		$output = "";
+// 		$query="Select un_name,uncode from unioncouncil where $wc order by uncode";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		$output = '<option value="0" >-- Select Unioncouncil--</option>';
+// 		foreach ($result1 as $oneteh) { 
+// 			$selected = '';
+// 			if(($uncode > 0)&&($uncode == $oneteh["uncode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$oneteh["uncode"].'" '.$selected.' >'.$oneteh["un_name"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+// if(!function_exists('getUcsforTehsil')){
+// 	function getUcsforTehsil($distcode=NULL,$tcode=NULL){
+// 		error_reporting(E_ALL);
+// 		$CI = & get_instance();
+// 		$wc = array();
+// 		if($distcode)
+// 		{
+// 			$wc["distcode"]=$distcode;
+// 		}
+// 		if($tcode)
+// 		{
+// 			$wc["tcode"]=$tcode;
+// 		}
+// 		$CI -> db ->select("un_name,uncode");
+// 		$CI -> db ->from("unioncouncil");
+// 		$CI -> db ->where($wc);
+// 		$CI -> db ->order_by("uncode");
+// 		$result = $CI -> db ->get();
+// 		//$result = $CI -> db ->query("Select facode,fac_name from facilities join facilities_types types on types.fatype = facilities.fatype where $wc");
+// 		return $result->result_array();
+// 	}
+// }
+
+// if(!function_exists('getTehsils_options')){
+// 	function getTehsils_options($isreturn=false,$tcode=NULL,$distcode=NULL){
+// 		//echo $tcode; exit();
+// 		$CI = & get_instance();
+// 		if($distcode){
+// 			$wc = "distcode = '$distcode'";
+// 		}else{
+// 			$wc = getWC();
+// 		}		
+// 		$output = '<option value="0" >-- Select Tehsil--</option>';
+// 		$query="Select tehsil,tcode from tehsil where $wc order by tcode";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $oneteh) { 
+// 			$selected = '';
+// 			if(($tcode > 0)&&($tcode == $oneteh["tcode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$oneteh["tcode"].'" '.$selected.' >'.$oneteh["tehsil"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+// if(!function_exists('getVillage_options')){
+// 	function getVillage_options($isreturn=false,$vcode=NULL,$uncode=NULL){
+// 		$CI = & get_instance();
+// 		/* if($distcode){
+// 			$wc = "distcode = '$distcode'";
+// 		}else{
+// 			$wc = getWC();
+// 		} */		
+// 		$output = '<option value="0" >-- Select Village--</option>';
+// 		$query="Select village,vcode from villages where uncode= '$uncode' order by uncode";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $oneteh) { 
+// 			$selected = '';
+// 			if(($uncode > 0)&&($vcode == $oneteh["vcode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$oneteh["vcode"].'" '.$selected.' >'.$oneteh["village"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+// if(!function_exists('getFacilities_options')){
+// 	function getFacilities_options($isreturn=false,$facode=NULL,$uncode=NULL,$module=NULL){
+// 		$CI = & get_instance();
+// 		$wc = getWC();
+// 		switch ($module) {
+// 			case 'vaccine':
+// 				$fmonth = date('Y-m', strtotime('first day of previous month'));
+// 				$wc .= " AND getfstatus_vacc('$fmonth',facode::text)='F' ";
+// 				break;
+// 			case 'disease_surveillance':
+// 				# code...
+// 				break;
+// 			default:
+// 				# code...
+// 				break;
+// 		}
+// 		$output = '<option value="" >--Select Facility--</option>'; 
+// 		$query="Select fac_name,facode from facilities where $wc and hf_type='e' order by facode";
+// 		if($uncode != NULL)
+// 			$query="Select fac_name,facode from facilities where uncode='$uncode' and hf_type='e' order by facode";
+// 		$result = $CI -> db ->query($query);
+// 		$result1 = $result->result_array();
+// 		foreach ($result1 as $oneteh) { 
+// 			$selected = '';
+// 			if(($facode > 0)&&($facode == $oneteh["facode"]))
+// 			{
+// 				$selected = 'selected="selected"';
+// 			}
+// 			$output .= '<option value="'.$oneteh["facode"].'" '.$selected.' >'.$oneteh["fac_name"].'</option>';
+// 		}
+// 		if($isreturn)
+// 			return $output;
+// 		echo $output;
+// 	}
+// }
+
+// function dataEntryValidator($param){
+// 	$CI = & get_instance();
+// 	if($CI -> session -> utype=='Manager'){
+// 		switch($param){
+// 			case 1:
+// 				break;
+// 			case 0:
+// 				$CI -> session -> set_flashdata('accessError','You dont have rights to access this page.');
+// 				redirect(base_url());
+// 				break;
+// 			default:
+// 				break;
+// 		}
+// 	}else if($CI -> session -> utype=='DEO'){
+		
+// 	}else{
+// 		$CI -> session -> set_flashdata('accessError','You dont have rights to access this page.');
+// 		redirect(base_url());
+// 	}
+// } 
+// if(!function_exists('getWC')){
+// 	function getWC(){
+// 		$CI = & get_instance();
+// 		$wc = "";
+// 		switch ( $CI -> session -> UserLevel) {
+// 			case '1' :
+// 				# code...
+// 				break;
+// 			case '2' :
+// 				$UserLevel = 2;
+// 				if ($CI -> session -> Province) {
+// 					$wc .= " procode = '" . $CI -> session -> Province . "' ";
+// 				}
+// 				break;
+// 			case '3' :
+// 				$UserLevel = 3;
+// 				if ($CI -> session -> Province && $CI -> session -> District) {
+// 					$wc .= " procode = '" . $CI -> session -> Province . "' AND distcode = '" . $CI -> session -> District . "'";
+// 				}
+// 				break;
+// 			case '4' :
+// 				$UserLevel = 4;
+// 				if ($CI -> session -> Province && $CI -> session -> District && $CI -> session -> facode) {
+// 					$wc .= " procode = '" . $CI -> session -> Province . "' AND distcode = '" . $CI -> session -> District . "'AND facode = '" . $CI -> session -> facode . "'  ";
+// 				}
+// 				break;
+// 		}
+// 		return $wc;
+// 	}
+// }
+// if(!function_exists('posted_Values')){
+// 	function posted_Values(){
+// 		$CI = & get_instance();
+// 		$data['year'] 		= $CI -> input -> post('report_year') ? $CI -> input -> post('report_year') : $CI -> input -> get('report_year');
+// 		$data['month'] 		= $CI -> input -> post('report_month') ? $CI -> input -> post('report_month') : $CI -> input -> get('report_month');
+// 		$data['epiWeek'] 	= $CI -> input -> post('epiWeek') ? $CI -> input -> post('epiWeek') : $CI -> input -> get('epiWeek');
+// 		$data['procode']	= $CI -> session -> Province;
+// 		$data['distcode'] 	= $CI -> input -> post('distcode') ? $CI -> input -> post('distcode') : $CI -> input -> get('distcode');
+// 		$data['tcode'] 		= $CI -> input -> post('tcode') ? $CI -> input -> post('tcode') : $CI -> input -> get('tcode');
+// 		$data['uncode']		= $CI -> input -> post('uncode') ? $CI -> input -> post('uncode') : $CI -> input -> get('uncode');
+// 		$data['status']		= $CI -> input -> post('status') ? $CI -> input -> post('status') : $CI -> input -> get('status');
+// 		$data['supervisor_type']= $CI -> input -> post('supervisor_type') ? $CI -> input -> post('supervisor_type') : $CI -> input -> get('supervisor_type');
+// 		$data['facode'] 	= $CI -> input -> post('facode') ? $CI -> input -> post('facode') : $CI -> input -> get('facode');
+// 		$data['fmonth'] 	= $CI -> input -> post('fmonth') ? $CI -> input -> post('fmonth') : $CI -> input -> get('fmonth');
+// 		$data['fatype'] 	= $CI -> input -> post('fatype') ? $CI -> input -> post('fatype') : $CI -> input -> get('fatype');
+// 		$data['datefrom'] 	= $CI -> input -> post('datefrom') ? date(("Y-m-d"),strtotime($CI -> input -> post('datefrom'))) : $CI -> input -> get('datefrom');
+// 		$data['dateto'] 	= $CI -> input -> post('dateto') ? date(("Y-m-d"),strtotime($CI -> input -> post('dateto'))) : $CI -> input -> get('dateto');
+// 		$data['fmonth_from']= $CI -> input -> post('fmonth_from') ? $CI -> input -> post('fmonth_from') : $CI -> input -> get('fmonth_from');
+// 		$data['fmonth_to'] 	= $CI -> input -> post('fmonth_to') ? $CI -> input -> post('fmonth_to') : $CI -> input -> get('fmonth_to');
+// 		$data['year']= $CI -> input -> post('year') ? $CI -> input -> post('year') : $CI -> input -> get('year');
+// 		$data['month'] 	= $CI -> input -> post('month') ? $CI -> input -> post('month') : $CI -> input -> get('month');
+// 		$data['typeWise'] = $CI -> input -> post('typeWise') ? $CI -> input -> post('typeWise') : $CI -> input -> get('typeWise');
+// 		return $data;
+// 	}
+// }
+
+
+
+if(!function_exists('getEpid_no_casesInvestigation')){
+	function getEpid_no_casesInvestigation($isreturn=false,$year,$case_type,$mNumber=NULL){
+		$CI = & get_instance();
+		$distcode = $CI -> session -> District;
+		$query = "select epid_code from districts where distcode='$distcode'";
+		$result = $CI -> db -> query($query);
+		$result = $result -> row_array();
+		$dcode=$result['epid_code'];
+		$query = "select max(case_number) as case_number from case_investigation_db where year='$year' AND dcode='$dcode' AND case_type='$case_type'";
+		$result = $CI -> db -> query($query);        
+		$result = $result -> row_array();
+		// $measleNumber = str_split(sprintf('%04u', ($result['case_number'] + 1)));
+		// $output = "PAK/".$_SESSION["shortname"]."/".$dcode."/".$year."/".$case_type."/".implode("",$measleNumber);
+		$caseNumber = sprintf('%04u', ($result['case_number'] + 1));
+		$output = "PAK/".$_SESSION["shortname"]."/".$dcode."/".$year."/".$case_type."/".$caseNumber;
+		if($mNumber != NULL)
+			$output = $caseNumber;		
+		if($isreturn)
+			return $output;
+		echo $output;		
+	}
+}
+
+
+
+//function after 10/05/2016
+if(!function_exists('getCasesType')){
+	function getCasesType($isreturn=false,$caseType=NULL){
+		$CI = & get_instance();
+		if($caseType){
+			$wc = " where type_short_code='$caseType' ";
+		}else{
+			$wc="";
+		}
+		$output = "";
+		$query="Select type_case_name,type_short_code from surveillance_cases_types $wc";
+		$result = $CI -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $onecase ) { 
+			$selected = '';
+			if(($caseType > 0)&&($caseType == $onecase["type_short_code"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$onecase["type_short_code"].'" '.$selected.' >'.$onecase["type_case_name"].'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
+	}
+}
+if(!function_exists('getAllCaseTypes')){
+	function getAllCaseTypes($isreturn=false,$caseType=NULL){
+		$CI = & get_instance();
+		if($caseType){
+			$wc = " where short_name='$caseType' AND short_name != 'Msl'";
+		}else{
+			$wc=" where short_name != 'Msl'";
+		}
+		$output = "";
+		$query="SELECT type_case_name, type_short_code, short_name from surveillance_cases_types $wc";
+		$result = $CI -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $onecase ) { 
+			$selected = '';
+			if(($caseType > 0)&&($caseType == $onecase["short_name"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$onecase["short_name"].'" '.$selected.' >'.$onecase["type_case_name"].'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
+	}
+}
+if(!function_exists('getMeaslesCaseTypes')){
+	function getMeaslesCaseTypes($isreturn=false,$caseType=NULL){
+		$CI = & get_instance();
+		if($caseType){
+			$wc = " where short_name='$caseType' AND short_name='Msl'";
+		}else{
+			$wc=" where short_name='Msl'";
+		}
+		$output = "";
+		$query="SELECT type_case_name, type_short_code, short_name from surveillance_cases_types $wc";
+		$result = $CI -> db ->query($query);
+		$result1 = $result->result_array();
+		foreach ($result1 as $onecase ) { 
+			$selected = '';
+			if(($caseType > 0)&&($caseType == $onecase["short_name"]))
+			{
+				$selected = 'selected="selected"';
+			}
+			$output .= '<option value="'.$onecase["short_name"].'" '.$selected.' >'.$onecase["type_case_name"].'</option>';
+		}
+		if($isreturn)
+			return $output;
+		echo $output;
+	}
+}
+if(!function_exists('get_CaseRepresentation_Value')){
+	function get_CaseRepresentation_Value($representationId=NULL){
+		$CI = & get_instance();
+		$query 	= "Select case_type_definition from case_clinical_representation where id = $representationId ";
+		$resultRep = $CI -> db -> query($query);
+		if($resultRep -> num_rows() >0)
+		{
+			return $resultRep -> row()->case_type_definition;	
+		}
+		return "";	
+	}
+}
+if(!function_exists('getEpiWeeks')){
+	function getEpiWeeks($year=NULL){
+		$CI = & get_instance();
+		$year = ($year > 0)?$year:$this -> input -> post('year');
+		$query = "select max(epi_week_numb) as num from epi_weeks where year='$year'";
+		$query = $CI -> db -> query($query);
+		$result = $query -> row();
+		return $result->num;
+	}
+}
+?>

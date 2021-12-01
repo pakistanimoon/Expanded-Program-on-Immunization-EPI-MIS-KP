@@ -1,0 +1,30 @@
+{
+    "age_1": {
+        "weeks": {},
+        "year": 0
+    },
+    "age_2": {
+        "weeks": {},
+        "year": 0
+    },
+    "age_3": {
+        "weeks": {},
+        "year": 0
+    },
+    "age_4": {
+        "weeks": {},
+        "year": 0
+    },
+    "age_5": {
+        "total": 2.0,
+        "weeks": {
+            "40": 1.0,
+            "50": 1.0
+        },
+        "year": 2.0
+    },
+    "age_6": {
+        "weeks": {},
+        "year": 0
+    }
+}

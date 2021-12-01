@@ -1,0 +1,86 @@
+<br>
+<?php echo $listing_filters; ?>
+<script type="text/javascript">
+	$('document').ready(function(){
+		$('#year option:last').prop('selected', true);
+			var year = $('#year').val();
+			$.ajax({
+				type: 'POST',
+				url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
+				data:'year='+year,
+				success: function(response){
+					$('#week').html(response.trim());
+					var week = $('#week').val();
+					var year = $('#year').val();
+					$.ajax({
+						type: 'POST',
+						url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeksDates',
+						data:'epiweek='+week+'&year='+year,
+						success: function(response){
+							var obj = JSON.parse(response);
+							$('#datefrom').val(obj.startDate);
+							$('#dateto').val(obj.EndDate);
+						}
+					});
+					
+				}
+			});
+		});
+	$(document).on('change','#year',function(){
+			var year = $(this).val();
+			$.ajax({
+				type: 'POST',
+				url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeks',
+				data:'year='+year,
+				success: function(response){
+					$('#week').html(response.trim());
+					var week = $('#week').val();
+					var year = $('#year').val();
+					$.ajax({
+						type: 'POST',
+						url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeksDates',
+						data:'epiweek='+week+'&year='+year,
+						success: function(response){
+							var obj = JSON.parse(response);
+							$('#datefrom').val(obj.startDate);
+							$('#dateto').val(obj.EndDate);
+						}
+					});
+					
+				}
+			});
+		});
+		$(document).on('change','#week',function(){
+					var week = $(this).val();
+					var year = $('#year').val();
+					$.ajax({
+						type: 'POST',
+						url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeksDates',
+						data:'epiweek='+week+'&year='+year,
+						success: function(response){
+							if(response != 0){
+								var obj = JSON.parse(response);
+								$('#datefrom').val(obj.startDate);
+								$('#dateto').val(obj.EndDate);
+							}else{
+								$('#datefrom').val('');
+								$('#dateto').val('');
+							}
+						}
+					});
+		});
+	/* $(document).on('change','#week',function(){
+		var week = $(this).val();
+		var year = $('#year').val();
+		$.ajax({
+			type: 'POST',
+			url:'<?php echo base_url(); ?>Ajax_calls/getEpiWeeksDates',
+			data:'epiweek='+week+'&year='+year,
+			success: function(response){
+				var obj = JSON.parse(response);
+				$('#datefrom').val(obj.startDate);
+				$('#dateto').val(obj.EndDate);
+			}
+		});
+	}); */
+</script>

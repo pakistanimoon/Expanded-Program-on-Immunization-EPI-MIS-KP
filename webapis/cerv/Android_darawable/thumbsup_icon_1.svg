@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="16" height="16" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Thumbs_up" data-name="Thumbs up" clip-path="url(#clip-path)">
+    <rect id="Rectangle_1452" data-name="Rectangle 1452" width="16" height="16" fill="none"/>
+    <path id="Path_198" data-name="Path 198" d="M0,14.316V5.895L5.053,0h0A1.68,1.68,0,0,1,6.568,2.358L5.053,5.895h6.4a1.705,1.705,0,0,1,1.684,1.937l-1.095,6.737A1.713,1.713,0,0,1,10.358,16H1.684A1.689,1.689,0,0,1,0,14.316Z" transform="translate(1)" fill="#1e8ce9" fill-rule="evenodd"/>
+  </g>
+</svg>

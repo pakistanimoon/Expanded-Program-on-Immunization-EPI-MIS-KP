@@ -1,0 +1,49 @@
+/*****************************************************************
+                Custome bg color
+*****************************************************************/
+.cst-resultawaited-bg {
+  background-color: #FC4F32 !Important; }
+
+.cst-active-bg {
+  background-color: #2D8C8C !important; }
+
+.cst-recover-bg {
+  background-color: #35BC42 !important; }
+
+.cst-death-bg {
+  background-color: #DD0516 !important; }
+
+.cst-confirmed-bg {
+  background-color: #F9436A !important; }
+
+.cst-suspected-bg {
+  background-color: #EFDA18 !Important; }
+
+.cst-negative-bg {
+  background-color: #7BA835 !important; }
+
+/*****************************************************************
+                Custome Text color
+*****************************************************************/
+.cst-resultawaited-text {
+  color: #FC4F32; }
+
+.cst-active-text {
+  color: #2D8C8C; }
+
+.cst-recover-text {
+  color: #35BC42; }
+
+.cst-death-text {
+  color: #DD0516; }
+
+.cst-confirmed-text {
+  color: #F9436A; }
+
+.cst-suspected-text {
+  color: #EFDA18; }
+
+.cst-negative-text {
+  color: #7BA835; }
+
+/*# sourceMappingURL=customcolors.css.map */

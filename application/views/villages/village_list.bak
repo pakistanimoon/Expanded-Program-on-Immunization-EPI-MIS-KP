@@ -1,0 +1,124 @@
+	<div class="container">
+		<div class="row">
+			<!--<?php if($this -> session -> flashdata('message')){  ?><div class="alert alert-success text-center" role="alert"><strong><?php echo $this -> session -> flashdata('message'); ?></strong></div> <?php } ?>-->
+			<div class="panel panel-primary">
+				<ol class="breadcrumb">
+		 			<ul class="breadcrumb">
+		 				<li><a href="<?php echo base_url(); ?>">Home</a><span class="divider"></span></li>
+						<li class="active"></li>
+					</ul>
+				</ol> 
+				<div class="panel-heading" style="font-size:17px; border-color:white !important;">Villages List</div>
+				<?php if($this -> session -> flashdata('message')){  ?>
+					<div class="row mb3">
+						<div class="col-sm-12 filters-selection" style="Background-color:#32CD32;">
+							<div class="text-center pt5 pb5" role="alert" style="color:white;"><strong><?php echo $this -> session -> flashdata('message'); ?></strong></div> 
+						</div>
+					</div>
+				<?php } ?>
+				<div class="panel-body">
+					<form method="post" id="filter-form">
+						<div class="row" style="width:100%; padding:10px 17px">
+							<div class="col-md-2 col-md-offset-1">
+								<label>Union Council:</label>
+							</div>
+							<div class="col-md-3">
+								
+								<select class="form-control filter-status" name="uncode" id="uncode">
+									<option value="">-- Select --</option>
+								    <?php
+                                        foreach($resultUnC as $row){
+                                    ?>
+										<option value="<?php echo $row['uncode']; ?>" ><?php echo $row['un_name']; ?></option>
+                                    <?php }?>
+								</select>
+							</div>
+							<div class="col-md-2">
+								<label>Village Name:</label>
+							</div>
+							<div class="col-md-3">
+								<select class="form-control filter-status" name="vcode" id="vcode">
+									<option value="">-- Select --</option>
+								<?php foreach ($data as $key => $value) { ?>
+									<option value="<?php echo $value['vcode']; ?>"><?php echo $value['village']; ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</form>
+					<table id="table_id" class="table footable table-bordered table-hover table-sessiontype" data-filter="#filter" data-filter-text-only="true">
+						<thead>
+							<tr>
+								<th>S.No.</th>
+								<th>Village Name</th>						
+								<th>Union Council</th>
+								<th>Population</th>
+								<th>Postal Address</th>
+								<th class="text-center Heading">
+									<a href="<?php echo base_url(); ?>Add-village" data-toggle="tooltip" title="Add New Supervisor">
+									<button class="submit btn-success btn-sm"><i class="fa fa-plus"></i> Add New</button>
+									</a>
+								</th>
+							</tr>
+						</thead>
+						<tbody id="tbody"> 
+							<?php
+								$i=0;
+								foreach($data as $row){
+									//print_r($row);
+								$i++;
+							?>
+							<tr>
+								<td class="text-center"><?php echo $i; ?></td>
+								<td><?php echo $row['village']; ?></td>
+						      <td class="text-center"><?php echo get_UC_Name($row['uncode']);  ?></td>
+						      <td class="text-center"><?php echo $row['population']; ?></td>
+						      <td class="text-left"><?php echo $row['postal_address']; ?></td>
+						      
+						      <td class="text-center">
+							      <a href="<?php echo base_url(); ?>View-village/<?php echo $row['vcode']; ?>" data-toggle="tooltip" title="View" class="btn btn-xs btn-default"><i class="fa fa-search"></i></a>
+							      <a href="<?php echo base_url(); ?>Edit-village/<?php echo $row['vcode']; ?>" data-toggle="tooltip" title="Edit" class="btn btn-xs btn-default"><i class="fa fa-pencil"></i></a>
+						      </td>
+					 		</tr>
+							<?php } ?>
+						</tbody>
+					</table>	
+					 <br>
+				
+				</div> <!--end of panel body-->
+			</div> <!--end of panel panel-primary-->
+		</div><!--end of row-->
+	</div><!--End of page content or body-->
+	<script src="<?php echo base_url(); ?>includes/js/fooTable/footable.js" type="text/javascript"></script>
+	<script src="<?php echo base_url(); ?>includes/js/fooTable/footable.filter.js" type="text/javascript"></script>
+	
+	
+	<script type="text/javascript">
+		$(function () {
+			$('.footable').footable();
+		});
+		$(document).ready( function () {
+    $('#table_id').DataTable();
+} );
+		/* $('.filter-status').on('change' , function (){
+			$('#tbody').html('');
+			$('#tbody').html('<h1><td colspan="10" class="text-center" ><img src="<?php echo base_url(); ?>includes/images/ajax-loader_blue.gif"> loading...</td></h1>');
+			var page = $(this).attr("id"); //get page number from link
+			$.ajax({
+				type: "GET",
+				data: $('#filter-form').serialize(),
+				dataType: "json",					
+				url: "<?php echo base_url(); ?>Ajax_red_rec/session_plan_filter",
+				success: function(result){
+					console.log(result);
+					$('#tbody').html('');
+					if(result != null){
+						$("#filter").val('');
+						$('#tbody').html(result.tbody);
+						$('#paging').html(result.paging);
+					}
+				}
+			});
+		});  */
+		//------------------------------------------------------------------------//			
+	</script>

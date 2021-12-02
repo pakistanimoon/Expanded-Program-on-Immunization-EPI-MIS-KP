@@ -75,31 +75,9 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'epikpuser',
-	'password' => 'epikp#876',
-	'database' => 'epikpdb',
-	'dbdriver' => 'postgre', //mysqli
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
-//another db, only to store data of vlmis inventory.
-$db['epivlmis'] = array(
-	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'epivlmisuser',
-	'password' => 'vlmis#123',
-	'database' => 'epivlmisdb',
+	'username' => 'kpepiuser',
+	'password' => 'Kp3pi#123',
+	'database' => 'kpepidb',
 	'dbdriver' => 'postgre', //mysqli
 	'dbprefix' => '',
 	'pconnect' => FALSE,

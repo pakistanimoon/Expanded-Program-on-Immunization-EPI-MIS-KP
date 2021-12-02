@@ -87,7 +87,7 @@ $route['AEFI-Investigation']			= 'Investigation_forms/aefi_investigation_list';
 $route['Facility-Monthly-Vaccination-Report'] = 'Data_entry/fmvrf_list';
 $route['Weekly-VPD-Surveillance-Report'] = 'Data_entry/weekly_vpd_list';
 $route['AEFI-Weekly-Compilation-Form']	= 'Data_entry/aefiWeeklyCompilationForm';
-//$route['AEFI-Report-Form']				= 'Data_entry/aefi_list';
+$route['AEFI-Report-Form']				= 'Data_entry/aefi_list';
 //////////////////////////////Routing For Basic Setup////////////////////////
 // Routing for Add HR
 $route['HRList']				        = 'system_setup/AddHR_list';
@@ -267,15 +267,23 @@ $route['Province-Issue-Receipt/Add']	= 'Data_entry/form_A1';
 $route['Province-Issue-Receipt/View/(:num)/(:any)']		= 'Data_entry/form_A1_view/$1/$1';  
 $route['Province-Issue-Receipt/Edit/(:num)/(:any)']		= 'Data_entry/form_A1_edit/$1/$1';
 //Routing for new consumption module added by imran (2019-01-24)
-$route['consumption'] 						= 'consumption/CRUD/index';
-$route['consumption/add'] 					= 'consumption/CRUD/create';
+//on 2020-12-04 imran commented some of the following routes to disable data entry in old forms
+//$route['consumption'] 						= 'consumption/CRUD/index';
+//$route['consumption/add'] 					= 'consumption/CRUD/create';
 $route['consumption/edit/(:any)/(:num)']	= 'consumption/CRUD/consumption_edit/$1/$2';
 $route['consumption/view/(:any)/(:any)']	= 'consumption/CRUD/consumption_view/$1/$2';
-$route['consumption/save'] 					= 'consumption/CRUD/create';
+//$route['consumption/save'] 					= 'consumption/CRUD/create';
 $route['consumption/delete/(:any)/(:num)'] 	= 'consumption/CRUD/consumption_delete/$1/$2';
 $route['consumptionitems'] 					= 'consumption/CRUD/itemslist';
-$route['consumption/reports/indicator'] 			= 'consumption/reports/Indicator';
+$route['consumption/reports/indicator'] 	= 'consumption/reports/Indicator';
 $route['consumption/reports/indicator/preview'] 	= 'consumption/reports/Indicator/preview';
+$route['hfcurrentstock'] 					= 'consumption/reports/Stock';
+$route['hfcurrentstock/preview'] 					= 'consumption/reports/Stock/preview';
+$route['hfadjustment'] 						= 'consumption/CRUD/hfadjustment';
+$route['hfadjustment/edit/(:any)/(:num)']	= 'consumption/CRUD/hfadjustment_edit/$1/$2';
+$route['hfadjustmentitems'] 					= 'consumption/CRUD/hfadjustmentitemslist';
+$route['hfadjustment/save'] 					= 'consumption/CRUD/saveadjustment';
+$route['hfadjustment/view/(:any)/(:any)']	= 'consumption/CRUD/hfadjustment_view/$1/$2';
 //Routing for new merged vaccination & consumption module added by imran (2019-12-31), last updated:2020-12-27
 $route['vaccination'] 						= 'vaccination/CRUD/index';
 $route['vaccination/add'] 					= 'vaccination/CRUD/create';
@@ -306,9 +314,9 @@ $route['UC-Demand-Consumption/Add']		= 'Data_entry/form_C_new';
 $route['UC-Demand-Consumption/View/(:num)']		= 'Data_entry/form_C_new_view/$1';  
 $route['UC-Demand-Consumption/Edit/(:num)']		= 'Data_entry/form_C_new_edit/$1';  
 //Routing for Compliances and their Filters
-$route['Compliance-Filter/HFMVRF'] 								= 'Compliances/compliancesFilters'; 
+$route['Compliance-Filter/HFMVRF'] 								= 'Compliances/compliancesFilters';
 $route['Compliance-Filter/HFMVRFTest'] 							= 'CompliancesTest/compliancesFilters'; 
-$route['Compliance-Filter/HF-Consumption-Requisition'] 			= 'Compliances/compliancesFilters';
+$route['Compliance-Filter/HF-Consumption-Requisition'] 	     	= 'Compliances/compliancesFilters';
 $route['Compliance-Filter/HF-Consumption-Requisition-Test'] 	= 'CompliancesTest/compliancesFilters';
 $route['Compliance-Filter/Issue-Receipt'] 						= 'Compliances/compliancesFilters';
 $route['Compliance-Filter/Demand-Consumption-Receipt'] 			= 'Compliances/compliancesFilters';
@@ -359,7 +367,7 @@ $route['Reports/Filters/Facility-Wise-Vaccination-Coverage_MaleFemale'] = 'Repor
 $route['Reports/Filters/Session-planned-conducted'] = 'Reports/Reports_Filters/sessionInfoReport';
 $route['Reports/Filters/Vaccine-Demand'] = 'Reports/Reports_Filters/vaccine_demand';
 $route['Reports/Filters/Dropout']                               = 'Reports/Reports_Filters/all_dropout';
-$route['Reports/Filters/Accessutilization']  = 'Reports/Reports_Filters/access_utilization';
+$route['Reports/Filters/Accessutilization']                               = 'Reports/Reports_Filters/access_utilization';
 $route['Reports/Filters/Measle-Coverage-Dropout']               = 'Reports/Reports_Filters/measle_coverage_dropout';
 $route['Reports/HF-Consumption-Requisition-Report'] = 'Reports/hf_cr/hf_consumption_requisition';
 //Routing for HR Summary Report///
@@ -374,12 +382,12 @@ $route['Surveillance/Filters/Outbreak_Response'] 		= 'Other_Reports/reportFilter
 $route['Surveillance/Outbreak_Response']= 'Other_Reports/Outbreak_Response';
 $route['Surveillance/MSR'] 				= 'Other_Reports/MSR';
 $route['Surveillance/EPID'] 			= 'Other_Reports/EPID_Count';
-$route['Surveillance/EPID/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] 	= 'Other_Reports/EPID_Count/$1/$2/$3/$4/$5/$6/$7';
 $route['Surveillance/VPD'] 				= 'Other_Reports/VPD_Count';
+$route['Surveillance/EPID/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] 	= 'Other_Reports/EPID_Count/$1/$2/$3/$4/$5/$6/$7';
+$route['Surveillance/VPD/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] 	= 'Other_Reports/VPD_Count/$1/$2/$3/$4/$5/$6';
 $route['Surveillance/VPD/(:any)/(:any)/(:any)/(:any)/(:any)'] 	= 'Other_Reports/VPD_Count/$1/$2/$3/$4/$5';
 $route['Surveillance/OUTBREAK'] 		= 'Other_Reports/disease_outbreak';
 $route['Surveillance/OUTBREAK/(:any)/(:any)/(:any)/(:any)/(:any)'] 	= 'Other_Reports/disease_outbreak/$1/$2/$3/$4/$5';
-$route['Surveillance/VPD/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] 	= 'Other_Reports/VPD_Count/$1/$2/$3/$4/$5/$6';
 //Routing for Other Pending Cross Notified Cases
 $route['CrossNotifiedCases/Filters/PendingCases'] 		= 'Pending_Cases/reportFilters';
 $route['CrossNotifiedCases/PendingCases'] 		= 'Pending_Cases/Pending_cases_report';
@@ -432,7 +440,7 @@ $route['StockReceivefromSupplierList']  = 'inventory/Provincial/stock_receive_fr
 $route['StockReceivefromStore']  		= 'inventory/Provincial/stock_receive_from_store';
 $route['StockReceivefromStore/(:any)']  = 'inventory/Provincial/stock_receive_from_store/$1';
 //-----------------------------
-$route['fedIssue']                      = 'inventory/Federal/fetch_fed_issuance'; 
+$route['fedIssue']                      = 'inventory/Federal/fetch_fed_issuance';
 $route['Delete-fedIssue'] 				= 'inventory/Federal/delete_fetch_fed_issuance';
 //-----------------------------
 $route['productsByActivities']          = 'inventory/Provincial/get_invn_products';
@@ -544,26 +552,22 @@ $route['Reports/ChildRegistration']            		  = 'childs/Reports/child_reg';
 $route['Reports/ChildVaccinationMap/(:any)/(:any)']   = 'childs/MapReports/map_view/$1/$1';
 $route['Reports/ChildRegistrationList']               = 'childs/Reports_list/child_list';
 $route['Reports/ChildRegistrationView/(:num)'] 		  = 'childs/Reports_list/child_view/$1';
-//$route['Reports/SearchVaccinatedChildren']               = 'Reports/Reports_Filters/search_vaccinated_children';
-$route['Reports/SearchVaccinatedChildren']	=	'Reports/children_filter/search_vaccinated_children';
-$route['Reports/SearchVaccinatedChildren']	=	'Reports/children_filter/vaccination_children_filter';
 $route['Reports/ChildRegistrationAdd']               = 'childs/Reports_list/child_add';
-$route['Reports/motherRegistrationList']               = 'childs/Reports_list/mother_list';
+$route['Reports/motherRegistrationList']              = 'childs/Reports_list/mother_list';
 $route['Reports/ChildRegistrationEdit/(:num)'] 		  = 'childs/Reports_list/child_edit/$1';
 $route['Reports/MotherRegistrationEdit/(:num)'] 		  = 'childs/Reports_list/mother_edit/$1';
 $route['Reports/MotherRegistrationView/(:num)'] 		  = 'childs/Reports_list/mother_view/$1';
 $route['Reports/ChildRegistrationSave'] 			  = 'childs/Reports_list/child_update';
 $route['Reports/MotherRegistrationSave'] 			  = 'childs/Reports_list/mother_update';
 $route['Reports/ChildRegistrationSaveAdd'] 			  = 'childs/Reports_list/child_add_save';
-$route['Reports/ChildMigrateSave'] 			          = 'childs/Reports_list/child_migrate_save';
 $route['Reports/MotherRegistrationSaveAdd'] 			  = 'childs/Reports_list/mother_add_save';
 $route['Reports/DailyChildRegistrationFilter']   	  = 'childs/DailyRegisterChildReport/reportFilters';
 $route['Reports/DataEntry']   	                      = 'childs/DailyRegisterChildReport/reportFilters';
 $route['Reports/DailyChildRegistrationReport']   	  = 'childs/DailyRegisterChildReport/daily_report';
 $route['Reports/MonthlyRegisterFilter']   			  = 'childs/MonthlyRegisterReport/reportFilters';
 $route['Reports/MonthlyRegisterReport']   			  = 'childs/DailyRegisterChildReport/daily_report';
-$route['CervReports/zero_dose'] = 'Cerv/Reports/zero_dose_children_filters/zero_dose';
-$route['CervReports/dropouts'] = 'Cerv/Reports/dropout_filters/dropouts';
+$route['CervReports/zero_dose'] 					  = 'Cerv/Reports/zero_dose_children_filters/zero_dose';
+$route['CervReports/dropouts'] 						  = 'Cerv/Reports/dropout_filters/dropouts';
 //--------------------Routing for Cold-chain module
 $route['Coldchain/refrigerator_list/(:any)']   = 'Coldchain/refrigerator_list';
 $route['Coldchain/Search-assets']       = 'Coldchain/coldchainSearch';
@@ -583,10 +587,6 @@ $route['Add-village']	                = 'Villages/village_add';
 $route['Edit-village/(:num)']           = 'Villages/village_edit/$1';
 $route['View-village/(:num)']           = 'Villages/village_view/$1';
 $route['Delete-village/(:num)']           = 'Villages/village_delete/$1';
-/* population reports  */
-$route['Population-report/vf-population-report']				='Population_report/population_Filters';
-$route['Population-report/village-population-not-set']				='Population_report/population_Filters';
-$route['setup_listing/listing/Village_Mohalla']		='setup_listing/listing/Village_Mohalla';
 //-------------Routing for RedRec complaince 
 $route['Compliance-Filter/HF-Microplan']= 'red_rec_microplan/RedRec_compliances/compliancesFilters'; 
 $route['Compliance-Filter/HF-Quarterplan'] 			= 'red_rec_microplan/RedRec_compliances/compliancesFilters';
@@ -596,12 +596,10 @@ $route['Surveillance/Filters/Outbreak_Response'] 	= 'Other_Reports/reportFilters
 $route['Surveillance/Outbreak_Response']= 'Other_Reports/Outbreak_Response';
 //-------------Routing for Suggestions/Auto Filling etc
 //-------------new red rec routs---------
-$route['Micro-plan/yearly']= 'redrec/dataentry/Microplan_yearly/microplan_yearly_add'; 
-$route['autoProdRequisition'] 	        = 'inventory/Suggestion/autoProdRequisition';
+$route['Micro-plan/yearly']= 'redrec/dataentry/Microplan_yearly/microplan_yearly_add';
+$route['Micro-plan/yearly_list']= 'redrec/dataentry/Microplan_yearly/microplan_yearly_list';
 /* Custom Dashboard Routing */
 $route['custom-dashboard'] 				= 'customdashboard/Custom_Dashboard';
-/* Review Dashboard Routing */
-$route['review-dashboard'] 				= 'dashboard/ReviewDashboard';
 //-------------Routing for HR Management Level(Admin)----------------
 $route['Hr_management/level_list'] 			= 'cpanel/hr_management/Hr_management/level_list';
 $route['Hr_management/level_add'] 			= 'cpanel/hr_management/Hr_management/level_add';
@@ -634,8 +632,8 @@ $route['Hr_management/hr_view/(:any)'] 		= 'system_set/hr_management/Hr_manageme
 $route['Hr_management/hr_edit_get/(:any)'] 	= 'system_set/hr_management/Hr_management/hr_edit_get/$1';
 $route['Hr_management/hr_edit'] 			= 'system_set/hr_management/Hr_management/hr_edit';
 $route['Hr_management/hr_del/(:any)'] 		= 'system_set/hr_management/Hr_management/hr_del/$1';
-$route['Hr_management/hr_status_edit/(:any)'] 		= 'system_set/hr_management/Hr_management/hr_status_edit/$1';
-$route['Hr_management/hr_status_save'] 			    = 'system_set/hr_management/Hr_management/hr_status_save';
+$route['Hr_management/hr_status_edit/(:any)'] 		         = 'system_set/hr_management/Hr_management/hr_status_edit/$1';
+$route['Hr_management/hr_status_save'] 			             = 'system_set/hr_management/Hr_management/hr_status_save';
 $route['Hr_management/hr_status_del/(:any)/(:any)/(:any)'] 	 = 'system_set/hr_management/Hr_management/hr_status_del/$1/$2/$3';  
 $route['Hr_management/get_training/(:any)'] = 'system_set/hr_management/Hr_management/get_training/$1';
 //-------------Routing for Ajax HR Management (DEO)----------------
@@ -698,7 +696,7 @@ $route['Reports/ColdchainReportsFilter']  = 'cold_chain/Reports/reportFilters';
 $route['Reports/AssetAvailability']   	  = 'cold_chain/Reports/asset_availability'; 
 $route['Reports/ColdchainReportsAssetFilter']  = 'cold_chain/Reports/assetreportFilters';
 $route['Reports/AssetAvailabilityReport']   	  = 'cold_chain/Reports/asset_availability_report'; 
-$route['Assets/View/(:any)']	                  = 'cold_chain/Reports/allassets_Views/$1'; 
+$route['Assets/View/(:any)']	                  = 'cold_chain/Reports/allassets_Views/$1';  
 //-------------Routing for User Searching----------------
 $route['Ajax_hr_management/user_list_search'] 	= 'system_set/hr_management/Ajax_hr_management/user_list_search';
 //Routing for New HR Reports///
@@ -708,7 +706,6 @@ $route['HR_Reports/HR-Summary-Report'] 	= 'HR_Reports/HR_Summary_Report';
 $route['HRReports/hr-view/(:any)'] 		= 'HR_Reports/hr_view_status/$1';
 
 $route['Coverage_consumption/Filters/Coverage-and-Consumption'] = 'Coverage_consumption/Reports_Filters/coverage_and_consumption';
-//$route['FLCF-MVRF/View/(:num)/(:any)'] 	= 'Data_entry/fac_mvrf_view/$1/$1';
 //-------------Routing for Item management----------------
 $route['Item_management/item_list'] 		= 'cpanel/item_management/Item_management/item_list';
 $route['Item_management/item_add'] 		= 'cpanel/item_management/Item_management/item_add';

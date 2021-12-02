@@ -18,7 +18,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://epimis.kphealth.pk/';
-$config['base_url'] = 'http://epikp.pacemis.com/';
+$config['base_url'] = 'http://kp.epimis.pk/';
 
 /*
 |--------------------------------------------------------------------------
@@ -212,7 +212,7 @@ $config['directory_trigger'] = 'd';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 1;
+$config['log_threshold'] = 0;
 
 /*
 |--------------------------------------------------------------------------

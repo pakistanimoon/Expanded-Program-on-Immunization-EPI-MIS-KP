@@ -1,0 +1,577 @@
+CREATE SEQUENCE abroad_cases_pk_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+CREATE SEQUENCE access_type_sequence_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+
+CREATE SEQUENCE ad_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE adjustment_type_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+
+CREATE SEQUENCE adv_report_fields_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999999999999
+    CACHE 1
+    CYCLE;
+	
+
+
+CREATE SEQUENCE advance_report_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999999
+    CACHE 1
+    CYCLE;
+	
+
+
+CREATE SEQUENCE aefi_case_investigation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE aefi_rep_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE aefi_rep_fwee_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+CREATE SEQUENCE afp_case_investigation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1
+    CYCLE;
+	
+
+CREATE SEQUENCE afp_outbreak_linelist_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+	
+
+CREATE SEQUENCE as_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+CREATE SEQUENCE asset_type_make_model_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999
+    CACHE 1;
+
+
+CREATE SEQUENCE asset_type_model_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE auto_req_cache_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999999
+    CACHE 1
+    CYCLE;
+
+
+CREATE SEQUENCE auto_req_cache_history_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999999
+    CACHE 1
+    CYCLE;
+
+
+
+CREATE SEQUENCE bank_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;	
+
+
+CREATE SEQUENCE bankinfo_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+CREATE SEQUENCE camp_purp_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE campain_purpose_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+
+CREATE SEQUENCE case_representation_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999999
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE case_investigation_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+CREATE SEQUENCE case_response_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+
+
+CREATE SEQUENCE caseepidcount_master_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+
+CREATE SEQUENCE codb_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+CREATE SEQUENCE ccd_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE ccg_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE ccm_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE ccoperatordb_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE cct_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE child_registration_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 999999999999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE cerv_loginlog_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE mother_registration_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999999999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE mother_registrationbk_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE cerv_shiftout_childs_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+CREATE SEQUENCE cerv_support_pk_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE cerv_village_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE checkin_detail_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999999999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE childhood_tb_outbreak_linelist_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE consumption_detail_id_seq
+    START WITH 100000
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 999999999999999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE consumption_master_id_seq
+    START WITH 100000
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 999999999999999999
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE consumptioncompliance_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE corona_case_investigation_db_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+
+CREATE SEQUENCE country_code_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 999999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE country_visits_pk_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+CREATE SEQUENCE custom_filters_level2_enabled_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE dashboard_widget_detail_seqid
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+	
+
+
+CREATE SEQUENCE dashboardhide_sequence_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+CREATE SEQUENCE dashboardinfo_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+CREATE SEQUENCE data_maping_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999999999999
+    CACHE 1;
+
+
+CREATE SEQUENCE deodb_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999
+    CACHE 1;
+
+
+CREATE SEQUENCE diphtheria_case_response_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE diphtheria_outbreak_linelist_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+CREATE SEQUENCE idsrs_mob_wvpd_recid_seq
+    START WITH 60
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999999999
+    CACHE 1
+    CYCLE;
+
+
+CREATE SEQUENCE diseases_surveillance_mob_uncode_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+
+CREATE SEQUENCE district_freeze_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999
+    CACHE 1;
+
+
+
+CREATE SEQUENCE districts_distid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999
+    CACHE 1;
+
+CREATE SEQUENCE districts_population_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+CREATE SEQUENCE districts_wise_maps_paths_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999999999999
+    CACHE 1;
+
+
+CREATE SEQUENCE driverid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+CREATE SEQUENCE dso_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 9999999
+    CACHE 1;
+
+
+CREATE SEQUENCE epi_asset_makers_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    MAXVALUE 99999
+    CACHE 1;
+
+CREATE SEQUENCE epi_asset_status_list_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE epi_asset_type_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE epi_cc_asset_status_history_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE epi_cc_cold_room_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+
+CREATE SEQUENCE epi_coldchain_main_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;
+
+CREATE SEQUENCE equipment_type_seq_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+    CYCLE;

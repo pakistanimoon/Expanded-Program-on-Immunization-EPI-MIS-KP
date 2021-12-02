@@ -18,7 +18,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://epimis.kphealth.pk/';
-$config['base_url'] = 'http://kp.epimis.pk/';
+//$config['base_url'] = 'http://kp.epimis.pk/';
+$config['base_url'] = 'http://localhost/epimis/epikp/';
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,7 @@ $config['base_url'] = 'http://kp.epimis.pk/';
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = '';//index.php
 
 /*
 |--------------------------------------------------------------------------

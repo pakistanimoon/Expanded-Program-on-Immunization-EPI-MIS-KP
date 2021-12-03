@@ -19,7 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 //$config['base_url'] = 'http://epimis.kphealth.pk/';
 //$config['base_url'] = 'http://kp.epimis.pk/';
-$config['base_url'] = 'http://localhost/epimis/epikp/';
+$config['base_url'] = 'http://localhost/Expanded-Program-on-Immunization-EPI-MIS-KP/';
 
 /*
 |--------------------------------------------------------------------------

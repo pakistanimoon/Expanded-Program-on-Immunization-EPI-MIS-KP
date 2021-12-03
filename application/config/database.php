@@ -75,10 +75,15 @@ $query_builder = TRUE;
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
+<<<<<<< HEAD
 	//'username' => 'kpepiuser',
 	//'password' => 'Kp3pi#123',
 	'username' => 'postgres',
 	'password' => 'root',
+=======
+	'username' => 'postgres',//'kpepiuser',
+	'password' => 'root',//'Kp3pi#123',
+>>>>>>> 10f5bd1576fe2bd287c6643142e3fe8f10b6218c
 	'database' => 'kpepidb',
 	'dbdriver' => 'postgre', //mysqli
 	'dbprefix' => '',
